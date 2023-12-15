@@ -1,0 +1,30 @@
+{
+  "author": "Carles Capellas <capellas.carles@gmail.com>",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "description": "Web adaptation of the monopoly board game",
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.17",
+    "html-loader": "^4.2.0",
+    "html-webpack-plugin": "^5.5.3",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.10.0"
+  },
+  "license": "ISC",
+  "name": "webopoly",
+  "private": true,
+  "scripts": {
+    "build": "npm run clean && webpack --config webpack/production.config.js",
+    "clean": "rm -rf docs",
+    "clean-modules": "rm -rf node_modules",
+    "dev": "webpack serve --config webpack/development.config.js"
+  },
+  "version": "1.0.0"
+}
