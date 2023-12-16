@@ -73,6 +73,10 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <br />
       </div>
 
+      <div style={{ paddingLeft: 8, fontSize: 24, marginBottom: 16 }}>
+        🎲 {props.game.dice || '-'}
+      </div>
+
       <div
         style={{
           display: 'flex',

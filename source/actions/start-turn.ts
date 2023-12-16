@@ -6,8 +6,8 @@ import { Game, GameEvent } from '../types';
 
 export const startTurn = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const squaresMovement = Math.max(2, Math.round(Math.random() * maxMovement));
-  const nextPosition = (currentPlayer.position + squaresMovement) % game.squares.length;
+  const dice = Math.max(2, Math.round(Math.random() * maxMovement));
+  const nextPosition = (currentPlayer.position + dice) % game.squares.length;
   const nextSquare = game.squares[nextPosition];
   const passesGo = nextPosition < currentPlayer.position;
   const paysRent =
@@ -16,7 +16,7 @@ export const startTurn = (game: Game): Game => {
     nextSquare.owner !== currentPlayer.name;
   const events: GameEvent[] = [
     {
-      description: `${currentPlayer.name} rolls ${squaresMovement} and lands in ${nextSquare.name}`,
+      description: `${currentPlayer.name} rolls ${dice} and lands in ${nextSquare.name}`,
       type: GameEventType.startTurn,
     },
   ];
@@ -53,6 +53,7 @@ export const startTurn = (game: Game): Game => {
 
   return {
     ...game,
+    dice,
     turnPhase: TurnPhase.play,
     events: events.concat(game.events),
   };
