@@ -1,5 +1,6 @@
 import { GameEventType, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { currencySymbol } from '../parameters';
 import { Game } from '../types';
 
 export const buyProperty = (game: Game): Game => {
@@ -25,13 +26,13 @@ export const buyProperty = (game: Game): Game => {
     }),
     squares: game.squares.map((s) => {
       if (s === currentSquare) {
-        s.owner = currentPlayer.name;
+        s.ownerId = currentPlayer.id;
       }
       return s;
     }),
     events: [
       {
-        description: `${currentPlayer.name} buys ${currentSquare.name} for $${currentSquare.price}`,
+        description: `${currentPlayer.name} buys ${currentSquare.name} for ${currencySymbol}${currentSquare.price}`,
         type: GameEventType.buyProperty,
       },
     ].concat(game.events),

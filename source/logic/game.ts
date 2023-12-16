@@ -16,3 +16,6 @@ export const getNextPlayerId = (game: Game) => {
 
   return playersPool.find((p) => p.status === PlayerStatus.playing)!.id;
 };
+
+export const getPlayerById = (game: Game, playerId: number): Player =>
+  game.players.find((p) => p.id === playerId)!;

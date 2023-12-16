@@ -1,12 +1,13 @@
 import { PropertyType } from '../enums';
 
 export type Property = {
-  owner?: string;
+  ownerId?: number;
   price: number;
 } & (
   | {
       propertyType: PropertyType.street;
-      group: string;
+      color: string;
+      textColor: string;
     }
   | {
       propertyType: PropertyType.station;

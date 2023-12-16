@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { buyProperty, endTurn, startTurn } from '../actions';
 import { SquareType, TurnPhase } from '../enums';
-import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { Game } from '../types';
 import { Historical } from './historical';
 import { Players } from './players';
@@ -41,7 +41,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           disabled={
             props.game.turnPhase !== TurnPhase.play ||
             currentSquare!.type !== SquareType.property ||
-            !!currentSquare!.owner ||
+            currentSquare!.ownerId !== undefined ||
             !canBuy(currentPlayer!, currentSquare!)
           }
         >
@@ -81,8 +81,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         style={{
           display: 'flex',
           flexDirection: 'row',
-          paddingLeft: 8,
-          paddingRight: 8,
           minHeight: '100vh',
         }}
       >
@@ -93,13 +91,26 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
                 key={`${square.name}-${index}`}
                 playersInSquare={props.game.players.filter((p) => p.position === index)}
                 square={square}
+                owner={
+                  square.type === SquareType.property && square.ownerId !== undefined
+                    ? getPlayerById(props.game, square.ownerId)
+                    : undefined
+                }
               />
             ))}
           </div>
         )}
 
         {(isDesktop || currentView === 'players') && (
-          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexGrow: 1,
+              paddingLeft: 8,
+              paddingRight: 8,
+            }}
+          >
             <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
             <Historical events={props.game.events} />
           </div>

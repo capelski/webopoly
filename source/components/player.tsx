@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlayerStatus } from '../enums';
+import { currencySymbol, houseSymbol } from '../parameters';
 import { Player } from '../types';
 
 interface PlayerComponentProps {
@@ -21,8 +22,12 @@ export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
       <span style={{ paddingLeft: 8, textDecoration: isBankrupt ? 'line-through' : undefined }}>
         {props.player.name}
       </span>
-      <span style={{ paddingLeft: 8 }}>💲 {props.player.money}</span>
-      <span style={{ paddingLeft: 8 }}>🏠 {props.player.properties.length}</span>
+      <span style={{ paddingLeft: 8 }}>
+        {currencySymbol} {props.player.money}
+      </span>
+      <span style={{ paddingLeft: 8 }}>
+        {houseSymbol} {props.player.properties.length}
+      </span>
     </div>
   );
 };
