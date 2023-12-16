@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { buyProperty, endTurn, startTurn } from '../actions';
 import { SquareType, TurnPhase } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
@@ -16,6 +17,8 @@ interface GameComponentProps {
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
   const currentSquare = getCurrentSquare(props.game);
+  const isDesktop = useMediaQuery({ minWidth: 768 });
+  const [currentView, setCurrentView] = useState<'board' | 'players'>('board');
 
   return (
     <div>
@@ -66,24 +69,75 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         >
           Clear game
         </button>
+        <br />
+        <br />
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'row' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-          {props.game.squares.map((square, index) => (
-            <SquareComponent
-              key={`${square.name}-${index}`}
-              playersInSquare={props.game.players.filter((p) => p.position === index)}
-              square={square}
-            />
-          ))}
-        </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          paddingLeft: 8,
+          paddingRight: 8,
+          minHeight: '100vh',
+        }}
+      >
+        {(isDesktop || currentView === 'board') && (
+          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            {props.game.squares.map((square, index) => (
+              <SquareComponent
+                key={`${square.name}-${index}`}
+                playersInSquare={props.game.players.filter((p) => p.position === index)}
+                square={square}
+              />
+            ))}
+          </div>
+        )}
 
-        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, fontSize: 24 }}>
-          <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
-          <Historical events={props.game.events} />
-        </div>
+        {(isDesktop || currentView === 'players') && (
+          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+            <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
+            <Historical events={props.game.events} />
+          </div>
+        )}
       </div>
+
+      {!isDesktop && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            fontSize: 32,
+            position: 'sticky',
+            bottom: 0,
+            backgroundColor: 'white',
+            borderTop: '1px solid lightgrey',
+          }}
+        >
+          <div
+            onClick={() => setCurrentView('board')}
+            style={{
+              textShadow: currentView === 'board' ? '0 0 5px goldenrod' : undefined,
+              paddingTop: 8,
+              textAlign: 'center',
+              flexGrow: 1,
+            }}
+          >
+            🧭
+          </div>
+          <div
+            onClick={() => setCurrentView('players')}
+            style={{
+              textShadow: currentView === 'players' ? '0 0 5px goldenrod' : undefined,
+              paddingTop: 8,
+              textAlign: 'center',
+              flexGrow: 1,
+            }}
+          >
+            👤
+          </div>
+        </div>
+      )}
     </div>
   );
 };

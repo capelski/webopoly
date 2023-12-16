@@ -2,7 +2,8 @@
   "author": "Carles Capellas <capellas.carles@gmail.com>",
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-responsive": "^9.0.2"
   },
   "description": "Web adaptation of the monopoly board game",
   "devDependencies": {
