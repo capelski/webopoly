@@ -6,7 +6,7 @@ import { Square } from './square';
 export type Game = {
   squares: Square[];
   players: Player[];
-  currentPlayer: number;
+  currentPlayerId: number;
   events: GameEvent[];
   turnPhase: TurnPhase;
 };

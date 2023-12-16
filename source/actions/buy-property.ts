@@ -31,9 +31,7 @@ export const buyProperty = (game: Game): Game => {
     }),
     events: [
       {
-        description: `Player ${game.currentPlayer + 1} buys ${currentSquare.name} for $${
-          currentSquare.price
-        }`,
+        description: `${currentPlayer.name} buys ${currentSquare.name} for $${currentSquare.price}`,
         type: GameEventType.buyProperty,
       },
     ].concat(game.events),

@@ -80,7 +80,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, fontSize: 24 }}>
-          <Players currentPlayer={props.game.currentPlayer} players={props.game.players} />
+          <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
           <Historical events={props.game.events} />
         </div>
       </div>
