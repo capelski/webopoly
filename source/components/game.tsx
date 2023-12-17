@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { buyProperty, endTurn, startTurn } from '../actions';
-import { SquareType, TurnPhase } from '../enums';
+import { GameView, SquareType, TurnPhase } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { Game } from '../types';
 import { Historical } from './historical';
+import { NavBar } from './nav-bar';
 import { Players } from './players';
 import { SquareComponent } from './square';
 
@@ -14,78 +15,40 @@ interface GameComponentProps {
   updateGame: (game: Game) => void;
 }
 
+const buttonStyles: CSSProperties = {
+  padding: 8,
+  outline: 'none',
+  marginRight: 8,
+};
+
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
   const currentSquare = getCurrentSquare(props.game);
   const isDesktop = useMediaQuery({ minWidth: 768 });
-  const [currentView, setCurrentView] = useState<'board' | 'players'>('board');
+  const [gameView, setGameView] = useState(GameView.board);
 
   return (
-    <div>
-      <div>
-        <button
-          onClick={() => {
-            props.updateGame(startTurn(props.game));
-          }}
-          type="button"
-          disabled={props.game.turnPhase !== TurnPhase.start}
-        >
-          Start turn
-        </button>
-
-        <button
-          onClick={() => {
-            props.updateGame(buyProperty(props.game));
-          }}
-          type="button"
-          disabled={
-            props.game.turnPhase !== TurnPhase.play ||
-            currentSquare!.type !== SquareType.property ||
-            currentSquare!.ownerId !== undefined ||
-            !canBuy(currentPlayer!, currentSquare!)
-          }
-        >
-          Buy
-        </button>
-
-        <button
-          onClick={() => {
-            props.updateGame(endTurn(props.game));
-          }}
-          type="button"
-          disabled={props.game.turnPhase !== TurnPhase.play}
-        >
-          End turn
-        </button>
-
-        <br />
-        <br />
-        {/* TODO Are you sure you want to clear the game? */}
-        <button
-          onClick={() => {
-            props.clearGame();
-          }}
-          type="button"
-        >
-          Clear game
-        </button>
-        <br />
-        <br />
-      </div>
-
-      <div style={{ paddingLeft: 8, fontSize: 24, marginBottom: 16 }}>
-        🎲 {props.game.dice || '-'}
-      </div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+      {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
 
       <div
         style={{
           display: 'flex',
           flexDirection: 'row',
-          minHeight: '100vh',
+          flexGrow: 1,
+          overflow: 'hidden',
         }}
       >
-        {(isDesktop || currentView === 'board') && (
-          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+        {(isDesktop || gameView === GameView.board) && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              flexGrow: 1,
+              padding: isDesktop ? 8 : undefined,
+              overflow: 'scroll',
+            }}
+          >
             {props.game.squares.map((square, index) => (
               <SquareComponent
                 key={`${square.name}-${index}`}
@@ -101,58 +64,81 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           </div>
         )}
 
-        {(isDesktop || currentView === 'players') && (
+        {(isDesktop || gameView === GameView.players) && (
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               flexGrow: 1,
-              paddingLeft: 8,
-              paddingRight: 8,
+              overflow: 'scroll',
             }}
           >
-            <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
-            <Historical events={props.game.events} />
+            <div style={{ position: 'sticky', backgroundColor: 'white', top: 0, padding: 8 }}>
+              <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
+            </div>
+
+            <div style={{ padding: 8 }}>
+              <Historical events={props.game.events} />
+            </div>
           </div>
         )}
       </div>
 
-      {!isDesktop && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            fontSize: 32,
-            position: 'sticky',
-            bottom: 0,
-            backgroundColor: 'white',
-            borderTop: '1px solid lightgrey',
-          }}
-        >
-          <div
-            onClick={() => setCurrentView('board')}
-            style={{
-              textShadow: currentView === 'board' ? '0 0 5px goldenrod' : undefined,
-              paddingTop: 8,
-              textAlign: 'center',
-              flexGrow: 1,
+      <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
+        <div>
+          <button
+            onClick={() => {
+              props.updateGame(startTurn(props.game));
             }}
+            type="button"
+            style={buttonStyles}
+            disabled={props.game.turnPhase !== TurnPhase.start}
           >
-            🧭
-          </div>
-          <div
-            onClick={() => setCurrentView('players')}
-            style={{
-              textShadow: currentView === 'players' ? '0 0 5px goldenrod' : undefined,
-              paddingTop: 8,
-              textAlign: 'center',
-              flexGrow: 1,
+            Start turn
+          </button>
+
+          <span style={{ fontSize: 24, padding: '0 8px' }}>🎲 {props.game.dice || '-'}</span>
+
+          <button
+            onClick={() => {
+              props.updateGame(buyProperty(props.game));
             }}
+            type="button"
+            style={buttonStyles}
+            disabled={
+              props.game.turnPhase !== TurnPhase.play ||
+              currentSquare!.type !== SquareType.property ||
+              currentSquare!.ownerId !== undefined ||
+              !canBuy(currentPlayer!, currentSquare!)
+            }
           >
-            👤
+            Buy
+          </button>
+
+          <button
+            onClick={() => {
+              props.updateGame(endTurn(props.game));
+            }}
+            type="button"
+            style={buttonStyles}
+            disabled={props.game.turnPhase !== TurnPhase.play}
+          >
+            End turn
+          </button>
+          <div style={{ marginTop: 8 }}>
+            {/* TODO Are you sure you want to clear the game? */}
+            <button
+              onClick={() => {
+                props.clearGame();
+              }}
+              type="button"
+              style={{ ...buttonStyles, color: 'red' }}
+            >
+              Clear game
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

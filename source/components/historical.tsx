@@ -10,7 +10,7 @@ interface HistoricalProps {
 
 export const Historical: React.FC<HistoricalProps> = (props) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', fontSize: 18, paddingTop: 24 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', fontSize: 18 }}>
       {props.events.map((event, index) => (
         <GameEventComponent event={event} key={`${index}`} />
       ))}
