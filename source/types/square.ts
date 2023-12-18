@@ -1,4 +1,4 @@
-import { SquareType } from '../enums';
+import { SquareType, TaxType } from '../enums';
 import { Property } from './property';
 
 export type Square =
@@ -11,7 +11,7 @@ export type Square =
       | { type: SquareType.jail }
       | { type: SquareType.parking }
       | ({ type: SquareType.property } & Property)
-      | { type: SquareType.tax }
+      | { type: SquareType.tax; taxType: TaxType }
     );
 
 export type PositionedSquare = Square & { position: number };

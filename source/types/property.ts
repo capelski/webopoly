@@ -1,4 +1,4 @@
-import { PropertyType } from '../enums';
+import { Neighborhood, PropertyType } from '../enums';
 
 export type Property = {
   ownerId?: number;
@@ -6,8 +6,7 @@ export type Property = {
 } & (
   | {
       propertyType: PropertyType.street;
-      color: string;
-      textColor: string;
+      neighborhood: Neighborhood;
     }
   | {
       propertyType: PropertyType.station;

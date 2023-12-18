@@ -1,6 +1,6 @@
-import React from 'react';
-import { PropertyType, SquareType } from '../enums';
-import { currencySymbol, houseSymbol } from '../parameters';
+import React, { CSSProperties } from 'react';
+import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
+import { currencySymbol, houseSymbol, passGoMoney } from '../parameters';
 import { Player, Square } from '../types';
 
 interface SquareComponentProps {
@@ -11,11 +11,22 @@ interface SquareComponentProps {
   rootRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
+const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
+  [Neighborhood.brown]: { backgroundColor: 'brown', color: 'white' },
+  [Neighborhood.lightblue]: { backgroundColor: 'lightblue', color: 'black' },
+  [Neighborhood.pink]: { backgroundColor: 'pink', color: 'black' },
+  [Neighborhood.orange]: { backgroundColor: 'orange', color: 'white' },
+  [Neighborhood.red]: { backgroundColor: 'red', color: 'white' },
+  [Neighborhood.yellow]: { backgroundColor: 'yellow', color: 'black' },
+  [Neighborhood.green]: { backgroundColor: 'green', color: 'white' },
+  [Neighborhood.darkblue]: { backgroundColor: 'darkblue', color: 'white' },
+};
+
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
-  const { color, textColor } =
+  const { backgroundColor, color } =
     props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
-      ? props.square
-      : { color: undefined, textColor: undefined };
+      ? streetsColorMap[props.square.neighborhood]
+      : { backgroundColor: undefined, color: undefined };
 
   return (
     <div
@@ -53,8 +64,10 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
 
       <div
         style={{
-          backgroundColor: color,
-          color: textColor,
+          display: 'flex',
+          alignItems: 'center',
+          backgroundColor,
+          color,
           fontSize: 24,
           width: props.square.type === SquareType.property ? '50%' : '80%',
           height: '100%',
@@ -81,6 +94,33 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           ) : undefined
         ) : undefined}
         {props.square.name}
+        {props.square.type === SquareType.go ? (
+          <div
+            style={{
+              fontSize: 18,
+              flexGrow: 1,
+              textAlign: 'right',
+              paddingRight: 4,
+            }}
+          >
+            &nbsp;Collect {currencySymbol}
+            {passGoMoney}
+          </div>
+        ) : props.square.type === SquareType.tax ? (
+          <div
+            style={{
+              fontSize: 18,
+              flexGrow: 1,
+              textAlign: 'right',
+              paddingRight: 4,
+            }}
+          >
+            &nbsp;
+            {props.square.taxType === TaxType.income
+              ? `10% or ${currencySymbol}200`
+              : `${currencySymbol}100`}
+          </div>
+        ) : undefined}
       </div>
 
       {props.square.type === SquareType.property && (
@@ -90,8 +130,8 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'flex-end',
-            backgroundColor: color,
-            color: textColor,
+            backgroundColor,
+            color,
             fontSize: 18,
             width: '30%',
             height: '100%',
