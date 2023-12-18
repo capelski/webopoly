@@ -243,7 +243,7 @@ export const createGame = (nPlayers: number): Game => {
       properties: [],
       status: PlayerStatus.playing,
     })),
-    squares,
+    squares: squares.map((s, index) => ({ ...s, position: index })),
     events: [],
     turnPhase: TurnPhase.start,
   };

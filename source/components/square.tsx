@@ -5,8 +5,10 @@ import { Player, Square } from '../types';
 
 interface SquareComponentProps {
   owner?: Player;
+  currentPlayerId: number;
   playersInSquare: Player[];
   square: Square;
+  rootRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
@@ -17,6 +19,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
 
   return (
     <div
+      ref={props.rootRef}
       onClick={() => {}}
       style={{
         alignItems: 'center',
@@ -40,6 +43,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             style={{
               color: 'transparent',
               textShadow: `0 0 0 ${p.color}`,
+              border: props.currentPlayerId === p.id ? '1px solid goldenrod' : undefined,
             }}
           >
             👤

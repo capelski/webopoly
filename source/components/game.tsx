@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { buyProperty, endTurn, startTurn } from '../actions';
 import { GameView, SquareType, TurnPhase } from '../enums';
@@ -26,6 +26,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const currentSquare = getCurrentSquare(props.game);
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [gameView, setGameView] = useState(GameView.board);
+  const [refs] = useState(props.game.squares.map(() => useRef<HTMLDivElement>(null)));
+
+  useEffect(() => {
+    refs[currentSquare.position].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [props.game]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -52,7 +57,9 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             {props.game.squares.map((square, index) => (
               <SquareComponent
                 key={`${square.name}-${index}`}
-                playersInSquare={props.game.players.filter((p) => p.position === index)}
+                rootRef={refs[index]}
+                currentPlayerId={props.game.currentPlayerId}
+                playersInSquare={props.game.players.filter((p) => p.position === square.position)}
                 square={square}
                 owner={
                   square.type === SquareType.property && square.ownerId !== undefined

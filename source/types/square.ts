@@ -13,3 +13,5 @@ export type Square =
       | ({ type: SquareType.property } & Property)
       | { type: SquareType.tax }
     );
+
+export type PositionedSquare = Square & { position: number };

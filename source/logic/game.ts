@@ -1,10 +1,10 @@
 import { PlayerStatus } from '../enums';
-import { Game, Player, Square } from '../types';
+import { Game, Player, PositionedSquare } from '../types';
 
 export const getCurrentPlayer = (game: Game): Player =>
   game.players.find((p) => p.id === game.currentPlayerId)!;
 
-export const getCurrentSquare = (game: Game): Square =>
+export const getCurrentSquare = (game: Game): PositionedSquare =>
   game.squares[getCurrentPlayer(game).position];
 
 export const getNextPlayerId = (game: Game) => {
