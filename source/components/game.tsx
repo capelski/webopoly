@@ -3,6 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import { buyProperty, endTurn, startTurn } from '../actions';
 import { GameView, SquareType, TurnPhase } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
+import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game } from '../types';
 import { Historical } from './historical';
 import { NavBar } from './nav-bar';
@@ -93,6 +94,15 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
       <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
         <div>
+          <span style={{ fontSize: 24, padding: '0 8px' }}>
+            {diceSymbol} {props.game.dice || '-'}
+          </span>
+          <span style={{ fontSize: 24, padding: '0 8px' }}>
+            {parkingSymbol} {props.game.centerPot}
+          </span>
+        </div>
+
+        <div>
           <button
             onClick={() => {
               props.updateGame(startTurn(props.game));
@@ -103,8 +113,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           >
             Start turn
           </button>
-
-          <span style={{ fontSize: 24, padding: '0 8px' }}>🎲 {props.game.dice || '-'}</span>
 
           <button
             onClick={() => {

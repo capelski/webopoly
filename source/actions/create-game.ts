@@ -232,5 +232,6 @@ export const createGame = (nPlayers: number): Game => {
     squares: squares.map((s, index) => ({ ...s, position: index })),
     events: [],
     turnPhase: TurnPhase.start,
+    centerPot: 0,
   };
 };

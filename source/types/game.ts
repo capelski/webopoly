@@ -10,4 +10,5 @@ export type Game = {
   currentPlayerId: number;
   events: GameEvent[];
   turnPhase: TurnPhase;
+  centerPot: number;
 };

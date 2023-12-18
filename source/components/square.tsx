@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
-import { currencySymbol, houseSymbol, passGoMoney } from '../parameters';
+import { currencySymbol, houseSymbol, parkingSymbol, passGoMoney, taxSymbol } from '../parameters';
 import { Player, Square } from '../types';
 
 interface SquareComponentProps {
@@ -79,9 +79,9 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         ) : props.square.type === SquareType.go ? (
           <span>⏩&nbsp;</span>
         ) : props.square.type === SquareType.parking ? (
-          <span>🅿️&nbsp;</span>
+          <span>{parkingSymbol}&nbsp;</span>
         ) : props.square.type === SquareType.tax ? (
-          <span>💰&nbsp;</span>
+          <span>{taxSymbol}&nbsp;</span>
         ) : props.square.type === SquareType.goToJail ? (
           <span>🚔&nbsp;</span>
         ) : props.square.type === SquareType.jail ? (
