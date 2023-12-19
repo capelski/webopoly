@@ -8,4 +8,5 @@ export type Player = {
   position: number;
   properties: string[];
   status: PlayerStatus;
+  turnsInJail: number;
 };

@@ -1,7 +1,18 @@
 import React, { CSSProperties } from 'react';
 import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
-import { currencySymbol, houseSymbol, parkingSymbol, passGoMoney, taxSymbol } from '../parameters';
+import { isPlayerInJail } from '../logic';
+import {
+  currencySymbol,
+  goToJailSymbol,
+  houseSymbol,
+  jailSymbol,
+  parkingSymbol,
+  passGoMoney,
+  taxSymbol,
+} from '../parameters';
 import { Player, Square } from '../types';
+import { PlayerAvatar } from './player-avatar';
+import { PlayersInSquare } from './players-in-square';
 
 interface SquareComponentProps {
   owner?: Player;
@@ -48,18 +59,10 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           textAlign: 'center',
         }}
       >
-        {props.playersInSquare.map((p) => (
-          <span
-            key={p.name}
-            style={{
-              color: 'transparent',
-              textShadow: `0 0 0 ${p.color}`,
-              border: props.currentPlayerId === p.id ? '1px solid goldenrod' : undefined,
-            }}
-          >
-            👤
-          </span>
-        ))}
+        <PlayersInSquare
+          currentPlayerId={props.currentPlayerId}
+          players={props.playersInSquare.filter((p) => !isPlayerInJail(p))}
+        />
       </div>
 
       <div
@@ -83,9 +86,9 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         ) : props.square.type === SquareType.tax ? (
           <span>{taxSymbol}&nbsp;</span>
         ) : props.square.type === SquareType.goToJail ? (
-          <span>🚔&nbsp;</span>
+          <span>{goToJailSymbol}&nbsp;</span>
         ) : props.square.type === SquareType.jail ? (
-          <span>⚖️&nbsp;</span>
+          <span>{jailSymbol}&nbsp;</span>
         ) : props.square.type === SquareType.property ? (
           props.square.propertyType === PropertyType.power ? (
             <span>🔌&nbsp;</span>
@@ -103,7 +106,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               paddingRight: 4,
             }}
           >
-            &nbsp;Collect {currencySymbol}
+            Collect {currencySymbol}
             {passGoMoney}
           </div>
         ) : props.square.type === SquareType.tax ? (
@@ -115,10 +118,20 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               paddingRight: 4,
             }}
           >
-            &nbsp;
             {props.square.taxType === TaxType.income
               ? `10% or ${currencySymbol}200`
               : `${currencySymbol}100`}
+          </div>
+        ) : props.square.type === SquareType.jail ? (
+          <div
+            style={{
+              paddingLeft: 8,
+            }}
+          >
+            <PlayersInSquare
+              currentPlayerId={props.currentPlayerId}
+              players={props.playersInSquare.filter(isPlayerInJail)}
+            />
           </div>
         ) : undefined}
       </div>
@@ -138,16 +151,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             paddingRight: 4,
           }}
         >
-          {props.owner && (
-            <span
-              style={{
-                color: 'transparent',
-                textShadow: `0 0 0 ${props.owner.color}`,
-              }}
-            >
-              👤
-            </span>
-          )}
+          {props.owner && <PlayerAvatar player={props.owner} />}
           {props.square.propertyType === PropertyType.street && (
             <span>{houseSymbol}&nbsp;0&nbsp;</span>
           )}

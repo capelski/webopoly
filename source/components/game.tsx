@@ -95,7 +95,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
         <div>
           <span style={{ fontSize: 24, padding: '0 8px' }}>
-            {diceSymbol} {props.game.dice || '-'}
+            {diceSymbol} {props.game.dice.join('-') || '-'}
           </span>
           <span style={{ fontSize: 24, padding: '0 8px' }}>
             {parkingSymbol} {props.game.centerPot}

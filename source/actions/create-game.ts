@@ -220,6 +220,7 @@ export const createGame = (nPlayers: number): Game => {
 
   return {
     currentPlayerId: 0,
+    dice: [],
     players: [...Array(nPlayers)].map((_, index) => ({
       color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
       id: index,
@@ -228,6 +229,7 @@ export const createGame = (nPlayers: number): Game => {
       position: 0,
       properties: [],
       status: PlayerStatus.playing,
+      turnsInJail: 0,
     })),
     squares: squares.map((s, index) => ({ ...s, position: index })),
     events: [],

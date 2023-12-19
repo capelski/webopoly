@@ -4,7 +4,7 @@ import { Player } from './player';
 import { PositionedSquare } from './square';
 
 export type Game = {
-  dice?: number;
+  dice: number[];
   squares: PositionedSquare[];
   players: Player[];
   currentPlayerId: number;

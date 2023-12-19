@@ -6,4 +6,6 @@ export enum GameEventType {
   payRent = 'payRent',
   bankruptcy = 'bankruptcy',
   payTax = 'payTax',
+  goToJail = 'goToJail',
+  remainsInJail = 'remainsInJail',
 }
