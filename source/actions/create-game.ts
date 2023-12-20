@@ -233,7 +233,8 @@ export const createGame = (nPlayers: number): Game => {
     })),
     squares: squares.map((s, index) => ({ ...s, position: index })),
     events: [],
-    turnPhase: TurnPhase.start,
+    notifications: [],
+    turnPhase: TurnPhase.rollDice,
     centerPot: 0,
   };
 };

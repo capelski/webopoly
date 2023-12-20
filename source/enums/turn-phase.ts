@@ -1,4 +1,4 @@
 export enum TurnPhase {
-  start = 'start',
+  rollDice = 'rollDice',
   play = 'play',
 }

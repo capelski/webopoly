@@ -15,7 +15,7 @@ export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => 
           ? '💵'
           : props.event.type === GameEventType.endTurn
           ? '⏰'
-          : props.event.type === GameEventType.startTurn
+          : props.event.type === GameEventType.rollDice
           ? diceSymbol
           : props.event.type === GameEventType.passGo
           ? goSymbol
@@ -27,6 +27,8 @@ export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => 
           ? taxSymbol
           : props.event.type === GameEventType.goToJail
           ? goToJailSymbol
+          : props.event.type === GameEventType.getsOutOfJail
+          ? '🎉'
           : props.event.type === GameEventType.remainsInJail
           ? jailSymbol
           : undefined}

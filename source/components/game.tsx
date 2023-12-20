@@ -1,10 +1,12 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { buyProperty, endTurn, startTurn } from '../actions';
+import { toast, ToastContainer } from 'react-toastify';
+import { applyNotifications, buyProperty, endTurn, rollDice } from '../actions';
 import { GameView, SquareType, TurnPhase } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game } from '../types';
+import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { NavBar } from './nav-bar';
 import { Players } from './players';
@@ -33,9 +35,24 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     refs[currentSquare.position].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
+  useEffect(() => {
+    if (props.game.notifications.length > 0) {
+      toast(
+        <React.Fragment>
+          {props.game.notifications.map((x, index) => (
+            <GameEventComponent event={x} key={index} />
+          ))}
+        </React.Fragment>,
+        { autoClose: 3000 },
+      );
+      props.updateGame(applyNotifications(props.game));
+    }
+  }, [props.game.notifications]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
+      <ToastContainer />
 
       <div
         style={{
@@ -105,13 +122,13 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <div>
           <button
             onClick={() => {
-              props.updateGame(startTurn(props.game));
+              props.updateGame(rollDice(props.game));
             }}
             type="button"
             style={buttonStyles}
-            disabled={props.game.turnPhase !== TurnPhase.start}
+            disabled={props.game.turnPhase !== TurnPhase.rollDice}
           >
-            Start turn
+            Roll dice
           </button>
 
           <button

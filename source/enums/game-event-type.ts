@@ -1,11 +1,12 @@
 export enum GameEventType {
   endTurn = 'endTurn',
-  startTurn = 'startTurn',
+  rollDice = 'rollDice',
   buyProperty = 'buyProperty',
   passGo = 'passGo',
   payRent = 'payRent',
   bankruptcy = 'bankruptcy',
   payTax = 'payTax',
   goToJail = 'goToJail',
+  getsOutOfJail = 'getsOutOfJail',
   remainsInJail = 'remainsInJail',
 }
