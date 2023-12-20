@@ -24,7 +24,7 @@ export const rollDice = (game: Game): Game => {
       notifications.push({
         description: `${currentPlayer.name} rolls ${game.dice.join(
           '-',
-        )}, gets out fail and lands in ${nextSquare.name}`,
+        )}, gets out of jail and lands in ${nextSquare.name}`,
         type: GameEventType.getsOutOfJail,
       });
     } else {

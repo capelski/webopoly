@@ -2,12 +2,13 @@ import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { applyNotifications, buyProperty, endTurn, rollDice } from '../actions';
-import { GamePhase, GameView, SquareType } from '../enums';
+import { GamePhase, GameView, PlayerStatus, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game } from '../types';
 import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
+import { Modal } from './modal';
 import { NavBar } from './nav-bar';
 import { Players } from './players';
 import { SquareComponent } from './square';
@@ -54,6 +55,23 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
 
+      {props.game.gamePhase === GamePhase.finished && (
+        <Modal>
+          <div style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
+            {props.game.players.find((p) => p.status === PlayerStatus.playing)!.name} wins the game
+          </div>
+          <div style={{ fontSize: 72, marginBottom: 32 }}>🏆🎉</div>
+          <button
+            onClick={() => {
+              props.clearGame();
+            }}
+            type="button"
+            style={buttonStyles}
+          >
+            Clear game
+          </button>
+        </Modal>
+      )}
       <div
         style={{
           display: 'flex',
