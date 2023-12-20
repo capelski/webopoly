@@ -49,6 +49,7 @@ export const rollDice = (game: Game): Game => {
         nextSquare.ownerId !== undefined &&
         nextSquare.ownerId !== currentPlayer.id;
       const paysTaxes = nextSquare.type === SquareType.tax;
+      const landsInFreeParking = nextSquare.type === SquareType.parking;
 
       if (passesGo) {
         notifications.push({
@@ -69,11 +70,17 @@ export const rollDice = (game: Game): Game => {
       if (paysTaxes) {
         const tax =
           nextSquare.taxType === TaxType.income ? Math.min(0.1 * currentPlayer.money, 200) : 100;
-        currentPlayer.money -= tax;
         notifications.push({
           type: GameEventType.payTax,
           tax,
           description: `${currentPlayer.name} pays ${currencySymbol}${tax} in taxes`,
+        });
+      }
+      if (landsInFreeParking) {
+        notifications.push({
+          type: GameEventType.freeParking,
+          pot: game.centerPot,
+          description: `${currentPlayer.name} lands in Free Parking and collects ${currencySymbol}${game.centerPot}`,
         });
       }
     }

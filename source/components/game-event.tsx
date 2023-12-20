@@ -1,6 +1,13 @@
 import React from 'react';
 import { GameEventType } from '../enums';
-import { diceSymbol, goSymbol, goToJailSymbol, jailSymbol, taxSymbol } from '../parameters';
+import {
+  diceSymbol,
+  goSymbol,
+  goToJailSymbol,
+  jailSymbol,
+  parkingSymbol,
+  taxSymbol,
+} from '../parameters';
 import { GameEvent } from '../types';
 
 interface GameEventComponentProps {
@@ -31,6 +38,8 @@ export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => 
           ? '🎉'
           : props.event.type === GameEventType.remainsInJail
           ? jailSymbol
+          : props.event.type === GameEventType.freeParking
+          ? parkingSymbol
           : undefined}
       </span>
       <span style={{ paddingLeft: 8 }}>{props.event.description}</span>

@@ -9,4 +9,5 @@ export enum GameEventType {
   goToJail = 'goToJail',
   getsOutOfJail = 'getsOutOfJail',
   remainsInJail = 'remainsInJail',
+  freeParking = 'freeParking',
 }

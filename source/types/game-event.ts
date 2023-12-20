@@ -38,4 +38,8 @@ export type GameEvent = { description: string } & (
   | {
       type: GameEventType.bankruptcy;
     }
+  | {
+      pot: number;
+      type: GameEventType.freeParking;
+    }
 );

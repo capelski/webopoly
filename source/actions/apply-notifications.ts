@@ -31,6 +31,10 @@ export const applyNotifications = (game: Game): Game => {
         currentPlayer.money -= notification.tax;
         game.centerPot += notification.tax;
         break;
+      case GameEventType.freeParking:
+        currentPlayer.money += game.centerPot;
+        game.centerPot = 0;
+        break;
     }
   });
 
