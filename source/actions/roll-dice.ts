@@ -1,4 +1,4 @@
-import { GameEventType, SquareType, TaxType, TurnPhase } from '../enums';
+import { GameEventType, GamePhase, SquareType, TaxType } from '../enums';
 import { getCurrentPlayer, getPlayerById, getsOutOfJail, isPlayerInJail } from '../logic';
 import { currencySymbol, passGoMoney, rentPercentage } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
@@ -49,7 +49,7 @@ export const rollDice = (game: Game): Game => {
         nextSquare.ownerId !== undefined &&
         nextSquare.ownerId !== currentPlayer.id;
       const paysTaxes = nextSquare.type === SquareType.tax;
-      const landsInFreeParking = nextSquare.type === SquareType.parking;
+      const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
 
       if (passesGo) {
         notifications.push({
@@ -80,7 +80,7 @@ export const rollDice = (game: Game): Game => {
         notifications.push({
           type: GameEventType.freeParking,
           pot: game.centerPot,
-          description: `${currentPlayer.name} lands in Free Parking and collects ${currencySymbol}${game.centerPot}`,
+          description: `${currentPlayer.name} collects ${currencySymbol}${game.centerPot} from Free Parking`,
         });
       }
     }
@@ -99,7 +99,7 @@ export const rollDice = (game: Game): Game => {
   return {
     ...game,
     dice,
-    turnPhase: TurnPhase.play,
+    gamePhase: GamePhase.play,
     notifications,
     events: events.concat(game.events),
   };

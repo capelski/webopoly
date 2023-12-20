@@ -2,7 +2,7 @@ import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { applyNotifications, buyProperty, endTurn, rollDice } from '../actions';
-import { GameView, SquareType, TurnPhase } from '../enums';
+import { GamePhase, GameView, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game } from '../types';
@@ -126,7 +126,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             }}
             type="button"
             style={buttonStyles}
-            disabled={props.game.turnPhase !== TurnPhase.rollDice}
+            disabled={props.game.gamePhase !== GamePhase.rollDice}
           >
             Roll dice
           </button>
@@ -138,7 +138,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             type="button"
             style={buttonStyles}
             disabled={
-              props.game.turnPhase !== TurnPhase.play ||
+              props.game.gamePhase !== GamePhase.play ||
               currentSquare!.type !== SquareType.property ||
               currentSquare!.ownerId !== undefined ||
               !canBuy(currentPlayer!, currentSquare!)
@@ -153,7 +153,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             }}
             type="button"
             style={buttonStyles}
-            disabled={props.game.turnPhase !== TurnPhase.play}
+            disabled={props.game.gamePhase !== GamePhase.play}
           >
             End turn
           </button>

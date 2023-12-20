@@ -42,4 +42,7 @@ export type GameEvent = { description: string } & (
       pot: number;
       type: GameEventType.freeParking;
     }
+  | {
+      type: GameEventType.playerWins;
+    }
 );

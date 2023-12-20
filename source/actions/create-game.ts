@@ -1,4 +1,4 @@
-import { Neighborhood, PropertyType, SquareType, TaxType, TurnPhase } from '../enums';
+import { GamePhase, Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
 import { playerInitialMoney } from '../parameters';
 import { Square } from '../types';
@@ -234,7 +234,7 @@ export const createGame = (nPlayers: number): Game => {
     squares: squares.map((s, index) => ({ ...s, position: index })),
     events: [],
     notifications: [],
-    turnPhase: TurnPhase.rollDice,
+    gamePhase: GamePhase.rollDice,
     centerPot: 0,
   };
 };

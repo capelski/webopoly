@@ -1,4 +1,4 @@
-import { GameEventType, SquareType, TurnPhase } from '../enums';
+import { GameEventType, GamePhase, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
 import { getCurrentPlayer } from '../logic';
 import { passGoMoney } from '../parameters';
@@ -7,6 +7,7 @@ import { Game, GameEvent } from '../types';
 export const applyNotifications = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const events: GameEvent[] = [];
+  let nextTurnPhase: GamePhase = GamePhase.play;
 
   game.notifications.forEach((notification) => {
     switch (notification.type) {
@@ -40,17 +41,26 @@ export const applyNotifications = (game: Game): Game => {
 
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties
+
     events.unshift({
       type: GameEventType.bankruptcy,
       description: `${currentPlayer.name} goes bankrupt`,
     });
     currentPlayer.status = PlayerStatus.bankrupt;
-    // TODO Select winning player if only one remaining
+
+    const remainingPlayers = game.players.filter((p) => p.status === PlayerStatus.playing);
+    if (remainingPlayers.length === 1) {
+      nextTurnPhase = GamePhase.finished;
+      events.unshift({
+        type: GameEventType.playerWins,
+        description: `${remainingPlayers[0].name} wins the game`,
+      });
+    }
   }
 
   return {
     ...game,
-    turnPhase: TurnPhase.play,
+    gamePhase: nextTurnPhase,
     notifications: [],
     events: [...events, ...game.notifications.reverse(), ...game.events],
   };

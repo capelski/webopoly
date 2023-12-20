@@ -1,4 +1,4 @@
-import { GameEventType, TurnPhase } from '../enums';
+import { GameEventType, GamePhase } from '../enums';
 import { getCurrentPlayer, getNextPlayerId } from '../logic';
 import { Game, GameEvent } from '../types';
 
@@ -8,7 +8,7 @@ export const endTurn = (game: Game): Game => {
   return {
     ...game,
     currentPlayerId: getNextPlayerId(game),
-    turnPhase: TurnPhase.rollDice,
+    gamePhase: GamePhase.rollDice,
     events: [
       <GameEvent>{
         description: `${currentPlayer.name} ends its turn`,

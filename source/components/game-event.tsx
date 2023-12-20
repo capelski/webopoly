@@ -40,6 +40,8 @@ export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => 
           ? jailSymbol
           : props.event.type === GameEventType.freeParking
           ? parkingSymbol
+          : props.event.type === GameEventType.playerWins
+          ? '🏆'
           : undefined}
       </span>
       <span style={{ paddingLeft: 8 }}>{props.event.description}</span>

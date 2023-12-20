@@ -1,4 +1,4 @@
-import { TurnPhase } from '../enums';
+import { GamePhase } from '../enums';
 import { Dice } from './dice';
 import { GameEvent } from './game-event';
 import { Player } from './player';
@@ -11,6 +11,6 @@ export type Game = {
   currentPlayerId: number;
   notifications: GameEvent[];
   events: GameEvent[];
-  turnPhase: TurnPhase;
+  gamePhase: GamePhase;
   centerPot: number;
 };
