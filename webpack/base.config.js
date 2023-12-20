@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { resolve } = require('path');
 
 module.exports = {
@@ -20,6 +21,10 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
     ],
   },
   output: {
@@ -27,6 +32,7 @@ module.exports = {
     publicPath: '/webopoly',
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       filename: './index.html',
       template: './source/index.html',
