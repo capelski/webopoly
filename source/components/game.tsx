@@ -30,6 +30,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const currentSquare = getCurrentSquare(props.game);
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [gameView, setGameView] = useState(GameView.board);
+  const [clearGameModal, setClearGameModal] = useState(false);
   const [refs] = useState(props.game.squares.map(() => useRef<HTMLDivElement>(null)));
 
   useEffect(() => {
@@ -70,6 +71,20 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           >
             Clear game
           </button>
+        </Modal>
+      )}
+
+      {clearGameModal && (
+        <Modal>
+          <div>Are you sure you want to clear the game?</div>
+          <div>
+            <button type="button" onClick={() => props.clearGame()}>
+              Yes
+            </button>
+            <button type="button" onClick={() => setClearGameModal(false)}>
+              No
+            </button>
+          </div>
         </Modal>
       )}
       <div
@@ -175,11 +190,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           >
             End turn
           </button>
+
           <div style={{ marginTop: 8 }}>
-            {/* TODO Are you sure you want to clear the game? */}
             <button
               onClick={() => {
-                props.clearGame();
+                setClearGameModal(true);
               }}
               type="button"
               style={{ ...buttonStyles, color: 'red' }}
