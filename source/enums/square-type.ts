@@ -1,5 +1,6 @@
 export enum SquareType {
-  chest = 'chest',
+  chance = 'chance',
+  communityChest = 'communityChest',
   go = 'go',
   goToJail = 'goToJail',
   jail = 'jail',

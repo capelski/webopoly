@@ -1,18 +1,11 @@
 import React, { CSSProperties } from 'react';
 import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
 import { isPlayerInJail } from '../logic';
-import {
-  currencySymbol,
-  goToJailSymbol,
-  houseSymbol,
-  jailSymbol,
-  parkingSymbol,
-  passGoMoney,
-  taxSymbol,
-} from '../parameters';
+import { currencySymbol, houseSymbol, passGoMoney } from '../parameters';
 import { Player, Square } from '../types';
 import { PlayerAvatar } from './player-avatar';
 import { PlayersInSquare } from './players-in-square';
+import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
   owner?: Player;
@@ -77,25 +70,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           paddingLeft: 4,
         }}
       >
-        {props.square.type === SquareType.chest ? (
-          <span>☘️&nbsp;</span>
-        ) : props.square.type === SquareType.go ? (
-          <span>⏩&nbsp;</span>
-        ) : props.square.type === SquareType.parking ? (
-          <span>{parkingSymbol}&nbsp;</span>
-        ) : props.square.type === SquareType.tax ? (
-          <span>{taxSymbol}&nbsp;</span>
-        ) : props.square.type === SquareType.goToJail ? (
-          <span>{goToJailSymbol}&nbsp;</span>
-        ) : props.square.type === SquareType.jail ? (
-          <span>{jailSymbol}&nbsp;</span>
-        ) : props.square.type === SquareType.property ? (
-          props.square.propertyType === PropertyType.power ? (
-            <span>🔌&nbsp;</span>
-          ) : props.square.propertyType === PropertyType.station ? (
-            <span>🚂&nbsp;</span>
-          ) : undefined
-        ) : undefined}
+        <SquareTypeComponent square={props.square} />
         {props.square.name}
         {props.square.type === SquareType.go ? (
           <div

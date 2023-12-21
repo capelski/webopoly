@@ -5,7 +5,8 @@ export type Square =
   | {
       name: string;
     } & (
-      | { type: SquareType.chest }
+      | { type: SquareType.chance }
+      | { type: SquareType.communityChest }
       | { type: SquareType.go }
       | { type: SquareType.goToJail }
       | { type: SquareType.jail }

@@ -1,6 +1,8 @@
 // TODO Make it dynamic params of the createGame function
 
-export const currencySymbol = '💲';
+export const chanceSymbol = '❓';
+export const communityChestSymbol = '🗃️';
+export const currencySymbol = '￡';
 export const diceSymbol = '🎲';
 export const houseSymbol = '🏠';
 export const goToJailSymbol = '🚔';

@@ -5,6 +5,34 @@ import { Player } from './player';
 
 export type GameEvent = { description: string } & (
   | {
+      type: GameEventType.bankruptcy;
+    }
+  | {
+      type: GameEventType.buyProperty;
+    }
+  | {
+      type: GameEventType.chance;
+    }
+  | {
+      type: GameEventType.communityChest;
+    }
+  | {
+      type: GameEventType.endTurn;
+    }
+  | {
+      pot: number;
+      type: GameEventType.freeParking;
+    }
+  | {
+      type: GameEventType.getsOutOfJail;
+    }
+  | {
+      type: GameEventType.goToJail;
+    }
+  | {
+      type: GameEventType.passGo;
+    }
+  | {
       landlord: Player;
       rent: number;
       type: GameEventType.payRent;
@@ -14,35 +42,13 @@ export type GameEvent = { description: string } & (
       type: GameEventType.payTax;
     }
   | {
-      type: GameEventType.endTurn;
-    }
-  | {
-      type: GameEventType.rollDice;
-    }
-  | {
-      type: GameEventType.buyProperty;
-    }
-  | {
-      type: GameEventType.passGo;
-    }
-  | {
-      type: GameEventType.goToJail;
-    }
-  | {
-      type: GameEventType.getsOutOfJail;
+      type: GameEventType.playerWins;
     }
   | {
       turnsInJail: number;
       type: GameEventType.remainsInJail;
     }
   | {
-      type: GameEventType.bankruptcy;
-    }
-  | {
-      pot: number;
-      type: GameEventType.freeParking;
-    }
-  | {
-      type: GameEventType.playerWins;
+      type: GameEventType.rollDice;
     }
 );

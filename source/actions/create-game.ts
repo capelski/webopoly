@@ -14,7 +14,7 @@ export const createGame = (nPlayers: number): Game => {
       neighborhood: Neighborhood.brown,
       price: 60,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Community chest', type: SquareType.communityChest },
     {
       name: 'Whitechapel Rd.',
       type: SquareType.property,
@@ -40,7 +40,7 @@ export const createGame = (nPlayers: number): Game => {
       neighborhood: Neighborhood.lightblue,
       price: 100,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Chance', type: SquareType.chance },
     {
       name: 'Euston Rd.',
       type: SquareType.property,
@@ -96,7 +96,7 @@ export const createGame = (nPlayers: number): Game => {
       neighborhood: Neighborhood.orange,
       price: 180,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Community chest', type: SquareType.communityChest },
     {
       name: 'Marlborough St.',
       type: SquareType.property,
@@ -119,7 +119,7 @@ export const createGame = (nPlayers: number): Game => {
       neighborhood: Neighborhood.red,
       price: 220,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Chance', type: SquareType.chance },
     {
       name: 'Fleet St.',
       type: SquareType.property,
@@ -182,7 +182,7 @@ export const createGame = (nPlayers: number): Game => {
       neighborhood: Neighborhood.green,
       price: 300,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Community chest', type: SquareType.communityChest },
     {
       name: 'Bond St.',
       type: SquareType.property,
@@ -196,7 +196,7 @@ export const createGame = (nPlayers: number): Game => {
       propertyType: PropertyType.station,
       price: 200,
     },
-    { name: 'Chest', type: SquareType.chest },
+    { name: 'Chance', type: SquareType.chance },
     {
       name: 'Park Lane',
       type: SquareType.property,
