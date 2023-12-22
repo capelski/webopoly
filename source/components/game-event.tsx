@@ -1,6 +1,6 @@
 import React from 'react';
 import { GameEventType } from '../enums';
-import { getPlayerById } from '../logic';
+import { getChanceCardById, getCommunityChestCardById, getPlayerById } from '../logic';
 import {
   chanceSymbol,
   communityChestSymbol,
@@ -37,12 +37,22 @@ const gameEventTypeMap: { [key in GameEventType]: string } = {
 };
 
 const descriptionsMap: {
-  [TKey in GameEventType]: (player: Player, event: TypedGameEvent<TKey>) => string;
+  [TKey in GameEventType]: (player: Player, event: TypedGameEvent<TKey>) => React.ReactNode;
 } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
   [GameEventType.buyProperty]: (player, event) => `${player.name} buys ${event.squareName}`,
-  [GameEventType.chance]: (player, event) => chanceSymbol,
-  [GameEventType.communityChest]: (player, event) => communityChestSymbol,
+  [GameEventType.chance]: (player, event) => (
+    <React.Fragment>
+      <span>{player.name} takes out a Chance card:</span>
+      <div>{getChanceCardById(event.cardId).text}</div>
+    </React.Fragment>
+  ),
+  [GameEventType.communityChest]: (player, event) => (
+    <React.Fragment>
+      <span>{player.name} takes out a Community Chest card:</span>
+      <div>{getCommunityChestCardById(event.cardId).text}</div>
+    </React.Fragment>
+  ),
   [GameEventType.freeParking]: (player, event) =>
     `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
   [GameEventType.getOutOfJail]: (player, event) =>
@@ -62,6 +72,8 @@ const descriptionsMap: {
   [GameEventType.rollDice]: (player, event) =>
     `${player.name} rolls ${event.dice} and lands in ${event.squareName}`,
 };
+
+// TODO Split component into Modal/Toast events
 
 export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => {
   return (

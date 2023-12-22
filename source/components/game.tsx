@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { applyNotifications, buyProperty, endTurn, rollDice } from '../actions';
+import { applyModals, applyToasts, buyProperty, endTurn, rollDice } from '../actions';
 import { GamePhase, GameView, PlayerStatus, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
@@ -32,29 +32,54 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const [gameView, setGameView] = useState(GameView.board);
   const [clearGameModal, setClearGameModal] = useState(false);
   const [refs] = useState(props.game.squares.map(() => useRef<HTMLDivElement>(null)));
+  const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
     refs[currentSquare.position].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
   useEffect(() => {
-    if (props.game.notifications.length > 0) {
+    if (props.game.gamePhase === GamePhase.toast) {
       toast(
         <React.Fragment>
-          {props.game.notifications.map((event, index) => (
-            <GameEventComponent event={event} game={props.game} key={index} />
+          {props.game.toasts.map((toast, index) => (
+            <GameEventComponent event={toast} game={props.game} key={index} />
           ))}
         </React.Fragment>,
         { autoClose: 3000 },
       );
-      props.updateGame(applyNotifications(props.game));
+      props.updateGame(applyToasts(props.game));
+    } else if (props.game.gamePhase === GamePhase.modal) {
+      setTimeout(() => {
+        setDisplayModal(true);
+      }, 800);
     }
-  }, [props.game.notifications]);
+  }, [props.game.gamePhase]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
+
+      {displayModal && (
+        <Modal>
+          <React.Fragment>
+            {props.game.modals.map((modal, index) => (
+              <GameEventComponent event={modal} game={props.game} key={index} />
+            ))}
+          </React.Fragment>
+          <button
+            onClick={() => {
+              setDisplayModal(false);
+              props.updateGame(applyModals(props.game));
+            }}
+            type="button"
+            style={buttonStyles}
+          >
+            Ok
+          </button>
+        </Modal>
+      )}
 
       {props.game.gamePhase === GamePhase.finished && (
         <Modal>
@@ -87,6 +112,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           </div>
         </Modal>
       )}
+
       <div
         style={{
           display: 'flex',
@@ -100,9 +126,9 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              flexGrow: 1,
               padding: isDesktop ? 8 : undefined,
               overflow: 'scroll',
+              width: isDesktop ? '50%' : '100%',
             }}
           >
             {props.game.squares.map((square, index) => (
@@ -127,8 +153,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              flexGrow: 1,
               overflow: 'scroll',
+              width: isDesktop ? '50%' : '100%',
             }}
           >
             <div style={{ position: 'sticky', backgroundColor: 'white', top: 0, padding: 8 }}>

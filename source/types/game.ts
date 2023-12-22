@@ -5,12 +5,13 @@ import { Player } from './player';
 import { PositionedSquare } from './square';
 
 export type Game = {
-  dice: Dice;
-  squares: PositionedSquare[];
-  players: Player[];
+  centerPot: number;
   currentPlayerId: number;
-  notifications: GameEvent[];
+  dice: Dice;
   events: GameEvent[];
   gamePhase: GamePhase;
-  centerPot: number;
+  modals: GameEvent[];
+  players: Player[];
+  squares: PositionedSquare[];
+  toasts: GameEvent[];
 };

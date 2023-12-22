@@ -1,6 +1,8 @@
-import { GameEventType, SquareType } from '../enums';
+import { GameEventType, GamePhase, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { Game } from '../types';
+
+// TODO Move logic to applyNotifications
 
 export const buyProperty = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -29,7 +31,8 @@ export const buyProperty = (game: Game): Game => {
       }
       return s;
     }),
-    notifications: [
+    gamePhase: GamePhase.toast,
+    toasts: [
       {
         playerId: currentPlayer.id,
         squareName: currentSquare.name, // TODO Use Id

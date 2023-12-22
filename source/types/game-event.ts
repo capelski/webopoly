@@ -13,10 +13,12 @@ export type BuyPropertyEvent = GameEventBase & {
 };
 
 export type ChanceEvent = GameEventBase & {
+  cardId: number;
   type: GameEventType.chance;
 };
 
 export type CommunityChestEvent = GameEventBase & {
+  cardId: number;
   type: GameEventType.communityChest;
 };
 

@@ -11,3 +11,7 @@ export const getsOutOfJail = (player: Player, dice: Dice) => {
 export const isPlayerInJail = (player: Player): boolean => {
   return player.turnsInJail > 0;
 };
+
+export const passesGo = (player: Player, nextPosition: number) => {
+  return nextPosition < player.position;
+};

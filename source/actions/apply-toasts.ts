@@ -4,13 +4,12 @@ import { getCurrentPlayer } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
-export const applyNotifications = (game: Game): Game => {
+export const applyToasts = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const events: GameEvent[] = [];
-  let nextTurnPhase: GamePhase = GamePhase.play;
 
-  game.notifications.forEach((notification) => {
-    switch (notification.type) {
+  game.toasts.forEach((toast) => {
+    switch (toast.type) {
       case GameEventType.getOutOfJail:
         currentPlayer.turnsInJail = 0;
         break;
@@ -25,12 +24,12 @@ export const applyNotifications = (game: Game): Game => {
         currentPlayer.money += passGoMoney;
         break;
       case GameEventType.payRent:
-        currentPlayer.money -= notification.rent;
-        notification.landlord.money += notification.rent;
+        currentPlayer.money -= toast.rent;
+        toast.landlord.money += toast.rent;
         break;
       case GameEventType.payTax:
-        currentPlayer.money -= notification.tax;
-        game.centerPot += notification.tax;
+        currentPlayer.money -= toast.tax;
+        game.centerPot += toast.tax;
         break;
       case GameEventType.freeParking:
         currentPlayer.money += game.centerPot;
@@ -39,6 +38,7 @@ export const applyNotifications = (game: Game): Game => {
     }
   });
 
+  let nextTurnPhase: GamePhase = game.modals.length > 0 ? GamePhase.modal : GamePhase.play;
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties
 
@@ -60,8 +60,8 @@ export const applyNotifications = (game: Game): Game => {
 
   return {
     ...game,
+    events: [...events, ...game.toasts.reverse(), ...game.events],
     gamePhase: nextTurnPhase,
-    notifications: [],
-    events: [...events, ...game.notifications.reverse(), ...game.events],
+    toasts: [],
   };
 };

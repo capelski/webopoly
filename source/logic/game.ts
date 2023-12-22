@@ -19,3 +19,5 @@ export const getNextPlayerId = (game: Game) => {
 
 export const getPlayerById = (game: Game, playerId: number): Player =>
   game.players.find((p) => p.id === playerId)!;
+
+// TODO Function to dehydrate/re-hydrate games

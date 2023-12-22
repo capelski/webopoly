@@ -1,5 +1,7 @@
 export enum GamePhase {
-  rollDice = 'rollDice',
-  play = 'play',
   finished = 'finished',
+  modal = 'modal',
+  play = 'play',
+  rollDice = 'rollDice',
+  toast = 'toast',
 }

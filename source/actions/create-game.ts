@@ -219,8 +219,12 @@ export const createGame = (nPlayers: number): Game => {
   ];
 
   return {
+    centerPot: 0,
     currentPlayerId: 0,
     dice: [],
+    events: [],
+    gamePhase: GamePhase.rollDice,
+    modals: [],
     players: [...Array(nPlayers)].map((_, index) => ({
       color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
       id: index,
@@ -232,9 +236,6 @@ export const createGame = (nPlayers: number): Game => {
       turnsInJail: 0,
     })),
     squares: squares.map((s, index) => ({ ...s, position: index })),
-    events: [],
-    notifications: [],
-    gamePhase: GamePhase.rollDice,
-    centerPot: 0,
+    toasts: [],
   };
 };

@@ -1,5 +1,13 @@
 import { GameEventType, GamePhase, SquareType, TaxType } from '../enums';
-import { getCurrentPlayer, getPlayerById, getsOutOfJail, isPlayerInJail } from '../logic';
+import {
+  getCurrentPlayer,
+  getNextChanceCardId,
+  getNextCommunityChestCardId,
+  getPlayerById,
+  getsOutOfJail,
+  isPlayerInJail,
+  passesGo,
+} from '../logic';
 import { rentPercentage } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
 
@@ -11,7 +19,8 @@ export const rollDice = (game: Game): Game => {
   ];
   const stringifedDice = dice.join('-');
   const events: GameEvent[] = [];
-  const notifications: GameEvent[] = [];
+  const modals: GameEvent[] = [];
+  const toasts: GameEvent[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
   const escapesJail = getsOutOfJail(currentPlayer, dice);
@@ -22,7 +31,7 @@ export const rollDice = (game: Game): Game => {
     const nextSquare = game.squares.find((s) => s.position === nextPosition)!;
 
     if (escapesJail) {
-      notifications.push({
+      toasts.push({
         dice: stringifedDice,
         playerId: currentPlayer.id,
         squareName: nextSquare.name,
@@ -39,49 +48,61 @@ export const rollDice = (game: Game): Game => {
 
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      notifications.push({
+      toasts.push({
         playerId: currentPlayer.id,
         type: GameEventType.goToJail,
       });
     } else {
-      const passGo = nextPosition < currentPlayer.position;
       const payRent =
         nextSquare.type === SquareType.property &&
         nextSquare.ownerId !== undefined &&
         nextSquare.ownerId !== currentPlayer.id;
       const payTaxes = nextSquare.type === SquareType.tax;
       const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
+      const landsInChance = nextSquare.type === SquareType.chance;
+      const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
-      if (passGo) {
-        notifications.push({
+      if (passesGo(currentPlayer, nextPosition)) {
+        toasts.push({
           playerId: currentPlayer.id,
           type: GameEventType.passGo,
         });
       }
+
       if (payRent) {
         const rent = nextSquare.price * rentPercentage;
         const landlord = getPlayerById(game, nextSquare.ownerId!);
-        notifications.push({
+        toasts.push({
           landlord,
           playerId: currentPlayer.id,
           rent,
           type: GameEventType.payRent,
         });
-      }
-      if (payTaxes) {
+      } else if (payTaxes) {
         const tax =
           nextSquare.taxType === TaxType.income ? Math.min(0.1 * currentPlayer.money, 200) : 100;
-        notifications.push({
+        toasts.push({
           playerId: currentPlayer.id,
           tax,
           type: GameEventType.payTax,
         });
-      }
-      if (landsInFreeParking) {
-        notifications.push({
+      } else if (landsInFreeParking) {
+        toasts.push({
           playerId: currentPlayer.id,
           pot: game.centerPot,
           type: GameEventType.freeParking,
+        });
+      } else if (landsInChance) {
+        modals.push({
+          cardId: getNextChanceCardId(),
+          playerId: currentPlayer.id,
+          type: GameEventType.chance,
+        });
+      } else if (landsInCommunityChest) {
+        modals.push({
+          cardId: getNextCommunityChestCardId(),
+          playerId: currentPlayer.id,
+          type: GameEventType.communityChest,
         });
       }
     }
@@ -89,7 +110,7 @@ export const rollDice = (game: Game): Game => {
     currentPlayer.position = nextPosition;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
-    notifications.push({
+    toasts.push({
       playerId: currentPlayer.id,
       turnsInJail,
       type: GameEventType.remainInJail,
@@ -99,8 +120,10 @@ export const rollDice = (game: Game): Game => {
   return {
     ...game,
     dice,
-    gamePhase: GamePhase.play,
-    notifications,
     events: events.concat(game.events),
+    gamePhase:
+      toasts.length > 0 ? GamePhase.toast : modals.length > 0 ? GamePhase.modal : GamePhase.play,
+    modals,
+    toasts,
   };
 };
