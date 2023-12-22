@@ -11,10 +11,10 @@ export const applyNotifications = (game: Game): Game => {
 
   game.notifications.forEach((notification) => {
     switch (notification.type) {
-      case GameEventType.getsOutOfJail:
+      case GameEventType.getOutOfJail:
         currentPlayer.turnsInJail = 0;
         break;
-      case GameEventType.remainsInJail:
+      case GameEventType.remainInJail:
         currentPlayer.turnsInJail--;
         break;
       case GameEventType.goToJail:
@@ -43,8 +43,8 @@ export const applyNotifications = (game: Game): Game => {
     // TODO Allow selling/mortgaging properties
 
     events.unshift({
+      playerId: currentPlayer.id,
       type: GameEventType.bankruptcy,
-      description: `${currentPlayer.name} goes bankrupt`,
     });
     currentPlayer.status = PlayerStatus.bankrupt;
 
@@ -52,8 +52,8 @@ export const applyNotifications = (game: Game): Game => {
     if (remainingPlayers.length === 1) {
       nextTurnPhase = GamePhase.finished;
       events.unshift({
-        type: GameEventType.playerWins,
-        description: `${remainingPlayers[0].name} wins the game`,
+        playerId: currentPlayer.id,
+        type: GameEventType.playerWin,
       });
     }
   }

@@ -41,8 +41,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     if (props.game.notifications.length > 0) {
       toast(
         <React.Fragment>
-          {props.game.notifications.map((x, index) => (
-            <GameEventComponent event={x} key={index} />
+          {props.game.notifications.map((event, index) => (
+            <GameEventComponent event={event} game={props.game} key={index} />
           ))}
         </React.Fragment>,
         { autoClose: 3000 },
@@ -136,7 +136,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             </div>
 
             <div style={{ padding: 8 }}>
-              <Historical events={props.game.events} />
+              <Historical game={props.game} />
             </div>
           </div>
         )}

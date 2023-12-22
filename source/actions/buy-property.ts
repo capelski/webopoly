@@ -1,7 +1,6 @@
 import { GameEventType, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
-import { currencySymbol } from '../parameters';
-import { Game, GameEvent } from '../types';
+import { Game } from '../types';
 
 export const buyProperty = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -31,9 +30,10 @@ export const buyProperty = (game: Game): Game => {
       return s;
     }),
     notifications: [
-      <GameEvent>{
+      {
+        playerId: currentPlayer.id,
+        squareName: currentSquare.name, // TODO Use Id
         type: GameEventType.buyProperty,
-        description: `${currentPlayer.name} buys ${currentSquare.name} for ${currencySymbol}${currentSquare.price}`,
       },
     ],
   };

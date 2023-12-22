@@ -1,6 +1,6 @@
 import { GameEventType, GamePhase, SquareType, TaxType } from '../enums';
 import { getCurrentPlayer, getPlayerById, getsOutOfJail, isPlayerInJail } from '../logic';
-import { currencySymbol, passGoMoney, rentPercentage } from '../parameters';
+import { rentPercentage } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
 
 export const rollDice = (game: Game): Game => {
@@ -9,6 +9,7 @@ export const rollDice = (game: Game): Game => {
     Math.max(1, Math.round(Math.random() * 6)),
     Math.max(1, Math.round(Math.random() * 6)),
   ];
+  const stringifedDice = dice.join('-');
   const events: GameEvent[] = [];
   const notifications: GameEvent[] = [];
 
@@ -22,16 +23,16 @@ export const rollDice = (game: Game): Game => {
 
     if (escapesJail) {
       notifications.push({
-        description: `${currentPlayer.name} rolls ${game.dice.join(
-          '-',
-        )}, gets out of jail and lands in ${nextSquare.name}`,
-        type: GameEventType.getsOutOfJail,
+        dice: stringifedDice,
+        playerId: currentPlayer.id,
+        squareName: nextSquare.name,
+        type: GameEventType.getOutOfJail,
       });
     } else {
       events.push({
-        description: `${currentPlayer.name} rolls ${dice.join('-')} and lands in ${
-          nextSquare.name
-        }`,
+        dice: stringifedDice,
+        playerId: currentPlayer.id,
+        squareName: nextSquare.name,
         type: GameEventType.rollDice,
       });
     }
@@ -39,48 +40,48 @@ export const rollDice = (game: Game): Game => {
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       notifications.push({
+        playerId: currentPlayer.id,
         type: GameEventType.goToJail,
-        description: `${currentPlayer.name} goes to jail for 3 turns`,
       });
     } else {
-      const passesGo = nextPosition < currentPlayer.position;
-      const paysRent =
+      const passGo = nextPosition < currentPlayer.position;
+      const payRent =
         nextSquare.type === SquareType.property &&
         nextSquare.ownerId !== undefined &&
         nextSquare.ownerId !== currentPlayer.id;
-      const paysTaxes = nextSquare.type === SquareType.tax;
+      const payTaxes = nextSquare.type === SquareType.tax;
       const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
 
-      if (passesGo) {
+      if (passGo) {
         notifications.push({
+          playerId: currentPlayer.id,
           type: GameEventType.passGo,
-          description: `${currentPlayer.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
         });
       }
-      if (paysRent) {
+      if (payRent) {
         const rent = nextSquare.price * rentPercentage;
         const landlord = getPlayerById(game, nextSquare.ownerId!);
         notifications.push({
-          type: GameEventType.payRent,
-          rent,
           landlord,
-          description: `${currentPlayer.name} pays ${currencySymbol}${rent} rent to ${landlord.name}`,
+          playerId: currentPlayer.id,
+          rent,
+          type: GameEventType.payRent,
         });
       }
-      if (paysTaxes) {
+      if (payTaxes) {
         const tax =
           nextSquare.taxType === TaxType.income ? Math.min(0.1 * currentPlayer.money, 200) : 100;
         notifications.push({
-          type: GameEventType.payTax,
+          playerId: currentPlayer.id,
           tax,
-          description: `${currentPlayer.name} pays ${currencySymbol}${tax} in taxes`,
+          type: GameEventType.payTax,
         });
       }
       if (landsInFreeParking) {
         notifications.push({
-          type: GameEventType.freeParking,
+          playerId: currentPlayer.id,
           pot: game.centerPot,
-          description: `${currentPlayer.name} collects ${currencySymbol}${game.centerPot} from Free Parking`,
+          type: GameEventType.freeParking,
         });
       }
     }
@@ -88,11 +89,10 @@ export const rollDice = (game: Game): Game => {
     currentPlayer.position = nextPosition;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
-    const text = turnsInJail === 0 ? 'the last turn' : `${turnsInJail} more turn(s)`;
     notifications.push({
-      description: `${currentPlayer.name} remains in jail for ${text}`,
+      playerId: currentPlayer.id,
       turnsInJail,
-      type: GameEventType.remainsInJail,
+      type: GameEventType.remainInJail,
     });
   }
 
