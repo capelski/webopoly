@@ -17,7 +17,8 @@ export const applyToasts = (game: Game): Game => {
         currentPlayer.turnsInJail--;
         break;
       case GameEventType.goToJail:
-        currentPlayer.squareId = game.squares.find((s) => s.type === SquareType.jail)!.id;
+        const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
+        currentPlayer.squareId = jailSquare.id;
         currentPlayer.turnsInJail = 3;
         break;
       case GameEventType.passGo:

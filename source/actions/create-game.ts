@@ -190,7 +190,7 @@ const squaresSource: SquareUnion[] = [
 ];
 
 export const createGame = (nPlayers: number): Game => {
-  const squares = squaresSource.map<Square>((s, index) => ({ ...s, id: index }));
+  const squares = squaresSource.map<Square>((s, index) => ({ ...s, id: index + 1 }));
 
   const players = [...Array(nPlayers)].map<Player>((_, index) => ({
     color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),

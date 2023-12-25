@@ -1,4 +1,4 @@
-import { Dice, Player, PropertySquare } from '../types';
+import { Dice, Game, Player, PropertySquare } from '../types';
 
 export const canBuy = (player: Player, property: PropertySquare): boolean => {
   return property.ownerId === undefined && player.money >= property.price;
@@ -12,8 +12,10 @@ export const isPlayerInJail = (player: Player): boolean => {
   return player.turnsInJail > 0;
 };
 
-export const passesGo = (player: Player, nextPosition: number) => {
-  return nextPosition < player.squareId;
+export const passesGo = (game: Game, currentSquareId: number, nextSquareId: number) => {
+  const currentIndex = game.squares.findIndex((s) => s.id === currentSquareId);
+  const nextIndex = game.squares.findIndex((s) => s.id === nextSquareId);
+  return currentIndex > nextIndex;
 };
 
 export const paysRent = (player: Player, square: PropertySquare) => {

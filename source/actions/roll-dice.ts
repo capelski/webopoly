@@ -3,6 +3,7 @@ import {
   getCurrentPlayer,
   getNextChanceCardId,
   getNextCommunityChestCardId,
+  getNextSquareId,
   getPlayerById,
   getsOutOfJail,
   isPlayerInJail,
@@ -29,9 +30,8 @@ export const rollDice = (game: Game): Game => {
 
   if (!isInJail || escapesJail) {
     const movement = dice.reduce((x, y) => x + y, 0);
-    // TODO Function to get nextSquare without relying on indexes
-    const nextPosition = (currentPlayer.squareId + movement) % game.squares.length;
-    const nextSquare = game.squares.find((s) => s.id === nextPosition)!;
+    const nextSquareId = getNextSquareId(game, movement);
+    const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
       toasts.push({
@@ -63,7 +63,7 @@ export const rollDice = (game: Game): Game => {
       const landsInChance = nextSquare.type === SquareType.chance;
       const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
-      if (passesGo(currentPlayer, nextPosition)) {
+      if (passesGo(game, currentPlayer.squareId, nextSquareId)) {
         toasts.push({
           playerId: currentPlayer.id,
           type: GameEventType.passGo,
@@ -118,7 +118,7 @@ export const rollDice = (game: Game): Game => {
       }
     }
 
-    currentPlayer.squareId = nextPosition;
+    currentPlayer.squareId = nextSquareId;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
     toasts.push({

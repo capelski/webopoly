@@ -11,7 +11,7 @@ import {
   toPropertySquare,
 } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
-import { Game } from '../types';
+import { Game, Id, Square } from '../types';
 import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { Modal } from './modal';
@@ -31,13 +31,22 @@ const buttonStyles: CSSProperties = {
   marginRight: 8,
 };
 
+const getSquaresRefs = (
+  squares: Square[],
+): { [key: Id]: React.MutableRefObject<HTMLDivElement | null> } => {
+  return squares.reduce<{ [key: Id]: React.MutableRefObject<HTMLDivElement | null> }>(
+    (reduced, square) => ({ ...reduced, [square.id]: useRef<HTMLDivElement>(null) }),
+    {},
+  );
+};
+
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
   const currentSquare = getCurrentSquare(props.game);
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [gameView, setGameView] = useState(GameView.board);
   const [clearGameModal, setClearGameModal] = useState(false);
-  const [refs] = useState(props.game.squares.map(() => useRef<HTMLDivElement>(null)));
+  const [refs] = useState(getSquaresRefs(props.game.squares));
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
@@ -139,10 +148,10 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
               width: isDesktop ? '50%' : '100%',
             }}
           >
-            {props.game.squares.map((square, index) => (
+            {props.game.squares.map((square) => (
               <SquareComponent
-                key={`${square.name}-${index}`}
-                rootRef={refs[index]}
+                key={`${square.name}-${square.id}`}
+                rootRef={refs[square.id]}
                 currentPlayerId={props.game.currentPlayerId}
                 playersInSquare={props.game.players.filter((p) => p.squareId === square.id)}
                 square={square}

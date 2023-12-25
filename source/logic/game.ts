@@ -20,6 +20,13 @@ export const getNextPlayerId = (game: Game) => {
   return playersPool.find((p) => p.status === PlayerStatus.playing)!.id;
 };
 
+export const getNextSquareId = (game: Game, movement: number) => {
+  const currentSquare = getCurrentSquare(game);
+  const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquare.id);
+  const nextSquareIndex = (currentSquareIndex + movement) % game.squares.length;
+  return game.squares[nextSquareIndex].id;
+};
+
 export const getPlayerById = (game: Game, playerId: Id): Player => {
   return game.players.find((p) => p.id === playerId)!;
 };
