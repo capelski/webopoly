@@ -1,6 +1,11 @@
 import React from 'react';
 import { GameEventType } from '../enums';
-import { getChanceCardById, getCommunityChestCardById, getPlayerById } from '../logic';
+import {
+  getChanceCardById,
+  getCommunityChestCardById,
+  getPlayerById,
+  getSquareById,
+} from '../logic';
 import {
   chanceSymbol,
   communityChestSymbol,
@@ -44,7 +49,10 @@ const descriptionsMap: {
   ) => React.ReactNode;
 } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
-  [GameEventType.buyProperty]: (player, event) => `${player.name} buys ${event.squareName}`,
+  [GameEventType.buyProperty]: (player, event, game) => {
+    const square = getSquareById(game, event.squareId);
+    return `${player.name} buys ${square.name}`;
+  },
   [GameEventType.chance]: (player, event) => (
     <React.Fragment>
       <span>{player.name} takes out a Chance card:</span>
@@ -59,8 +67,10 @@ const descriptionsMap: {
   ),
   [GameEventType.freeParking]: (player, event) =>
     `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
-  [GameEventType.getOutOfJail]: (player, event) =>
-    `${player.name} rolls ${event.dice}, gets out of jail and lands in ${event.squareName}`,
+  [GameEventType.getOutOfJail]: (player, event, game) => {
+    const square = getSquareById(game, event.squareId);
+    return `${player.name} rolls ${event.dice}, gets out of jail and lands in ${square.name}`;
+  },
   [GameEventType.goToJail]: (player) => `${player.name} goes to jail for 3 turns`,
   [GameEventType.passGo]: (player) =>
     `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
@@ -75,8 +85,10 @@ const descriptionsMap: {
     `${player.name} remains in jail for ${
       event.turnsInJail === 0 ? 'the last turn' : `${event.turnsInJail} more turn(s)`
     }`,
-  [GameEventType.rollDice]: (player, event) =>
-    `${player.name} rolls ${event.dice} and lands in ${event.squareName}`,
+  [GameEventType.rollDice]: (player, event, game) => {
+    const square = getSquareById(game, event.squareId);
+    return `${player.name} rolls ${event.dice} and lands in ${square.name}`;
+  },
 };
 
 // TODO Split component into Modal/Toast events

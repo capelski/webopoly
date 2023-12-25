@@ -36,7 +36,7 @@ export const buyProperty = (game: Game): Game => {
     toasts: [
       {
         playerId: currentPlayer.id,
-        squareName: currentSquare.name, // TODO Use Id
+        squareId: currentSquare.id,
         type: GameEventType.buyProperty,
       },
     ],

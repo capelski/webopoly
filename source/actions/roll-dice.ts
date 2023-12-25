@@ -37,14 +37,14 @@ export const rollDice = (game: Game): Game => {
       toasts.push({
         dice: stringifedDice,
         playerId: currentPlayer.id,
-        squareName: nextSquare.name,
+        squareId: nextSquare.id,
         type: GameEventType.getOutOfJail,
       });
     } else {
       events.push({
         dice: stringifedDice,
         playerId: currentPlayer.id,
-        squareName: nextSquare.name,
+        squareId: nextSquare.id,
         type: GameEventType.rollDice,
       });
     }

@@ -1,11 +1,14 @@
 import { PlayerStatus } from '../enums';
-import { Game, Player, Square } from '../types';
+import { Game, Id, Player, Square } from '../types';
 
-export const getCurrentPlayer = (game: Game): Player =>
-  game.players.find((p) => p.id === game.currentPlayerId)!;
+export const getCurrentPlayer = (game: Game): Player => {
+  return game.players.find((p) => p.id === game.currentPlayerId)!;
+};
 
-export const getCurrentSquare = (game: Game): Square =>
-  game.squares[getCurrentPlayer(game).squareId];
+export const getCurrentSquare = (game: Game): Square => {
+  const currentPlayer = getCurrentPlayer(game);
+  return game.squares.find((s) => s.id === currentPlayer.squareId)!;
+};
 
 export const getNextPlayerId = (game: Game) => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);
@@ -17,7 +20,12 @@ export const getNextPlayerId = (game: Game) => {
   return playersPool.find((p) => p.status === PlayerStatus.playing)!.id;
 };
 
-export const getPlayerById = (game: Game, playerId: number): Player =>
-  game.players.find((p) => p.id === playerId)!;
+export const getPlayerById = (game: Game, playerId: Id): Player => {
+  return game.players.find((p) => p.id === playerId)!;
+};
+
+export const getSquareById = (game: Game, squareId: Id): Square => {
+  return game.squares.find((s) => s.id === squareId)!;
+};
 
 // TODO Function to dehydrate/re-hydrate games

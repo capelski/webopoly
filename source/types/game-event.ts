@@ -8,7 +8,7 @@ export type BankruptcyEvent = GameEventBase & {
 };
 
 export type BuyPropertyEvent = GameEventBase & {
-  squareName: string; // TODO square id instead
+  squareId: Id;
   type: GameEventType.buyProperty;
 };
 
@@ -29,7 +29,7 @@ export type FreeParkingEvent = GameEventBase & {
 
 export type GetOutOfJailEvent = GameEventBase & {
   dice: string;
-  squareName: string; // TODO square id instead
+  squareId: Id;
   type: GameEventType.getOutOfJail;
 };
 
@@ -63,7 +63,7 @@ export type RemainsInJailEvent = GameEventBase & {
 
 export type RollDiceEvent = GameEventBase & {
   dice: string;
-  squareName: string; // TODO square id instead
+  squareId: Id;
   type: GameEventType.rollDice;
 };
 
