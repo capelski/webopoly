@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { createGame } from '../actions';
 import { Game } from '../types';
+import { Button } from './button';
 
 interface CreateGameProps {
   setGame: (game: Game) => void;
@@ -24,14 +25,13 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
         value={playersNumber}
       />
       &emsp;
-      <button
+      <Button
         onClick={() => {
           props.setGame(createGame(playersNumber));
         }}
-        type="button"
       >
         Start game
-      </button>
+      </Button>
     </div>
   );
 };

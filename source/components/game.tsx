@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { applyModals, applyToasts, buyProperty, endTurn, rollDice } from '../actions';
@@ -12,6 +12,7 @@ import {
 } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, Square } from '../types';
+import { Button } from './button';
 import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { Modal } from './modal';
@@ -24,12 +25,6 @@ interface GameComponentProps {
   game: Game;
   updateGame: (game: Game) => void;
 }
-
-const buttonStyles: CSSProperties = {
-  padding: 8,
-  outline: 'none',
-  marginRight: 8,
-};
 
 const getSquaresRefs = (
   squares: Square[],
@@ -85,16 +80,14 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
               <GameEventComponent event={modal} game={props.game} key={index} />
             ))}
           </React.Fragment>
-          <button
+          <Button
             onClick={() => {
               setDisplayModal(false);
               props.updateGame(applyModals(props.game));
             }}
-            type="button"
-            style={buttonStyles}
           >
             Ok
-          </button>
+          </Button>
         </Modal>
       )}
 
@@ -104,15 +97,13 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             {props.game.players.find((p) => p.status === PlayerStatus.playing)!.name} wins the game
           </div>
           <div style={{ fontSize: 72, marginBottom: 32 }}>🏆🎉</div>
-          <button
+          <Button
             onClick={() => {
               props.clearGame();
             }}
-            type="button"
-            style={buttonStyles}
           >
             Clear game
-          </button>
+          </Button>
         </Modal>
       )}
 
@@ -120,12 +111,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <Modal>
           <div>Are you sure you want to clear the game?</div>
           <div>
-            <button type="button" onClick={() => props.clearGame()}>
-              Yes
-            </button>
-            <button type="button" onClick={() => setClearGameModal(false)}>
-              No
-            </button>
+            <Button onClick={() => props.clearGame()}>Yes</Button>
+            <Button onClick={() => setClearGameModal(false)}>No</Button>
           </div>
         </Modal>
       )}
@@ -196,23 +183,19 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         </div>
 
         <div>
-          <button
+          <Button
             onClick={() => {
               props.updateGame(rollDice(props.game));
             }}
-            type="button"
-            style={buttonStyles}
             disabled={props.game.gamePhase !== GamePhase.rollDice}
           >
             Roll dice
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => {
               props.updateGame(buyProperty(props.game));
             }}
-            type="button"
-            style={buttonStyles}
             disabled={
               props.game.gamePhase !== GamePhase.play ||
               !propertySquare ||
@@ -220,29 +203,26 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             }
           >
             Buy
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => {
               props.updateGame(endTurn(props.game));
             }}
-            type="button"
-            style={buttonStyles}
             disabled={props.game.gamePhase !== GamePhase.play}
           >
             End turn
-          </button>
+          </Button>
 
           <div style={{ marginTop: 8 }}>
-            <button
+            <Button
               onClick={() => {
                 setClearGameModal(true);
               }}
-              type="button"
-              style={{ ...buttonStyles, color: 'red' }}
+              style={{ color: 'red' }}
             >
               Clear game
-            </button>
+            </Button>
           </div>
         </div>
       </div>
