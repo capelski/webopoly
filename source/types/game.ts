@@ -2,7 +2,7 @@ import { GamePhase } from '../enums';
 import { Dice } from './dice';
 import { GameEvent } from './game-event';
 import { Player } from './player';
-import { PositionedSquare } from './square';
+import { Square } from './square';
 
 export type Game = {
   centerPot: number;
@@ -12,6 +12,6 @@ export type Game = {
   gamePhase: GamePhase;
   modals: GameEvent[];
   players: Player[];
-  squares: PositionedSquare[];
+  squares: Square[];
   toasts: GameEvent[];
 };

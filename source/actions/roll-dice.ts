@@ -7,6 +7,7 @@ import {
   getsOutOfJail,
   isPlayerInJail,
   passesGo,
+  toPropertySquare,
 } from '../logic';
 import { rentPercentage } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
@@ -53,10 +54,11 @@ export const rollDice = (game: Game): Game => {
         type: GameEventType.goToJail,
       });
     } else {
+      const propertySquare = toPropertySquare(nextSquare);
       const payRent =
-        nextSquare.type === SquareType.property &&
-        nextSquare.ownerId !== undefined &&
-        nextSquare.ownerId !== currentPlayer.id;
+        propertySquare &&
+        propertySquare.ownerId !== undefined &&
+        propertySquare.ownerId !== currentPlayer.id;
       const payTaxes = nextSquare.type === SquareType.tax;
       const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
       const landsInChance = nextSquare.type === SquareType.chance;
@@ -70,8 +72,8 @@ export const rollDice = (game: Game): Game => {
       }
 
       if (payRent) {
-        const rent = nextSquare.price * rentPercentage;
-        const landlord = getPlayerById(game, nextSquare.ownerId!);
+        const rent = propertySquare.price * rentPercentage;
+        const landlord = getPlayerById(game, propertySquare.ownerId!);
         toasts.push({
           landlord,
           playerId: currentPlayer.id,

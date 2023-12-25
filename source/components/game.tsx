@@ -2,8 +2,14 @@ import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { applyModals, applyToasts, buyProperty, endTurn, rollDice } from '../actions';
-import { GamePhase, GameView, PlayerStatus, SquareType } from '../enums';
-import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
+import { GamePhase, GameView, PlayerStatus } from '../enums';
+import {
+  canBuy,
+  getCurrentPlayer,
+  getCurrentSquare,
+  getPlayerById,
+  toPropertySquare,
+} from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game } from '../types';
 import { GameEventComponent } from './game-event';
@@ -55,6 +61,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       }, 800);
     }
   }, [props.game.gamePhase]);
+
+  const propertySquare = toPropertySquare(currentSquare);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -139,8 +147,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
                 playersInSquare={props.game.players.filter((p) => p.position === square.position)}
                 square={square}
                 owner={
-                  square.type === SquareType.property && square.ownerId !== undefined
-                    ? getPlayerById(props.game, square.ownerId)
+                  propertySquare && propertySquare.ownerId !== undefined
+                    ? getPlayerById(props.game, propertySquare.ownerId)
                     : undefined
                 }
               />
@@ -198,9 +206,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             style={buttonStyles}
             disabled={
               props.game.gamePhase !== GamePhase.play ||
-              currentSquare!.type !== SquareType.property ||
-              currentSquare!.ownerId !== undefined ||
-              !canBuy(currentPlayer!, currentSquare!)
+              !propertySquare ||
+              !canBuy(currentPlayer!, propertySquare)
             }
           >
             Buy

@@ -1,7 +1,7 @@
-import { Dice, Player, Property } from '../types';
+import { Dice, Player, PropertySquare } from '../types';
 
-export const canBuy = (player: Player, property: Property): boolean => {
-  return player.money >= property.price;
+export const canBuy = (player: Player, property: PropertySquare): boolean => {
+  return !property.ownerId && player.money >= property.price;
 };
 
 export const getsOutOfJail = (player: Player, dice: Dice) => {

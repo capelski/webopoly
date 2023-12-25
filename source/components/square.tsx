@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react';
-import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
-import { isPlayerInJail } from '../logic';
+import { Neighborhood, SquareType, TaxType } from '../enums';
+import { isPlayerInJail, toPropertySquare } from '../logic';
 import { currencySymbol, houseSymbol, passGoMoney } from '../parameters';
 import { Player, Square } from '../types';
 import { PlayerAvatar } from './player-avatar';
@@ -28,9 +28,11 @@ const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
 
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
   const { backgroundColor, color } =
-    props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
+    props.square.type === SquareType.street
       ? streetsColorMap[props.square.neighborhood]
       : { backgroundColor: undefined, color: undefined };
+
+  const propertySquare = toPropertySquare(props.square);
 
   return (
     <div
@@ -65,7 +67,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           backgroundColor,
           color,
           fontSize: 24,
-          width: props.square.type === SquareType.property ? '50%' : '80%',
+          width: propertySquare ? '50%' : '80%',
           height: '100%',
           paddingLeft: 4,
         }}
@@ -111,7 +113,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         ) : undefined}
       </div>
 
-      {props.square.type === SquareType.property && (
+      {propertySquare && (
         <div
           style={{
             display: 'flex',
@@ -127,11 +129,9 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           }}
         >
           {props.owner && <PlayerAvatar player={props.owner} />}
-          {props.square.propertyType === PropertyType.street && (
-            <span>{houseSymbol}&nbsp;0&nbsp;</span>
-          )}
+          {props.square.type === SquareType.street && <span>{houseSymbol}&nbsp;0&nbsp;</span>}
           {currencySymbol}
-          {props.square.price}
+          {propertySquare.price}
         </div>
       )}
     </div>

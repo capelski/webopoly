@@ -1,14 +1,14 @@
-import { GameEventType, GamePhase, SquareType } from '../enums';
-import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { GameEventType, GamePhase } from '../enums';
+import { canBuy, getCurrentPlayer, getCurrentSquare, toPropertySquare } from '../logic';
 import { Game } from '../types';
 
 // TODO Move logic to applyNotifications
 
 export const buyProperty = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const currentSquare = getCurrentSquare(game);
+  const currentSquare = toPropertySquare(getCurrentSquare(game));
 
-  if (currentSquare.type !== SquareType.property) {
+  if (!currentSquare) {
     return game;
   }
 
