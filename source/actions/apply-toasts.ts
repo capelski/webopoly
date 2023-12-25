@@ -1,6 +1,6 @@
 import { GameEventType, GamePhase, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
-import { getCurrentPlayer } from '../logic';
+import { getCurrentPlayer, getPlayerById } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
@@ -17,7 +17,7 @@ export const applyToasts = (game: Game): Game => {
         currentPlayer.turnsInJail--;
         break;
       case GameEventType.goToJail:
-        currentPlayer.position = game.squares.find((s) => s.type === SquareType.jail)!.position;
+        currentPlayer.squareId = game.squares.find((s) => s.type === SquareType.jail)!.id;
         currentPlayer.turnsInJail = 3;
         break;
       case GameEventType.passGo:
@@ -25,7 +25,8 @@ export const applyToasts = (game: Game): Game => {
         break;
       case GameEventType.payRent:
         currentPlayer.money -= toast.rent;
-        toast.landlord.money += toast.rent;
+        const landlord = getPlayerById(game, toast.landlordId)!;
+        landlord.money += toast.rent;
         break;
       case GameEventType.payTax:
         currentPlayer.money -= toast.tax;

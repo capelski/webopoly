@@ -41,7 +41,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const [displayModal, setDisplayModal] = useState(false);
 
   useEffect(() => {
-    refs[currentSquare.position].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
   useEffect(() => {
@@ -144,11 +144,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
                 key={`${square.name}-${index}`}
                 rootRef={refs[index]}
                 currentPlayerId={props.game.currentPlayerId}
-                playersInSquare={props.game.players.filter((p) => p.position === square.position)}
+                playersInSquare={props.game.players.filter((p) => p.squareId === square.id)}
                 square={square}
                 owner={
-                  propertySquare && propertySquare.ownerId !== undefined
-                    ? getPlayerById(props.game, propertySquare.ownerId)
+                  'ownerId' in square && square.ownerId !== undefined
+                    ? getPlayerById(props.game, square.ownerId)
                     : undefined
                 }
               />

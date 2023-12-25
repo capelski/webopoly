@@ -1,9 +1,10 @@
 import { Neighborhood, SquareType, TaxType } from '../enums';
+import { Id } from './id';
 
 export type SquareBase = { name: string };
 
 export type PropertySquare = SquareBase & {
-  ownerId?: number;
+  ownerId?: Id;
   price: number;
 };
 
@@ -62,5 +63,5 @@ export type SquareUnion =
   | UtilitySquare;
 
 export type Square = SquareUnion & {
-  position: number; // TODO Rename id
+  id: Id;
 };

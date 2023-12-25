@@ -1,10 +1,10 @@
 import { GamePhase, Neighborhood, SquareType, TaxType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
 import { playerInitialMoney } from '../parameters';
-import { SquareUnion } from '../types';
+import { Player, Square, SquareUnion } from '../types';
 import { Game } from '../types/game';
 
-const squares: SquareUnion[] = [
+const squaresSource: SquareUnion[] = [
   { name: 'Go', type: SquareType.go },
   {
     name: 'Old Kent Rd.',
@@ -190,24 +190,28 @@ const squares: SquareUnion[] = [
 ];
 
 export const createGame = (nPlayers: number): Game => {
+  const squares = squaresSource.map<Square>((s, index) => ({ ...s, id: index }));
+
+  const players = [...Array(nPlayers)].map<Player>((_, index) => ({
+    color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
+    id: index + 1,
+    money: playerInitialMoney,
+    name: `Player ${index + 1}`,
+    properties: [],
+    squareId: squares[0].id,
+    status: PlayerStatus.playing,
+    turnsInJail: 0,
+  }));
+
   return {
     centerPot: 0,
-    currentPlayerId: 0,
+    currentPlayerId: players[0].id,
     dice: [],
     events: [],
     gamePhase: GamePhase.rollDice,
     modals: [],
-    players: [...Array(nPlayers)].map((_, index) => ({
-      color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
-      id: index,
-      money: playerInitialMoney,
-      name: `Player ${index + 1}`,
-      position: 0,
-      properties: [],
-      status: PlayerStatus.playing,
-      turnsInJail: 0,
-    })),
-    squares: squares.map((s, index) => ({ ...s, position: index })),
+    players,
+    squares,
     toasts: [],
   };
 };

@@ -1,7 +1,7 @@
 import { GameEventType } from '../enums';
-import { Player } from './player';
+import { Id } from './id';
 
-export type GameEventBase = { playerId: number };
+export type GameEventBase = { playerId: Id };
 
 export type BankruptcyEvent = GameEventBase & {
   type: GameEventType.bankruptcy;
@@ -13,12 +13,12 @@ export type BuyPropertyEvent = GameEventBase & {
 };
 
 export type ChanceEvent = GameEventBase & {
-  cardId: number;
+  cardId: Id;
   type: GameEventType.chance;
 };
 
 export type CommunityChestEvent = GameEventBase & {
-  cardId: number;
+  cardId: Id;
   type: GameEventType.communityChest;
 };
 
@@ -42,7 +42,7 @@ export type PassGoEvent = GameEventBase & {
 };
 
 export type PayRentEvent = GameEventBase & {
-  landlord: Player; // Change to landlordId
+  landlordId: Id;
   rent: number;
   type: GameEventType.payRent;
 };

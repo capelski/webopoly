@@ -5,7 +5,7 @@ export const getCurrentPlayer = (game: Game): Player =>
   game.players.find((p) => p.id === game.currentPlayerId)!;
 
 export const getCurrentSquare = (game: Game): Square =>
-  game.squares[getCurrentPlayer(game).position];
+  game.squares[getCurrentPlayer(game).squareId];
 
 export const getNextPlayerId = (game: Game) => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);

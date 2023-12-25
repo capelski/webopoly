@@ -1,12 +1,13 @@
-import { PlayerStatus } from '../enums/player-status';
+import { PlayerStatus } from '../enums';
+import { Id } from './id';
 
 export type Player = {
   color: string;
-  id: number;
+  id: Id;
   money: number;
   name: string;
-  position: number;
-  properties: string[];
+  properties: Id[];
+  squareId: Id;
   status: PlayerStatus;
   turnsInJail: number;
 };

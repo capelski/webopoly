@@ -37,7 +37,11 @@ const gameEventTypeMap: { [key in GameEventType]: string } = {
 };
 
 const descriptionsMap: {
-  [TKey in GameEventType]: (player: Player, event: TypedGameEvent<TKey>) => React.ReactNode;
+  [TKey in GameEventType]: (
+    player: Player,
+    event: TypedGameEvent<TKey>,
+    game: Game,
+  ) => React.ReactNode;
 } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
   [GameEventType.buyProperty]: (player, event) => `${player.name} buys ${event.squareName}`,
@@ -60,8 +64,10 @@ const descriptionsMap: {
   [GameEventType.goToJail]: (player) => `${player.name} goes to jail for 3 turns`,
   [GameEventType.passGo]: (player) =>
     `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
-  [GameEventType.payRent]: (player, event) =>
-    `${player.name} pays ${currencySymbol}${event.rent} rent to ${event.landlord.name}`,
+  [GameEventType.payRent]: (player, event, game) => {
+    const landlord = getPlayerById(game, event.landlordId)!;
+    return `${player.name} pays ${currencySymbol}${event.rent} rent to ${landlord.name}`;
+  },
   [GameEventType.payTax]: (player, event) =>
     `${player.name} pays ${currencySymbol}${event.tax} in taxes`,
   [GameEventType.playerWin]: (player) => `${player.name} wins the game`,
@@ -83,6 +89,7 @@ export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => 
         {descriptionsMap[props.event.type](
           getPlayerById(props.game, props.event.playerId),
           props.event as any,
+          props.game,
         )}
       </span>
     </div>

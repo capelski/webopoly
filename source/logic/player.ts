@@ -1,7 +1,7 @@
 import { Dice, Player, PropertySquare } from '../types';
 
 export const canBuy = (player: Player, property: PropertySquare): boolean => {
-  return !property.ownerId && player.money >= property.price;
+  return property.ownerId === undefined && player.money >= property.price;
 };
 
 export const getsOutOfJail = (player: Player, dice: Dice) => {
@@ -13,5 +13,9 @@ export const isPlayerInJail = (player: Player): boolean => {
 };
 
 export const passesGo = (player: Player, nextPosition: number) => {
-  return nextPosition < player.position;
+  return nextPosition < player.squareId;
+};
+
+export const paysRent = (player: Player, square: PropertySquare) => {
+  return square.ownerId !== undefined && square.ownerId !== player.id;
 };

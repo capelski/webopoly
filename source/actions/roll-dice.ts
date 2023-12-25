@@ -7,9 +7,10 @@ import {
   getsOutOfJail,
   isPlayerInJail,
   passesGo,
+  paysRent,
   toPropertySquare,
 } from '../logic';
-import { rentPercentage } from '../parameters';
+import { rentPercentage, stationRent } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
 
 export const rollDice = (game: Game): Game => {
@@ -28,8 +29,9 @@ export const rollDice = (game: Game): Game => {
 
   if (!isInJail || escapesJail) {
     const movement = dice.reduce((x, y) => x + y, 0);
-    const nextPosition = (currentPlayer.position + movement) % game.squares.length;
-    const nextSquare = game.squares.find((s) => s.position === nextPosition)!;
+    // TODO Function to get nextSquare without relying on indexes
+    const nextPosition = (currentPlayer.squareId + movement) % game.squares.length;
+    const nextSquare = game.squares.find((s) => s.id === nextPosition)!;
 
     if (escapesJail) {
       toasts.push({
@@ -55,10 +57,7 @@ export const rollDice = (game: Game): Game => {
       });
     } else {
       const propertySquare = toPropertySquare(nextSquare);
-      const payRent =
-        propertySquare &&
-        propertySquare.ownerId !== undefined &&
-        propertySquare.ownerId !== currentPlayer.id;
+      const payRent = propertySquare && paysRent(currentPlayer, propertySquare);
       const payTaxes = nextSquare.type === SquareType.tax;
       const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
       const landsInChance = nextSquare.type === SquareType.chance;
@@ -72,10 +71,20 @@ export const rollDice = (game: Game): Game => {
       }
 
       if (payRent) {
-        const rent = propertySquare.price * rentPercentage;
         const landlord = getPlayerById(game, propertySquare.ownerId!);
+        const properties = landlord.properties.map(
+          (propertyId) => game.squares.find((s) => s.id === propertyId)!,
+        );
+        const utilityProperties = properties.filter((p) => p.type === SquareType.utility);
+        const rent =
+          nextSquare.type === SquareType.station
+            ? stationRent * properties.filter((p) => p.type === SquareType.station).length
+            : nextSquare.type === SquareType.street
+            ? propertySquare.price * rentPercentage
+            : movement * (utilityProperties.length === 2 ? 10 : 4);
+
         toasts.push({
-          landlord,
+          landlordId: propertySquare.ownerId!,
           playerId: currentPlayer.id,
           rent,
           type: GameEventType.payRent,
@@ -109,7 +118,7 @@ export const rollDice = (game: Game): Game => {
       }
     }
 
-    currentPlayer.position = nextPosition;
+    currentPlayer.squareId = nextPosition;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
     toasts.push({

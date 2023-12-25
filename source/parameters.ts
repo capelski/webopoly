@@ -14,3 +14,4 @@ export const taxSymbol = '💰';
 export const passGoMoney = 200;
 export const playerInitialMoney = 1500;
 export const rentPercentage = 0.05;
+export const stationRent = 25;

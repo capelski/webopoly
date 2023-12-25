@@ -6,30 +6,31 @@ import { Game } from '../types';
 
 export const buyProperty = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const currentSquare = toPropertySquare(getCurrentSquare(game));
+  const currentSquare = getCurrentSquare(game);
+  const propertySquare = toPropertySquare(currentSquare);
 
-  if (!currentSquare) {
+  if (!propertySquare) {
     return game;
   }
 
-  if (!canBuy(currentPlayer, currentSquare)) {
+  if (!canBuy(currentPlayer, propertySquare)) {
     return game;
   }
 
   return {
     ...game,
-    players: game.players.map((p) => {
-      if (p === currentPlayer) {
-        p.properties = p.properties.concat([currentSquare.name]);
-        p.money -= currentSquare.price;
+    players: game.players.map((player) => {
+      if (player === currentPlayer) {
+        player.properties = player.properties.concat([currentSquare.id]);
+        player.money -= propertySquare.price;
       }
-      return p;
+      return player;
     }),
-    squares: game.squares.map((s) => {
-      if (s === currentSquare) {
-        s.ownerId = currentPlayer.id;
+    squares: game.squares.map((square) => {
+      if (square === propertySquare) {
+        square.ownerId = currentPlayer.id;
       }
-      return s;
+      return square;
     }),
     gamePhase: GamePhase.toast,
     toasts: [
