@@ -1,6 +1,6 @@
 import { GameEventType, GamePhase, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
-import { getCurrentPlayer, getPlayerById } from '../logic';
+import { getCurrentPlayer, getPlayerById, getSquareById, toPropertySquare } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
@@ -10,6 +10,25 @@ export const applyToasts = (game: Game): Game => {
 
   game.toasts.forEach((toast) => {
     switch (toast.type) {
+      case GameEventType.buyProperty:
+        const square = getSquareById(game, toast.squareId);
+        const propertySquare = toPropertySquare(square);
+
+        game.players = game.players.map((player) => {
+          return player === currentPlayer && propertySquare
+            ? {
+                ...player,
+                properties: player.properties.concat([toast.squareId]),
+                money: player.money - propertySquare.price,
+              }
+            : player;
+        });
+
+        game.squares = game.squares.map((square) => {
+          return square === propertySquare ? { ...square, ownerId: currentPlayer.id } : square;
+        });
+
+        break;
       case GameEventType.getOutOfJail:
         currentPlayer.turnsInJail = 0;
         break;
