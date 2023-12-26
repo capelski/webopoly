@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { applyModals, applyToasts, buyProperty, endTurn, rollDice } from '../actions';
-import { GamePhase, GameView, PlayerStatus } from '../enums';
+import { GamePhase, GameView } from '../enums';
 import {
   canBuy,
   getCurrentPlayer,
@@ -13,6 +13,7 @@ import {
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, Square } from '../types';
 import { Button } from './button';
+import { FinishedModal } from './finished-modal';
 import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { Modal } from './modal';
@@ -92,19 +93,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       )}
 
       {props.game.gamePhase === GamePhase.finished && (
-        <Modal>
-          <div style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
-            {props.game.players.find((p) => p.status === PlayerStatus.playing)!.name} wins the game
-          </div>
-          <div style={{ fontSize: 72, marginBottom: 32 }}>🏆🎉</div>
-          <Button
-            onClick={() => {
-              props.clearGame();
-            }}
-          >
-            Clear game
-          </Button>
-        </Modal>
+        <FinishedModal clearGame={props.clearGame} game={props.game} />
       )}
 
       {clearGameModal && (
