@@ -8,16 +8,16 @@ const squaresSource: SquareUnion[] = [
   { name: 'Go', type: SquareType.go },
   {
     name: 'Old Kent Rd.',
-    type: SquareType.street,
     neighborhood: Neighborhood.brown,
     price: 60,
+    type: SquareType.street,
   },
   { name: 'Community chest', type: SquareType.communityChest },
   {
     name: 'Whitechapel Rd.',
-    type: SquareType.street,
     neighborhood: Neighborhood.brown,
     price: 60,
+    type: SquareType.street,
   },
   {
     name: 'Income Tax',
@@ -26,34 +26,34 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Kings Cross',
-    type: SquareType.station,
     price: 200,
+    type: SquareType.station,
   },
   {
     name: 'Angel Islington',
-    type: SquareType.street,
     neighborhood: Neighborhood.lightblue,
     price: 100,
+    type: SquareType.street,
   },
   { name: 'Chance', type: SquareType.chance },
   {
     name: 'Euston Rd.',
-    type: SquareType.street,
     neighborhood: Neighborhood.lightblue,
     price: 100,
+    type: SquareType.street,
   },
   {
     name: 'Pentonville Rd.',
-    type: SquareType.street,
     neighborhood: Neighborhood.lightblue,
     price: 120,
+    type: SquareType.street,
   },
   { name: 'Jail', type: SquareType.jail },
   {
     name: 'Pall Mall',
-    type: SquareType.street,
     neighborhood: Neighborhood.pink,
     price: 140,
+    type: SquareType.street,
   },
   {
     name: 'Electric Co.',
@@ -62,15 +62,15 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Whitehall',
-    type: SquareType.street,
     neighborhood: Neighborhood.pink,
     price: 140,
+    type: SquareType.street,
   },
   {
     name: 'Northumberland',
-    type: SquareType.street,
     neighborhood: Neighborhood.pink,
     price: 160,
+    type: SquareType.street,
   },
   {
     name: 'Marylebone',
@@ -79,42 +79,42 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Bow St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.orange,
     price: 180,
+    type: SquareType.street,
   },
   { name: 'Community chest', type: SquareType.communityChest },
   {
     name: 'Marlborough St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.orange,
     price: 180,
+    type: SquareType.street,
   },
   {
     name: 'Vine St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.orange,
     price: 200,
+    type: SquareType.street,
   },
   { name: 'Free Parking', type: SquareType.parking },
   {
     name: 'Strand',
-    type: SquareType.street,
     neighborhood: Neighborhood.red,
     price: 220,
+    type: SquareType.street,
   },
   { name: 'Chance', type: SquareType.chance },
   {
     name: 'Fleet St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.red,
     price: 220,
+    type: SquareType.street,
   },
   {
     name: 'Trafalgar Square',
-    type: SquareType.street,
     neighborhood: Neighborhood.red,
     price: 240,
+    type: SquareType.street,
   },
   {
     name: 'Fenchurch St.',
@@ -123,15 +123,15 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Leicester Square',
-    type: SquareType.street,
     neighborhood: Neighborhood.yellow,
     price: 260,
+    type: SquareType.street,
   },
   {
     name: 'Coventry St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.yellow,
     price: 260,
+    type: SquareType.street,
   },
   {
     name: 'Water Works',
@@ -140,29 +140,29 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Piccadilly',
-    type: SquareType.street,
     neighborhood: Neighborhood.yellow,
     price: 280,
+    type: SquareType.street,
   },
   { name: 'Go To Jail', type: SquareType.goToJail },
   {
     name: 'Regent St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.green,
     price: 300,
+    type: SquareType.street,
   },
   {
     name: 'Oxford St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.green,
     price: 300,
+    type: SquareType.street,
   },
   { name: 'Community chest', type: SquareType.communityChest },
   {
     name: 'Bond St.',
-    type: SquareType.street,
     neighborhood: Neighborhood.green,
     price: 320,
+    type: SquareType.street,
   },
   {
     name: 'Liverpool St.',
@@ -172,9 +172,9 @@ const squaresSource: SquareUnion[] = [
   { name: 'Chance', type: SquareType.chance },
   {
     name: 'Park Lane',
-    type: SquareType.street,
     neighborhood: Neighborhood.darkblue,
     price: 350,
+    type: SquareType.street,
   },
   {
     name: 'Luxury Tax',
@@ -183,9 +183,9 @@ const squaresSource: SquareUnion[] = [
   },
   {
     name: 'Mayfair',
-    type: SquareType.street,
     neighborhood: Neighborhood.darkblue,
     price: 400,
+    type: SquareType.street,
   },
 ];
 
