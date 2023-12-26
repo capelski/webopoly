@@ -20,17 +20,16 @@ export const buyProperty = (game: Game): Game => {
   return {
     ...game,
     players: game.players.map((player) => {
-      if (player === currentPlayer) {
-        player.properties = player.properties.concat([currentSquare.id]);
-        player.money -= propertySquare.price;
-      }
-      return player;
+      return player === currentPlayer
+        ? {
+            ...player,
+            properties: player.properties.concat([currentSquare.id]),
+            money: player.money - propertySquare.price,
+          }
+        : player;
     }),
     squares: game.squares.map((square) => {
-      if (square === propertySquare) {
-        square.ownerId = currentPlayer.id;
-      }
-      return square;
+      return square === propertySquare ? { ...square, ownerId: currentPlayer.id } : square;
     }),
     gamePhase: GamePhase.toast,
     toasts: [
