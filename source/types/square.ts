@@ -1,11 +1,12 @@
-import { Neighborhood, SquareType, TaxType } from '../enums';
+import { Neighborhood, PropertyStatus, SquareType, TaxType } from '../enums';
 import { Id } from './id';
 
 export type SquareBase = { name: string };
 
-export type PropertySquare = SquareBase & {
+export type PropertySquareBase = SquareBase & {
   ownerId?: Id;
   price: number;
+  status?: PropertyStatus;
 };
 
 export type ChanceSquare = SquareBase & {
@@ -32,11 +33,11 @@ export type ParkingSquare = SquareBase & {
   type: SquareType.parking;
 };
 
-export type StationSquare = PropertySquare & {
+export type StationSquare = PropertySquareBase & {
   type: SquareType.station;
 };
 
-export type StreetSquare = PropertySquare & {
+export type StreetSquare = PropertySquareBase & {
   neighborhood: Neighborhood;
   type: SquareType.street;
 };
@@ -46,9 +47,11 @@ export type TaxSquare = SquareBase & {
   type: SquareType.tax;
 };
 
-export type UtilitySquare = PropertySquare & {
+export type UtilitySquare = PropertySquareBase & {
   type: SquareType.utility;
 };
+
+export type PropertySquare = StationSquare | StreetSquare | UtilitySquare;
 
 export type SquareUnion =
   | ChanceSquare
@@ -57,10 +60,8 @@ export type SquareUnion =
   | GoToJailSquare
   | JailSquare
   | ParkingSquare
-  | StationSquare
-  | StreetSquare
   | TaxSquare
-  | UtilitySquare;
+  | PropertySquare;
 
 export type Square = SquareUnion & {
   id: Id;

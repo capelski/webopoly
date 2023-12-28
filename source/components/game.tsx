@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { applyModals, applyToasts, buyProperty, endTurn, rollDice } from '../actions';
+import {
+  applyModals,
+  applyToasts,
+  buyProperty,
+  clearMortgage,
+  endTurn,
+  mortgage,
+  rollDice,
+} from '../actions';
 import { GamePhase, GameView } from '../enums';
 import {
   canBuy,
@@ -126,16 +134,22 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           >
             {props.game.squares.map((square) => (
               <SquareComponent
-                key={`${square.name}-${square.id}`}
-                rootRef={refs[square.id]}
+                clearMortgage={() => {
+                  props.updateGame(clearMortgage(props.game, square.id));
+                }}
                 currentPlayerId={props.game.currentPlayerId}
-                playersInSquare={props.game.players.filter((p) => p.squareId === square.id)}
-                square={square}
+                key={`${square.name}-${square.id}`}
+                mortgage={() => {
+                  props.updateGame(mortgage(props.game, square.id));
+                }}
                 owner={
                   'ownerId' in square && square.ownerId !== undefined
                     ? getPlayerById(props.game, square.ownerId)
                     : undefined
                 }
+                playersInSquare={props.game.players.filter((p) => p.squareId === square.id)}
+                rootRef={refs[square.id]}
+                square={square}
               />
             ))}
           </div>

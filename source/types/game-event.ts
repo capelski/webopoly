@@ -17,6 +17,11 @@ export type ChanceEvent = GameEventBase & {
   type: GameEventType.chance;
 };
 
+export type ClearMortgageEvent = GameEventBase & {
+  squareId: Id;
+  type: GameEventType.clearMortgage;
+};
+
 export type CommunityChestEvent = GameEventBase & {
   cardId: Id;
   type: GameEventType.communityChest;
@@ -35,6 +40,11 @@ export type GetOutOfJailEvent = GameEventBase & {
 
 export type GoToJailEvent = GameEventBase & {
   type: GameEventType.goToJail;
+};
+
+export type MortgageEvent = GameEventBase & {
+  squareId: Id;
+  type: GameEventType.mortgage;
 };
 
 export type PassGoEvent = GameEventBase & {
@@ -71,10 +81,12 @@ export type GameEvent =
   | BankruptcyEvent
   | BuyPropertyEvent
   | ChanceEvent
+  | ClearMortgageEvent
   | CommunityChestEvent
   | FreeParkingEvent
   | GetOutOfJailEvent
   | GoToJailEvent
+  | MortgageEvent
   | PassGoEvent
   | PayRentEvent
   | PayTaxEvent
@@ -88,6 +100,8 @@ export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.ba
   ? BuyPropertyEvent
   : T extends GameEventType.chance
   ? ChanceEvent
+  : T extends GameEventType.clearMortgage
+  ? ClearMortgageEvent
   : T extends GameEventType.communityChest
   ? CommunityChestEvent
   : T extends GameEventType.freeParking
@@ -96,6 +110,8 @@ export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.ba
   ? GetOutOfJailEvent
   : T extends GameEventType.goToJail
   ? GoToJailEvent
+  : T extends GameEventType.mortgage
+  ? MortgageEvent
   : T extends GameEventType.passGo
   ? PassGoEvent
   : T extends GameEventType.payRent

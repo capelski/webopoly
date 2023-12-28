@@ -1,3 +1,4 @@
+import { PropertyStatus } from '../enums';
 import { Dice, Game, Player, PropertySquare } from '../types';
 
 export const canBuy = (player: Player, property: PropertySquare): boolean => {
@@ -19,5 +20,9 @@ export const passesGo = (game: Game, currentSquareId: number, nextSquareId: numb
 };
 
 export const paysRent = (player: Player, square: PropertySquare) => {
-  return square.ownerId !== undefined && square.ownerId !== player.id;
+  return (
+    square.ownerId !== undefined &&
+    square.ownerId !== player.id &&
+    square.status !== PropertyStatus.mortgaged
+  );
 };

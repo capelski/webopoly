@@ -14,6 +14,7 @@ import {
   goSymbol,
   goToJailSymbol,
   jailSymbol,
+  mortgageSymbol,
   parkingSymbol,
   passGoMoney,
   taxSymbol,
@@ -29,10 +30,12 @@ const gameEventTypeMap: { [key in GameEventType]: string } = {
   [GameEventType.bankruptcy]: '🧨',
   [GameEventType.buyProperty]: '💵',
   [GameEventType.chance]: chanceSymbol,
+  [GameEventType.clearMortgage]: '❎',
   [GameEventType.communityChest]: communityChestSymbol,
   [GameEventType.freeParking]: parkingSymbol,
   [GameEventType.getOutOfJail]: '🎉',
   [GameEventType.goToJail]: goToJailSymbol,
+  [GameEventType.mortgage]: mortgageSymbol,
   [GameEventType.passGo]: goSymbol,
   [GameEventType.payRent]: '🚀',
   [GameEventType.payTax]: taxSymbol,
@@ -59,6 +62,10 @@ const descriptionsMap: {
       <div>{getChanceCardById(event.cardId).text}</div>
     </React.Fragment>
   ),
+  [GameEventType.clearMortgage]: (player, event, game) => {
+    const square = getSquareById(game, event.squareId);
+    return `${player.name} cancels the mortgage on ${square.name}`;
+  },
   [GameEventType.communityChest]: (player, event) => (
     <React.Fragment>
       <span>{player.name} takes out a Community Chest card:</span>
@@ -74,6 +81,10 @@ const descriptionsMap: {
   [GameEventType.goToJail]: (player) => `${player.name} goes to jail for 3 turns`,
   [GameEventType.passGo]: (player) =>
     `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
+  [GameEventType.mortgage]: (player, event, game) => {
+    const square = getSquareById(game, event.squareId);
+    return `${player.name} mortgages ${square.name}`;
+  },
   [GameEventType.payRent]: (player, event, game) => {
     const landlord = getPlayerById(game, event.landlordId)!;
     return `${player.name} pays ${currencySymbol}${event.rent} rent to ${landlord.name}`;

@@ -1,12 +1,22 @@
 import { GameEventType, GamePhase, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
-import { getCurrentPlayer, getPlayerById, getSquareById, toPropertySquare } from '../logic';
+import {
+  clearMortgage,
+  getCurrentPlayer,
+  getPlayerById,
+  getSquareById,
+  mortgage,
+  toPropertySquare,
+} from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
+
+// TODO Use nextGame approach in all cases. Extract logic into separate logic files
 
 export const applyToasts = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const events: GameEvent[] = [];
+  let nextGame = game;
 
   game.toasts.forEach((toast) => {
     switch (toast.type) {
@@ -29,16 +39,23 @@ export const applyToasts = (game: Game): Game => {
         });
 
         break;
+      case GameEventType.clearMortgage:
+        nextGame = clearMortgage(nextGame, toast.squareId);
+        break;
+      case GameEventType.freeParking:
+        currentPlayer.money += game.centerPot;
+        game.centerPot = 0;
+        break;
       case GameEventType.getOutOfJail:
         currentPlayer.turnsInJail = 0;
-        break;
-      case GameEventType.remainInJail:
-        currentPlayer.turnsInJail--;
         break;
       case GameEventType.goToJail:
         const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
         currentPlayer.squareId = jailSquare.id;
         currentPlayer.turnsInJail = 3;
+        break;
+      case GameEventType.mortgage:
+        nextGame = mortgage(nextGame, toast.squareId);
         break;
       case GameEventType.passGo:
         currentPlayer.money += passGoMoney;
@@ -52,14 +69,13 @@ export const applyToasts = (game: Game): Game => {
         currentPlayer.money -= toast.tax;
         game.centerPot += toast.tax;
         break;
-      case GameEventType.freeParking:
-        currentPlayer.money += game.centerPot;
-        game.centerPot = 0;
+      case GameEventType.remainInJail:
+        currentPlayer.turnsInJail--;
         break;
     }
   });
 
-  let nextTurnPhase: GamePhase = game.modals.length > 0 ? GamePhase.modal : GamePhase.play;
+  let nextTurnPhase: GamePhase = nextGame.modals.length > 0 ? GamePhase.modal : GamePhase.play;
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties
 
@@ -69,7 +85,7 @@ export const applyToasts = (game: Game): Game => {
     });
     currentPlayer.status = PlayerStatus.bankrupt;
 
-    const remainingPlayers = game.players.filter((p) => p.status === PlayerStatus.playing);
+    const remainingPlayers = nextGame.players.filter((p) => p.status === PlayerStatus.playing);
     if (remainingPlayers.length === 1) {
       nextTurnPhase = GamePhase.finished;
       events.unshift({
@@ -80,8 +96,8 @@ export const applyToasts = (game: Game): Game => {
   }
 
   return {
-    ...game,
-    events: [...events, ...game.toasts.reverse(), ...game.events],
+    ...nextGame,
+    events: [...events, ...nextGame.toasts.reverse(), ...nextGame.events],
     gamePhase: nextTurnPhase,
     toasts: [],
   };
