@@ -1,11 +1,11 @@
-import { GameEventType, GamePhase } from '../enums';
-import { canClearMortgage, canMortgage, getSquareById, toPropertySquare } from '../logic';
+import { GameEventType, GamePhase, SquareType } from '../enums';
+import { canClearMortgage, canMortgage, getSquareById } from '../logic';
 import { Game, Id } from '../types';
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {
-  const property = toPropertySquare(getSquareById(game, squareId));
+  const square = getSquareById(game, squareId);
 
-  if (!property || !canClearMortgage(property)) {
+  if (square.type !== SquareType.property || !canClearMortgage(square)) {
     return game;
   }
 
@@ -14,7 +14,7 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
     gamePhase: GamePhase.toast,
     toasts: [
       {
-        playerId: property.ownerId!,
+        playerId: square.ownerId!,
         squareId,
         type: GameEventType.clearMortgage,
       },
@@ -23,9 +23,9 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {
-  const property = toPropertySquare(getSquareById(game, squareId));
+  const square = getSquareById(game, squareId);
 
-  if (!property || !canMortgage(property)) {
+  if (square.type !== SquareType.property || !canMortgage(square)) {
     return game;
   }
 
@@ -34,7 +34,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
     gamePhase: GamePhase.toast,
     toasts: [
       {
-        playerId: property.ownerId!,
+        playerId: square.ownerId!,
         squareId: squareId,
         type: GameEventType.mortgage,
       },

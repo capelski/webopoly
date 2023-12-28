@@ -1,6 +1,6 @@
 import { PropertyStatus, SquareType } from '../enums';
 import { clearMortgageRate, mortgagePercentage } from '../parameters';
-import { Game, Id, PropertySquare, Square } from '../types';
+import { Game, Id, PropertySquare } from '../types';
 import { getSquareById } from './game';
 
 export const canClearMortgage = (property: PropertySquare): boolean => {
@@ -14,16 +14,16 @@ export const canMortgage = (property: PropertySquare): boolean => {
 };
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {
-  const property = toPropertySquare(getSquareById(game, squareId));
+  const square = getSquareById(game, squareId);
 
-  if (!property) {
+  if (square.type !== SquareType.property) {
     return game;
   }
 
   return {
     ...game,
     squares: game.squares.map((s) => {
-      return s.type === SquareType.street && s.id === squareId
+      return s.id === squareId
         ? {
             ...s,
             status: undefined,
@@ -31,10 +31,10 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
         : s;
     }),
     players: game.players.map((p) => {
-      return p.id === property.ownerId
+      return p.id === square.ownerId
         ? {
             ...p,
-            money: p.money - mortgagePercentage * property.price * clearMortgageRate,
+            money: p.money - mortgagePercentage * square.price * clearMortgageRate,
           }
         : p;
     }),
@@ -42,16 +42,16 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {
-  const property = toPropertySquare(getSquareById(game, squareId));
+  const square = getSquareById(game, squareId);
 
-  if (!property) {
+  if (square.type !== SquareType.property) {
     return game;
   }
 
   return {
     ...game,
     squares: game.squares.map((s) => {
-      return s.type === SquareType.street && s.id === squareId
+      return s.id === squareId
         ? {
             ...s,
             status: PropertyStatus.mortgaged,
@@ -59,20 +59,12 @@ export const mortgage = (game: Game, squareId: Id): Game => {
         : s;
     }),
     players: game.players.map((p) => {
-      return p.id === property.ownerId
+      return p.id === square.ownerId
         ? {
             ...p,
-            money: p.money + mortgagePercentage * property.price,
+            money: p.money + mortgagePercentage * square.price,
           }
         : p;
     }),
   };
-};
-
-export const toPropertySquare = (square: Square): PropertySquare | undefined => {
-  return square.type === SquareType.station ||
-    square.type === SquareType.street ||
-    square.type === SquareType.utility
-    ? square
-    : undefined;
 };

@@ -5,8 +5,6 @@ export enum SquareType {
   goToJail = 'goToJail',
   jail = 'jail',
   parking = 'parking',
-  station = 'station',
-  street = 'street',
+  property = 'property',
   tax = 'tax',
-  utility = 'utility',
 }

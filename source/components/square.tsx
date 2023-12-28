@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from 'react';
-import { Neighborhood, PropertyStatus, SquareType, TaxType } from '../enums';
-import { canClearMortgage, canMortgage, isPlayerInJail, toPropertySquare } from '../logic';
+import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
+import { canClearMortgage, canMortgage, isPlayerInJail } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
 import { Player, Square } from '../types';
 import { Button } from './button';
@@ -34,13 +34,12 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
   const [displayModal, setDisplayModal] = useState(false);
 
   const { backgroundColor, color } =
-    props.square.type === SquareType.street
+    props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
       ? streetsColorMap[props.square.neighborhood]
       : { backgroundColor: undefined, color: undefined };
 
-  const propertySquare = toPropertySquare(props.square);
   const fontStyle =
-    props.square.type === SquareType.street && props.square.status === PropertyStatus.mortgaged
+    props.square.type === SquareType.property && props.square.status === PropertyStatus.mortgaged
       ? 'italic'
       : undefined;
 
@@ -48,7 +47,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
     <div
       ref={props.rootRef}
       onClick={
-        propertySquare
+        props.square.type === SquareType.property
           ? () => {
               setDisplayModal(true);
             }
@@ -64,7 +63,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
       {displayModal && (
         <Modal>
           <Button
-            disabled={!canMortgage(propertySquare!)}
+            disabled={props.square.type !== SquareType.property || !canMortgage(props.square)}
             onClick={() => {
               setDisplayModal(false);
               props.mortgage();
@@ -74,7 +73,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           </Button>
 
           <Button
-            disabled={!canClearMortgage(propertySquare!)}
+            disabled={props.square.type !== SquareType.property || !canClearMortgage(props.square)}
             onClick={() => {
               setDisplayModal(false);
               props.clearMortgage();
@@ -116,7 +115,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           color,
           fontStyle,
           fontSize: 24,
-          width: propertySquare ? '50%' : '80%',
+          width: props.square.type === SquareType.property ? '50%' : '80%',
           height: '100%',
           paddingLeft: 4,
         }}
@@ -162,7 +161,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         ) : undefined}
       </div>
 
-      {propertySquare && (
+      {props.square.type === SquareType.property && (
         <div
           style={{
             display: 'flex',
@@ -178,14 +177,16 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             paddingRight: 4,
           }}
         >
-          {propertySquare && propertySquare.status === PropertyStatus.mortgaged ? (
+          {props.square.status === PropertyStatus.mortgaged ? (
             mortgageSymbol
           ) : (
             <React.Fragment>
               {props.owner && <PlayerAvatar player={props.owner} />}
-              {props.square.type === SquareType.street && <span>{houseSymbol}&nbsp;0&nbsp;</span>}
+              {props.square.propertyType === PropertyType.street && (
+                <span>{houseSymbol}&nbsp;0&nbsp;</span>
+              )}
               {currencySymbol}
-              {propertySquare.price}
+              {props.square.price}
             </React.Fragment>
           )}
         </div>

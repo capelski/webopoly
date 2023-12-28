@@ -1,13 +1,6 @@
 import { GameEventType, GamePhase, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
-import {
-  clearMortgage,
-  getCurrentPlayer,
-  getPlayerById,
-  getSquareById,
-  mortgage,
-  toPropertySquare,
-} from '../logic';
+import { clearMortgage, getCurrentPlayer, getPlayerById, getSquareById, mortgage } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
@@ -22,21 +15,21 @@ export const applyToasts = (game: Game): Game => {
     switch (toast.type) {
       case GameEventType.buyProperty:
         const square = getSquareById(game, toast.squareId);
-        const propertySquare = toPropertySquare(square);
+        if (square.type === SquareType.property) {
+          game.players = game.players.map((player) => {
+            return player.id === currentPlayer.id
+              ? {
+                  ...player,
+                  properties: player.properties.concat([toast.squareId]),
+                  money: player.money - square.price,
+                }
+              : player;
+          });
 
-        game.players = game.players.map((player) => {
-          return player === currentPlayer && propertySquare
-            ? {
-                ...player,
-                properties: player.properties.concat([toast.squareId]),
-                money: player.money - propertySquare.price,
-              }
-            : player;
-        });
-
-        game.squares = game.squares.map((square) => {
-          return square === propertySquare ? { ...square, ownerId: currentPlayer.id } : square;
-        });
+          game.squares = game.squares.map((s) => {
+            return s.id === square.id ? { ...s, ownerId: currentPlayer.id } : s;
+          });
+        }
 
         break;
       case GameEventType.clearMortgage:

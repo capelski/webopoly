@@ -4,20 +4,14 @@ import { toast, ToastContainer } from 'react-toastify';
 import {
   applyModals,
   applyToasts,
-  buyProperty,
+  buyCurrentProperty,
   clearMortgage,
   endTurn,
   mortgage,
   rollDice,
 } from '../actions';
-import { GamePhase, GameView } from '../enums';
-import {
-  canBuy,
-  getCurrentPlayer,
-  getCurrentSquare,
-  getPlayerById,
-  toPropertySquare,
-} from '../logic';
+import { GamePhase, GameView, SquareType } from '../enums';
+import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, Square } from '../types';
 import { Button } from './button';
@@ -74,8 +68,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       }, 800);
     }
   }, [props.game.gamePhase]);
-
-  const propertySquare = toPropertySquare(currentSquare);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -197,12 +189,12 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
           <Button
             onClick={() => {
-              props.updateGame(buyProperty(props.game));
+              props.updateGame(buyCurrentProperty(props.game));
             }}
             disabled={
               props.game.gamePhase !== GamePhase.play ||
-              !propertySquare ||
-              !canBuy(currentPlayer!, propertySquare)
+              currentSquare.type !== SquareType.property ||
+              !canBuy(currentPlayer!, currentSquare)
             }
           >
             Buy

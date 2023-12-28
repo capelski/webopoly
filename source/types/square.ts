@@ -1,45 +1,19 @@
-import { Neighborhood, PropertyStatus, SquareType, TaxType } from '../enums';
+import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
 import { Id } from './id';
 
-export type SquareBase = { name: string };
-
-export type PropertySquareBase = SquareBase & {
-  ownerId?: Id;
-  price: number;
-  status?: PropertyStatus;
+type SquareBase = {
+  id: Id;
+  name: string;
 };
 
-export type ChanceSquare = SquareBase & {
-  type: SquareType.chance;
-};
-
-export type CommunityChestSquare = SquareBase & {
-  type: SquareType.communityChest;
-};
-
-export type GoSquare = SquareBase & {
-  type: SquareType.go;
-};
-
-export type GoToJailSquare = SquareBase & {
-  type: SquareType.goToJail;
-};
-
-export type JailSquare = SquareBase & {
-  type: SquareType.jail;
-};
-
-export type ParkingSquare = SquareBase & {
-  type: SquareType.parking;
-};
-
-export type StationSquare = PropertySquareBase & {
-  type: SquareType.station;
-};
-
-export type StreetSquare = PropertySquareBase & {
-  neighborhood: Neighborhood;
-  type: SquareType.street;
+export type GenericSquare = SquareBase & {
+  type:
+    | SquareType.chance
+    | SquareType.communityChest
+    | SquareType.go
+    | SquareType.goToJail
+    | SquareType.jail
+    | SquareType.parking;
 };
 
 export type TaxSquare = SquareBase & {
@@ -47,22 +21,22 @@ export type TaxSquare = SquareBase & {
   type: SquareType.tax;
 };
 
-export type UtilitySquare = PropertySquareBase & {
-  type: SquareType.utility;
+type PropertySquareBase = SquareBase & {
+  ownerId?: Id;
+  price: number;
+  status?: PropertyStatus;
+  type: SquareType.property;
 };
 
-export type PropertySquare = StationSquare | StreetSquare | UtilitySquare;
+export type PropertySquare = PropertySquareBase &
+  (
+    | {
+        propertyType: PropertyType.station | PropertyType.utility;
+      }
+    | {
+        neighborhood: Neighborhood;
+        propertyType: PropertyType.street;
+      }
+  );
 
-export type SquareUnion =
-  | ChanceSquare
-  | CommunityChestSquare
-  | GoSquare
-  | GoToJailSquare
-  | JailSquare
-  | ParkingSquare
-  | TaxSquare
-  | PropertySquare;
-
-export type Square = SquareUnion & {
-  id: Id;
-};
+export type Square = GenericSquare | TaxSquare | PropertySquare;

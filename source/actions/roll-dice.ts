@@ -1,4 +1,4 @@
-import { GameEventType, GamePhase, SquareType, TaxType } from '../enums';
+import { GameEventType, GamePhase, PropertyType, SquareType, TaxType } from '../enums';
 import {
   getCurrentPlayer,
   getNextChanceCardId,
@@ -9,7 +9,6 @@ import {
   isPlayerInJail,
   passesGo,
   paysRent,
-  toPropertySquare,
 } from '../logic';
 import { rentPercentage, stationRent } from '../parameters';
 import { Dice, Game, GameEvent } from '../types';
@@ -56,8 +55,8 @@ export const rollDice = (game: Game): Game => {
         type: GameEventType.goToJail,
       });
     } else {
-      const propertySquare = toPropertySquare(nextSquare);
-      const payRent = propertySquare && paysRent(currentPlayer, propertySquare);
+      const payRent =
+        nextSquare.type === SquareType.property && paysRent(currentPlayer, nextSquare);
       const payTaxes = nextSquare.type === SquareType.tax;
       const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
       const landsInChance = nextSquare.type === SquareType.chance;
@@ -71,20 +70,25 @@ export const rollDice = (game: Game): Game => {
       }
 
       if (payRent) {
-        const landlord = getPlayerById(game, propertySquare.ownerId!);
+        const landlord = getPlayerById(game, nextSquare.ownerId!);
         const properties = landlord.properties.map(
           (propertyId) => game.squares.find((s) => s.id === propertyId)!,
         );
-        const utilityProperties = properties.filter((p) => p.type === SquareType.utility);
+        const stationProperties = properties.filter(
+          (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
+        );
+        const utilityProperties = properties.filter(
+          (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
+        );
         const rent =
-          nextSquare.type === SquareType.station
-            ? stationRent * properties.filter((p) => p.type === SquareType.station).length
-            : nextSquare.type === SquareType.street
-            ? propertySquare.price * rentPercentage
+          nextSquare.propertyType === PropertyType.station
+            ? stationRent * stationProperties.length
+            : nextSquare.propertyType === PropertyType.street
+            ? nextSquare.price * rentPercentage
             : movement * (utilityProperties.length === 2 ? 10 : 4);
 
         toasts.push({
-          landlordId: propertySquare.ownerId!,
+          landlordId: nextSquare.ownerId!,
           playerId: currentPlayer.id,
           rent,
           type: GameEventType.payRent,
