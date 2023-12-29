@@ -1,26 +1,35 @@
-import { GameEventType, GamePhase, SquareType } from '../enums';
+import { GameEventType, GamePhase, NotificationType, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
-import { clearMortgage, getCurrentPlayer, getPlayerById, getSquareById, mortgage } from '../logic';
+import {
+  clearMortgage,
+  getChanceCardById,
+  getCommunityChestCardById,
+  getCurrentPlayer,
+  getPlayerById,
+  getSquareById,
+  mortgage,
+} from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
 // TODO Use nextGame approach in all cases. Extract logic into separate logic files
 
-export const applyToasts = (game: Game): Game => {
+export const applyNotifications = (game: Game, notificationType: NotificationType): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const events: GameEvent[] = [];
   let nextGame = game;
+  const notifications = game.notifications.filter((n) => n.notificationType === notificationType);
 
-  game.toasts.forEach((toast) => {
-    switch (toast.type) {
+  notifications.forEach((notification) => {
+    switch (notification.type) {
       case GameEventType.buyProperty:
-        const square = getSquareById(game, toast.squareId);
+        const square = getSquareById(game, notification.squareId);
         if (square.type === SquareType.property) {
           game.players = game.players.map((player) => {
             return player.id === currentPlayer.id
               ? {
                   ...player,
-                  properties: player.properties.concat([toast.squareId]),
+                  properties: player.properties.concat([notification.squareId]),
                   money: player.money - square.price,
                 }
               : player;
@@ -32,8 +41,16 @@ export const applyToasts = (game: Game): Game => {
         }
 
         break;
+      case GameEventType.chance:
+        const chanceCard = getChanceCardById(notification.cardId);
+        nextGame = chanceCard.action(game);
+        break;
       case GameEventType.clearMortgage:
-        nextGame = clearMortgage(nextGame, toast.squareId);
+        nextGame = clearMortgage(nextGame, notification.squareId);
+        break;
+      case GameEventType.communityChest:
+        const communityChestCard = getCommunityChestCardById(notification.cardId);
+        nextGame = communityChestCard.action(game);
         break;
       case GameEventType.freeParking:
         currentPlayer.money += game.centerPot;
@@ -48,19 +65,19 @@ export const applyToasts = (game: Game): Game => {
         currentPlayer.turnsInJail = 3;
         break;
       case GameEventType.mortgage:
-        nextGame = mortgage(nextGame, toast.squareId);
+        nextGame = mortgage(nextGame, notification.squareId);
         break;
       case GameEventType.passGo:
         currentPlayer.money += passGoMoney;
         break;
       case GameEventType.payRent:
-        currentPlayer.money -= toast.rent;
-        const landlord = getPlayerById(game, toast.landlordId)!;
-        landlord.money += toast.rent;
+        currentPlayer.money -= notification.rent;
+        const landlord = getPlayerById(game, notification.landlordId)!;
+        landlord.money += notification.rent;
         break;
       case GameEventType.payTax:
-        currentPlayer.money -= toast.tax;
-        game.centerPot += toast.tax;
+        currentPlayer.money -= notification.tax;
+        game.centerPot += notification.tax;
         break;
       case GameEventType.remainInJail:
         currentPlayer.turnsInJail--;
@@ -68,7 +85,12 @@ export const applyToasts = (game: Game): Game => {
     }
   });
 
-  let nextTurnPhase: GamePhase = nextGame.modals.length > 0 ? GamePhase.modal : GamePhase.play;
+  const nextNotifications =
+    notificationType === NotificationType.toast
+      ? nextGame.notifications.filter((n) => n.notificationType === NotificationType.modal)
+      : [];
+  let nextTurnPhase = nextNotifications.length > 0 ? GamePhase.modal : GamePhase.play;
+
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties
 
@@ -90,8 +112,8 @@ export const applyToasts = (game: Game): Game => {
 
   return {
     ...nextGame,
-    events: [...events, ...nextGame.toasts.reverse(), ...nextGame.events],
+    events: [...events, ...notifications.reverse(), ...nextGame.events],
     gamePhase: nextTurnPhase,
-    toasts: [],
+    notifications: nextNotifications,
   };
 };

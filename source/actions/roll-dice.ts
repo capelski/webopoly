@@ -1,4 +1,11 @@
-import { GameEventType, GamePhase, PropertyType, SquareType, TaxType } from '../enums';
+import {
+  GameEventType,
+  GamePhase,
+  NotificationType,
+  PropertyType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import {
   getCurrentPlayer,
   getNextChanceCardId,
@@ -11,7 +18,7 @@ import {
   paysRent,
 } from '../logic';
 import { rentPercentage, stationRent } from '../parameters';
-import { Dice, Game, GameEvent } from '../types';
+import { Dice, EventNotification, Game, GameEvent } from '../types';
 
 export const rollDice = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -21,8 +28,7 @@ export const rollDice = (game: Game): Game => {
   ];
   const stringifedDice = dice.join('-');
   const events: GameEvent[] = [];
-  const modals: GameEvent[] = [];
-  const toasts: GameEvent[] = [];
+  const notifications: EventNotification[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
   const escapesJail = getsOutOfJail(currentPlayer, dice);
@@ -33,8 +39,9 @@ export const rollDice = (game: Game): Game => {
     const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
-      toasts.push({
+      notifications.push({
         dice: stringifedDice,
+        notificationType: NotificationType.toast,
         playerId: currentPlayer.id,
         squareId: nextSquare.id,
         type: GameEventType.getOutOfJail,
@@ -50,7 +57,8 @@ export const rollDice = (game: Game): Game => {
 
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      toasts.push({
+      notifications.push({
+        notificationType: NotificationType.toast,
         playerId: currentPlayer.id,
         type: GameEventType.goToJail,
       });
@@ -63,7 +71,8 @@ export const rollDice = (game: Game): Game => {
       const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
       if (passesGo(game, currentPlayer.squareId, nextSquareId)) {
-        toasts.push({
+        notifications.push({
+          notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
           type: GameEventType.passGo,
         });
@@ -87,8 +96,9 @@ export const rollDice = (game: Game): Game => {
             ? nextSquare.price * rentPercentage
             : movement * (utilityProperties.length === 2 ? 10 : 4);
 
-        toasts.push({
+        notifications.push({
           landlordId: nextSquare.ownerId!,
+          notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
           rent,
           type: GameEventType.payRent,
@@ -96,26 +106,30 @@ export const rollDice = (game: Game): Game => {
       } else if (payTaxes) {
         const tax =
           nextSquare.taxType === TaxType.income ? Math.min(0.1 * currentPlayer.money, 200) : 100;
-        toasts.push({
+        notifications.push({
+          notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
           tax,
           type: GameEventType.payTax,
         });
       } else if (landsInFreeParking) {
-        toasts.push({
+        notifications.push({
+          notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
           pot: game.centerPot,
           type: GameEventType.freeParking,
         });
       } else if (landsInChance) {
-        modals.push({
+        notifications.push({
           cardId: getNextChanceCardId(),
+          notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
           type: GameEventType.chance,
         });
       } else if (landsInCommunityChest) {
-        modals.push({
+        notifications.push({
           cardId: getNextCommunityChestCardId(),
+          notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
           type: GameEventType.communityChest,
         });
@@ -125,12 +139,16 @@ export const rollDice = (game: Game): Game => {
     currentPlayer.squareId = nextSquareId;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
-    toasts.push({
+    notifications.push({
+      notificationType: NotificationType.toast,
       playerId: currentPlayer.id,
       turnsInJail,
       type: GameEventType.remainInJail,
     });
   }
+
+  const modals = notifications.filter((n) => n.notificationType === NotificationType.modal);
+  const toasts = notifications.filter((n) => n.notificationType === NotificationType.toast);
 
   return {
     ...game,
@@ -138,7 +156,6 @@ export const rollDice = (game: Game): Game => {
     events: events.concat(game.events),
     gamePhase:
       toasts.length > 0 ? GamePhase.toast : modals.length > 0 ? GamePhase.modal : GamePhase.play,
-    modals,
-    toasts,
+    notifications,
   };
 };

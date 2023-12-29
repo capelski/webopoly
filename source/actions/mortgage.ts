@@ -1,4 +1,4 @@
-import { GameEventType, GamePhase, SquareType } from '../enums';
+import { GameEventType, GamePhase, NotificationType, SquareType } from '../enums';
 import { canClearMortgage, canMortgage, getSquareById } from '../logic';
 import { Game, Id } from '../types';
 
@@ -16,8 +16,9 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     gamePhase: GamePhase.toast,
-    toasts: [
+    notifications: [
       {
+        notificationType: NotificationType.toast,
         playerId: square.ownerId,
         squareId,
         type: GameEventType.clearMortgage,
@@ -40,8 +41,9 @@ export const mortgage = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     gamePhase: GamePhase.toast,
-    toasts: [
+    notifications: [
       {
+        notificationType: NotificationType.toast,
         playerId: square.ownerId,
         squareId,
         type: GameEventType.mortgage,

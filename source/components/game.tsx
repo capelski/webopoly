@@ -2,15 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import {
-  applyModals,
-  applyToasts,
+  applyNotifications,
   buyCurrentProperty,
   clearMortgage,
   endTurn,
   mortgage,
   rollDice,
 } from '../actions';
-import { GamePhase, GameView, SquareType } from '../enums';
+import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, Square } from '../types';
@@ -51,17 +50,24 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
+  const modals = props.game.notifications.filter(
+    (n) => n.notificationType === NotificationType.modal,
+  );
+  const toasts = props.game.notifications.filter(
+    (n) => n.notificationType === NotificationType.toast,
+  );
+
   useEffect(() => {
     if (props.game.gamePhase === GamePhase.toast) {
       toast(
         <React.Fragment>
-          {props.game.toasts.map((toast, index) => (
+          {toasts.map((toast, index) => (
             <GameEventComponent event={toast} game={props.game} key={index} />
           ))}
         </React.Fragment>,
         { autoClose: 3000 },
       );
-      props.updateGame(applyToasts(props.game));
+      props.updateGame(applyNotifications(props.game, NotificationType.toast));
     } else if (props.game.gamePhase === GamePhase.modal) {
       setTimeout(() => {
         setDisplayModal(true);
@@ -77,14 +83,14 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       {displayModal && (
         <Modal>
           <React.Fragment>
-            {props.game.modals.map((modal, index) => (
+            {modals.map((modal, index) => (
               <GameEventComponent event={modal} game={props.game} key={index} />
             ))}
           </React.Fragment>
           <Button
             onClick={() => {
               setDisplayModal(false);
-              props.updateGame(applyModals(props.game));
+              props.updateGame(applyNotifications(props.game, NotificationType.modal));
             }}
           >
             Ok

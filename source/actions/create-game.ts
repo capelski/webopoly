@@ -265,9 +265,8 @@ export const createGame = (nPlayers: number): Game => {
     dice: [],
     events: [],
     gamePhase: GamePhase.rollDice,
-    modals: [],
+    notifications: [],
     players,
     squares,
-    toasts: [],
   };
 };

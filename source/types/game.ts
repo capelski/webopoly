@@ -1,11 +1,10 @@
 import { GamePhase } from '../enums';
 import { Dice } from './dice';
+import { EventNotification } from './event-notification';
 import { GameEvent } from './game-event';
 import { Id } from './id';
 import { Player } from './player';
 import { Square } from './square';
-
-// TODO Merge modals and toasts into notifications. Introduce notification type
 
 export type Game = {
   centerPot: number;
@@ -13,8 +12,7 @@ export type Game = {
   dice: Dice;
   events: GameEvent[];
   gamePhase: GamePhase;
-  modals: GameEvent[];
+  notifications: EventNotification[];
   players: Player[];
   squares: Square[];
-  toasts: GameEvent[];
 };
