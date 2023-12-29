@@ -43,7 +43,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
     toasts: [
       {
         playerId: square.ownerId,
-        squareId: squareId,
+        squareId,
         type: GameEventType.mortgage,
       },
     ],

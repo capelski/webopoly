@@ -64,7 +64,7 @@ const descriptionsMap: {
   ),
   [GameEventType.clearMortgage]: (player, event, game) => {
     const square = getSquareById(game, event.squareId);
-    return `${player.name} cancels the mortgage on ${square.name}`;
+    return `${player.name} clears the mortgage on ${square.name}`;
   },
   [GameEventType.communityChest]: (player, event) => (
     <React.Fragment>
