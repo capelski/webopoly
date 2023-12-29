@@ -58,7 +58,7 @@ export const rollDice = (game: Game): Game => {
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       notifications.push({
-        notificationType: NotificationType.toast,
+        notificationType: NotificationType.modal,
         playerId: currentPlayer.id,
         type: GameEventType.goToJail,
       });
