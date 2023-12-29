@@ -3,14 +3,14 @@ import { clearMortgageRate, mortgagePercentage } from '../parameters';
 import { Game, Id, PropertySquare } from '../types';
 import { getSquareById } from './game';
 
-export const canClearMortgage = (property: PropertySquare): boolean => {
+export const canClearMortgage = (property: PropertySquare, playerId: Id): boolean => {
   // TODO And owner has enough money
-  return property.ownerId !== undefined && property.status === PropertyStatus.mortgaged;
+  return property.ownerId === playerId && property.status === PropertyStatus.mortgaged;
 };
 
-export const canMortgage = (property: PropertySquare): boolean => {
+export const canMortgage = (property: PropertySquare, playerId: Id): boolean => {
   // TODO Number of houses === 0 if property === street;
-  return property.ownerId !== undefined && property.status !== PropertyStatus.mortgaged;
+  return property.ownerId === playerId && property.status !== PropertyStatus.mortgaged;
 };
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {

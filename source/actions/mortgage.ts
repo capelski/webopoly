@@ -5,7 +5,11 @@ import { Game, Id } from '../types';
 export const clearMortgage = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
 
-  if (square.type !== SquareType.property || !canClearMortgage(square)) {
+  if (
+    square.type !== SquareType.property ||
+    !square.ownerId ||
+    !canClearMortgage(square, square.ownerId)
+  ) {
     return game;
   }
 
@@ -14,7 +18,7 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
     gamePhase: GamePhase.toast,
     toasts: [
       {
-        playerId: square.ownerId!,
+        playerId: square.ownerId,
         squareId,
         type: GameEventType.clearMortgage,
       },
@@ -25,7 +29,11 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 export const mortgage = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
 
-  if (square.type !== SquareType.property || !canMortgage(square)) {
+  if (
+    square.type !== SquareType.property ||
+    !square.ownerId ||
+    !canMortgage(square, square.ownerId)
+  ) {
     return game;
   }
 
@@ -34,7 +42,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
     gamePhase: GamePhase.toast,
     toasts: [
       {
-        playerId: square.ownerId!,
+        playerId: square.ownerId,
         squareId: squareId,
         type: GameEventType.mortgage,
       },

@@ -1,5 +1,12 @@
 import React, { CSSProperties, useState } from 'react';
-import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
+import {
+  GamePhase,
+  Neighborhood,
+  PropertyStatus,
+  PropertyType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import { canClearMortgage, canMortgage, isPlayerInJail } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
 import { Player, Square } from '../types';
@@ -10,13 +17,14 @@ import { PlayersInSquare } from './players-in-square';
 import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
-  owner?: Player;
   clearMortgage: () => void;
   currentPlayerId: number;
+  gamePhase: GamePhase;
   mortgage: () => void;
+  owner?: Player;
   playersInSquare: Player[];
-  square: Square;
   rootRef: React.MutableRefObject<HTMLDivElement | null>;
+  square: Square;
 }
 
 const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
@@ -63,7 +71,11 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
       {displayModal && (
         <Modal>
           <Button
-            disabled={props.square.type !== SquareType.property || !canMortgage(props.square)}
+            disabled={
+              props.gamePhase === GamePhase.rollDice ||
+              props.square.type !== SquareType.property ||
+              !canMortgage(props.square, props.currentPlayerId)
+            }
             onClick={() => {
               setDisplayModal(false);
               props.mortgage();
@@ -73,7 +85,11 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           </Button>
 
           <Button
-            disabled={props.square.type !== SquareType.property || !canClearMortgage(props.square)}
+            disabled={
+              props.gamePhase === GamePhase.rollDice ||
+              props.square.type !== SquareType.property ||
+              !canClearMortgage(props.square, props.currentPlayerId)
+            }
             onClick={() => {
               setDisplayModal(false);
               props.clearMortgage();
