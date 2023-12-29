@@ -3,52 +3,27 @@ import { Id } from './id';
 
 export type GameEventBase = { playerId: Id };
 
-export type BankruptcyEvent = GameEventBase & {
-  type: GameEventType.bankruptcy;
-};
-
-export type BuyPropertyEvent = GameEventBase & {
-  squareId: Id;
-  type: GameEventType.buyProperty;
-};
-
-export type ChanceEvent = GameEventBase & {
+export type CardEvent = GameEventBase & {
   cardId: Id;
-  type: GameEventType.chance;
+  type: GameEventType.chance | GameEventType.communityChest;
 };
 
-export type ClearMortgageEvent = GameEventBase & {
+export type GenericEvent = GameEventBase & {
+  type:
+    | GameEventType.bankruptcy
+    | GameEventType.goToJail
+    | GameEventType.passGo
+    | GameEventType.playerWin;
+};
+
+export type SquareEvent = GameEventBase & {
   squareId: Id;
-  type: GameEventType.clearMortgage;
-};
-
-export type CommunityChestEvent = GameEventBase & {
-  cardId: Id;
-  type: GameEventType.communityChest;
+  type: GameEventType.buyProperty | GameEventType.clearMortgage | GameEventType.mortgage;
 };
 
 export type FreeParkingEvent = GameEventBase & {
   pot: number;
   type: GameEventType.freeParking;
-};
-
-export type GetOutOfJailEvent = GameEventBase & {
-  dice: string;
-  squareId: Id;
-  type: GameEventType.getOutOfJail;
-};
-
-export type GoToJailEvent = GameEventBase & {
-  type: GameEventType.goToJail;
-};
-
-export type MortgageEvent = GameEventBase & {
-  squareId: Id;
-  type: GameEventType.mortgage;
-};
-
-export type PassGoEvent = GameEventBase & {
-  type: GameEventType.passGo;
 };
 
 export type PayRentEvent = GameEventBase & {
@@ -62,10 +37,6 @@ export type PayTaxEvent = GameEventBase & {
   type: GameEventType.payTax;
 };
 
-export type PlayerWinsEvent = GameEventBase & {
-  type: GameEventType.playerWin;
-};
-
 export type RemainsInJailEvent = GameEventBase & {
   turnsInJail: number;
   type: GameEventType.remainInJail;
@@ -74,52 +45,45 @@ export type RemainsInJailEvent = GameEventBase & {
 export type RollDiceEvent = GameEventBase & {
   dice: string;
   squareId: Id;
-  type: GameEventType.rollDice;
+  type: GameEventType.getOutOfJail | GameEventType.rollDice;
 };
 
 export type GameEvent =
-  | BankruptcyEvent
-  | BuyPropertyEvent
-  | ChanceEvent
-  | ClearMortgageEvent
-  | CommunityChestEvent
+  | CardEvent
   | FreeParkingEvent
-  | GetOutOfJailEvent
-  | GoToJailEvent
-  | MortgageEvent
-  | PassGoEvent
+  | GenericEvent
   | PayRentEvent
   | PayTaxEvent
-  | PlayerWinsEvent
   | RemainsInJailEvent
-  | RollDiceEvent;
+  | RollDiceEvent
+  | SquareEvent;
 
 export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.bankruptcy
-  ? BankruptcyEvent
+  ? GenericEvent
   : T extends GameEventType.buyProperty
-  ? BuyPropertyEvent
+  ? SquareEvent
   : T extends GameEventType.chance
-  ? ChanceEvent
+  ? CardEvent
   : T extends GameEventType.clearMortgage
-  ? ClearMortgageEvent
+  ? SquareEvent
   : T extends GameEventType.communityChest
-  ? CommunityChestEvent
+  ? CardEvent
   : T extends GameEventType.freeParking
   ? FreeParkingEvent
   : T extends GameEventType.getOutOfJail
-  ? GetOutOfJailEvent
+  ? RollDiceEvent
   : T extends GameEventType.goToJail
-  ? GoToJailEvent
+  ? GenericEvent
   : T extends GameEventType.mortgage
-  ? MortgageEvent
+  ? SquareEvent
   : T extends GameEventType.passGo
-  ? PassGoEvent
+  ? GenericEvent
   : T extends GameEventType.payRent
   ? PayRentEvent
   : T extends GameEventType.payTax
   ? PayTaxEvent
   : T extends GameEventType.playerWin
-  ? PlayerWinsEvent
+  ? GenericEvent
   : T extends GameEventType.remainInJail
   ? RemainsInJailEvent
   : T extends GameEventType.rollDice
