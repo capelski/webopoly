@@ -1,8 +1,6 @@
-import { GamePhase, Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
-import { PlayerStatus } from '../enums/player-status';
+import { GamePhase, Neighborhood, PlayerStatus, PropertyType, SquareType, TaxType } from '../enums';
 import { playerInitialMoney } from '../parameters';
-import { Player, Square } from '../types';
-import { Game } from '../types/game';
+import { Game, Player, Square } from '../types';
 
 const squares: Square[] = [
   { id: 1, name: 'Go', type: SquareType.go },
@@ -71,6 +69,7 @@ const squares: Square[] = [
     type: SquareType.property,
   },
   {
+    icon: '🔌',
     id: 13,
     name: 'Electric Co.',
     price: 150,
@@ -175,6 +174,7 @@ const squares: Square[] = [
     type: SquareType.property,
   },
   {
+    icon: '💧',
     id: 29,
     name: 'Water Works',
     price: 150,

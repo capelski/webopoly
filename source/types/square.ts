@@ -31,11 +31,15 @@ type PropertySquareBase = SquareBase & {
 export type PropertySquare = PropertySquareBase &
   (
     | {
-        propertyType: PropertyType.station | PropertyType.utility;
+        propertyType: PropertyType.station;
       }
     | {
         neighborhood: Neighborhood;
         propertyType: PropertyType.street;
+      }
+    | {
+        icon: string;
+        propertyType: PropertyType.utility;
       }
   );
 

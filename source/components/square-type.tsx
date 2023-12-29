@@ -15,10 +15,7 @@ interface SquareTypeComponentProps {
   square: Square;
 }
 
-const squareTypeMap: { [key in SquareType | PropertyType]: React.ReactNode } = {
-  [PropertyType.station]: '🚂',
-  [PropertyType.street]: undefined,
-  [PropertyType.utility]: '🔌',
+const squareTypeMap: { [key in SquareType]: React.ReactNode } = {
   [SquareType.chance]: chanceSymbol,
   [SquareType.communityChest]: communityChestSymbol,
   [SquareType.go]: goSymbol,
@@ -30,8 +27,11 @@ const squareTypeMap: { [key in SquareType | PropertyType]: React.ReactNode } = {
 };
 
 export const SquareTypeComponent: React.FC<SquareTypeComponentProps> = (props) => {
-  return props.square.type === SquareType.property &&
-    props.square.propertyType === PropertyType.street ? undefined : (
+  return props.square.type !== SquareType.property ? (
     <span>{squareTypeMap[props.square.type]}&nbsp;</span>
-  );
+  ) : props.square.propertyType === PropertyType.station ? (
+    <span>🚂&nbsp;</span>
+  ) : props.square.propertyType === PropertyType.utility ? (
+    <span>{props.square.icon}&nbsp;</span>
+  ) : undefined;
 };
