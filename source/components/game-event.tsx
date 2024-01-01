@@ -26,7 +26,7 @@ interface GameEventComponentProps {
   game: Game;
 }
 
-const gameEventTypeMap: { [key in GameEventType]: string } = {
+const iconsMap: { [TKey in GameEventType]: string } = {
   [GameEventType.bankruptcy]: '🧨',
   [GameEventType.buyProperty]: '💵',
   [GameEventType.chance]: chanceSymbol,
@@ -45,33 +45,19 @@ const gameEventTypeMap: { [key in GameEventType]: string } = {
 };
 
 const descriptionsMap: {
-  [TKey in GameEventType]: (
-    player: Player,
-    event: TypedGameEvent<TKey>,
-    game: Game,
-  ) => React.ReactNode;
+  [TKey in GameEventType]: (player: Player, event: TypedGameEvent<TKey>, game: Game) => string;
 } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
   [GameEventType.buyProperty]: (player, event, game) => {
     const square = getSquareById(game, event.squareId);
     return `${player.name} buys ${square.name}`;
   },
-  [GameEventType.chance]: (player, event) => (
-    <React.Fragment>
-      <span>{player.name} takes out a Chance card:</span>
-      <div>{getChanceCardById(event.cardId).text}</div>
-    </React.Fragment>
-  ),
+  [GameEventType.chance]: (_player, event) => getChanceCardById(event.cardId).text,
   [GameEventType.clearMortgage]: (player, event, game) => {
     const square = getSquareById(game, event.squareId);
     return `${player.name} clears the mortgage on ${square.name}`;
   },
-  [GameEventType.communityChest]: (player, event) => (
-    <React.Fragment>
-      <span>{player.name} takes out a Community Chest card:</span>
-      <div>{getCommunityChestCardById(event.cardId).text}</div>
-    </React.Fragment>
-  ),
+  [GameEventType.communityChest]: (_player, event) => getCommunityChestCardById(event.cardId).text,
   [GameEventType.freeParking]: (player, event) =>
     `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
   [GameEventType.getOutOfJail]: (player, event, game) => {
@@ -102,19 +88,18 @@ const descriptionsMap: {
   },
 };
 
-// TODO Split component into Modal/Toast events
-
 export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => {
+  const description = descriptionsMap[props.event.type](
+    getPlayerById(props.game, props.event.playerId),
+    props.event as any,
+    props.game,
+  );
+  const icon = iconsMap[props.event.type];
+
   return (
     <div>
-      <span>{gameEventTypeMap[props.event.type]}</span>
-      <span style={{ paddingLeft: 8 }}>
-        {descriptionsMap[props.event.type](
-          getPlayerById(props.game, props.event.playerId),
-          props.event as any,
-          props.game,
-        )}
-      </span>
+      <span>{icon}</span>
+      <span style={{ paddingLeft: 8 }}>{description}</span>
     </div>
   );
 };

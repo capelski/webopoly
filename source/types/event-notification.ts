@@ -1,6 +1,15 @@
-import { NotificationType } from '../enums';
+import { ModalType, NotificationType } from '../enums';
 import { GameEvent } from './game-event';
 
-export type EventNotification = GameEvent & {
-  notificationType: NotificationType;
+export type ModalNotification = {
+  modalType: ModalType;
+  notificationType: NotificationType.modal;
 };
+
+export type EventNotification = GameEvent &
+  (
+    | ModalNotification
+    | {
+        notificationType: NotificationType.toast;
+      }
+  );

@@ -12,13 +12,14 @@ import {
 import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
-import { Game, Id, Square } from '../types';
+import { Game, Id, ModalNotification, Square } from '../types';
 import { Button } from './button';
 import { FinishedModal } from './finished-modal';
 import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { Modal } from './modal';
 import { NavBar } from './nav-bar';
+import { NotificationModal } from './notification-modal';
 import { Players } from './players';
 import { SquareComponent } from './square';
 
@@ -80,23 +81,23 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
 
-      {displayModal && (
-        <Modal>
-          <React.Fragment>
-            {modals.map((modal, index) => (
-              <GameEventComponent event={modal} game={props.game} key={index} />
-            ))}
-          </React.Fragment>
-          <Button
-            onClick={() => {
-              setDisplayModal(false);
-              props.updateGame(applyNotifications(props.game, NotificationType.modal));
-            }}
-          >
-            Ok
-          </Button>
-        </Modal>
-      )}
+      {displayModal ? (
+        <React.Fragment>
+          {modals.map((modal, index) => {
+            return (
+              <NotificationModal
+                game={props.game}
+                key={index}
+                modal={modal as unknown as ModalNotification}
+                updateGame={(game) => {
+                  setDisplayModal(false);
+                  return props.updateGame(game);
+                }}
+              />
+            );
+          })}
+        </React.Fragment>
+      ) : undefined}
 
       {props.game.gamePhase === GamePhase.finished && (
         <FinishedModal clearGame={props.clearGame} game={props.game} />

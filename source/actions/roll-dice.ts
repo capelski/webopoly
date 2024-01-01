@@ -1,6 +1,7 @@
 import {
   GameEventType,
   GamePhase,
+  ModalType,
   NotificationType,
   PropertyType,
   SquareType,
@@ -58,6 +59,7 @@ export const rollDice = (game: Game): Game => {
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       notifications.push({
+        modalType: ModalType.okModal,
         notificationType: NotificationType.modal,
         playerId: currentPlayer.id,
         type: GameEventType.goToJail,
@@ -122,6 +124,7 @@ export const rollDice = (game: Game): Game => {
       } else if (landsInChance) {
         notifications.push({
           cardId: getNextChanceCardId(),
+          modalType: ModalType.cardModal,
           notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
           type: GameEventType.chance,
@@ -129,6 +132,7 @@ export const rollDice = (game: Game): Game => {
       } else if (landsInCommunityChest) {
         notifications.push({
           cardId: getNextCommunityChestCardId(),
+          modalType: ModalType.cardModal,
           notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
           type: GameEventType.communityChest,
