@@ -34,5 +34,3 @@ export const getPlayerById = (game: Game, playerId: Id): Player => {
 export const getSquareById = (game: Game, squareId: Id): Square => {
   return game.squares.find((s) => s.id === squareId)!;
 };
-
-// TODO Function to dehydrate/re-hydrate games

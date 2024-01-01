@@ -1,5 +1,3 @@
-// TODO Make it dynamic params of the createGame function
-
 export const chanceSymbol = '❓';
 export const communityChestSymbol = '🗃️';
 export const currencySymbol = '￡';

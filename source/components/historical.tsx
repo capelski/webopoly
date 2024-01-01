@@ -2,8 +2,6 @@ import React from 'react';
 import { Game } from '../types';
 import { GameEventComponent } from './game-event';
 
-/* TODO Allow filtering events based on type */
-
 interface HistoricalProps {
   game: Game;
 }

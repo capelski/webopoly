@@ -2,8 +2,6 @@ import { currencySymbol, passGoMoney } from '../parameters';
 import { Card } from '../types';
 import { shuffleArray } from './array';
 
-// TODO Implement actions
-
 const communityChestSource: Omit<Card, 'id'>[] = [
   {
     action: (game) => {
