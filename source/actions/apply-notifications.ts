@@ -12,84 +12,128 @@ import {
 import { passGoMoney } from '../parameters';
 import { Game, GameEvent } from '../types';
 
-// TODO Use nextGame approach in all cases. Extract logic into separate logic files
+// TODO Extract logic into separate logic files
 
 export const applyNotifications = (game: Game, notificationType: NotificationType): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const events: GameEvent[] = [];
-  let nextGame = game;
   const notifications = game.notifications.filter((n) => n.notificationType === notificationType);
+  let nextGame = game;
 
   notifications.forEach((notification) => {
     switch (notification.type) {
       case GameEventType.buyProperty:
-        const square = getSquareById(game, notification.squareId);
+        const square = getSquareById(nextGame, notification.squareId);
         if (square.type === SquareType.property) {
-          game.players = game.players.map((player) => {
-            return player.id === currentPlayer.id
-              ? {
-                  ...player,
-                  properties: player.properties.concat([notification.squareId]),
-                  money: player.money - square.price,
-                }
-              : player;
-          });
-
-          game.squares = game.squares.map((s) => {
-            return s.id === square.id ? { ...s, ownerId: currentPlayer.id } : s;
-          });
+          nextGame = {
+            ...nextGame,
+            players: nextGame.players.map((p) => {
+              return p.id === nextGame.currentPlayerId
+                ? {
+                    ...p,
+                    properties: p.properties.concat([notification.squareId]),
+                    money: p.money - square.price,
+                  }
+                : p;
+            }),
+            squares: nextGame.squares.map((s) => {
+              return s.id === square.id ? { ...s, ownerId: nextGame.currentPlayerId } : s;
+            }),
+          };
         }
-
         break;
       case GameEventType.chance:
         const chanceCard = getChanceCardById(notification.cardId);
-        nextGame = chanceCard.action(game);
+        nextGame = chanceCard.action(nextGame);
         break;
       case GameEventType.clearMortgage:
         nextGame = clearMortgage(nextGame, notification.squareId);
         break;
       case GameEventType.communityChest:
         const communityChestCard = getCommunityChestCardById(notification.cardId);
-        nextGame = communityChestCard.action(game);
+        nextGame = communityChestCard.action(nextGame);
         break;
       case GameEventType.freeParking:
-        currentPlayer.money += game.centerPot;
-        game.centerPot = 0;
+        nextGame = {
+          ...nextGame,
+          centerPot: 0,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId
+              ? { ...p, money: p.money + nextGame.centerPot }
+              : p;
+          }),
+        };
         break;
       case GameEventType.getOutOfJail:
-        currentPlayer.turnsInJail = 0;
+        nextGame = {
+          ...nextGame,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId ? { ...p, turnsInJail: 0 } : p;
+          }),
+        };
         break;
       case GameEventType.goToJail:
-        const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
-        currentPlayer.squareId = jailSquare.id;
-        currentPlayer.turnsInJail = 3;
+        const jailSquare = nextGame.squares.find((s) => s.type === SquareType.jail)!;
+        nextGame = {
+          ...nextGame,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId
+              ? { ...p, squareId: jailSquare.id, turnsInJail: 3 }
+              : p;
+          }),
+        };
         break;
       case GameEventType.mortgage:
         nextGame = mortgage(nextGame, notification.squareId);
         break;
       case GameEventType.passGo:
-        currentPlayer.money += passGoMoney;
+        nextGame = {
+          ...nextGame,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
+          }),
+        };
         break;
       case GameEventType.payRent:
-        currentPlayer.money -= notification.rent;
-        const landlord = getPlayerById(game, notification.landlordId)!;
-        landlord.money += notification.rent;
+        const landlord = getPlayerById(nextGame, notification.landlordId)!;
+        nextGame = {
+          ...nextGame,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId
+              ? { ...p, money: p.money - notification.rent }
+              : p.id === landlord.id
+              ? { ...p, money: p.money + notification.rent }
+              : p;
+          }),
+        };
         break;
       case GameEventType.payTax:
-        currentPlayer.money -= notification.tax;
-        game.centerPot += notification.tax;
+        nextGame = {
+          ...nextGame,
+          centerPot: nextGame.centerPot + notification.tax,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId
+              ? { ...p, money: p.money - notification.tax }
+              : p;
+          }),
+        };
         break;
       case GameEventType.remainInJail:
-        currentPlayer.turnsInJail--;
+        nextGame = {
+          ...nextGame,
+          players: nextGame.players.map((p) => {
+            return p.id === nextGame.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail - 1 } : p;
+          }),
+        };
         break;
     }
   });
 
+  const events: GameEvent[] = [];
   const nextNotifications =
     notificationType === NotificationType.toast
       ? nextGame.notifications.filter((n) => n.notificationType === NotificationType.modal)
       : [];
   let nextTurnPhase = GamePhase.play;
+  const currentPlayer = getCurrentPlayer(nextGame);
 
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties
