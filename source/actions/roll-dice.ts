@@ -151,15 +151,11 @@ export const rollDice = (game: Game): Game => {
     });
   }
 
-  const modals = notifications.filter((n) => n.notificationType === NotificationType.modal);
-  const toasts = notifications.filter((n) => n.notificationType === NotificationType.toast);
-
   return {
     ...game,
     dice,
     events: events.concat(game.events),
-    gamePhase:
-      toasts.length > 0 ? GamePhase.toast : modals.length > 0 ? GamePhase.modal : GamePhase.play,
+    gamePhase: GamePhase.play,
     notifications,
   };
 };

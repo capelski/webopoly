@@ -89,7 +89,7 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
     notificationType === NotificationType.toast
       ? nextGame.notifications.filter((n) => n.notificationType === NotificationType.modal)
       : [];
-  let nextTurnPhase = nextNotifications.length > 0 ? GamePhase.modal : GamePhase.play;
+  let nextTurnPhase = GamePhase.play;
 
   if (currentPlayer.money < 0) {
     // TODO Allow selling/mortgaging properties

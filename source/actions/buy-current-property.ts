@@ -1,4 +1,4 @@
-import { GameEventType, GamePhase, NotificationType, SquareType } from '../enums';
+import { GameEventType, NotificationType, SquareType } from '../enums';
 import { canBuy, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { Game } from '../types';
 
@@ -15,7 +15,6 @@ export const buyCurrentProperty = (game: Game): Game => {
 
   return {
     ...game,
-    gamePhase: GamePhase.toast,
     notifications: [
       {
         notificationType: NotificationType.toast,

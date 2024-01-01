@@ -59,7 +59,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   );
 
   useEffect(() => {
-    if (props.game.gamePhase === GamePhase.toast) {
+    if (toasts.length) {
       toast(
         <React.Fragment>
           {toasts.map((toast, index) => (
@@ -69,12 +69,12 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         { autoClose: 3000 },
       );
       props.updateGame(applyNotifications(props.game, NotificationType.toast));
-    } else if (props.game.gamePhase === GamePhase.modal) {
+    } else if (modals.length) {
       setTimeout(() => {
         setDisplayModal(true);
       }, 800);
     }
-  }, [props.game.gamePhase]);
+  }, [props.game.notifications]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
