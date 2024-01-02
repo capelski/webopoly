@@ -18,7 +18,7 @@ import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
   clearMortgage: () => void;
-  currentPlayerId: number;
+  currentPlayer: Player;
   gamePhase: GamePhase;
   mortgage: () => void;
   owner?: Player;
@@ -74,7 +74,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             disabled={
               props.gamePhase === GamePhase.rollDice ||
               props.square.type !== SquareType.property ||
-              !canMortgage(props.square, props.currentPlayerId)
+              !canMortgage(props.square, props.currentPlayer.id)
             }
             onClick={() => {
               setDisplayModal(false);
@@ -88,7 +88,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             disabled={
               props.gamePhase === GamePhase.rollDice ||
               props.square.type !== SquareType.property ||
-              !canClearMortgage(props.square, props.currentPlayerId)
+              !canClearMortgage(props.square, props.currentPlayer)
             }
             onClick={() => {
               setDisplayModal(false);
@@ -118,7 +118,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         }}
       >
         <PlayersInSquare
-          currentPlayerId={props.currentPlayerId}
+          currentPlayerId={props.currentPlayer.id}
           players={props.playersInSquare.filter((p) => !isPlayerInJail(p))}
         />
       </div>
@@ -170,7 +170,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             }}
           >
             <PlayersInSquare
-              currentPlayerId={props.currentPlayerId}
+              currentPlayerId={props.currentPlayer.id}
               players={props.playersInSquare.filter(isPlayerInJail)}
             />
           </div>

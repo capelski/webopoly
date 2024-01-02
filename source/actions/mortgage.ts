@@ -1,15 +1,15 @@
 import { GameEventType, NotificationType, SquareType } from '../enums';
-import { canClearMortgage, canMortgage, getSquareById } from '../logic';
+import { canClearMortgage, canMortgage, getPlayerById, getSquareById } from '../logic';
 import { Game, Id } from '../types';
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
+  if (square.type !== SquareType.property || !square.ownerId) {
+    return game;
+  }
 
-  if (
-    square.type !== SquareType.property ||
-    !square.ownerId ||
-    !canClearMortgage(square, square.ownerId)
-  ) {
+  const player = getPlayerById(game, square.ownerId);
+  if (!canClearMortgage(square, player)) {
     return game;
   }
 

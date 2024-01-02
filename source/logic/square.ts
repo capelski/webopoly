@@ -1,11 +1,14 @@
 import { PropertyStatus, SquareType } from '../enums';
 import { clearMortgageRate, mortgagePercentage } from '../parameters';
-import { Game, Id, PropertySquare } from '../types';
+import { Game, Id, Player, PropertySquare } from '../types';
 import { getSquareById } from './game';
 
-export const canClearMortgage = (property: PropertySquare, playerId: Id): boolean => {
-  // TODO And owner has enough money
-  return property.ownerId === playerId && property.status === PropertyStatus.mortgaged;
+export const canClearMortgage = (property: PropertySquare, player: Player): boolean => {
+  return (
+    property.ownerId === player.id &&
+    property.status === PropertyStatus.mortgaged &&
+    player.money >= getClearMortgageAmount(property)
+  );
 };
 
 export const canMortgage = (property: PropertySquare, playerId: Id): boolean => {
@@ -14,9 +17,9 @@ export const canMortgage = (property: PropertySquare, playerId: Id): boolean => 
 };
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {
-  const square = getSquareById(game, squareId);
+  const property = getSquareById(game, squareId);
 
-  if (square.type !== SquareType.property) {
+  if (property.type !== SquareType.property) {
     return game;
   }
 
@@ -31,14 +34,18 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
         : s;
     }),
     players: game.players.map((p) => {
-      return p.id === square.ownerId
+      return p.id === property.ownerId
         ? {
             ...p,
-            money: p.money - mortgagePercentage * square.price * clearMortgageRate,
+            money: p.money - getClearMortgageAmount(property),
           }
         : p;
     }),
   };
+};
+
+const getClearMortgageAmount = (property: PropertySquare) => {
+  return mortgagePercentage * property.price * clearMortgageRate;
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {

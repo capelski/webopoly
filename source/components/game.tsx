@@ -136,7 +136,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
                 clearMortgage={() => {
                   props.updateGame(clearMortgage(props.game, square.id));
                 }}
-                currentPlayerId={props.game.currentPlayerId}
+                currentPlayer={currentPlayer}
                 gamePhase={props.game.gamePhase}
                 key={`${square.name}-${square.id}`}
                 mortgage={() => {
