@@ -19,7 +19,7 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
       {
         notificationType: NotificationType.toast,
         playerId: square.ownerId,
-        squareId,
+        propertyId: squareId,
         type: GameEventType.clearMortgage,
       },
     ],
@@ -43,7 +43,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
       {
         notificationType: NotificationType.toast,
         playerId: square.ownerId,
-        squareId,
+        propertyId: squareId,
         type: GameEventType.mortgage,
       },
     ],

@@ -16,8 +16,8 @@ export type GenericEvent = GameEventBase & {
     | GameEventType.playerWin;
 };
 
-export type SquareEvent = GameEventBase & {
-  squareId: Id;
+export type PropertyEvent = GameEventBase & {
+  propertyId: Id;
   type: GameEventType.buyProperty | GameEventType.clearMortgage | GameEventType.mortgage;
 };
 
@@ -54,18 +54,18 @@ export type GameEvent =
   | GenericEvent
   | PayRentEvent
   | PayTaxEvent
+  | PropertyEvent
   | RemainsInJailEvent
-  | RollDiceEvent
-  | SquareEvent;
+  | RollDiceEvent;
 
 export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.bankruptcy
   ? GenericEvent
   : T extends GameEventType.buyProperty
-  ? SquareEvent
+  ? PropertyEvent
   : T extends GameEventType.chance
   ? CardEvent
   : T extends GameEventType.clearMortgage
-  ? SquareEvent
+  ? PropertyEvent
   : T extends GameEventType.communityChest
   ? CardEvent
   : T extends GameEventType.freeParking
@@ -75,7 +75,7 @@ export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.ba
   : T extends GameEventType.goToJail
   ? GenericEvent
   : T extends GameEventType.mortgage
-  ? SquareEvent
+  ? PropertyEvent
   : T extends GameEventType.passGo
   ? GenericEvent
   : T extends GameEventType.payRent

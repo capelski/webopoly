@@ -1,9 +1,15 @@
-import { PropertyStatus, SquareType } from '../enums';
-import { clearMortgageRate, mortgagePercentage } from '../parameters';
+import { PropertyStatus, PropertyType, SquareType } from '../enums';
+import { clearMortgageRate, mortgagePercentage, rentPercentage, stationRent } from '../parameters';
 import { Game, Id, Player, PropertySquare } from '../types';
-import { getSquareById } from './game';
+import { getPlayerById, getSquareById } from './game';
 
-export const buyProperty = (game: Game, property: PropertySquare): Game => {
+export const buyProperty = (game: Game, squareId: Id): Game => {
+  const property = getSquareById(game, squareId);
+
+  if (property.type !== SquareType.property) {
+    return game;
+  }
+
   return {
     ...game,
     players: game.players.map((p) => {
@@ -68,6 +74,25 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 
 const getClearMortgageAmount = (property: PropertySquare) => {
   return mortgagePercentage * property.price * clearMortgageRate;
+};
+
+export const getRentAmount = (game: Game, property: PropertySquare, movement: number) => {
+  const landlord = getPlayerById(game, property.ownerId!);
+
+  const properties = landlord.properties.map(
+    (propertyId) => game.squares.find((s) => s.id === propertyId)!,
+  );
+  const stationProperties = properties.filter(
+    (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
+  );
+  const utilityProperties = properties.filter(
+    (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
+  );
+  return property.propertyType === PropertyType.station
+    ? stationRent * stationProperties.length
+    : property.propertyType === PropertyType.street
+    ? property.price * rentPercentage
+    : movement * (utilityProperties.length === 2 ? 10 : 4);
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {

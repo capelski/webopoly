@@ -19,7 +19,7 @@ export const buyCurrentProperty = (game: Game): Game => {
       {
         notificationType: NotificationType.toast,
         playerId: currentPlayer.id,
-        squareId: currentSquare.id,
+        propertyId: currentSquare.id,
         type: GameEventType.buyProperty,
       },
     ],

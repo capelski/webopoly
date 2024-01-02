@@ -49,12 +49,12 @@ const descriptionsMap: {
 } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
   [GameEventType.buyProperty]: (player, event, game) => {
-    const square = getSquareById(game, event.squareId);
+    const square = getSquareById(game, event.propertyId);
     return `${player.name} buys ${square.name}`;
   },
   [GameEventType.chance]: (_player, event) => getChanceCardById(event.cardId).text,
   [GameEventType.clearMortgage]: (player, event, game) => {
-    const square = getSquareById(game, event.squareId);
+    const square = getSquareById(game, event.propertyId);
     return `${player.name} clears the mortgage on ${square.name}`;
   },
   [GameEventType.communityChest]: (_player, event) => getCommunityChestCardById(event.cardId).text,
@@ -68,7 +68,7 @@ const descriptionsMap: {
   [GameEventType.passGo]: (player) =>
     `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
   [GameEventType.mortgage]: (player, event, game) => {
-    const square = getSquareById(game, event.squareId);
+    const square = getSquareById(game, event.propertyId);
     return `${player.name} mortgages ${square.name}`;
   },
   [GameEventType.payRent]: (player, event, game) => {
