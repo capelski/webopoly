@@ -1,6 +1,7 @@
 import { GameEventType, GamePhase, NotificationType, SquareType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
 import {
+  buyProperty,
   clearMortgage,
   getChanceCardById,
   getCommunityChestCardById,
@@ -23,21 +24,7 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
       case GameEventType.buyProperty:
         const square = getSquareById(nextGame, notification.squareId);
         if (square.type === SquareType.property) {
-          nextGame = {
-            ...nextGame,
-            players: nextGame.players.map((p) => {
-              return p.id === nextGame.currentPlayerId
-                ? {
-                    ...p,
-                    properties: p.properties.concat([notification.squareId]),
-                    money: p.money - square.price,
-                  }
-                : p;
-            }),
-            squares: nextGame.squares.map((s) => {
-              return s.id === square.id ? { ...s, ownerId: nextGame.currentPlayerId } : s;
-            }),
-          };
+          nextGame = buyProperty(nextGame, square);
         }
         break;
       case GameEventType.chance:
@@ -136,7 +123,7 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
   const currentPlayer = getCurrentPlayer(nextGame);
 
   if (currentPlayer.money < 0) {
-    // TODO Allow selling/mortgaging properties
+    // TODO Allow mortgaging properties / selling houses
 
     events.unshift({
       playerId: currentPlayer.id,

@@ -3,6 +3,28 @@ import { clearMortgageRate, mortgagePercentage } from '../parameters';
 import { Game, Id, Player, PropertySquare } from '../types';
 import { getSquareById } from './game';
 
+export const buyProperty = (game: Game, property: PropertySquare): Game => {
+  return {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId
+        ? {
+            ...p,
+            properties: p.properties.concat([property.id]),
+            money: p.money - property.price,
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === property.id ? { ...s, ownerId: game.currentPlayerId } : s;
+    }),
+  };
+};
+
+export const canBuyProperty = (property: PropertySquare, player: Player): boolean => {
+  return property.ownerId === undefined && player.money >= property.price;
+};
+
 export const canClearMortgage = (property: PropertySquare, player: Player): boolean => {
   return (
     property.ownerId === player.id &&

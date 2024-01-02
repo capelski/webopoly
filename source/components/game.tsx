@@ -10,7 +10,7 @@ import {
   rollDice,
 } from '../actions';
 import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
-import { canBuy, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
+import { canBuyProperty, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, ModalNotification, Square } from '../types';
 import { Button } from './button';
@@ -202,7 +202,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             disabled={
               props.game.gamePhase !== GamePhase.play ||
               currentSquare.type !== SquareType.property ||
-              !canBuy(currentPlayer!, currentSquare)
+              !canBuyProperty(currentSquare, currentPlayer!)
             }
           >
             Buy

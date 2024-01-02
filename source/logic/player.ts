@@ -1,10 +1,6 @@
 import { PropertyStatus } from '../enums';
 import { Dice, Game, Player, PropertySquare } from '../types';
 
-export const canBuy = (player: Player, property: PropertySquare): boolean => {
-  return property.ownerId === undefined && player.money >= property.price;
-};
-
 export const getsOutOfJail = (player: Player, dice: Dice) => {
   return dice[0] === dice[1] && isPlayerInJail(player);
 };
@@ -19,10 +15,10 @@ export const passesGo = (game: Game, currentSquareId: number, nextSquareId: numb
   return currentIndex > nextIndex;
 };
 
-export const paysRent = (player: Player, square: PropertySquare) => {
+export const paysRent = (player: Player, property: PropertySquare) => {
   return (
-    square.ownerId !== undefined &&
-    square.ownerId !== player.id &&
-    square.status !== PropertyStatus.mortgaged
+    property.ownerId !== undefined &&
+    property.ownerId !== player.id &&
+    property.status !== PropertyStatus.mortgaged
   );
 };
