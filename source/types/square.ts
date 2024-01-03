@@ -44,3 +44,12 @@ export type PropertySquare = PropertySquareBase &
   );
 
 export type Square = GenericSquare | TaxSquare | PropertySquare;
+
+export type SquareMinified = {
+  /** id */
+  i: Id;
+  /** ownerId */
+  o?: Id;
+  /** status */
+  s?: PropertyStatus;
+};

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { createGame } from '../actions';
-import { Game } from '../types';
+import { GameMinified } from '../types';
 import { Button } from './button';
 
 interface CreateGameProps {
-  setGame: (game: Game) => void;
+  setGame: (game: GameMinified) => void;
 }
 
 export const CreateGame: React.FC<CreateGameProps> = (props) => {

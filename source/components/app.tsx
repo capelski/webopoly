@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Game } from '../types';
+import { minifyGame, restoreMinifiedGame } from '../logic';
+import { Game, GameMinified } from '../types';
 import { CreateGame } from './create-game';
 import { GameComponent } from './game';
 
 const GAME_STORAGE_KEY = 'game';
 
 export const App: React.FC = () => {
-  const [game, setGame] = useState<Game>();
+  const [game, setGame] = useState<GameMinified>();
 
-  const updateGame = (game: Game) => {
+  const updateGame = (game: GameMinified) => {
     setGame(game);
     localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify(game));
   };
@@ -29,7 +30,13 @@ export const App: React.FC = () => {
   return (
     <div>
       {game ? (
-        <GameComponent clearGame={clearGame} game={game} updateGame={updateGame} />
+        <GameComponent
+          clearGame={clearGame}
+          game={restoreMinifiedGame(game)}
+          updateGame={(game: Game) => {
+            updateGame(minifyGame(game));
+          }}
+        />
       ) : (
         <CreateGame setGame={updateGame} />
       )}
