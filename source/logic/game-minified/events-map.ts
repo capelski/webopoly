@@ -1,11 +1,16 @@
 import { GameEventType } from '../../enums';
-import { TypedGameEvent, TypedGameEventMinified } from '../../types';
+import { GameEvent, GameEventMinified } from '../../types';
+
+export type Minifier<T = GameEventType> = (
+  event: GameEvent & { type: T },
+) => GameEventMinified & { t: T };
+
+export type Restorer<T = GameEventType> = (
+  e: GameEventMinified & { t: T },
+) => GameEvent & { type: T };
 
 export const eventsMap: {
-  [TKey in GameEventType]: {
-    minify: (event: TypedGameEvent<TKey>) => TypedGameEventMinified<TKey>;
-    restore: (e: TypedGameEventMinified<TKey>) => TypedGameEvent<TKey>;
-  };
+  [TKey in GameEventType]: { minify: Minifier<TKey>; restore: Restorer<TKey> };
 } = {
   [GameEventType.bankruptcy]: {
     minify: (event) => ({ p: event.playerId, t: event.type }),

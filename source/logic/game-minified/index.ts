@@ -9,7 +9,7 @@ import {
   Square,
   SquareMinified,
 } from '../../types';
-import { eventsMap } from './events-map';
+import { eventsMap, Minifier, Restorer } from './events-map';
 import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
@@ -17,7 +17,10 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    e: game.events.map<GameEventMinified>((event) => eventsMap[event.type].minify(event as any)),
+    e: game.events.map<GameEventMinified>((event) => {
+      const minify: Minifier = eventsMap[event.type].minify;
+      return minify(event);
+    }),
     g: game.gamePhase,
     n: game.notifications,
     p: game.players.map<PlayerMinified>((player) => ({
@@ -50,7 +53,10 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
     currentPlayerId: game.ci,
     centerPot: game.cp,
     dice: game.d,
-    events: game.e.map<GameEvent>((e) => eventsMap[e.t].restore(e as any)),
+    events: game.e.map<GameEvent>((e) => {
+      const restore: Restorer = eventsMap[e.t].restore;
+      return restore(e);
+    }),
     gamePhase: game.g,
     notifications: game.n,
     players: game.p.map<Player>((p) => ({

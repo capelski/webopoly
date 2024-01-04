@@ -19,7 +19,7 @@ import {
   passGoMoney,
   taxSymbol,
 } from '../parameters';
-import { Game, GameEvent, Player, TypedGameEvent } from '../types';
+import { Game, GameEvent, Player } from '../types';
 
 interface GameEventComponentProps {
   event: GameEvent;
@@ -44,9 +44,13 @@ const iconsMap: { [TKey in GameEventType]: string } = {
   [GameEventType.rollDice]: diceSymbol,
 };
 
-const descriptionsMap: {
-  [TKey in GameEventType]: (player: Player, event: TypedGameEvent<TKey>, game: Game) => string;
-} = {
+type Descriptor<T = GameEventType> = (
+  player: Player,
+  event: GameEvent & { type: T },
+  game: Game,
+) => string;
+
+const descriptionsMap: { [TKey in GameEventType]: Descriptor<TKey> } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
   [GameEventType.buyProperty]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
@@ -89,12 +93,11 @@ const descriptionsMap: {
 };
 
 export const GameEventComponent: React.FC<GameEventComponentProps> = (props) => {
-  const description = descriptionsMap[props.event.type](
-    getPlayerById(props.game, props.event.playerId),
-    props.event as any,
-    props.game,
-  );
   const icon = iconsMap[props.event.type];
+
+  const player = getPlayerById(props.game, props.event.playerId);
+  const descriptor: Descriptor = descriptionsMap[props.event.type];
+  const description = descriptor(player, props.event, props.game);
 
   return (
     <div>

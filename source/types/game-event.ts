@@ -57,35 +57,3 @@ export type GameEvent =
   | PropertyEvent
   | RemainsInJailEvent
   | RollDiceEvent;
-
-export type TypedGameEvent<T extends GameEventType> = T extends GameEventType.bankruptcy
-  ? GenericEvent
-  : T extends GameEventType.buyProperty
-  ? PropertyEvent
-  : T extends GameEventType.chance
-  ? CardEvent
-  : T extends GameEventType.clearMortgage
-  ? PropertyEvent
-  : T extends GameEventType.communityChest
-  ? CardEvent
-  : T extends GameEventType.freeParking
-  ? FreeParkingEvent
-  : T extends GameEventType.getOutOfJail
-  ? RollDiceEvent
-  : T extends GameEventType.goToJail
-  ? GenericEvent
-  : T extends GameEventType.mortgage
-  ? PropertyEvent
-  : T extends GameEventType.passGo
-  ? GenericEvent
-  : T extends GameEventType.payRent
-  ? PayRentEvent
-  : T extends GameEventType.payTax
-  ? PayTaxEvent
-  : T extends GameEventType.playerWin
-  ? GenericEvent
-  : T extends GameEventType.remainInJail
-  ? RemainsInJailEvent
-  : T extends GameEventType.rollDice
-  ? RollDiceEvent
-  : never;

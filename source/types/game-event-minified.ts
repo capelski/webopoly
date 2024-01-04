@@ -77,35 +77,3 @@ export type GameEventMinified =
   | PropertyEventMinified
   | RemainsInJailEventMinified
   | RollDiceEventMinified;
-
-export type TypedGameEventMinified<T extends GameEventType> = T extends GameEventType.bankruptcy
-  ? GenericEventMinified
-  : T extends GameEventType.buyProperty
-  ? PropertyEventMinified
-  : T extends GameEventType.chance
-  ? CardEventMinified
-  : T extends GameEventType.clearMortgage
-  ? PropertyEventMinified
-  : T extends GameEventType.communityChest
-  ? CardEventMinified
-  : T extends GameEventType.freeParking
-  ? FreeParkingEventMinified
-  : T extends GameEventType.getOutOfJail
-  ? RollDiceEventMinified
-  : T extends GameEventType.goToJail
-  ? GenericEventMinified
-  : T extends GameEventType.mortgage
-  ? PropertyEventMinified
-  : T extends GameEventType.passGo
-  ? GenericEventMinified
-  : T extends GameEventType.payRent
-  ? PayRentEventMinified
-  : T extends GameEventType.payTax
-  ? PayTaxEventMinified
-  : T extends GameEventType.playerWin
-  ? GenericEventMinified
-  : T extends GameEventType.remainInJail
-  ? RemainsInJailEventMinified
-  : T extends GameEventType.rollDice
-  ? RollDiceEventMinified
-  : never;
