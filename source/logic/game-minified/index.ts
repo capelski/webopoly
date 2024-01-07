@@ -1,4 +1,4 @@
-import { SquareType } from '../../enums';
+import { PropertyType, SquareType } from '../../enums';
 import {
   Game,
   GameEvent,
@@ -41,6 +41,10 @@ export const minifyGame = (game: Game): GameMinified => {
       if (square.type === SquareType.property) {
         minifiedSquare.o = square.ownerId;
         minifiedSquare.s = square.status;
+
+        if (square.propertyType === PropertyType.street) {
+          minifiedSquare.h = square.houses;
+        }
       }
 
       return minifiedSquare;
@@ -75,6 +79,10 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
       if (square.type === SquareType.property) {
         square.ownerId = s.o;
         square.status = s.s;
+
+        if (square.propertyType === PropertyType.street) {
+          square.houses = s.h;
+        }
       }
 
       return square;

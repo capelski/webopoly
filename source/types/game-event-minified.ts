@@ -26,7 +26,12 @@ export type PropertyEventMinified = GameEventBaseMinified & {
   /** propertyId */
   pr: Id;
   /** type */
-  t: GameEventType.buyProperty | GameEventType.clearMortgage | GameEventType.mortgage;
+  t:
+    | GameEventType.buildHouse
+    | GameEventType.buyProperty
+    | GameEventType.clearMortgage
+    | GameEventType.mortgage
+    | GameEventType.sellHouse;
 };
 
 export type FreeParkingEventMinified = GameEventBaseMinified & {

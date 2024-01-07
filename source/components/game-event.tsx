@@ -13,6 +13,7 @@ import {
   diceSymbol,
   goSymbol,
   goToJailSymbol,
+  houseSymbol,
   jailSymbol,
   mortgageSymbol,
   parkingSymbol,
@@ -28,6 +29,7 @@ interface GameEventComponentProps {
 
 const iconsMap: { [TKey in GameEventType]: string } = {
   [GameEventType.bankruptcy]: '🧨',
+  [GameEventType.buildHouse]: houseSymbol,
   [GameEventType.buyProperty]: '💵',
   [GameEventType.chance]: chanceSymbol,
   [GameEventType.clearMortgage]: '❎',
@@ -42,6 +44,7 @@ const iconsMap: { [TKey in GameEventType]: string } = {
   [GameEventType.playerWin]: '🏆',
   [GameEventType.remainInJail]: jailSymbol,
   [GameEventType.rollDice]: diceSymbol,
+  [GameEventType.sellHouse]: '🏚️',
 };
 
 type Descriptor<T = GameEventType> = (
@@ -52,6 +55,10 @@ type Descriptor<T = GameEventType> = (
 
 const descriptionsMap: { [TKey in GameEventType]: Descriptor<TKey> } = {
   [GameEventType.bankruptcy]: (player) => `${player.name} goes bankrupt`,
+  [GameEventType.buildHouse]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
+    return `${player.name} builds a house in ${square.name}`;
+  },
   [GameEventType.buyProperty]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return `${player.name} buys ${square.name}`;
@@ -69,12 +76,12 @@ const descriptionsMap: { [TKey in GameEventType]: Descriptor<TKey> } = {
     return `${player.name} rolls ${event.dice}, gets out of jail and lands in ${square.name}`;
   },
   [GameEventType.goToJail]: (player) => `${player.name} goes to jail for 3 turns`,
-  [GameEventType.passGo]: (player) =>
-    `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
   [GameEventType.mortgage]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return `${player.name} mortgages ${square.name}`;
   },
+  [GameEventType.passGo]: (player) =>
+    `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
   [GameEventType.payRent]: (player, event, game) => {
     const landlord = getPlayerById(game, event.landlordId)!;
     return `${player.name} pays ${currencySymbol}${event.rent} rent to ${landlord.name}`;
@@ -89,6 +96,10 @@ const descriptionsMap: { [TKey in GameEventType]: Descriptor<TKey> } = {
   [GameEventType.rollDice]: (player, event, game) => {
     const square = getSquareById(game, event.squareId);
     return `${player.name} rolls ${event.dice} and lands in ${square.name}`;
+  },
+  [GameEventType.sellHouse]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
+    return `${player.name} sells a house in ${square.name}`;
   },
 };
 

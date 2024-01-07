@@ -1,7 +1,9 @@
 import { GameEventType } from '../enums';
 import { Id } from './id';
 
-export type GameEventBase = { playerId: Id };
+export type GameEventBase = {
+  playerId: Id;
+};
 
 export type CardEvent = GameEventBase & {
   cardId: Id;
@@ -18,7 +20,12 @@ export type GenericEvent = GameEventBase & {
 
 export type PropertyEvent = GameEventBase & {
   propertyId: Id;
-  type: GameEventType.buyProperty | GameEventType.clearMortgage | GameEventType.mortgage;
+  type:
+    | GameEventType.buildHouse
+    | GameEventType.buyProperty
+    | GameEventType.clearMortgage
+    | GameEventType.mortgage
+    | GameEventType.sellHouse;
 };
 
 export type FreeParkingEvent = GameEventBase & {

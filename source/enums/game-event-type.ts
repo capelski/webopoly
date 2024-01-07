@@ -1,5 +1,6 @@
 export enum GameEventType {
   bankruptcy = 'bankruptcy',
+  buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',
   chance = 'chance',
   clearMortgage = 'clearMortgage',
@@ -14,4 +15,5 @@ export enum GameEventType {
   playerWin = 'playerWin',
   remainInJail = 'remainInJail',
   rollDice = 'rollDice',
+  sellHouse = 'sellHouse',
 }

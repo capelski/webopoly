@@ -1,16 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import {
-  applyNotifications,
-  buyCurrentProperty,
-  clearMortgage,
-  endTurn,
-  mortgage,
-  rollDice,
-} from '../actions';
+import { applyNotifications, endTurn, notifyBuyProperty, rollDice } from '../actions';
 import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
-import { canBuyProperty, getCurrentPlayer, getCurrentSquare, getPlayerById } from '../logic';
+import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { Game, Id, ModalNotification, Square } from '../types';
 import { Button } from './button';
@@ -133,23 +126,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           >
             {props.game.squares.map((square) => (
               <SquareComponent
-                clearMortgage={() => {
-                  props.updateGame(clearMortgage(props.game, square.id));
-                }}
-                currentPlayer={currentPlayer}
-                gamePhase={props.game.gamePhase}
+                game={props.game}
                 key={`${square.name}-${square.id}`}
-                mortgage={() => {
-                  props.updateGame(mortgage(props.game, square.id));
-                }}
-                owner={
-                  'ownerId' in square && square.ownerId !== undefined
-                    ? getPlayerById(props.game, square.ownerId)
-                    : undefined
-                }
-                playersInSquare={props.game.players.filter((p) => p.squareId === square.id)}
                 rootRef={refs[square.id]}
                 square={square}
+                updateGame={props.updateGame}
               />
             ))}
           </div>
@@ -197,7 +178,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
           <Button
             onClick={() => {
-              props.updateGame(buyCurrentProperty(props.game));
+              props.updateGame(notifyBuyProperty(props.game));
             }}
             disabled={
               props.game.gamePhase !== GamePhase.play ||

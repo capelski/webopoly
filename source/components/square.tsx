@@ -1,4 +1,5 @@
 import React, { CSSProperties, useState } from 'react';
+import { notifyBuildHouse, notifyClearMortgage, notifyMortgage, notifySellHouse } from '../actions';
 import {
   GamePhase,
   Neighborhood,
@@ -7,9 +8,17 @@ import {
   SquareType,
   TaxType,
 } from '../enums';
-import { canClearMortgage, canMortgage, isPlayerInJail } from '../logic';
+import {
+  canBuildHouse,
+  canClearMortgage,
+  canMortgage,
+  canSellHouse,
+  getCurrentPlayer,
+  getPlayerById,
+  isPlayerInJail,
+} from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
-import { Player, Square } from '../types';
+import { Game, Square } from '../types';
 import { Button } from './button';
 import { Modal } from './modal';
 import { PlayerAvatar } from './player-avatar';
@@ -17,14 +26,10 @@ import { PlayersInSquare } from './players-in-square';
 import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
-  clearMortgage: () => void;
-  currentPlayer: Player;
-  gamePhase: GamePhase;
-  mortgage: () => void;
-  owner?: Player;
-  playersInSquare: Player[];
+  game: Game;
   rootRef: React.MutableRefObject<HTMLDivElement | null>;
   square: Square;
+  updateGame: (game: Game) => void;
 }
 
 const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
@@ -40,6 +45,13 @@ const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
 
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
   const [displayModal, setDisplayModal] = useState(false);
+
+  const currentPlayer = getCurrentPlayer(props.game);
+  const owner =
+    props.square.type === SquareType.property && props.square.ownerId !== undefined
+      ? getPlayerById(props.game, props.square.ownerId)
+      : undefined;
+  const playersInSquare = props.game.players.filter((p) => p.squareId === props.square.id);
 
   const { backgroundColor, color } =
     props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
@@ -70,33 +82,65 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
     >
       {displayModal && (
         <Modal>
-          <Button
-            disabled={
-              props.gamePhase === GamePhase.rollDice ||
-              props.square.type !== SquareType.property ||
-              !canMortgage(props.square, props.currentPlayer.id)
-            }
-            onClick={() => {
-              setDisplayModal(false);
-              props.mortgage();
-            }}
-          >
-            Mortgage
-          </Button>
+          <div style={{ marginBottom: 16 }}>
+            <Button
+              disabled={
+                props.game.gamePhase === GamePhase.rollDice ||
+                props.square.type !== SquareType.property ||
+                !canMortgage(props.square, currentPlayer.id)
+              }
+              onClick={() => {
+                setDisplayModal(false);
+                props.updateGame(notifyMortgage(props.game, props.square.id));
+              }}
+            >
+              Mortgage
+            </Button>
 
-          <Button
-            disabled={
-              props.gamePhase === GamePhase.rollDice ||
-              props.square.type !== SquareType.property ||
-              !canClearMortgage(props.square, props.currentPlayer)
-            }
-            onClick={() => {
-              setDisplayModal(false);
-              props.clearMortgage();
-            }}
-          >
-            Clear mortgage
-          </Button>
+            <Button
+              disabled={
+                props.game.gamePhase === GamePhase.rollDice ||
+                props.square.type !== SquareType.property ||
+                !canClearMortgage(props.square, currentPlayer)
+              }
+              onClick={() => {
+                setDisplayModal(false);
+                props.updateGame(notifyClearMortgage(props.game, props.square.id));
+              }}
+            >
+              Clear mortgage
+            </Button>
+          </div>
+
+          <div style={{ marginBottom: 16 }}>
+            <Button
+              disabled={
+                props.game.gamePhase === GamePhase.rollDice ||
+                props.square.type !== SquareType.property ||
+                !canBuildHouse(props.game, props.square, currentPlayer)
+              }
+              onClick={() => {
+                setDisplayModal(false);
+                props.updateGame(notifyBuildHouse(props.game, props.square.id));
+              }}
+            >
+              Build house
+            </Button>
+
+            <Button
+              disabled={
+                props.game.gamePhase === GamePhase.rollDice ||
+                props.square.type !== SquareType.property ||
+                !canSellHouse(props.game, props.square, currentPlayer)
+              }
+              onClick={() => {
+                setDisplayModal(false);
+                props.updateGame(notifySellHouse(props.game, props.square.id));
+              }}
+            >
+              Sell house
+            </Button>
+          </div>
 
           <Button
             onClick={() => {
@@ -118,8 +162,8 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         }}
       >
         <PlayersInSquare
-          currentPlayerId={props.currentPlayer.id}
-          players={props.playersInSquare.filter((p) => !isPlayerInJail(p))}
+          currentPlayerId={currentPlayer.id}
+          players={playersInSquare.filter((p) => !isPlayerInJail(p))}
         />
       </div>
 
@@ -170,8 +214,8 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             }}
           >
             <PlayersInSquare
-              currentPlayerId={props.currentPlayer.id}
-              players={props.playersInSquare.filter(isPlayerInJail)}
+              currentPlayerId={currentPlayer.id}
+              players={playersInSquare.filter(isPlayerInJail)}
             />
           </div>
         ) : undefined}
@@ -197,9 +241,11 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
             mortgageSymbol
           ) : (
             <React.Fragment>
-              {props.owner && <PlayerAvatar player={props.owner} />}
+              {owner && <PlayerAvatar player={owner} />}
               {props.square.propertyType === PropertyType.street && (
-                <span>{houseSymbol}&nbsp;0&nbsp;</span>
+                <span>
+                  {houseSymbol}&nbsp;{props.square.houses || 0}&nbsp;
+                </span>
               )}
               {currencySymbol}
               {props.square.price}

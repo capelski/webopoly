@@ -1,6 +1,7 @@
 import { GameEventType, GamePhase, NotificationType } from '../enums';
 import { PlayerStatus } from '../enums/player-status';
 import {
+  buildHouse,
   buyProperty,
   clearMortgage,
   collectCenterPot,
@@ -14,54 +15,47 @@ import {
   payRent,
   payTax,
   remainInJail,
+  sellHouse,
 } from '../logic';
 import { Game, GameEvent } from '../types';
+
+type Transformer<T = GameEventType> = (game: Game, notification: GameEvent & { type: T }) => Game;
+
+const transformersMap: { [TKey in GameEventType]: Transformer<TKey> } = {
+  [GameEventType.bankruptcy]: (game) => game, // Not addressed here
+  [GameEventType.buildHouse]: (game, notification) => buildHouse(game, notification.propertyId),
+  [GameEventType.buyProperty]: (game, notification) => buyProperty(game, notification.propertyId),
+  [GameEventType.chance]: (game, notification) => {
+    const card = getChanceCardById(notification.cardId);
+    return card.action(game);
+  },
+  [GameEventType.clearMortgage]: (game, notification) =>
+    clearMortgage(game, notification.propertyId),
+  [GameEventType.communityChest]: (game, notification) => {
+    const card = getCommunityChestCardById(notification.cardId);
+    return card.action(game);
+  },
+  [GameEventType.freeParking]: (game) => collectCenterPot(game),
+  [GameEventType.getOutOfJail]: (game) => getOutOfJail(game),
+  [GameEventType.goToJail]: (game) => goToJail(game),
+  [GameEventType.mortgage]: (game, notification) => mortgage(game, notification.propertyId),
+  [GameEventType.passGo]: (game) => passGo(game),
+  [GameEventType.payRent]: (game, notification) =>
+    payRent(game, notification.landlordId, notification.rent),
+  [GameEventType.payTax]: (game, notification) => payTax(game, notification.tax),
+  [GameEventType.playerWin]: (game) => game, // Not addressed here
+  [GameEventType.remainInJail]: (game) => remainInJail(game),
+  [GameEventType.rollDice]: (game) => game, // Not addressed here
+  [GameEventType.sellHouse]: (game, notification) => sellHouse(game, notification.propertyId),
+};
 
 export const applyNotifications = (game: Game, notificationType: NotificationType): Game => {
   const notifications = game.notifications.filter((n) => n.notificationType === notificationType);
   let nextGame = game;
 
   notifications.forEach((notification) => {
-    switch (notification.type) {
-      case GameEventType.buyProperty:
-        nextGame = buyProperty(nextGame, notification.propertyId);
-        break;
-      case GameEventType.chance:
-        const chanceCard = getChanceCardById(notification.cardId);
-        nextGame = chanceCard.action(nextGame);
-        break;
-      case GameEventType.clearMortgage:
-        nextGame = clearMortgage(nextGame, notification.propertyId);
-        break;
-      case GameEventType.communityChest:
-        const communityChestCard = getCommunityChestCardById(notification.cardId);
-        nextGame = communityChestCard.action(nextGame);
-        break;
-      case GameEventType.freeParking:
-        nextGame = collectCenterPot(nextGame);
-        break;
-      case GameEventType.getOutOfJail:
-        nextGame = getOutOfJail(nextGame);
-        break;
-      case GameEventType.goToJail:
-        nextGame = goToJail(nextGame);
-        break;
-      case GameEventType.mortgage:
-        nextGame = mortgage(nextGame, notification.propertyId);
-        break;
-      case GameEventType.passGo:
-        nextGame = passGo(nextGame);
-        break;
-      case GameEventType.payRent:
-        nextGame = payRent(nextGame, notification.landlordId, notification.rent);
-        break;
-      case GameEventType.payTax:
-        nextGame = payTax(nextGame, notification.tax);
-        break;
-      case GameEventType.remainInJail:
-        nextGame = remainInJail(nextGame);
-        break;
-    }
+    const transformer: Transformer = transformersMap[notification.type];
+    nextGame = transformer(nextGame, notification);
   });
 
   const events: GameEvent[] = [];

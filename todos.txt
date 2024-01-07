@@ -3,4 +3,6 @@
 - Implement Chance and Community Chest card actions
 - Function to minify the serialized games on localStorage saving
 - Make parameters.ts modifiable on createGame
+- Allow selling properties back to the bank
+- House pricing based on property price percentage
  

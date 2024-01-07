@@ -34,6 +34,8 @@ export type PropertySquare = PropertySquareBase &
         propertyType: PropertyType.station;
       }
     | {
+        housePrice: number;
+        houses?: number;
         neighborhood: Neighborhood;
         propertyType: PropertyType.street;
       }
@@ -48,6 +50,8 @@ export type Square = GenericSquare | TaxSquare | PropertySquare;
 export type SquareMinified = {
   /** id */
   i: Id;
+  /** houses */
+  h?: number;
   /** ownerId */
   o?: Id;
   /** status */
