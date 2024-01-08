@@ -4,7 +4,7 @@ import { EventNotification } from './event-notification';
 import { GameEventMinified } from './game-event-minified';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
-import { SquareMinified } from './square';
+import { SquareMinified } from './square-minified';
 
 export type GameMinified = {
   /** centerPot */

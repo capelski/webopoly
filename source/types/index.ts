@@ -10,3 +10,4 @@ export * from './modal-event';
 export * from './player';
 export * from './player-minified';
 export * from './square';
+export * from './square-minified';

@@ -22,38 +22,28 @@ export type TaxSquare = SquareBase & {
 };
 
 type PropertySquareBase = SquareBase & {
-  ownerId?: Id;
+  ownerId: Id | undefined;
   price: number;
-  status?: PropertyStatus;
+  status: PropertyStatus | undefined;
   type: SquareType.property;
 };
 
-export type PropertySquare = PropertySquareBase &
-  (
-    | {
-        propertyType: PropertyType.station;
-      }
-    | {
-        housePrice: number;
-        houses?: number;
-        neighborhood: Neighborhood;
-        propertyType: PropertyType.street;
-      }
-    | {
-        icon: string;
-        propertyType: PropertyType.utility;
-      }
-  );
+export type StationSquare = PropertySquareBase & {
+  propertyType: PropertyType.station;
+};
+
+export type StreetSquare = PropertySquareBase & {
+  housePrice: number;
+  houses: number;
+  neighborhood: Neighborhood;
+  propertyType: PropertyType.street;
+};
+
+export type UtilitySquare = PropertySquareBase & {
+  icon: string;
+  propertyType: PropertyType.utility;
+};
+
+export type PropertySquare = StationSquare | StreetSquare | UtilitySquare;
 
 export type Square = GenericSquare | TaxSquare | PropertySquare;
-
-export type SquareMinified = {
-  /** id */
-  i: Id;
-  /** houses */
-  h?: number;
-  /** ownerId */
-  o?: Id;
-  /** status */
-  s?: PropertyStatus;
-};

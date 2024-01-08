@@ -8,7 +8,7 @@ import {
   rentPercentage,
   stationRent,
 } from '../parameters';
-import { Game, Id, Player, PropertySquare, Square } from '../types';
+import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
 import { getPlayerById, getSquareById } from './game';
 
 export const buildHouse = (game: Game, squareId: Id): Game => {
@@ -29,7 +29,7 @@ export const buildHouse = (game: Game, squareId: Id): Game => {
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === property.id ? { ...s, houses: (property.houses || 0) + 1 } : s;
+      return s.id === property.id ? { ...s, houses: property.houses + 1 } : s;
     }),
   };
 };
@@ -58,23 +58,19 @@ export const buyProperty = (game: Game, squareId: Id): Game => {
   };
 };
 
-export const canBuildHouse = (game: Game, property: PropertySquare, player: Player): boolean => {
-  if (property.propertyType !== PropertyType.street) {
-    return false;
-  }
-
+export const canBuildHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
   const allOwned = neighborhoodStreets.every((p) => p.ownerId === player.id);
   const minHousesNumber = neighborhoodStreets.reduce(
-    (reduced, p) => Math.min(reduced, p.houses || 0),
+    (reduced, p) => Math.min(reduced, p.houses),
     housesMax,
   );
-  const housesNumber = property.houses || 0;
-  const balancedHousesNumber = housesNumber <= minHousesNumber;
+
+  const balancedHousesNumber = property.houses <= minHousesNumber;
 
   return (
     allOwned &&
-    housesNumber < housesMax &&
+    property.houses < housesMax &&
     balancedHousesNumber &&
     player.money >= property.housePrice
   );
@@ -96,24 +92,19 @@ export const canMortgage = (property: PropertySquare, playerId: Id): boolean => 
   return (
     property.ownerId === playerId &&
     property.status !== PropertyStatus.mortgaged &&
-    (property.propertyType !== PropertyType.street || !property.houses)
+    (property.propertyType !== PropertyType.street || property.houses === 0)
   );
 };
 
-export const canSellHouse = (game: Game, property: PropertySquare, player: Player): boolean => {
-  if (property.propertyType !== PropertyType.street) {
-    return false;
-  }
-
+export const canSellHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
   const maxHousesNumber = neighborhoodStreets.reduce(
-    (reduced, p) => Math.max(reduced, p.houses || 0),
+    (reduced, p) => Math.max(reduced, p.houses),
     0,
   );
-  const housesNumber = property.houses || 0;
-  const balancedHousesNumber = housesNumber >= maxHousesNumber;
+  const balancedHousesNumber = property.houses >= maxHousesNumber;
 
-  return property.ownerId === player.id && housesNumber > 0 && balancedHousesNumber;
+  return property.ownerId === player.id && property.houses > 0 && balancedHousesNumber;
 };
 
 export const clearMortgage = (game: Game, squareId: Id): Game => {
@@ -148,21 +139,13 @@ const getClearMortgageAmount = (property: PropertySquare) => {
   return mortgagePercentage * property.price * clearMortgageRate;
 };
 
-const getNeighborhoodStreets = (
-  squares: Square[],
-  property: PropertySquare,
-): (PropertySquare & { propertyType: PropertyType.street })[] => {
-  if (property.propertyType !== PropertyType.street) {
-    return [];
-  }
-
+const getNeighborhoodStreets = (squares: Square[], property: StreetSquare): StreetSquare[] => {
   return squares.filter(
     (p) =>
       p.type === SquareType.property &&
       p.propertyType === PropertyType.street &&
       p.neighborhood === property.neighborhood,
-    // TODO Subtypes for propertySquares
-  ) as (PropertySquare & { propertyType: PropertyType.street })[];
+  ) as StreetSquare[];
 };
 
 export const getRentAmount = (game: Game, property: PropertySquare, movement: number) => {
@@ -178,7 +161,7 @@ export const getRentAmount = (game: Game, property: PropertySquare, movement: nu
     );
     rent = stationRent * stations.length;
   } else if (property.propertyType === PropertyType.street) {
-    if (property.houses !== undefined && property.houses > 0) {
+    if (property.houses > 0) {
       rent = houseRents[property.houses];
     } else {
       const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
@@ -245,7 +228,7 @@ export const sellHouse = (game: Game, squareId: Id): Game => {
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === property.id ? { ...s, houses: (property.houses || 0) - 1 } : s;
+      return s.id === property.id ? { ...s, houses: property.houses - 1 } : s;
     }),
   };
 };

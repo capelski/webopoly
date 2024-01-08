@@ -1,10 +1,14 @@
-import { GameEventType, NotificationType, SquareType } from '../../enums';
+import { GameEventType, NotificationType, PropertyType, SquareType } from '../../enums';
 import { canBuildHouse, canSellHouse, getPlayerById, getSquareById } from '../../logic';
 import { Game, Id } from '../../types';
 
 export const notifyBuildHouse = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
-  if (square.type !== SquareType.property || !square.ownerId) {
+  if (
+    square.type !== SquareType.property ||
+    square.propertyType !== PropertyType.street ||
+    !square.ownerId
+  ) {
     return game;
   }
 
@@ -28,7 +32,11 @@ export const notifyBuildHouse = (game: Game, squareId: Id): Game => {
 
 export const notifySellHouse = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
-  if (square.type !== SquareType.property || !square.ownerId) {
+  if (
+    square.type !== SquareType.property ||
+    square.propertyType !== PropertyType.street ||
+    !square.ownerId
+  ) {
     return game;
   }
 

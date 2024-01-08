@@ -1,9 +1,12 @@
-import { GamePhase, PlayerStatus } from '../enums';
+import { GamePhase, PlayerStatus, SquareType } from '../enums';
 import { playerInitialMoney } from '../parameters';
 import { GameMinified, PlayerMinified, SquareMinified } from '../types';
 
 export const createGame = (nPlayers: number): GameMinified => {
-  const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({ i: index + 1 }));
+  const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
+    i: index + 1,
+    t: SquareType.chance, // The incorrect type will be overwrite on the first restore
+  }));
 
   const minifiedPlayers = [...Array(nPlayers)].map<PlayerMinified>((_, index) => ({
     c: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),

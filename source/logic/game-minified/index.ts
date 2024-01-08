@@ -34,20 +34,45 @@ export const minifyGame = (game: Game): GameMinified => {
       t: player.turnsInJail,
     })),
     s: game.squares.map<SquareMinified>((square) => {
-      const minifiedSquare: SquareMinified = {
-        i: square.id,
-      };
-
-      if (square.type === SquareType.property) {
-        minifiedSquare.o = square.ownerId;
-        minifiedSquare.s = square.status;
-
-        if (square.propertyType === PropertyType.street) {
-          minifiedSquare.h = square.houses;
-        }
-      }
-
-      return minifiedSquare;
+      return square.type === SquareType.chance ||
+        square.type === SquareType.communityChest ||
+        square.type === SquareType.go ||
+        square.type === SquareType.goToJail ||
+        square.type === SquareType.jail ||
+        square.type === SquareType.parking
+        ? {
+            i: square.id,
+            t: square.type,
+          }
+        : square.type === SquareType.property
+        ? square.propertyType === PropertyType.station
+          ? {
+              i: square.id,
+              t: square.type,
+              pt: square.propertyType,
+              o: square.ownerId,
+              s: square.status,
+            }
+          : square.propertyType === PropertyType.street
+          ? {
+              i: square.id,
+              t: square.type,
+              pt: square.propertyType,
+              o: square.ownerId,
+              s: square.status,
+              h: square.houses,
+            }
+          : {
+              i: square.id,
+              t: square.type,
+              pt: square.propertyType,
+              o: square.ownerId,
+              s: square.status,
+            }
+        : {
+            i: square.id,
+            t: square.type,
+          };
     }),
   };
 };
@@ -74,13 +99,13 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
       turnsInJail: p.t,
     })),
     squares: game.s.map<Square>((s) => {
-      const square: Square = squaresMap[s.i];
+      const square = squaresMap[s.i];
 
-      if (square.type === SquareType.property) {
+      if (square.type === SquareType.property && s.t === SquareType.property) {
         square.ownerId = s.o;
         square.status = s.s;
 
-        if (square.propertyType === PropertyType.street) {
+        if (square.propertyType === PropertyType.street && s.pt === PropertyType.street) {
           square.houses = s.h;
         }
       }

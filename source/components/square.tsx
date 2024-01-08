@@ -117,6 +117,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               disabled={
                 props.game.gamePhase === GamePhase.rollDice ||
                 props.square.type !== SquareType.property ||
+                props.square.propertyType !== PropertyType.street ||
                 !canBuildHouse(props.game, props.square, currentPlayer)
               }
               onClick={() => {
@@ -131,6 +132,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               disabled={
                 props.game.gamePhase === GamePhase.rollDice ||
                 props.square.type !== SquareType.property ||
+                props.square.propertyType !== PropertyType.street ||
                 !canSellHouse(props.game, props.square, currentPlayer)
               }
               onClick={() => {
@@ -244,7 +246,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               {owner && <PlayerAvatar player={owner} />}
               {props.square.propertyType === PropertyType.street && (
                 <span>
-                  {houseSymbol}&nbsp;{props.square.houses || 0}&nbsp;
+                  {houseSymbol}&nbsp;{props.square.houses}&nbsp;
                 </span>
               )}
               {currencySymbol}
