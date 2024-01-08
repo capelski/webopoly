@@ -89,7 +89,9 @@ export const rollDice = (game: Game): Game => {
         });
       } else if (payTaxes) {
         const tax =
-          nextSquare.taxType === TaxType.income ? Math.min(0.1 * currentPlayer.money, 200) : 100;
+          nextSquare.taxType === TaxType.income
+            ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
+            : 100;
         notifications.push({
           notificationType: NotificationType.toast,
           playerId: currentPlayer.id,

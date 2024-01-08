@@ -136,7 +136,7 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 };
 
 const getClearMortgageAmount = (property: PropertySquare) => {
-  return mortgagePercentage * property.price * clearMortgageRate;
+  return Math.round(mortgagePercentage * property.price * clearMortgageRate);
 };
 
 const getNeighborhoodStreets = (squares: Square[], property: StreetSquare): StreetSquare[] => {
@@ -179,7 +179,7 @@ export const getRentAmount = (game: Game, property: PropertySquare, movement: nu
     rent = movement * (utilityProperties.length === 2 ? 10 : 4);
   }
 
-  return rent;
+  return Math.round(rent);
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {
@@ -203,7 +203,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
       return p.id === square.ownerId
         ? {
             ...p,
-            money: p.money + mortgagePercentage * square.price,
+            money: p.money + Math.round(mortgagePercentage * square.price),
           }
         : p;
     }),

@@ -1,4 +1,3 @@
-- Rounding in decimal operations
 - Allow mortgaging properties / selling houses when player goes bankrupt
 - Implement Chance and Community Chest card actions
 - Function to minify the serialized games on localStorage saving
