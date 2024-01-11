@@ -162,7 +162,7 @@ export const getRentAmount = (game: Game, property: PropertySquare, movement: nu
     rent = stationRent * stations.length;
   } else if (property.propertyType === PropertyType.street) {
     if (property.houses > 0) {
-      rent = houseRents[property.houses];
+      rent = houseRents[property.houses] * property.price;
     } else {
       const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
       const ownedStreets = neighborhoodStreets.filter((p) => p.ownerId === landlord.id);
