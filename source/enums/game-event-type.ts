@@ -5,6 +5,7 @@ export enum GameEventType {
   chance = 'chance',
   clearMortgage = 'clearMortgage',
   communityChest = 'communityChest',
+  endTurn = 'endTurn',
   freeParking = 'freeParking',
   getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',

@@ -1,4 +1,5 @@
 import { GameEventType } from '../enums';
+import { Dice } from './dice';
 import { Id } from './id';
 
 export type GameEventBase = {
@@ -13,6 +14,8 @@ export type CardEvent = GameEventBase & {
 export type GenericEvent = GameEventBase & {
   type:
     | GameEventType.bankruptcy
+    | GameEventType.endTurn
+    | GameEventType.getOutOfJail
     | GameEventType.goToJail
     | GameEventType.passGo
     | GameEventType.playerWin;
@@ -50,9 +53,8 @@ export type RemainsInJailEvent = GameEventBase & {
 };
 
 export type RollDiceEvent = GameEventBase & {
-  dice: string;
-  squareId: Id;
-  type: GameEventType.getOutOfJail | GameEventType.rollDice;
+  dice: Dice;
+  type: GameEventType.rollDice;
 };
 
 export type GameEvent =

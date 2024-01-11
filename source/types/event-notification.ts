@@ -10,6 +10,6 @@ export type EventNotification = GameEvent &
   (
     | ModalNotification
     | {
-        notificationType: NotificationType.toast;
+        notificationType: NotificationType.silent | NotificationType.toast;
       }
   );

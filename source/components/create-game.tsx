@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createGame } from '../actions';
+import { createGame } from '../logic';
 import { GameMinified } from '../types';
 import { Button } from './button';
 

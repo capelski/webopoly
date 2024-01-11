@@ -47,14 +47,12 @@ export const eventsMap: {
     minify: (event) => ({ c: event.cardId, p: event.playerId, t: event.type }),
     restore: (e) => ({ cardId: e.c, playerId: e.p, type: e.t }),
   },
+  [GameEventType.endTurn]: { minify: genericEventMinifier, restore: genericEventRestorer },
   [GameEventType.freeParking]: {
     minify: (event) => ({ p: event.playerId, po: event.pot, t: event.type }),
     restore: (e) => ({ playerId: e.p, pot: e.po, type: e.t }),
   },
-  [GameEventType.getOutOfJail]: {
-    minify: (event) => ({ d: event.dice, p: event.playerId, s: event.squareId, t: event.type }),
-    restore: (e) => ({ dice: e.d, playerId: e.p, squareId: e.s, type: e.t }),
-  },
+  [GameEventType.getOutOfJail]: { minify: genericEventMinifier, restore: genericEventRestorer },
   [GameEventType.goToJail]: { minify: genericEventMinifier, restore: genericEventRestorer },
   [GameEventType.mortgage]: { minify: propertyEventMinifier, restore: propertyEventRestorer },
   [GameEventType.passGo]: { minify: genericEventMinifier, restore: genericEventRestorer },
@@ -72,8 +70,8 @@ export const eventsMap: {
     restore: (e) => ({ playerId: e.p, turnsInJail: e.tj, type: e.t }),
   },
   [GameEventType.rollDice]: {
-    minify: (event) => ({ d: event.dice, p: event.playerId, s: event.squareId, t: event.type }),
-    restore: (e) => ({ dice: e.d, playerId: e.p, squareId: e.s, type: e.t }),
+    minify: (event) => ({ d: event.dice, p: event.playerId, t: event.type }),
+    restore: (e) => ({ dice: e.d, playerId: e.p, type: e.t }),
   },
   [GameEventType.sellHouse]: { minify: propertyEventMinifier, restore: propertyEventRestorer },
 };

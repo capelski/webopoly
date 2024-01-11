@@ -1,6 +1,6 @@
 import React from 'react';
-import { applyNotifications } from '../actions';
 import { ModalType, NotificationType } from '../enums';
+import { applyNotifications } from '../logic';
 import { Game, ModalNotification, TypedModalEvent } from '../types';
 import { CardModal } from './card-modal';
 import { GameEventComponent } from './game-event';

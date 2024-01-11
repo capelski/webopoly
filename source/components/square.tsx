@@ -1,5 +1,4 @@
 import React, { CSSProperties, useState } from 'react';
-import { notifyBuildHouse, notifyClearMortgage, notifyMortgage, notifySellHouse } from '../actions';
 import {
   GamePhase,
   Neighborhood,
@@ -18,6 +17,12 @@ import {
   isPlayerInJail,
 } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
+import {
+  triggerBuildHouse,
+  triggerClearMortgage,
+  triggerMortgage,
+  triggerSellHouse,
+} from '../triggers';
 import { Game, Square } from '../types';
 import { Button } from './button';
 import { Modal } from './modal';
@@ -91,7 +96,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               }
               onClick={() => {
                 setDisplayModal(false);
-                props.updateGame(notifyMortgage(props.game, props.square.id));
+                props.updateGame(triggerMortgage(props.game, props.square.id));
               }}
             >
               Mortgage
@@ -105,7 +110,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               }
               onClick={() => {
                 setDisplayModal(false);
-                props.updateGame(notifyClearMortgage(props.game, props.square.id));
+                props.updateGame(triggerClearMortgage(props.game, props.square.id));
               }}
             >
               Clear mortgage
@@ -122,7 +127,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               }
               onClick={() => {
                 setDisplayModal(false);
-                props.updateGame(notifyBuildHouse(props.game, props.square.id));
+                props.updateGame(triggerBuildHouse(props.game, props.square.id));
               }}
             >
               Build house
@@ -137,7 +142,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
               }
               onClick={() => {
                 setDisplayModal(false);
-                props.updateGame(notifySellHouse(props.game, props.square.id));
+                props.updateGame(triggerSellHouse(props.game, props.square.id));
               }}
             >
               Sell house

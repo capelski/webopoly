@@ -5,6 +5,7 @@ import {
   buyProperty,
   clearMortgage,
   collectCenterPot,
+  endTurn,
   getChanceCardById,
   getCommunityChestCardById,
   getCurrentPlayer,
@@ -18,6 +19,7 @@ import {
   sellHouse,
 } from '../logic';
 import { Game, GameEvent } from '../types';
+import { applyMovement } from './movement';
 
 type Transformer<T = GameEventType> = (game: Game, notification: GameEvent & { type: T }) => Game;
 
@@ -35,6 +37,7 @@ const transformersMap: { [TKey in GameEventType]: Transformer<TKey> } = {
     const card = getCommunityChestCardById(notification.cardId);
     return card.action(game);
   },
+  [GameEventType.endTurn]: (game) => endTurn(game),
   [GameEventType.freeParking]: (game) => collectCenterPot(game),
   [GameEventType.getOutOfJail]: (game) => getOutOfJail(game),
   [GameEventType.goToJail]: (game) => goToJail(game),
@@ -45,7 +48,7 @@ const transformersMap: { [TKey in GameEventType]: Transformer<TKey> } = {
   [GameEventType.payTax]: (game, notification) => payTax(game, notification.tax),
   [GameEventType.playerWin]: (game) => game, // Not addressed here
   [GameEventType.remainInJail]: (game) => remainInJail(game),
-  [GameEventType.rollDice]: (game) => game, // Not addressed here
+  [GameEventType.rollDice]: (game) => applyMovement(game),
   [GameEventType.sellHouse]: (game, notification) => sellHouse(game, notification.propertyId),
 };
 
@@ -60,10 +63,12 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
 
   const events: GameEvent[] = [];
   const nextNotifications =
-    notificationType === NotificationType.toast
+    notificationType === NotificationType.silent
+      ? nextGame.notifications.filter((n) => n.notificationType !== NotificationType.silent)
+      : notificationType === NotificationType.toast
       ? nextGame.notifications.filter((n) => n.notificationType === NotificationType.modal)
       : [];
-  let nextTurnPhase = GamePhase.play;
+  let nextTurnPhase = game.gamePhase !== nextGame.gamePhase ? nextGame.gamePhase : GamePhase.play;
   const currentPlayer = getCurrentPlayer(nextGame);
 
   if (currentPlayer.money < 0) {
@@ -85,7 +90,11 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
 
   return {
     ...nextGame,
-    events: [...events, ...notifications.reverse(), ...nextGame.events],
+    events: [
+      ...events,
+      ...notifications.filter((n) => n.notificationType !== NotificationType.silent).reverse(),
+      ...nextGame.events,
+    ],
     gamePhase: nextTurnPhase,
     notifications: nextNotifications,
   };

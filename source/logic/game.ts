@@ -1,5 +1,52 @@
-import { PlayerStatus, PropertyType, SquareType } from '../enums';
-import { Game, Id, Player, Square, StreetSquare } from '../types';
+import { GamePhase, PlayerStatus, PropertyType, SquareType } from '../enums';
+import { playerInitialMoney } from '../parameters';
+import {
+  Game,
+  GameMinified,
+  Id,
+  Player,
+  PlayerMinified,
+  Square,
+  SquareMinified,
+  StreetSquare,
+} from '../types';
+
+export const createGame = (nPlayers: number): GameMinified => {
+  const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
+    i: index + 1,
+    t: SquareType.chance, // The incorrect type will be overwrite on the first restore
+  }));
+
+  const minifiedPlayers = [...Array(nPlayers)].map<PlayerMinified>((_, index) => ({
+    c: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
+    i: index + 1,
+    m: playerInitialMoney,
+    n: `Player ${index + 1}`,
+    p: [],
+    si: minifiedSquares[0].i,
+    s: PlayerStatus.playing,
+    t: 0,
+  }));
+
+  return {
+    cp: 0,
+    ci: minifiedPlayers[0].i,
+    d: [],
+    e: [],
+    g: GamePhase.rollDice,
+    n: [],
+    p: minifiedPlayers,
+    s: minifiedSquares,
+  };
+};
+
+export const endTurn = (game: Game): Game => {
+  return {
+    ...game,
+    currentPlayerId: getNextPlayerId(game),
+    gamePhase: GamePhase.rollDice,
+  };
+};
 
 export const getCurrentPlayer = (game: Game): Player => {
   return game.players.find((p) => p.id === game.currentPlayerId)!;

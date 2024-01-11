@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { applyNotifications, endTurn, notifyBuyProperty, rollDice } from '../actions';
 import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
-import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { applyNotifications, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
+import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
 import { Game, Id, ModalNotification, Square } from '../types';
 import { Button } from './button';
 import { FinishedModal } from './finished-modal';
@@ -15,7 +15,6 @@ import { NavBar } from './nav-bar';
 import { NotificationModal } from './notification-modal';
 import { Players } from './players';
 import { SquareComponent } from './square';
-
 interface GameComponentProps {
   clearGame: () => void;
   game: Game;
@@ -50,6 +49,9 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const toasts = props.game.notifications.filter(
     (n) => n.notificationType === NotificationType.toast,
   );
+  const silentNotifications = props.game.notifications.filter(
+    (n) => n.notificationType === NotificationType.silent,
+  );
 
   useEffect(() => {
     if (toasts.length) {
@@ -66,6 +68,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       setTimeout(() => {
         setDisplayModal(true);
       }, 800);
+    } else if (silentNotifications.length) {
+      props.updateGame(applyNotifications(props.game, NotificationType.silent));
     }
   }, [props.game.notifications]);
 
@@ -169,7 +173,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <div>
           <Button
             onClick={() => {
-              props.updateGame(rollDice(props.game));
+              props.updateGame(triggerDiceRoll(props.game));
             }}
             disabled={props.game.gamePhase !== GamePhase.rollDice}
           >
@@ -178,7 +182,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
           <Button
             onClick={() => {
-              props.updateGame(notifyBuyProperty(props.game));
+              props.updateGame(triggerBuyProperty(props.game));
             }}
             disabled={
               props.game.gamePhase !== GamePhase.play ||
@@ -191,7 +195,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
           <Button
             onClick={() => {
-              props.updateGame(endTurn(props.game));
+              props.updateGame(triggerEndTurn(props.game));
             }}
             disabled={props.game.gamePhase !== GamePhase.play}
           >

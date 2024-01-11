@@ -1,12 +1,4 @@
 import {
-  GameEventType,
-  GamePhase,
-  ModalType,
-  NotificationType,
-  SquareType,
-  TaxType,
-} from '../enums';
-import {
   getCurrentPlayer,
   getNextChanceCardId,
   getNextCommunityChestCardId,
@@ -16,41 +8,35 @@ import {
   isPlayerInJail,
   passesGo,
   paysRent,
-} from '../logic';
-import { Dice, EventNotification, Game, GameEvent } from '../types';
+} from '.';
+import {
+  GameEventType,
+  GamePhase,
+  ModalType,
+  NotificationType,
+  SquareType,
+  TaxType,
+} from '../enums';
+import { EventNotification, Game, GameEvent } from '../types';
 
-export const rollDice = (game: Game): Game => {
+export const applyMovement = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const dice: Dice = [
-    Math.max(1, Math.round(Math.random() * 6)),
-    Math.max(1, Math.round(Math.random() * 6)),
-  ];
-  const stringifedDice = dice.join('-');
   const events: GameEvent[] = [];
   const notifications: EventNotification[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
-  const escapesJail = getsOutOfJail(currentPlayer, dice);
+  const escapesJail = getsOutOfJail(currentPlayer, game.dice);
 
   if (!isInJail || escapesJail) {
-    const movement = dice.reduce((x, y) => x + y, 0);
+    const movement = game.dice.reduce((x, y) => x + y, 0);
     const nextSquareId = getNextSquareId(game, movement);
     const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
       notifications.push({
-        dice: stringifedDice,
         notificationType: NotificationType.toast,
         playerId: currentPlayer.id,
-        squareId: nextSquare.id,
         type: GameEventType.getOutOfJail,
-      });
-    } else {
-      events.push({
-        dice: stringifedDice,
-        playerId: currentPlayer.id,
-        squareId: nextSquare.id,
-        type: GameEventType.rollDice,
       });
     }
 
@@ -137,7 +123,6 @@ export const rollDice = (game: Game): Game => {
 
   return {
     ...game,
-    dice,
     events: events.concat(game.events),
     gamePhase: GamePhase.play,
     notifications,
