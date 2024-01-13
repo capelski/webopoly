@@ -1,6 +1,7 @@
 import { PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   clearMortgageRate,
+  houseBuildPercentage,
   houseRents,
   houseSellPercentage,
   housesMax,
@@ -136,7 +137,7 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
 };
 
 export const getBuildHouseAmount = (property: StreetSquare) => {
-  return property.housePrice;
+  return Math.round((property.price / 5) * houseBuildPercentage) * 5;
 };
 
 export const getClearMortgageAmount = (property: PropertySquare) => {
@@ -192,7 +193,7 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
 };
 
 export const getSellHouseAmount = (property: StreetSquare) => {
-  return Math.round(houseSellPercentage * getBuildHouseAmount(property));
+  return Math.round((property.price / 5) * houseSellPercentage) * 5;
 };
 
 export const mortgage = (game: Game, squareId: Id): Game => {

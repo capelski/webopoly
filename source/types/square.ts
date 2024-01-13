@@ -33,7 +33,6 @@ export type StationSquare = PropertySquareBase & {
 };
 
 export type StreetSquare = PropertySquareBase & {
-  housePrice: number;
   houses: number;
   neighborhood: Neighborhood;
   propertyType: PropertyType.street;

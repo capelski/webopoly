@@ -4,7 +4,6 @@ import { Id, Square } from '../../types';
 export const squaresMap: { [key: Id]: Square } = {
   1: { id: 1, name: 'Go', type: SquareType.go },
   2: {
-    housePrice: 50,
     houses: 0,
     id: 2,
     name: 'Old Kent Rd.',
@@ -17,7 +16,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   3: { id: 3, name: 'Community chest', type: SquareType.communityChest },
   4: {
-    housePrice: 50,
     houses: 0,
     id: 4,
     name: 'Whitechapel Rd.',
@@ -44,7 +42,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   7: {
-    housePrice: 50,
     houses: 0,
     id: 7,
     name: 'Angel Islington',
@@ -57,7 +54,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   8: { id: 8, name: 'Chance', type: SquareType.chance },
   9: {
-    housePrice: 50,
     houses: 0,
     id: 9,
     name: 'Euston Rd.',
@@ -69,7 +65,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   10: {
-    housePrice: 50,
     houses: 0,
     id: 10,
     name: 'Pentonville Rd.',
@@ -82,7 +77,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   11: { id: 11, name: 'Jail', type: SquareType.jail },
   12: {
-    housePrice: 100,
     houses: 0,
     id: 12,
     name: 'Pall Mall',
@@ -104,7 +98,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   14: {
-    housePrice: 100,
     houses: 0,
     id: 14,
     name: 'Whitehall',
@@ -116,7 +109,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   15: {
-    housePrice: 100,
     houses: 0,
     id: 15,
     name: 'Northumberland',
@@ -137,7 +129,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   17: {
-    housePrice: 100,
     houses: 0,
     id: 17,
     name: 'Bow St.',
@@ -150,7 +141,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   18: { id: 18, name: 'Community chest', type: SquareType.communityChest },
   19: {
-    housePrice: 100,
     houses: 0,
     id: 19,
     name: 'Marlborough St.',
@@ -162,7 +152,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   20: {
-    housePrice: 100,
     houses: 0,
     id: 20,
     name: 'Vine St.',
@@ -175,7 +164,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   21: { id: 21, name: 'Free Parking', type: SquareType.parking },
   22: {
-    housePrice: 150,
     houses: 0,
     id: 22,
     name: 'Strand',
@@ -188,7 +176,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   23: { id: 23, name: 'Chance', type: SquareType.chance },
   24: {
-    housePrice: 150,
     houses: 0,
     id: 24,
     name: 'Fleet St.',
@@ -200,7 +187,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   25: {
-    housePrice: 150,
     houses: 0,
     id: 25,
     name: 'Trafalgar Square',
@@ -221,7 +207,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   27: {
-    housePrice: 150,
     houses: 0,
     id: 27,
     name: 'Leicester Square',
@@ -233,7 +218,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   28: {
-    housePrice: 150,
     houses: 0,
     id: 28,
     name: 'Coventry St.',
@@ -255,7 +239,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   30: {
-    housePrice: 200,
     houses: 0,
     id: 30,
     name: 'Piccadilly',
@@ -268,7 +251,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   31: { id: 31, name: 'Go To Jail', type: SquareType.goToJail },
   32: {
-    housePrice: 200,
     houses: 0,
     id: 32,
     name: 'Regent St.',
@@ -280,7 +262,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.property,
   },
   33: {
-    housePrice: 200,
     houses: 0,
     id: 33,
     name: 'Oxford St.',
@@ -293,7 +274,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   34: { id: 34, name: 'Community chest', type: SquareType.communityChest },
   35: {
-    housePrice: 200,
     houses: 0,
     id: 35,
     name: 'Bond St.',
@@ -315,7 +295,6 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   37: { id: 37, name: 'Chance', type: SquareType.chance },
   38: {
-    housePrice: 200,
     houses: 0,
     id: 38,
     name: 'Park Lane',
@@ -333,7 +312,6 @@ export const squaresMap: { [key: Id]: Square } = {
     type: SquareType.tax,
   },
   40: {
-    housePrice: 200,
     houses: 0,
     id: 40,
     name: 'Mayfair',

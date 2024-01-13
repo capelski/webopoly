@@ -17,6 +17,8 @@ export const mortgagePercentage = 0.5;
 export const clearMortgageRate = 1.1;
 export const stationRent = 25;
 export const housesMax = 5;
+export const houseBuildPercentage = 0.6;
+export const houseSellPercentage = 0.3;
 export const houseRents: { [housesNumber: number]: number } = {
   1: 0.5,
   2: 1,
@@ -24,4 +26,3 @@ export const houseRents: { [housesNumber: number]: number } = {
   4: 4,
   5: 5,
 };
-export const houseSellPercentage = 0.5;
