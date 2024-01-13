@@ -12,8 +12,12 @@ import {
   canClearMortgage,
   canMortgage,
   canSellHouse,
+  getBuildHouseAmount,
+  getClearMortgageAmount,
   getCurrentPlayer,
+  getMortgageAmount,
   getPlayerById,
+  getSellHouseAmount,
   isPlayerInJail,
 } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
@@ -85,13 +89,12 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         borderTop: '1px solid #ccc',
       }}
     >
-      {displayModal && (
+      {props.square.type === SquareType.property && displayModal && (
         <Modal>
           <div style={{ marginBottom: 16 }}>
             <Button
               disabled={
                 props.game.gamePhase === GamePhase.rollDice ||
-                props.square.type !== SquareType.property ||
                 !canMortgage(props.square, currentPlayer.id)
               }
               onClick={() => {
@@ -99,13 +102,13 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
                 props.updateGame(triggerMortgage(props.game, props.square.id));
               }}
             >
-              Mortgage
+              Mortgage ({currencySymbol}
+              {getMortgageAmount(props.square)})
             </Button>
 
             <Button
               disabled={
                 props.game.gamePhase === GamePhase.rollDice ||
-                props.square.type !== SquareType.property ||
                 !canClearMortgage(props.square, currentPlayer)
               }
               onClick={() => {
@@ -113,41 +116,42 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
                 props.updateGame(triggerClearMortgage(props.game, props.square.id));
               }}
             >
-              Clear mortgage
+              Clear mortgage ({currencySymbol}
+              {getClearMortgageAmount(props.square)})
             </Button>
           </div>
 
-          <div style={{ marginBottom: 16 }}>
-            <Button
-              disabled={
-                props.game.gamePhase === GamePhase.rollDice ||
-                props.square.type !== SquareType.property ||
-                props.square.propertyType !== PropertyType.street ||
-                !canBuildHouse(props.game, props.square, currentPlayer)
-              }
-              onClick={() => {
-                setDisplayModal(false);
-                props.updateGame(triggerBuildHouse(props.game, props.square.id));
-              }}
-            >
-              Build house
-            </Button>
+          {props.square.propertyType === PropertyType.street && (
+            <div style={{ marginBottom: 16 }}>
+              <Button
+                disabled={
+                  props.game.gamePhase === GamePhase.rollDice ||
+                  !canBuildHouse(props.game, props.square, currentPlayer)
+                }
+                onClick={() => {
+                  setDisplayModal(false);
+                  props.updateGame(triggerBuildHouse(props.game, props.square.id));
+                }}
+              >
+                Build house ({currencySymbol}
+                {getBuildHouseAmount(props.square)})
+              </Button>
 
-            <Button
-              disabled={
-                props.game.gamePhase === GamePhase.rollDice ||
-                props.square.type !== SquareType.property ||
-                props.square.propertyType !== PropertyType.street ||
-                !canSellHouse(props.game, props.square, currentPlayer)
-              }
-              onClick={() => {
-                setDisplayModal(false);
-                props.updateGame(triggerSellHouse(props.game, props.square.id));
-              }}
-            >
-              Sell house
-            </Button>
-          </div>
+              <Button
+                disabled={
+                  props.game.gamePhase === GamePhase.rollDice ||
+                  !canSellHouse(props.game, props.square, currentPlayer)
+                }
+                onClick={() => {
+                  setDisplayModal(false);
+                  props.updateGame(triggerSellHouse(props.game, props.square.id));
+                }}
+              >
+                Sell house ({currencySymbol}
+                {getSellHouseAmount(props.square)})
+              </Button>
+            </div>
+          )}
 
           <Button
             onClick={() => {

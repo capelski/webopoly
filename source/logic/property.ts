@@ -24,7 +24,7 @@ export const buildHouse = (game: Game, squareId: Id): Game => {
       return p.id === game.currentPlayerId
         ? {
             ...p,
-            money: p.money - property.housePrice,
+            money: p.money - getBuildHouseAmount(property),
           }
         : p;
     }),
@@ -72,7 +72,7 @@ export const canBuildHouse = (game: Game, property: StreetSquare, player: Player
     allOwned &&
     property.houses < housesMax &&
     balancedHousesNumber &&
-    player.money >= property.housePrice
+    player.money >= getBuildHouseAmount(property)
   );
 };
 
@@ -135,7 +135,11 @@ export const clearMortgage = (game: Game, squareId: Id): Game => {
   };
 };
 
-const getClearMortgageAmount = (property: PropertySquare) => {
+export const getBuildHouseAmount = (property: StreetSquare) => {
+  return property.housePrice;
+};
+
+export const getClearMortgageAmount = (property: PropertySquare) => {
   return Math.round(mortgagePercentage * property.price * clearMortgageRate);
 };
 
@@ -146,6 +150,10 @@ const getNeighborhoodStreets = (squares: Square[], property: StreetSquare): Stre
       p.propertyType === PropertyType.street &&
       p.neighborhood === property.neighborhood,
   ) as StreetSquare[];
+};
+
+export const getMortgageAmount = (property: PropertySquare) => {
+  return Math.round(mortgagePercentage * property.price);
 };
 
 export const getRentAmount = (game: Game, property: PropertySquare) => {
@@ -183,6 +191,10 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
   return Math.round(rent);
 };
 
+export const getSellHouseAmount = (property: StreetSquare) => {
+  return Math.round(houseSellPercentage * getBuildHouseAmount(property));
+};
+
 export const mortgage = (game: Game, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
 
@@ -204,7 +216,7 @@ export const mortgage = (game: Game, squareId: Id): Game => {
       return p.id === square.ownerId
         ? {
             ...p,
-            money: p.money + Math.round(mortgagePercentage * square.price),
+            money: p.money + getMortgageAmount(square),
           }
         : p;
     }),
@@ -224,7 +236,7 @@ export const sellHouse = (game: Game, squareId: Id): Game => {
       return p.id === game.currentPlayerId
         ? {
             ...p,
-            money: p.money + houseSellPercentage * property.housePrice,
+            money: p.money + getSellHouseAmount(property),
           }
         : p;
     }),
