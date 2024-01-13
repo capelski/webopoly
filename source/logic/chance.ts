@@ -1,8 +1,16 @@
+import { PropertyType } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
 import { triggerMovePlayer } from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
-import { getNextSquareId, payFee, payStreetRepairs, payToAllPlayers, receivePayout } from './game';
+import {
+  getNextPropertyOfTypeId,
+  getNextSquareId,
+  payFee,
+  payStreetRepairs,
+  payToAllPlayers,
+  receivePayout,
+} from './game';
 import { squaresMap } from './game-minified/squares-map';
 
 const chanceSource: Omit<Card, 'id'>[] = [
@@ -30,24 +38,27 @@ const chanceSource: Omit<Card, 'id'>[] = [
     },
     text: `Advance to ${squaresMap[12].name}`,
   },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance to the next Station',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance to the next Station',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance token to next Utility',
-  // },
+  {
+    action: (game) => {
+      const nextStationId = getNextPropertyOfTypeId(game, PropertyType.station);
+      return triggerMovePlayer(game, nextStationId);
+    },
+    text: 'Advance to the next Station',
+  },
+  {
+    action: (game) => {
+      const nextStationId = getNextPropertyOfTypeId(game, PropertyType.station);
+      return triggerMovePlayer(game, nextStationId);
+    },
+    text: 'Advance to the next Station',
+  },
+  {
+    action: (game) => {
+      const nextUtilityId = getNextPropertyOfTypeId(game, PropertyType.utility);
+      return triggerMovePlayer(game, nextUtilityId);
+    },
+    text: 'Advance to the next Utility',
+  },
   {
     action: (game) => {
       return receivePayout(game, 50);

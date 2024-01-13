@@ -57,7 +57,7 @@ export const getCurrentSquare = (game: Game): Square => {
   return game.squares.find((s) => s.id === currentPlayer.squareId)!;
 };
 
-export const getNextPlayerId = (game: Game) => {
+export const getNextPlayerId = (game: Game): Id => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);
   const nextPlayerIndex = (currentPlayerIndex + 1) % game.players.length;
   const playersPool = game.players
@@ -67,11 +67,22 @@ export const getNextPlayerId = (game: Game) => {
   return playersPool.find((p) => p.status === PlayerStatus.playing)!.id;
 };
 
-export const getNextSquareId = (game: Game, movement: number) => {
+export const getNextSquareId = (game: Game, movement: number): Id => {
   const currentSquare = getCurrentSquare(game);
   const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquare.id);
   const nextSquareIndex = (currentSquareIndex + movement) % game.squares.length;
   return game.squares[nextSquareIndex].id;
+};
+
+export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType): Id => {
+  const currentSquare = getCurrentSquare(game);
+  const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquare.id);
+  const nextSquareIndex = (currentSquareIndex + 1) % game.squares.length;
+  const squaresPool = game.squares
+    .slice(nextSquareIndex)
+    .concat(game.squares.slice(0, nextSquareIndex));
+  return squaresPool.find((s) => s.type === SquareType.property && s.propertyType === propertyType)!
+    .id;
 };
 
 export const getPlayerById = (game: Game, playerId: Id): Player => {
