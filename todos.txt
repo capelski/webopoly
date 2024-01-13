@@ -1,7 +1,8 @@
 - Trading / Selling properties to other players
-- Pay fine to get out of jail
 - Allow mortgaging properties / selling houses when player goes bankrupt
 - Implement Chance and Community Chest card actions
+- Pay fine to get out of jail
+- Roll doubles => Extra turn
 - Make parameters.ts modifiable on createGame
 - House pricing based on property price percentage
 - Display error toast on disabled buttons

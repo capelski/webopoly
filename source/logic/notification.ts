@@ -9,6 +9,7 @@ import {
   getChanceCardById,
   getCommunityChestCardById,
   getCurrentPlayer,
+  getNextSquareId,
   getOutOfJail,
   goToJail,
   mortgage,
@@ -18,8 +19,8 @@ import {
   remainInJail,
   sellHouse,
 } from '../logic';
-import { Game, GameEvent } from '../types';
-import { applyMovement } from './movement';
+import { triggerMovePlayer } from '../triggers';
+import { EventNotification, Game, GameEvent, SplitNotifications } from '../types';
 
 type Transformer<T = GameEventType> = (game: Game, notification: GameEvent & { type: T }) => Game;
 
@@ -48,27 +49,32 @@ const transformersMap: { [TKey in GameEventType]: Transformer<TKey> } = {
   [GameEventType.payTax]: (game, notification) => payTax(game, notification.tax),
   [GameEventType.playerWin]: (game) => game, // Not addressed here
   [GameEventType.remainInJail]: (game) => remainInJail(game),
-  [GameEventType.rollDice]: (game) => applyMovement(game),
+  [GameEventType.rollDice]: (game) => {
+    const movement = game.dice.reduce((x, y) => x + y, 0);
+    const nextSquareId = getNextSquareId(game, movement);
+    return triggerMovePlayer(game, nextSquareId);
+  },
   [GameEventType.sellHouse]: (game, notification) => sellHouse(game, notification.propertyId),
 };
 
 export const applyNotifications = (game: Game, notificationType: NotificationType): Game => {
-  const notifications = game.notifications.filter((n) => n.notificationType === notificationType);
+  const { currentNotifications, pendingNotifications } = splitNotifications(
+    game.notifications,
+    notificationType,
+  );
+  const newNotifications: EventNotification[] = [];
+
   let nextGame = game;
 
-  notifications.forEach((notification) => {
+  currentNotifications.forEach((notification) => {
     const transformer: Transformer = transformersMap[notification.type];
-    nextGame = transformer(nextGame, notification);
+    const { notifications, ...rest } = transformer(nextGame, notification);
+    nextGame = { ...rest, notifications: [] };
+    newNotifications.push(...notifications.filter((n) => !game.notifications.includes(n)));
   });
 
   const events: GameEvent[] = [];
-  const nextNotifications =
-    notificationType === NotificationType.silent
-      ? nextGame.notifications.filter((n) => n.notificationType !== NotificationType.silent)
-      : notificationType === NotificationType.toast
-      ? nextGame.notifications.filter((n) => n.notificationType === NotificationType.modal)
-      : [];
-  let nextTurnPhase = game.gamePhase !== nextGame.gamePhase ? nextGame.gamePhase : GamePhase.play;
+  let nextGamePhase = nextGame.gamePhase;
   const currentPlayer = getCurrentPlayer(nextGame);
 
   if (currentPlayer.money < 0) {
@@ -80,7 +86,7 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
 
     const remainingPlayers = nextGame.players.filter((p) => p.status === PlayerStatus.playing);
     if (remainingPlayers.length === 1) {
-      nextTurnPhase = GamePhase.finished;
+      nextGamePhase = GamePhase.finished;
       events.unshift({
         playerId: currentPlayer.id,
         type: GameEventType.playerWin,
@@ -92,10 +98,32 @@ export const applyNotifications = (game: Game, notificationType: NotificationTyp
     ...nextGame,
     events: [
       ...events,
-      ...notifications.filter((n) => n.notificationType !== NotificationType.silent).reverse(),
+      ...currentNotifications
+        .filter((n) => n.notificationType !== NotificationType.silent)
+        .reverse(),
       ...nextGame.events,
     ],
-    gamePhase: nextTurnPhase,
-    notifications: nextNotifications,
+    gamePhase: nextGamePhase,
+    notifications: pendingNotifications.concat(newNotifications),
   };
+};
+
+const splitNotifications = (
+  notifications: EventNotification[],
+  notificationType: NotificationType,
+): SplitNotifications => {
+  return notifications.reduce<SplitNotifications>(
+    (reduced, n) => {
+      if (n.notificationType === notificationType) {
+        reduced.currentNotifications.push(n);
+      } else {
+        reduced.pendingNotifications.push(n);
+      }
+      return reduced;
+    },
+    {
+      currentNotifications: [],
+      pendingNotifications: [],
+    },
+  );
 };

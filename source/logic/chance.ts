@@ -1,50 +1,52 @@
-import { currencySymbol } from '../parameters';
+import { currencySymbol, passGoMoney } from '../parameters';
+import { triggerMovePlayer } from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
-import { payFee, payStreetRepairs, payToAllPlayers, receivePayout } from './game';
+import { getNextSquareId, payFee, payStreetRepairs, payToAllPlayers, receivePayout } from './game';
+import { squaresMap } from './game-minified/squares-map';
 
 const chanceSource: Omit<Card, 'id'>[] = [
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 1);
+    },
+    text: `Advance to ${squaresMap[1].name}`,
+  },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 25);
+    },
+    text: `Advance to ${squaresMap[25].name}`,
+  },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 40);
+    },
+    text: `Advance to ${squaresMap[40].name}`,
+  },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 12);
+    },
+    text: `Advance to ${squaresMap[12].name}`,
+  },
   // {
   //   action: (game) => {
   //     return game;
   //   },
-  //   text: `Advance to Go (Collect ${currencySymbol}${passGoMoney})`,
+  //   text: 'Advance to the next Station',
   // },
   // {
   //   action: (game) => {
   //     return game;
   //   },
-  //   text: `Advance to Trafalgar Square. If you pass Go, collect ${currencySymbol}${passGoMoney}`,
+  //   text: 'Advance to the next Station',
   // },
   // {
   //   action: (game) => {
   //     return game;
   //   },
-  //   text: 'Advance to Mayfair',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: `Advance to Pall Mall. If you pass Go, collect ${currencySymbol}${passGoMoney}`,
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance to the next Station. If owned, pay the owner double rental',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance to the next Station. If owned, pay the owner double rental',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Advance token to next Utility. If owned, throw the dice and pay the owner 10 times the amount thrown',
+  //   text: 'Advance token to next Utility',
   // },
   {
     action: (game) => {
@@ -58,18 +60,19 @@ const chanceSource: Omit<Card, 'id'>[] = [
   //   },
   //   text: 'Get Out of Jail Free',
   // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Go Back 3 Spaces',
-  // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: `Go to Jail. Go directly to Jail, do not pass Go, do not collect ${currencySymbol}${passGoMoney}`,
-  // },
+  {
+    action: (game) => {
+      const nextSquareId = getNextSquareId(game, -3);
+      return triggerMovePlayer(game, nextSquareId, { preventPassGo: true });
+    },
+    text: 'Go Back 3 Spaces',
+  },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 11, { sendToJail: true });
+    },
+    text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
+  },
   {
     action: (game) => {
       return payStreetRepairs(game, 25);
@@ -82,12 +85,12 @@ const chanceSource: Omit<Card, 'id'>[] = [
     },
     text: `Speeding fine ${currencySymbol}15`,
   },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: `Take a trip to Kings Cross Station. If you pass Go, collect ${currencySymbol}${passGoMoney}`,
-  // },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 6);
+    },
+    text: `Take a trip to ${squaresMap[6].name}`,
+  },
   {
     action: (game) => {
       return payToAllPlayers(game, 50);

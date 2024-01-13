@@ -148,7 +148,7 @@ const getNeighborhoodStreets = (squares: Square[], property: StreetSquare): Stre
   ) as StreetSquare[];
 };
 
-export const getRentAmount = (game: Game, property: PropertySquare, movement: number) => {
+export const getRentAmount = (game: Game, property: PropertySquare) => {
   const landlord = getPlayerById(game, property.ownerId!);
   const properties = landlord.properties.map(
     (propertyId) => game.squares.find((s) => s.id === propertyId)!,
@@ -176,6 +176,7 @@ export const getRentAmount = (game: Game, property: PropertySquare, movement: nu
     const utilityProperties = properties.filter(
       (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
     );
+    const movement = game.dice.reduce((x, y) => x + y, 0);
     rent = movement * (utilityProperties.length === 2 ? 10 : 4);
   }
 

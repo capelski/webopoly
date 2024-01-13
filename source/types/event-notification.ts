@@ -13,3 +13,8 @@ export type EventNotification = GameEvent &
         notificationType: NotificationType.silent | NotificationType.toast;
       }
   );
+
+export type SplitNotifications = {
+  currentNotifications: EventNotification[];
+  pendingNotifications: EventNotification[];
+};

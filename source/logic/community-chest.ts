@@ -1,15 +1,17 @@
-import { currencySymbol } from '../parameters';
+import { currencySymbol, passGoMoney } from '../parameters';
+import { triggerMovePlayer } from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
 import { payFee, payStreetRepairs, receiveFromAllPlayers, receivePayout } from './game';
+import { squaresMap } from './game-minified/squares-map';
 
 const communityChestSource: Omit<Card, 'id'>[] = [
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: `Advance to Go (Collect ${currencySymbol}${passGoMoney})`,
-  // },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 1);
+    },
+    text: `Advance to ${squaresMap[1].name}`,
+  },
   {
     action: (game) => {
       return receivePayout(game, 200);
@@ -34,12 +36,12 @@ const communityChestSource: Omit<Card, 'id'>[] = [
   //   },
   //   text: 'Get Out of Jail Free',
   // },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: `Go to Jail. Go directly to jail, do not pass Go, do not collect ${currencySymbol}${passGoMoney}`,
-  // },
+  {
+    action: (game) => {
+      return triggerMovePlayer(game, 11, { sendToJail: true });
+    },
+    text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
+  },
   {
     action: (game) => {
       return receivePayout(game, 100);

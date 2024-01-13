@@ -54,7 +54,9 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   );
 
   useEffect(() => {
-    if (toasts.length) {
+    if (silentNotifications.length) {
+      props.updateGame(applyNotifications(props.game, NotificationType.silent));
+    } else if (toasts.length) {
       toast(
         <React.Fragment>
           {toasts.map((toast, index) => (
@@ -68,8 +70,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       setTimeout(() => {
         setDisplayModal(true);
       }, 800);
-    } else if (silentNotifications.length) {
-      props.updateGame(applyNotifications(props.game, NotificationType.silent));
     }
   }, [props.game.notifications]);
 

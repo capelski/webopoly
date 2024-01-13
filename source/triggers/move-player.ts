@@ -1,15 +1,4 @@
 import {
-  getCurrentPlayer,
-  getNextChanceCardId,
-  getNextCommunityChestCardId,
-  getNextSquareId,
-  getRentAmount,
-  getsOutOfJail,
-  isPlayerInJail,
-  passesGo,
-  paysRent,
-} from '.';
-import {
   GameEventType,
   GamePhase,
   ModalType,
@@ -17,9 +6,28 @@ import {
   SquareType,
   TaxType,
 } from '../enums';
-import { EventNotification, Game, GameEvent } from '../types';
+import {
+  getCurrentPlayer,
+  getNextChanceCardId,
+  getNextCommunityChestCardId,
+  getRentAmount,
+  getsOutOfJail,
+  isPlayerInJail,
+  passesGo,
+  paysRent,
+} from '../logic';
+import { EventNotification, Game, GameEvent, Id } from '../types';
 
-export const applyMovement = (game: Game): Game => {
+export type MovePlayerOptions = {
+  preventPassGo?: boolean;
+  sendToJail?: boolean;
+};
+
+export const triggerMovePlayer = (
+  game: Game,
+  nextSquareId: Id,
+  options: MovePlayerOptions = {},
+): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const events: GameEvent[] = [];
   const notifications: EventNotification[] = [];
@@ -28,8 +36,6 @@ export const applyMovement = (game: Game): Game => {
   const escapesJail = getsOutOfJail(currentPlayer, game.dice);
 
   if (!isInJail || escapesJail) {
-    const movement = game.dice.reduce((x, y) => x + y, 0);
-    const nextSquareId = getNextSquareId(game, movement);
     const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
@@ -40,11 +46,11 @@ export const applyMovement = (game: Game): Game => {
       });
     }
 
-    const goesToJail = nextSquare.type === SquareType.goToJail;
+    const goesToJail = options.sendToJail || nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       notifications.push({
         modalType: ModalType.okModal,
-        notificationType: NotificationType.modal,
+        notificationType: options.sendToJail ? NotificationType.silent : NotificationType.modal,
         playerId: currentPlayer.id,
         type: GameEventType.goToJail,
       });
@@ -55,7 +61,7 @@ export const applyMovement = (game: Game): Game => {
       const landsInChance = nextSquare.type === SquareType.chance;
       const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
-      if (passesGo(game, currentPlayer.squareId, nextSquareId)) {
+      if (!options.preventPassGo && passesGo(game, currentPlayer.squareId, nextSquareId)) {
         notifications.push({
           notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
@@ -64,7 +70,7 @@ export const applyMovement = (game: Game): Game => {
       }
 
       if (payRent && nextSquare.type === SquareType.property) {
-        const rent = getRentAmount(game, nextSquare, movement);
+        const rent = getRentAmount(game, nextSquare);
 
         notifications.push({
           landlordId: nextSquare.ownerId!,
