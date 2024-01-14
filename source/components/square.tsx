@@ -1,37 +1,11 @@
 import React, { CSSProperties, useState } from 'react';
-import {
-  GamePhase,
-  Neighborhood,
-  PropertyStatus,
-  PropertyType,
-  SquareType,
-  TaxType,
-} from '../enums';
-import {
-  canBuildHouse,
-  canClearMortgage,
-  canMortgage,
-  canSellHouse,
-  getBuildHouseAmount,
-  getClearMortgageAmount,
-  getCurrentPlayer,
-  getMortgageAmount,
-  getPlayerById,
-  getSellHouseAmount,
-  isPlayerInJail,
-} from '../logic';
+import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
+import { getCurrentPlayer, getPlayerById, isPlayerInJail } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
-import {
-  triggerBuildHouse,
-  triggerClearMortgage,
-  triggerMortgage,
-  triggerSellHouse,
-} from '../triggers';
 import { Game, Square } from '../types';
-import { Button } from './button';
-import { Modal } from './modal';
 import { PlayerAvatar } from './player-avatar';
 import { PlayersInSquare } from './players-in-square';
+import { SquareModal, SquareOptionsModal } from './square-options-modal';
 import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
@@ -53,7 +27,7 @@ const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
 };
 
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
-  const [displayModal, setDisplayModal] = useState(false);
+  const [squareModal, setSquareModal] = useState<SquareModal>('none');
 
   const currentPlayer = getCurrentPlayer(props.game);
   const owner =
@@ -78,7 +52,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
       onClick={
         props.square.type === SquareType.property
           ? () => {
-              setDisplayModal(true);
+              setSquareModal('options');
             }
           : undefined
       }
@@ -89,78 +63,14 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         borderTop: '1px solid #ccc',
       }}
     >
-      {props.square.type === SquareType.property && displayModal && (
-        <Modal>
-          <div style={{ marginBottom: 16 }}>
-            <Button
-              disabled={
-                props.game.gamePhase === GamePhase.rollDice ||
-                !canMortgage(props.square, currentPlayer.id)
-              }
-              onClick={() => {
-                setDisplayModal(false);
-                props.updateGame(triggerMortgage(props.game, props.square.id));
-              }}
-            >
-              Mortgage ({currencySymbol}
-              {getMortgageAmount(props.square)})
-            </Button>
-
-            <Button
-              disabled={
-                props.game.gamePhase === GamePhase.rollDice ||
-                !canClearMortgage(props.square, currentPlayer)
-              }
-              onClick={() => {
-                setDisplayModal(false);
-                props.updateGame(triggerClearMortgage(props.game, props.square.id));
-              }}
-            >
-              Clear mortgage ({currencySymbol}
-              {getClearMortgageAmount(props.square)})
-            </Button>
-          </div>
-
-          {props.square.propertyType === PropertyType.street && (
-            <div style={{ marginBottom: 16 }}>
-              <Button
-                disabled={
-                  props.game.gamePhase === GamePhase.rollDice ||
-                  !canBuildHouse(props.game, props.square, currentPlayer)
-                }
-                onClick={() => {
-                  setDisplayModal(false);
-                  props.updateGame(triggerBuildHouse(props.game, props.square.id));
-                }}
-              >
-                Build house ({currencySymbol}
-                {getBuildHouseAmount(props.square)})
-              </Button>
-
-              <Button
-                disabled={
-                  props.game.gamePhase === GamePhase.rollDice ||
-                  !canSellHouse(props.game, props.square, currentPlayer)
-                }
-                onClick={() => {
-                  setDisplayModal(false);
-                  props.updateGame(triggerSellHouse(props.game, props.square.id));
-                }}
-              >
-                Sell house ({currencySymbol}
-                {getSellHouseAmount(props.square)})
-              </Button>
-            </div>
-          )}
-
-          <Button
-            onClick={() => {
-              setDisplayModal(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </Modal>
+      {props.square.type === SquareType.property && squareModal === 'options' && (
+        <SquareOptionsModal
+          game={props.game}
+          setSquareModal={setSquareModal}
+          square={props.square}
+          squareModal={squareModal}
+          updateGame={props.updateGame}
+        />
       )}
 
       <div
