@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { GamePhase, GameView, NotificationType, SquareType } from '../enums';
-import { applyNotifications, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { ChangeUiType, GamePhase, GameView, SquareType } from '../enums';
+import { applyIncomingChanges, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
-import { Game, Id, ModalNotification, Square } from '../types';
+import { Game, Id, ModalChange, Square } from '../types';
 import { Button } from './button';
+import { ChangeComponent } from './change';
 import { FinishedModal } from './finished-modal';
-import { GameEventComponent } from './game-event';
 import { Historical } from './historical';
 import { Modal } from './modal';
+import { ModalChangeComponent } from './modal-change';
 import { NavBar } from './nav-bar';
-import { NotificationModal } from './notification-modal';
 import { Players } from './players';
 import { SquareComponent } from './square';
 interface GameComponentProps {
@@ -43,35 +43,31 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
-  const modals = props.game.notifications.filter(
-    (n) => n.notificationType === NotificationType.modal,
-  );
-  const toasts = props.game.notifications.filter(
-    (n) => n.notificationType === NotificationType.toast,
-  );
-  const silentNotifications = props.game.notifications.filter(
-    (n) => n.notificationType === NotificationType.silent,
-  );
+  const silents = props.game.incomingChanges.filter((c) => c.uiType === ChangeUiType.silent);
+  const toasts = props.game.incomingChanges.filter((c) => c.uiType === ChangeUiType.toast);
+  const modals = props.game.incomingChanges.filter(
+    (c) => c.uiType === ChangeUiType.modal,
+  ) as ModalChange[];
 
   useEffect(() => {
-    if (silentNotifications.length) {
-      props.updateGame(applyNotifications(props.game, NotificationType.silent));
-    } else if (toasts.length) {
+    if (silents.length > 0) {
+      props.updateGame(applyIncomingChanges(props.game, ChangeUiType.silent));
+    } else if (toasts.length > 0) {
       toast(
         <React.Fragment>
-          {toasts.map((toast, index) => (
-            <GameEventComponent event={toast} game={props.game} key={index} />
+          {toasts.map((change, index) => (
+            <ChangeComponent change={change} game={props.game} key={index} />
           ))}
         </React.Fragment>,
         { autoClose: 3000 },
       );
-      props.updateGame(applyNotifications(props.game, NotificationType.toast));
-    } else if (modals.length) {
+      props.updateGame(applyIncomingChanges(props.game, ChangeUiType.toast));
+    } else if (modals.length > 0) {
       setTimeout(() => {
         setDisplayModal(true);
       }, 800);
     }
-  }, [props.game.notifications]);
+  }, [props.game.incomingChanges]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -80,12 +76,12 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
       {displayModal ? (
         <React.Fragment>
-          {modals.map((modal, index) => {
+          {modals.map((change, index) => {
             return (
-              <NotificationModal
+              <ModalChangeComponent
                 game={props.game}
                 key={index}
-                modal={modal as unknown as ModalNotification}
+                change={change}
                 updateGame={(game) => {
                   setDisplayModal(false);
                   return props.updateGame(game);

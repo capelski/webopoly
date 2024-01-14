@@ -1,18 +1,18 @@
 import { GamePhase } from '../enums';
+import { Change } from './change';
 import { Dice } from './dice';
-import { EventNotification } from './event-notification';
-import { GameEvent } from './game-event';
 import { Id } from './id';
+import { IncomingChange } from './incoming-change';
 import { Player } from './player';
 import { Square } from './square';
 
 export type Game = {
   centerPot: number;
+  changeHistory: Change[];
   currentPlayerId: Id;
   dice: Dice;
-  events: GameEvent[];
   gamePhase: GamePhase;
-  notifications: EventNotification[];
+  incomingChanges: IncomingChange[];
   players: Player[];
   squares: Square[];
 };

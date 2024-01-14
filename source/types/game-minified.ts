@@ -1,24 +1,24 @@
 import { GamePhase } from '../enums';
+import { ChangeMinified } from './change-minified';
 import { Dice } from './dice';
-import { EventNotification } from './event-notification';
-import { GameEventMinified } from './game-event-minified';
 import { Id } from './id';
+import { IncomingChange } from './incoming-change';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
 export type GameMinified = {
   /** centerPot */
   cp: number;
+  /** changeHistory */
+  ch: ChangeMinified[];
   /** currentPlayerId */
   ci: Id;
   /** dice */
   d: Dice;
-  /** events */
-  e: GameEventMinified[];
   /** gamePhase */
   g: GamePhase;
-  /** notifications */
-  n: EventNotification[];
+  /** incomingChanges */
+  i: IncomingChange[];
   /** players */
   p: PlayerMinified[];
   /** squares */

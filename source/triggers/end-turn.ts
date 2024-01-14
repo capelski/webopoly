@@ -1,4 +1,4 @@
-import { GameEventType, NotificationType } from '../enums';
+import { ChangeType, ChangeUiType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import { Game } from '../types';
 
@@ -6,11 +6,11 @@ export const triggerEndTurn = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
   return {
     ...game,
-    notifications: [
+    incomingChanges: [
       {
-        notificationType: NotificationType.silent,
         playerId: currentPlayer.id,
-        type: GameEventType.endTurn,
+        type: ChangeType.endTurn,
+        uiType: ChangeUiType.silent,
       },
     ],
   };

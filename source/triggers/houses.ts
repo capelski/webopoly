@@ -1,4 +1,4 @@
-import { GameEventType, NotificationType, PropertyType, SquareType } from '../enums';
+import { ChangeType, ChangeUiType, PropertyType, SquareType } from '../enums';
 import { canBuildHouse, canSellHouse, getPlayerById, getSquareById } from '../logic';
 import { Game, Id } from '../types';
 
@@ -19,12 +19,12 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
-    notifications: [
+    incomingChanges: [
       {
-        notificationType: NotificationType.toast,
         playerId: square.ownerId,
         propertyId: squareId,
-        type: GameEventType.buildHouse,
+        type: ChangeType.buildHouse,
+        uiType: ChangeUiType.toast,
       },
     ],
   };
@@ -47,12 +47,12 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
-    notifications: [
+    incomingChanges: [
       {
-        notificationType: NotificationType.toast,
         playerId: square.ownerId,
         propertyId: squareId,
-        type: GameEventType.sellHouse,
+        type: ChangeType.sellHouse,
+        uiType: ChangeUiType.toast,
       },
     ],
   };

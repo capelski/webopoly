@@ -29,12 +29,12 @@ export const createGame = (nPlayers: number): GameMinified => {
   }));
 
   return {
+    ch: [],
     cp: 0,
     ci: minifiedPlayers[0].i,
     d: [],
-    e: [],
     g: GamePhase.rollDice,
-    n: [],
+    i: [],
     p: minifiedPlayers,
     s: minifiedSquares,
   };

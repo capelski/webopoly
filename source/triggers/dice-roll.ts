@@ -1,4 +1,4 @@
-import { GameEventType, GamePhase, NotificationType } from '../enums';
+import { ChangeType, ChangeUiType, GamePhase } from '../enums';
 import { getCurrentPlayer, getDiceRoll } from '../logic';
 import { Game } from '../types';
 
@@ -9,12 +9,12 @@ export const triggerDiceRoll = (game: Game): Game => {
     ...game,
     dice: nextDice,
     gamePhase: GamePhase.play,
-    notifications: [
+    incomingChanges: [
       {
         dice: nextDice,
-        notificationType: NotificationType.silent,
         playerId: currentPlayer.id,
-        type: GameEventType.rollDice,
+        type: ChangeType.rollDice,
+        uiType: ChangeUiType.silent,
       },
     ],
   };

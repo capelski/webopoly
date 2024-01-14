@@ -1,11 +1,4 @@
-import {
-  GameEventType,
-  GamePhase,
-  ModalType,
-  NotificationType,
-  SquareType,
-  TaxType,
-} from '../enums';
+import { ChangeType, ChangeUiType, ModalType, SquareType, TaxType } from '../enums';
 import {
   getCurrentPlayer,
   getNextChanceCardId,
@@ -16,7 +9,7 @@ import {
   passesGo,
   paysRent,
 } from '../logic';
-import { EventNotification, Game, GameEvent, Id } from '../types';
+import { Change, Game, Id, IncomingChange } from '../types';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
@@ -29,8 +22,8 @@ export const triggerMovePlayer = (
   options: MovePlayerOptions = {},
 ): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const events: GameEvent[] = [];
-  const notifications: EventNotification[] = [];
+  const changeHistory: Change[] = [];
+  const incomingChanges: IncomingChange[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
   const escapesJail = getsOutOfJail(currentPlayer, game.dice);
@@ -39,20 +32,20 @@ export const triggerMovePlayer = (
     const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
-      notifications.push({
-        notificationType: NotificationType.toast,
+      incomingChanges.push({
         playerId: currentPlayer.id,
-        type: GameEventType.getOutOfJail,
+        type: ChangeType.getOutOfJail,
+        uiType: ChangeUiType.toast,
       });
     }
 
     const goesToJail = options.sendToJail || nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      notifications.push({
+      incomingChanges.push({
         modalType: ModalType.okModal,
-        notificationType: options.sendToJail ? NotificationType.silent : NotificationType.modal,
         playerId: currentPlayer.id,
-        type: GameEventType.goToJail,
+        type: ChangeType.goToJail,
+        uiType: options.sendToJail ? ChangeUiType.silent : ChangeUiType.modal,
       });
     } else {
       const payRent = paysRent(currentPlayer, nextSquare);
@@ -62,56 +55,56 @@ export const triggerMovePlayer = (
       const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
       if (!options.preventPassGo && passesGo(game, currentPlayer.squareId, nextSquareId)) {
-        notifications.push({
-          notificationType: NotificationType.toast,
+        incomingChanges.push({
           playerId: currentPlayer.id,
-          type: GameEventType.passGo,
+          type: ChangeType.passGo,
+          uiType: ChangeUiType.toast,
         });
       }
 
       if (payRent && nextSquare.type === SquareType.property) {
         const rent = getRentAmount(game, nextSquare);
 
-        notifications.push({
+        incomingChanges.push({
           landlordId: nextSquare.ownerId!,
-          notificationType: NotificationType.toast,
           playerId: currentPlayer.id,
           rent,
-          type: GameEventType.payRent,
+          type: ChangeType.payRent,
+          uiType: ChangeUiType.toast,
         });
       } else if (payTaxes) {
         const tax =
           nextSquare.taxType === TaxType.income
             ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
             : 100;
-        notifications.push({
-          notificationType: NotificationType.toast,
+        incomingChanges.push({
           playerId: currentPlayer.id,
           tax,
-          type: GameEventType.payTax,
+          type: ChangeType.payTax,
+          uiType: ChangeUiType.toast,
         });
       } else if (landsInFreeParking) {
-        notifications.push({
-          notificationType: NotificationType.toast,
+        incomingChanges.push({
           playerId: currentPlayer.id,
           pot: game.centerPot,
-          type: GameEventType.freeParking,
+          type: ChangeType.freeParking,
+          uiType: ChangeUiType.toast,
         });
       } else if (landsInChance) {
-        notifications.push({
+        incomingChanges.push({
           cardId: getNextChanceCardId(),
           modalType: ModalType.cardModal,
-          notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
-          type: GameEventType.chance,
+          type: ChangeType.chance,
+          uiType: ChangeUiType.modal,
         });
       } else if (landsInCommunityChest) {
-        notifications.push({
+        incomingChanges.push({
           cardId: getNextCommunityChestCardId(),
           modalType: ModalType.cardModal,
-          notificationType: NotificationType.modal,
           playerId: currentPlayer.id,
-          type: GameEventType.communityChest,
+          type: ChangeType.communityChest,
+          uiType: ChangeUiType.modal,
         });
       }
     }
@@ -119,18 +112,17 @@ export const triggerMovePlayer = (
     currentPlayer.squareId = nextSquareId;
   } else {
     const turnsInJail = currentPlayer.turnsInJail - 1;
-    notifications.push({
-      notificationType: NotificationType.toast,
+    incomingChanges.push({
       playerId: currentPlayer.id,
       turnsInJail,
-      type: GameEventType.remainInJail,
+      type: ChangeType.remainInJail,
+      uiType: ChangeUiType.toast,
     });
   }
 
   return {
     ...game,
-    events: events.concat(game.events),
-    gamePhase: GamePhase.play,
-    notifications,
+    changeHistory: changeHistory.concat(game.changeHistory),
+    incomingChanges,
   };
 };

@@ -1,4 +1,4 @@
-export enum GameEventType {
+export enum ChangeType {
   bankruptcy = 'bankruptcy',
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',

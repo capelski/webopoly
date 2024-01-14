@@ -1,6 +1,6 @@
 import React from 'react';
 import { Game } from '../types';
-import { GameEventComponent } from './game-event';
+import { ChangeComponent } from './change';
 
 interface HistoricalProps {
   game: Game;
@@ -9,8 +9,8 @@ interface HistoricalProps {
 export const Historical: React.FC<HistoricalProps> = (props) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', fontSize: 18 }}>
-      {props.game.events.map((event, index) => (
-        <GameEventComponent event={event} game={props.game} key={`${index}`} />
+      {props.game.changeHistory.map((change, index) => (
+        <ChangeComponent change={change} game={props.game} key={index} />
       ))}
     </div>
   );

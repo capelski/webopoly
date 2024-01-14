@@ -1,28 +1,28 @@
 import { PropertyType, SquareType } from '../../enums';
 import {
+  Change,
+  ChangeMinified,
   Game,
-  GameEvent,
-  GameEventMinified,
   GameMinified,
   Player,
   PlayerMinified,
   Square,
   SquareMinified,
 } from '../../types';
-import { eventsMap, Minifier, Restorer } from './events-map';
+import { changesMap, Minifier, Restorer } from './changes-map';
 import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
   return {
+    ch: game.changeHistory.map<ChangeMinified>((change) => {
+      const minify: Minifier = changesMap[change.type].minify;
+      return minify(change);
+    }),
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    e: game.events.map<GameEventMinified>((event) => {
-      const minify: Minifier = eventsMap[event.type].minify;
-      return minify(event);
-    }),
     g: game.gamePhase,
-    n: game.notifications,
+    i: game.incomingChanges,
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       i: player.id,
@@ -79,15 +79,15 @@ export const minifyGame = (game: Game): GameMinified => {
 
 export const restoreMinifiedGame = (game: GameMinified): Game => {
   return {
-    currentPlayerId: game.ci,
     centerPot: game.cp,
-    dice: game.d,
-    events: game.e.map<GameEvent>((e) => {
-      const restore: Restorer = eventsMap[e.t].restore;
-      return restore(e);
+    changeHistory: game.ch.map<Change>((c) => {
+      const restore: Restorer = changesMap[c.t].restore;
+      return restore(c);
     }),
+    currentPlayerId: game.ci,
+    dice: game.d,
     gamePhase: game.g,
-    notifications: game.n,
+    incomingChanges: game.i,
     players: game.p.map<Player>((p) => ({
       color: p.c,
       id: p.i,
