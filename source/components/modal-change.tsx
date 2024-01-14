@@ -13,31 +13,25 @@ type Renderer<T extends ModalType = ModalType> = (
     : T extends ModalType.okModal
     ? GenericChange
     : never,
+  applyChangesHandler: () => void,
   game: Game,
-  updateGame: (game: Game) => void,
 ) => React.ReactNode;
 
 const modalsMap: {
   [TKey in ModalType]: Renderer<TKey>;
 } = {
-  [ModalType.cardModal]: (change, game, updateGame) => {
+  [ModalType.cardModal]: (change, applyChangesHandler) => {
     return (
       <CardModal
-        applyCardHandler={() => {
-          updateGame(applyIncomingChanges(game, ChangeUiType.modal));
-        }}
+        applyChangesHandler={applyChangesHandler}
         cardId={change.cardId}
         type={change.type}
       />
     );
   },
-  [ModalType.okModal]: (change, game, updateGame) => {
+  [ModalType.okModal]: (change, applyChangesHandler, game) => {
     return (
-      <OkModal
-        applyCardHandler={() => {
-          updateGame(applyIncomingChanges(game, ChangeUiType.modal));
-        }}
-      >
+      <OkModal applyChangesHandler={applyChangesHandler}>
         <ChangeComponent change={change} game={game} />
       </OkModal>
     );
@@ -52,5 +46,8 @@ interface ModalChangeComponentProps {
 
 export const ModalChangeComponent: React.FC<ModalChangeComponentProps> = (props) => {
   const renderer: Renderer = modalsMap[props.change.modalType];
-  return <Modal>{renderer(props.change, props.game, props.updateGame)}</Modal>;
+  const applyChangesHandler = () => {
+    props.updateGame(applyIncomingChanges(props.game, ChangeUiType.modal));
+  };
+  return <Modal>{renderer(props.change, applyChangesHandler, props.game)}</Modal>;
 };

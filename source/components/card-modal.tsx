@@ -6,7 +6,7 @@ import { Button } from './button';
 import { OkModal } from './ok-modal';
 
 interface CardModalProps {
-  applyCardHandler: () => void;
+  applyChangesHandler: () => void;
   cardId: Id;
   type: ChangeType.chance | ChangeType.communityChest;
 }
@@ -21,7 +21,7 @@ export const CardModal: React.FC<CardModalProps> = (props) => {
   return (
     <React.Fragment>
       {revealed ? (
-        <OkModal applyCardHandler={props.applyCardHandler}>
+        <OkModal applyChangesHandler={props.applyChangesHandler}>
           <p>{card.text}</p>
         </OkModal>
       ) : (
