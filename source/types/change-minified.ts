@@ -1,4 +1,5 @@
 import { AnswerType, ChangeType, OfferType } from '../enums';
+import { GenericChangeType, PropertyChangeType } from './change';
 import { Dice } from './dice';
 import { Id } from './id';
 
@@ -16,25 +17,14 @@ export type CardChangeMinified = BaseChangeMinified & {
 
 export type GenericChangeMinified = BaseChangeMinified & {
   /** type */
-  t:
-    | ChangeType.bankruptcy
-    | ChangeType.endTurn
-    | ChangeType.getOutOfJail
-    | ChangeType.goToJail
-    | ChangeType.passGo
-    | ChangeType.playerWin;
+  t: GenericChangeType;
 };
 
 export type PropertyChangeMinified = BaseChangeMinified & {
   /** propertyId */
   pi: Id;
   /** type */
-  t:
-    | ChangeType.buildHouse
-    | ChangeType.buyProperty
-    | ChangeType.clearMortgage
-    | ChangeType.mortgage
-    | ChangeType.sellHouse;
+  t: PropertyChangeType;
 };
 
 export type FreeParkingChangeMinified = BaseChangeMinified & {

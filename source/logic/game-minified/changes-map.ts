@@ -4,23 +4,25 @@ import {
   ChangeMinified,
   GenericChange,
   GenericChangeMinified,
+  GenericChangeType,
   PropertyChange,
   PropertyChangeMinified,
+  PropertyChangeType,
 } from '../../types';
 
 export type Minifier<T = ChangeType> = (change: Change & { type: T }) => ChangeMinified & { t: T };
 
 export type Restorer<T = ChangeType> = (c: ChangeMinified & { t: T }) => Change & { type: T };
 
-const genericChangeMinifier = <T extends ChangeType>(
+const genericChangeMinifier = <T extends GenericChangeType>(
   change: GenericChange & { type: T },
 ): GenericChangeMinified & { t: T } => ({ p: change.playerId, t: change.type });
 
-const genericChangeRestorer = <T extends ChangeType>(
+const genericChangeRestorer = <T extends GenericChangeType>(
   c: GenericChangeMinified & { t: T },
 ): GenericChange & { type: T } => ({ playerId: c.p, type: c.t });
 
-const propertyChangeMinifier = <T extends ChangeType>(
+const propertyChangeMinifier = <T extends PropertyChangeType>(
   change: PropertyChange & { type: T },
 ): PropertyChangeMinified & { t: T } => ({
   p: change.playerId,
@@ -28,7 +30,7 @@ const propertyChangeMinifier = <T extends ChangeType>(
   t: change.type,
 });
 
-const propertyChangeRestorer = <T extends ChangeType>(
+const propertyChangeRestorer = <T extends PropertyChangeType>(
   c: PropertyChangeMinified & { t: T },
 ): PropertyChange & { type: T } => ({ playerId: c.p, propertyId: c.pi, type: c.t });
 

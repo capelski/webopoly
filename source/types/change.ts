@@ -11,24 +11,28 @@ export type CardChange = BaseChange & {
   type: ChangeType.chance | ChangeType.communityChest;
 };
 
+export type GenericChangeType =
+  | ChangeType.bankruptcy
+  | ChangeType.endTurn
+  | ChangeType.getOutOfJail
+  | ChangeType.goToJail
+  | ChangeType.passGo
+  | ChangeType.playerWin;
+
 export type GenericChange = BaseChange & {
-  type:
-    | ChangeType.bankruptcy
-    | ChangeType.endTurn
-    | ChangeType.getOutOfJail
-    | ChangeType.goToJail
-    | ChangeType.passGo
-    | ChangeType.playerWin;
+  type: GenericChangeType;
 };
+
+export type PropertyChangeType =
+  | ChangeType.buildHouse
+  | ChangeType.buyProperty
+  | ChangeType.clearMortgage
+  | ChangeType.mortgage
+  | ChangeType.sellHouse;
 
 export type PropertyChange = BaseChange & {
   propertyId: Id;
-  type:
-    | ChangeType.buildHouse
-    | ChangeType.buyProperty
-    | ChangeType.clearMortgage
-    | ChangeType.mortgage
-    | ChangeType.sellHouse;
+  type: PropertyChangeType;
 };
 
 export type FreeParkingChange = BaseChange & {
