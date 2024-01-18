@@ -24,17 +24,37 @@ const propertyChangeMinifier = <T extends ChangeType>(
   change: PropertyChange & { type: T },
 ): PropertyChangeMinified & { t: T } => ({
   p: change.playerId,
-  pr: change.propertyId,
+  pi: change.propertyId,
   t: change.type,
 });
 
 const propertyChangeRestorer = <T extends ChangeType>(
   c: PropertyChangeMinified & { t: T },
-): PropertyChange & { type: T } => ({ playerId: c.p, propertyId: c.pr, type: c.t });
+): PropertyChange & { type: T } => ({ playerId: c.p, propertyId: c.pi, type: c.t });
 
 export const changesMap: {
   [TKey in ChangeType]: { minify: Minifier<TKey>; restore: Restorer<TKey> };
 } = {
+  [ChangeType.answerOffer]: {
+    minify: (change) => ({
+      a: change.amount,
+      an: change.answer,
+      o: change.offerType,
+      p: change.playerId,
+      pi: change.propertyId,
+      tp: change.targetPlayerId,
+      t: change.type,
+    }),
+    restore: (c) => ({
+      answer: c.an,
+      amount: c.a,
+      offerType: c.o,
+      playerId: c.p,
+      propertyId: c.pi,
+      targetPlayerId: c.tp,
+      type: c.t,
+    }),
+  },
   [ChangeType.bankruptcy]: { minify: genericChangeMinifier, restore: genericChangeRestorer },
   [ChangeType.buyProperty]: { minify: propertyChangeMinifier, restore: propertyChangeRestorer },
   [ChangeType.buildHouse]: { minify: propertyChangeMinifier, restore: propertyChangeRestorer },
@@ -68,6 +88,24 @@ export const changesMap: {
   [ChangeType.payTax]: {
     minify: (change) => ({ p: change.playerId, ta: change.tax, t: change.type }),
     restore: (e) => ({ playerId: e.p, tax: e.ta, type: e.t }),
+  },
+  [ChangeType.placeOffer]: {
+    minify: (change) => ({
+      a: change.amount,
+      o: change.offerType,
+      p: change.playerId,
+      pi: change.propertyId,
+      t: change.type,
+      tp: change.targetPlayerId,
+    }),
+    restore: (c) => ({
+      amount: c.a,
+      offerType: c.o,
+      playerId: c.p,
+      propertyId: c.pi,
+      targetPlayerId: c.tp,
+      type: c.t,
+    }),
   },
   [ChangeType.playerWin]: { minify: genericChangeMinifier, restore: genericChangeRestorer },
   [ChangeType.remainInJail]: {

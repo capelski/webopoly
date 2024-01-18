@@ -1,4 +1,5 @@
 export enum ChangeType {
+  answerOffer = 'answerOffer',
   bankruptcy = 'bankruptcy',
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',
@@ -13,6 +14,7 @@ export enum ChangeType {
   passGo = 'passGo',
   payRent = 'payRent',
   payTax = 'payTax',
+  placeOffer = 'placeOffer',
   playerWin = 'playerWin',
   remainInJail = 'remainInJail',
   rollDice = 'rollDice',

@@ -1,4 +1,4 @@
-import { ChangeType } from '../enums';
+import { AnswerType, ChangeType, OfferType } from '../enums';
 import { Dice } from './dice';
 import { Id } from './id';
 
@@ -57,6 +57,22 @@ export type RollDiceChange = BaseChange & {
   type: ChangeType.rollDice;
 };
 
+export type OfferBaseChange = BaseChange & {
+  amount: number;
+  offerType: OfferType;
+  propertyId: Id;
+  targetPlayerId: Id;
+};
+
+export type PlaceOfferChange = OfferBaseChange & {
+  type: ChangeType.placeOffer;
+};
+
+export type AnswerOfferChange = OfferBaseChange & {
+  answer: AnswerType;
+  type: ChangeType.answerOffer;
+};
+
 export type Change =
   | CardChange
   | FreeParkingChange
@@ -65,4 +81,6 @@ export type Change =
   | PayTaxChange
   | PropertyChange
   | RemainsInJailChange
-  | RollDiceChange;
+  | RollDiceChange
+  | PlaceOfferChange
+  | AnswerOfferChange;

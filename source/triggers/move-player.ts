@@ -41,12 +41,20 @@ export const triggerMovePlayer = (
 
     const goesToJail = options.sendToJail || nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      incomingChanges.push({
-        modalType: ModalType.okModal,
-        playerId: currentPlayer.id,
-        type: ChangeType.goToJail,
-        uiType: options.sendToJail ? ChangeUiType.silent : ChangeUiType.modal,
-      });
+      incomingChanges.push(
+        options.sendToJail
+          ? {
+              playerId: currentPlayer.id,
+              type: ChangeType.goToJail,
+              uiType: ChangeUiType.silent,
+            }
+          : {
+              modalType: ModalType.okModal,
+              playerId: currentPlayer.id,
+              type: ChangeType.goToJail,
+              uiType: ChangeUiType.modal,
+            },
+      );
     } else {
       const payRent = paysRent(currentPlayer, nextSquare);
       const payTaxes = nextSquare.type === SquareType.tax;

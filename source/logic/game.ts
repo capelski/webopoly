@@ -57,6 +57,10 @@ export const getCurrentSquare = (game: Game): Square => {
   return game.squares.find((s) => s.id === currentPlayer.squareId)!;
 };
 
+export const getOtherPlayers = (game: Game, playerId: Id): Player[] => {
+  return game.players.filter((p) => p.status === PlayerStatus.playing && p.id !== playerId);
+};
+
 export const getNextPlayerId = (game: Game): Id => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);
   const nextPlayerIndex = (currentPlayerIndex + 1) % game.players.length;

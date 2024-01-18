@@ -6,6 +6,8 @@ export * from './game';
 export * from './game-minified';
 export * from './id';
 export * from './incoming-change';
+export * from './incoming-change-params';
+export * from './incoming-change-transformer';
 export * from './player';
 export * from './player-minified';
 export * from './square';

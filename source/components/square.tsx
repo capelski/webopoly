@@ -1,11 +1,19 @@
 import React, { CSSProperties, useState } from 'react';
-import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
+import {
+  Neighborhood,
+  PropertyStatus,
+  PropertyType,
+  SquareModalType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import { getCurrentPlayer, getPlayerById, isPlayerInJail } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
 import { Game, Square } from '../types';
 import { PlayerAvatar } from './player-avatar';
 import { PlayersInSquare } from './players-in-square';
-import { SquareModal, SquareOptionsModal } from './square-options-modal';
+import { SquareMenuModal } from './square-menu-modal';
+import { SquareOfferModal } from './square-offer-modal';
 import { SquareTypeComponent } from './square-type';
 
 interface SquareComponentProps {
@@ -27,7 +35,7 @@ const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
 };
 
 export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
-  const [squareModal, setSquareModal] = useState<SquareModal>('none');
+  const [squareModalType, setSquareModalType] = useState<SquareModalType | undefined>();
 
   const currentPlayer = getCurrentPlayer(props.game);
   const owner =
@@ -52,7 +60,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
       onClick={
         props.square.type === SquareType.property
           ? () => {
-              setSquareModal('options');
+              setSquareModalType(SquareModalType.menu);
             }
           : undefined
       }
@@ -63,15 +71,25 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
         borderTop: '1px solid #ccc',
       }}
     >
-      {props.square.type === SquareType.property && squareModal === 'options' && (
-        <SquareOptionsModal
+      {props.square.type === SquareType.property && squareModalType === SquareModalType.menu && (
+        <SquareMenuModal
           game={props.game}
-          setSquareModal={setSquareModal}
+          setSquareModalType={setSquareModalType}
           square={props.square}
-          squareModal={squareModal}
           updateGame={props.updateGame}
         />
       )}
+
+      {props.square.type === SquareType.property &&
+        squareModalType === SquareModalType.placeOffer && (
+          <SquareOfferModal
+            game={props.game}
+            setSquareModalType={setSquareModalType}
+            square={props.square}
+            squareModalType={squareModalType}
+            updateGame={props.updateGame}
+          />
+        )}
 
       <div
         style={{

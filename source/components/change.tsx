@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChangeType } from '../enums';
+import { AnswerType, ChangeType, OfferType } from '../enums';
 import {
   getChanceCardById,
   getCommunityChestCardById,
@@ -21,110 +21,126 @@ import {
 } from '../parameters';
 import { Change, Game, Player } from '../types';
 
-type Descriptor<T = ChangeType> = (
+type Renderer<T = ChangeType> = (
   player: Player,
   change: Change & { type: T },
   game: Game,
-) => string | false;
+) => {
+  description: string;
+  icon: string;
+};
 
 const renderersMap: {
-  [TKey in ChangeType]:
-    | false
-    | {
-        description: Descriptor<TKey>;
-        icon: string;
-      };
+  [TKey in ChangeType]: false | Renderer<TKey>;
 } = {
-  [ChangeType.bankruptcy]: {
-    description: (player) => `${player.name} goes bankrupt`,
+  [ChangeType.answerOffer]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    const owner = getPlayerById(game, change.targetPlayerId);
+    const acceptsOffer = change.answer === AnswerType.accept;
+    const isBuyingOffer = change.offerType === OfferType.buy;
+    return {
+      description: `${player.name} ${acceptsOffer ? 'accepts' : 'declines'} ${currencySymbol}${
+        change.amount
+      } ${isBuyingOffer ? 'BUY' : 'SELL'} offer for ${square.name} from ${owner.name}`,
+      icon: change.answer === AnswerType.accept ? '👍' : '👎',
+    };
+  },
+  [ChangeType.bankruptcy]: (player) => ({
+    description: `${player.name} goes bankrupt`,
     icon: '🧨',
+  }),
+  [ChangeType.buildHouse]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    return {
+      description: `${player.name} builds a house in ${square.name}`,
+      icon: houseSymbol,
+    };
   },
-  [ChangeType.buildHouse]: {
-    description: (player, change, game) => {
-      const square = getSquareById(game, change.propertyId);
-      return `${player.name} builds a house in ${square.name}`;
-    },
-    icon: houseSymbol,
+  [ChangeType.buyProperty]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    return {
+      description: `${player.name} buys ${square.name}`,
+      icon: '💵',
+    };
   },
-  [ChangeType.buyProperty]: {
-    description: (player, change, game) => {
-      const square = getSquareById(game, change.propertyId);
-      return `${player.name} buys ${square.name}`;
-    },
-    icon: '💵',
-  },
-  [ChangeType.chance]: {
-    description: (player, change) => `${player.name}: ${getChanceCardById(change.cardId).text}`,
+  [ChangeType.chance]: (player, change) => ({
+    description: `${player.name}: ${getChanceCardById(change.cardId).text}`,
     icon: chanceSymbol,
+  }),
+  [ChangeType.clearMortgage]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    return {
+      description: `${player.name} clears the mortgage on ${square.name}`,
+      icon: '❎',
+    };
   },
-  [ChangeType.clearMortgage]: {
-    description: (player, change, game) => {
-      const square = getSquareById(game, change.propertyId);
-      return `${player.name} clears the mortgage on ${square.name}`;
-    },
-    icon: '❎',
-  },
-  [ChangeType.communityChest]: {
-    description: (player, change) =>
-      `${player.name}: ${getCommunityChestCardById(change.cardId).text}`,
+  [ChangeType.communityChest]: (player, change) => ({
+    description: `${player.name}: ${getCommunityChestCardById(change.cardId).text}`,
     icon: communityChestSymbol,
-  },
+  }),
   [ChangeType.endTurn]: false,
-  [ChangeType.freeParking]: {
-    description: (player, change) =>
-      `${player.name} collects ${currencySymbol}${change.pot} from Free Parking`,
+  [ChangeType.freeParking]: (player, change) => ({
+    description: `${player.name} collects ${currencySymbol}${change.pot} from Free Parking`,
     icon: parkingSymbol,
-  },
-  [ChangeType.getOutOfJail]: {
-    description: (player, _change, game) => {
-      return `${player.name} rolls ${game.dice.join('-')} and gets out of jail`;
-    },
+  }),
+  [ChangeType.getOutOfJail]: (player, _change, game) => ({
+    description: `${player.name} rolls ${game.dice.join('-')} and gets out of jail`,
     icon: '🎉',
-  },
-  [ChangeType.goToJail]: {
-    description: (player) => `${player.name} goes to jail for 3 turns`,
+  }),
+  [ChangeType.goToJail]: (player) => ({
+    description: `${player.name} goes to jail for 3 turns`,
     icon: goToJailSymbol,
+  }),
+  [ChangeType.mortgage]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    return {
+      description: `${player.name} mortgages ${square.name}`,
+      icon: mortgageSymbol,
+    };
   },
-  [ChangeType.mortgage]: {
-    description: (player, change, game) => {
-      const square = getSquareById(game, change.propertyId);
-      return `${player.name} mortgages ${square.name}`;
-    },
-    icon: mortgageSymbol,
-  },
-  [ChangeType.passGo]: {
-    description: (player) => `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
+  [ChangeType.passGo]: (player) => ({
+    description: `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
     icon: goSymbol,
+  }),
+  [ChangeType.payRent]: (player, change, game) => {
+    const landlord = getPlayerById(game, change.landlordId)!;
+    return {
+      description: `${player.name} pays ${currencySymbol}${change.rent} rent to ${landlord.name}`,
+      icon: '🚀',
+    };
   },
-  [ChangeType.payRent]: {
-    description: (player, change, game) => {
-      const landlord = getPlayerById(game, change.landlordId)!;
-      return `${player.name} pays ${currencySymbol}${change.rent} rent to ${landlord.name}`;
-    },
-    icon: '🚀',
-  },
-  [ChangeType.payTax]: {
-    description: (player, change) => `${player.name} pays ${currencySymbol}${change.tax} in taxes`,
+  [ChangeType.payTax]: (player, change) => ({
+    description: `${player.name} pays ${currencySymbol}${change.tax} in taxes`,
     icon: taxSymbol,
-  },
-  [ChangeType.playerWin]: {
-    description: (player) => `${player.name} wins the game`,
+  }),
+  [ChangeType.playerWin]: (player) => ({
+    description: `${player.name} wins the game`,
     icon: '🏆',
+  }),
+  [ChangeType.placeOffer]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    const owner = getPlayerById(game, change.targetPlayerId);
+    const isBuyingOffer = change.offerType === OfferType.buy;
+    return {
+      description: `${player.name} places ${currencySymbol}${change.amount} ${
+        isBuyingOffer ? 'BUY' : 'SELL'
+      } offer for ${square.name} to ${owner.name}`,
+      icon: isBuyingOffer ? '⬅️' : '➡️',
+    };
   },
-  [ChangeType.remainInJail]: {
-    description: (player, change) =>
-      `${player.name} remains in jail for ${
-        change.turnsInJail === 0 ? 'the last turn' : `${change.turnsInJail} more turn(s)`
-      }`,
+  [ChangeType.remainInJail]: (player, change) => ({
+    description: `${player.name} remains in jail for ${
+      change.turnsInJail === 0 ? 'the last turn' : `${change.turnsInJail} more turn(s)`
+    }`,
     icon: jailSymbol,
-  },
+  }),
   [ChangeType.rollDice]: false,
-  [ChangeType.sellHouse]: {
-    description: (player, change, game) => {
-      const square = getSquareById(game, change.propertyId);
-      return `${player.name} sells a house in ${square.name}`;
-    },
-    icon: '🏚️',
+  [ChangeType.sellHouse]: (player, change, game) => {
+    const square = getSquareById(game, change.propertyId);
+    return {
+      description: `${player.name} sells a house in ${square.name}`,
+      icon: '🏚️',
+    };
   },
 };
 
@@ -134,19 +150,18 @@ interface ChangeComponentProps {
 }
 
 export const ChangeComponent: React.FC<ChangeComponentProps> = (props) => {
-  const renderer = renderersMap[props.change.type];
+  const renderer = renderersMap[props.change.type] as Renderer;
 
   if (!renderer) {
     return undefined;
   }
 
   const player = getPlayerById(props.game, props.change.playerId);
-  const descriptor: Descriptor = renderer.description;
-  const description = descriptor(player, props.change, props.game);
+  const { description, icon } = renderer(player, props.change, props.game);
 
   return (
     <div>
-      <span>{renderer.icon}</span>
+      <span>{icon}</span>
       <span style={{ paddingLeft: 8 }}>{description}</span>
     </div>
   );

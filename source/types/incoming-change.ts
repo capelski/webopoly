@@ -1,16 +1,45 @@
-import { ChangeUiType, ModalType } from '../enums';
-import { CardChange, Change, GenericChange } from './change';
+import { ChangeType, ChangeUiType, ModalType } from '../enums';
+import { Change } from './change';
 
-export type ModalChange = {
-  modalType: ModalType;
+export type AcceptDeclineModalChange = Change & {
+  modalType: ModalType.acceptDeclineModal;
+  type: ChangeType.placeOffer;
   uiType: ChangeUiType.modal;
-} & (CardChange | GenericChange);
+};
+
+export type CardModalChange = Change & {
+  modalType: ModalType.cardModal;
+  type: ChangeType.chance | ChangeType.communityChest;
+  uiType: ChangeUiType.modal;
+};
+
+export type OkModalChange = Change & {
+  modalType: ModalType.okModal;
+  type: ChangeType.goToJail;
+  uiType: ChangeUiType.modal;
+};
+
+export type ModalChange = AcceptDeclineModalChange | CardModalChange | OkModalChange;
 
 export type SilentChange = Change & {
+  type: ChangeType.endTurn | ChangeType.goToJail | ChangeType.rollDice;
   uiType: ChangeUiType.silent;
 };
 
 export type ToastChange = Change & {
+  type:
+    | ChangeType.answerOffer
+    | ChangeType.buildHouse
+    | ChangeType.buyProperty
+    | ChangeType.clearMortgage
+    | ChangeType.freeParking
+    | ChangeType.getOutOfJail
+    | ChangeType.mortgage
+    | ChangeType.passGo
+    | ChangeType.payRent
+    | ChangeType.payTax
+    | ChangeType.remainInJail
+    | ChangeType.sellHouse;
   uiType: ChangeUiType.toast;
 };
 

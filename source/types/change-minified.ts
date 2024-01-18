@@ -1,20 +1,20 @@
-import { ChangeType } from '../enums';
+import { AnswerType, ChangeType, OfferType } from '../enums';
 import { Dice } from './dice';
 import { Id } from './id';
 
-export type BaseChangeBaseMinified = {
+export type BaseChangeMinified = {
   /** playerId */
   p: Id;
 };
 
-export type CardChangeMinified = BaseChangeBaseMinified & {
+export type CardChangeMinified = BaseChangeMinified & {
   /** cardId */
   c: Id;
   /** type */
   t: ChangeType.chance | ChangeType.communityChest;
 };
 
-export type GenericChangeMinified = BaseChangeBaseMinified & {
+export type GenericChangeMinified = BaseChangeMinified & {
   /** type */
   t:
     | ChangeType.bankruptcy
@@ -25,9 +25,9 @@ export type GenericChangeMinified = BaseChangeBaseMinified & {
     | ChangeType.playerWin;
 };
 
-export type PropertyChangeMinified = BaseChangeBaseMinified & {
+export type PropertyChangeMinified = BaseChangeMinified & {
   /** propertyId */
-  pr: Id;
+  pi: Id;
   /** type */
   t:
     | ChangeType.buildHouse
@@ -37,41 +37,64 @@ export type PropertyChangeMinified = BaseChangeBaseMinified & {
     | ChangeType.sellHouse;
 };
 
-export type FreeParkingChangeMinified = BaseChangeBaseMinified & {
+export type FreeParkingChangeMinified = BaseChangeMinified & {
   /** pot */
   po: number;
   /** type */
   t: ChangeType.freeParking;
 };
 
-export type PayRentChangeMinified = BaseChangeBaseMinified & {
+export type PayRentChangeMinified = BaseChangeMinified & {
   /** landlordId */
-  l: number;
+  l: Id;
   /** rent */
   r: number;
   /** type */
   t: ChangeType.payRent;
 };
 
-export type PayTaxChangeMinified = BaseChangeBaseMinified & {
+export type PayTaxChangeMinified = BaseChangeMinified & {
   /** tax */
   ta: number;
   /** type */
   t: ChangeType.payTax;
 };
 
-export type RemainsInJailChangeMinified = BaseChangeBaseMinified & {
+export type RemainsInJailChangeMinified = BaseChangeMinified & {
   /** turnsInJail */
   tj: number;
   /** type */
   t: ChangeType.remainInJail;
 };
 
-export type RollDiceChangeMinified = BaseChangeBaseMinified & {
+export type RollDiceChangeMinified = BaseChangeMinified & {
   /** dice */
   d: Dice;
   /** type */
   t: ChangeType.rollDice;
+};
+
+export type OfferBaseChangeMinified = BaseChangeMinified & {
+  /** amount */
+  a: number;
+  /** offerType */
+  o: OfferType;
+  /** propertyId */
+  pi: Id;
+  /** targetPlayerId */
+  tp: Id;
+};
+
+export type PlaceOfferChangeMinified = OfferBaseChangeMinified & {
+  /** type */
+  t: ChangeType.placeOffer;
+};
+
+export type AnswerOfferChangeMinified = OfferBaseChangeMinified & {
+  /** an */
+  an: AnswerType;
+  /** type */
+  t: ChangeType.answerOffer;
 };
 
 export type ChangeMinified =
@@ -82,4 +105,6 @@ export type ChangeMinified =
   | PayTaxChangeMinified
   | PropertyChangeMinified
   | RemainsInJailChangeMinified
-  | RollDiceChangeMinified;
+  | RollDiceChangeMinified
+  | PlaceOfferChangeMinified
+  | AnswerOfferChangeMinified;

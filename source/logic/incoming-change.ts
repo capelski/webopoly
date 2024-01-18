@@ -17,14 +17,19 @@ import {
   remainInJail,
   sellHouse,
 } from '.';
-import { ChangeType, ChangeUiType, GamePhase } from '../enums';
-import { PlayerStatus } from '../enums/player-status';
-import { triggerMovePlayer } from '../triggers';
-import { Change, Game, IncomingChange, SplitChanges } from '../types';
+import { ChangeType, ChangeUiType, GamePhase, PlayerStatus } from '../enums';
+import { triggerAcceptOffer, triggerDeclineOffer, triggerMovePlayer } from '../triggers';
+import {
+  Change,
+  Game,
+  IncomingChange,
+  IncomingChangeParams,
+  IncomingChangeTransformer,
+  SplitChanges,
+} from '../types';
 
-type Transformer<T = ChangeType> = (game: Game, change: Change & { type: T }) => Game;
-
-const transformersMap: { [TKey in ChangeType]: Transformer<TKey> } = {
+const transformersMap: { [TKey in ChangeType]: IncomingChangeTransformer<TKey> } = {
+  [ChangeType.answerOffer]: (game) => game, // Not addressed here
   [ChangeType.bankruptcy]: (game) => game, // Not addressed here
   [ChangeType.buildHouse]: (game, change) => buildHouse(game, change.propertyId),
   [ChangeType.buyProperty]: (game, change) => buyProperty(game, change.propertyId),
@@ -45,6 +50,13 @@ const transformersMap: { [TKey in ChangeType]: Transformer<TKey> } = {
   [ChangeType.passGo]: (game) => passGo(game),
   [ChangeType.payRent]: (game, change) => payRent(game, change.landlordId, change.rent),
   [ChangeType.payTax]: (game, change) => payTax(game, change.tax),
+  [ChangeType.placeOffer]: (game, change, params) => {
+    if (params.offerAnswer === 'accept') {
+      return triggerAcceptOffer(game, change);
+    } else {
+      return triggerDeclineOffer(game, change);
+    }
+  },
   [ChangeType.playerWin]: (game) => game, // Not addressed here
   [ChangeType.remainInJail]: (game) => remainInJail(game),
   [ChangeType.rollDice]: (game) => {
@@ -55,15 +67,16 @@ const transformersMap: { [TKey in ChangeType]: Transformer<TKey> } = {
   [ChangeType.sellHouse]: (game, change) => sellHouse(game, change.propertyId),
 };
 
-export const applyIncomingChanges = (game: Game, uiType: ChangeUiType): Game => {
+export const applyIncomingChanges = (game: Game, params: IncomingChangeParams): Game => {
+  const { params: payload, uiType } = params;
   const { currentChanges, pendingChanges } = splitIncomingChanges(game.incomingChanges, uiType);
   const newIncomingChanges: IncomingChange[] = [];
 
   let nextGame = game;
 
   currentChanges.forEach((change) => {
-    const transformer: Transformer = transformersMap[change.type];
-    const { incomingChanges, ...rest } = transformer(nextGame, change);
+    const transformer: IncomingChangeTransformer = transformersMap[change.type];
+    const { incomingChanges, ...rest } = transformer(nextGame, change, payload);
     nextGame = { ...rest, incomingChanges: [] };
     newIncomingChanges.push(...incomingChanges.filter((n) => !game.incomingChanges.includes(n)));
   });

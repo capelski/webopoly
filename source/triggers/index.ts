@@ -4,3 +4,4 @@ export * from './end-turn';
 export * from './houses';
 export * from './mortgage';
 export * from './move-player';
+export * from './offers';

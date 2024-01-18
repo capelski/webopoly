@@ -51,7 +51,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
   useEffect(() => {
     if (silents.length > 0) {
-      props.updateGame(applyIncomingChanges(props.game, ChangeUiType.silent));
+      props.updateGame(applyIncomingChanges(props.game, { uiType: ChangeUiType.silent }));
     } else if (toasts.length > 0) {
       toast(
         <React.Fragment>
@@ -61,7 +61,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         </React.Fragment>,
         { autoClose: 3000 },
       );
-      props.updateGame(applyIncomingChanges(props.game, ChangeUiType.toast));
+      props.updateGame(applyIncomingChanges(props.game, { uiType: ChangeUiType.toast }));
     } else if (modals.length > 0) {
       setTimeout(() => {
         setDisplayModal(true);
