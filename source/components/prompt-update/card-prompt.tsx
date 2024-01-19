@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { ChangeType } from '../enums';
-import { getChanceCardById, getCommunityChestCardById } from '../logic';
-import { Id } from '../types';
-import { Button } from './button';
-import { OkModal } from './ok-modal';
+import { ChangeType } from '../../enums';
+import { getChanceCardById, getCommunityChestCardById } from '../../logic';
+import { Id } from '../../types';
+import { Button } from '../button';
+import { OkPrompt } from './ok-prompt';
 
-interface CardModalProps {
-  applyChangesHandler: () => void;
+interface CardPromptComponentProps {
   cardId: Id;
+  okHandler: () => void;
   type: ChangeType.chance | ChangeType.communityChest;
 }
 
-export const CardModal: React.FC<CardModalProps> = (props) => {
+export const CardPromptComponent: React.FC<CardPromptComponentProps> = (props) => {
   const [revealed, setRevealed] = useState(false);
   const card =
     props.type === ChangeType.chance
@@ -21,9 +21,9 @@ export const CardModal: React.FC<CardModalProps> = (props) => {
   return (
     <React.Fragment>
       {revealed ? (
-        <OkModal applyChangesHandler={props.applyChangesHandler}>
+        <OkPrompt okHandler={props.okHandler}>
           <p>{card.text}</p>
-        </OkModal>
+        </OkPrompt>
       ) : (
         <div>
           <h3>{props.type === ChangeType.chance ? 'Chance' : 'Community chest'} card</h3>

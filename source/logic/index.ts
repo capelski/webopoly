@@ -4,6 +4,6 @@ export * from './community-chest';
 export * from './dice';
 export * from './game';
 export * from './game-minified';
-export * from './incoming-change';
 export * from './player';
 export * from './property';
+export * from './ui-update';

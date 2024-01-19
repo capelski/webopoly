@@ -34,9 +34,9 @@ export const createGame = (nPlayers: number): GameMinified => {
     ci: minifiedPlayers[0].i,
     d: [],
     g: GamePhase.rollDice,
-    i: [],
     p: minifiedPlayers,
     s: minifiedSquares,
+    u: [],
   };
 };
 

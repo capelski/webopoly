@@ -1,19 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { ChangeUiType, GamePhase, GameView, SquareType } from '../enums';
-import { applyIncomingChanges, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { GamePhase, GameView, SquareType, UiUpdateType } from '../enums';
+import { applyUiUpdates, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
-import { Game, Id, ModalChange, Square } from '../types';
+import { Game, Id, PromptUiUpdate, Square } from '../types';
 import { Button } from './button';
 import { ChangeComponent } from './change';
 import { FinishedModal } from './finished-modal';
 import { Historical } from './historical';
 import { Modal } from './modal';
-import { ModalChangeComponent } from './modal-change';
 import { NavBar } from './nav-bar';
 import { Players } from './players';
+import { PromptUpdate } from './prompt-update';
 import { SquareComponent } from './square';
 interface GameComponentProps {
   clearGame: () => void;
@@ -37,53 +37,55 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const [gameView, setGameView] = useState(GameView.board);
   const [clearGameModal, setClearGameModal] = useState(false);
   const [refs] = useState(getSquaresRefs(props.game.squares));
-  const [displayModal, setDisplayModal] = useState(false);
+  const [displayPromptsModal, setDisplayPromptsModal] = useState(false);
 
   useEffect(() => {
     refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
-  const silents = props.game.incomingChanges.filter((c) => c.uiType === ChangeUiType.silent);
-  const toasts = props.game.incomingChanges.filter((c) => c.uiType === ChangeUiType.toast);
-  const modals = props.game.incomingChanges.filter(
-    (c) => c.uiType === ChangeUiType.modal,
-  ) as ModalChange[];
+  const silentUpdates = props.game.uiUpdates.filter((c) => c.uiUpdateType === UiUpdateType.silent);
+  const notificationUpdates = props.game.uiUpdates.filter(
+    (c) => c.uiUpdateType === UiUpdateType.notification,
+  );
+  const promptUpdates = props.game.uiUpdates.filter(
+    (c) => c.uiUpdateType === UiUpdateType.prompt,
+  ) as PromptUiUpdate[];
 
   useEffect(() => {
-    if (silents.length > 0) {
-      props.updateGame(applyIncomingChanges(props.game, { uiType: ChangeUiType.silent }));
-    } else if (toasts.length > 0) {
+    if (silentUpdates.length > 0) {
+      props.updateGame(applyUiUpdates(props.game, { uiUpdateType: UiUpdateType.silent }));
+    } else if (notificationUpdates.length > 0) {
       toast(
         <React.Fragment>
-          {toasts.map((change, index) => (
+          {notificationUpdates.map((change, index) => (
             <ChangeComponent change={change} game={props.game} key={index} />
           ))}
         </React.Fragment>,
         { autoClose: 3000 },
       );
-      props.updateGame(applyIncomingChanges(props.game, { uiType: ChangeUiType.toast }));
-    } else if (modals.length > 0) {
+      props.updateGame(applyUiUpdates(props.game, { uiUpdateType: UiUpdateType.notification }));
+    } else if (promptUpdates.length > 0) {
       setTimeout(() => {
-        setDisplayModal(true);
+        setDisplayPromptsModal(true);
       }, 800);
     }
-  }, [props.game.incomingChanges]);
+  }, [props.game.uiUpdates]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
 
-      {displayModal ? (
+      {displayPromptsModal ? (
         <React.Fragment>
-          {modals.map((change, index) => {
+          {promptUpdates.map((change, index) => {
             return (
-              <ModalChangeComponent
+              <PromptUpdate
                 game={props.game}
                 key={index}
                 change={change}
                 updateGame={(game) => {
-                  setDisplayModal(false);
+                  setDisplayPromptsModal(false);
                   return props.updateGame(game);
                 }}
               />

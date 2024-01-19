@@ -17,18 +17,18 @@ import {
   remainInJail,
   sellHouse,
 } from '.';
-import { ChangeType, ChangeUiType, GamePhase, PlayerStatus } from '../enums';
+import { ChangeType, GamePhase, PlayerStatus, UiUpdateType } from '../enums';
 import { triggerAcceptOffer, triggerDeclineOffer, triggerMovePlayer } from '../triggers';
 import {
   Change,
   Game,
-  IncomingChange,
-  IncomingChangeParams,
-  IncomingChangeTransformer,
-  SplitChanges,
+  SplitUiUpdates,
+  UiUpdate,
+  UiUpdateParams,
+  UiUpdateTransformer,
 } from '../types';
 
-const transformersMap: { [TKey in ChangeType]: IncomingChangeTransformer<TKey> } = {
+const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   [ChangeType.answerOffer]: (game) => game, // Not addressed here
   [ChangeType.bankruptcy]: (game) => game, // Not addressed here
   [ChangeType.buildHouse]: (game, change) => buildHouse(game, change.propertyId),
@@ -67,18 +67,17 @@ const transformersMap: { [TKey in ChangeType]: IncomingChangeTransformer<TKey> }
   [ChangeType.sellHouse]: (game, change) => sellHouse(game, change.propertyId),
 };
 
-export const applyIncomingChanges = (game: Game, params: IncomingChangeParams): Game => {
-  const { params: payload, uiType } = params;
-  const { currentChanges, pendingChanges } = splitIncomingChanges(game.incomingChanges, uiType);
-  const newIncomingChanges: IncomingChange[] = [];
+export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdateParams): Game => {
+  const { currentUpdates, pendingUpdates } = splitUiUpdates(game.uiUpdates, uiUpdateType);
+  const newUiUpdates: UiUpdate[] = [];
 
   let nextGame = game;
 
-  currentChanges.forEach((change) => {
-    const transformer: IncomingChangeTransformer = transformersMap[change.type];
-    const { incomingChanges, ...rest } = transformer(nextGame, change, payload);
-    nextGame = { ...rest, incomingChanges: [] };
-    newIncomingChanges.push(...incomingChanges.filter((n) => !game.incomingChanges.includes(n)));
+  currentUpdates.forEach((change) => {
+    const transformer: UiUpdateTransformer = transformersMap[change.type];
+    const { uiUpdates, ...rest } = transformer(nextGame, change, params);
+    nextGame = { ...rest, uiUpdates: [] };
+    newUiUpdates.push(...uiUpdates.filter((n) => !game.uiUpdates.includes(n)));
   });
 
   const changeHistory: Change[] = [];
@@ -106,30 +105,27 @@ export const applyIncomingChanges = (game: Game, params: IncomingChangeParams): 
     ...nextGame,
     changeHistory: [
       ...changeHistory,
-      ...currentChanges.filter((n) => n.uiType !== ChangeUiType.silent).reverse(),
+      ...currentUpdates.filter((n) => n.uiUpdateType !== UiUpdateType.silent).reverse(),
       ...nextGame.changeHistory,
     ],
     gamePhase: nextGamePhase,
-    incomingChanges: pendingChanges.concat(newIncomingChanges),
+    uiUpdates: pendingUpdates.concat(newUiUpdates),
   };
 };
 
-const splitIncomingChanges = (
-  incomingChanges: IncomingChange[],
-  uiType: ChangeUiType,
-): SplitChanges => {
-  return incomingChanges.reduce<SplitChanges>(
+const splitUiUpdates = (uiUpdates: UiUpdate[], uiUpdateType: UiUpdateType): SplitUiUpdates => {
+  return uiUpdates.reduce<SplitUiUpdates>(
     (reduced, change) => {
-      if (change.uiType === uiType) {
-        reduced.currentChanges.push(change);
+      if (change.uiUpdateType === uiUpdateType) {
+        reduced.currentUpdates.push(change);
       } else {
-        reduced.pendingChanges.push(change);
+        reduced.pendingUpdates.push(change);
       }
       return reduced;
     },
     {
-      currentChanges: [],
-      pendingChanges: [],
+      currentUpdates: [],
+      pendingUpdates: [],
     },
   );
 };

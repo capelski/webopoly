@@ -1,8 +1,8 @@
-import { AnswerType, ChangeType, ChangeUiType, ModalType, OfferType } from '../enums';
+import { AnswerType, ChangeType, OfferType, PromptType, UiUpdateType } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { AcceptDeclineModalChange, Game, Id, PropertySquare } from '../types';
+import { AcceptDeclinePrompt, Game, Id, PropertySquare } from '../types';
 
-export const triggerAcceptOffer = (game: Game, change: AcceptDeclineModalChange): Game => {
+export const triggerAcceptOffer = (game: Game, change: AcceptDeclinePrompt): Game => {
   const { buyerId, sellerId } =
     change.offerType === OfferType.sell
       ? { buyerId: change.targetPlayerId, sellerId: change.playerId }
@@ -10,18 +10,6 @@ export const triggerAcceptOffer = (game: Game, change: AcceptDeclineModalChange)
 
   return {
     ...game,
-    incomingChanges: [
-      {
-        amount: change.amount,
-        answer: AnswerType.accept,
-        offerType: change.offerType,
-        playerId: change.targetPlayerId,
-        propertyId: change.propertyId,
-        targetPlayerId: change.playerId,
-        type: ChangeType.answerOffer,
-        uiType: ChangeUiType.toast,
-      },
-    ],
     squares: game.squares.map((s) => {
       return s.id === change.propertyId ? { ...s, ownerId: buyerId } : s;
     }),
@@ -40,6 +28,18 @@ export const triggerAcceptOffer = (game: Game, change: AcceptDeclineModalChange)
           }
         : p;
     }),
+    uiUpdates: [
+      {
+        amount: change.amount,
+        answer: AnswerType.accept,
+        offerType: change.offerType,
+        playerId: change.targetPlayerId,
+        propertyId: change.propertyId,
+        targetPlayerId: change.playerId,
+        type: ChangeType.answerOffer,
+        uiUpdateType: UiUpdateType.notification,
+      },
+    ],
   };
 };
 
@@ -51,25 +51,25 @@ export const triggerBuyingOffer = (game: Game, property: PropertySquare, amount:
 
   return {
     ...game,
-    incomingChanges: [
+    uiUpdates: [
       {
         amount,
-        modalType: ModalType.acceptDeclineModal,
         offerType: OfferType.buy,
         playerId: currentPlayer.id,
+        promptType: PromptType.acceptDecline,
         propertyId: property.id,
         targetPlayerId: property.ownerId,
         type: ChangeType.placeOffer,
-        uiType: ChangeUiType.modal,
+        uiUpdateType: UiUpdateType.prompt,
       },
     ],
   };
 };
 
-export const triggerDeclineOffer = (game: Game, change: AcceptDeclineModalChange): Game => {
+export const triggerDeclineOffer = (game: Game, change: AcceptDeclinePrompt): Game => {
   return {
     ...game,
-    incomingChanges: [
+    uiUpdates: [
       {
         amount: change.amount,
         answer: AnswerType.decline,
@@ -78,7 +78,7 @@ export const triggerDeclineOffer = (game: Game, change: AcceptDeclineModalChange
         propertyId: change.propertyId,
         targetPlayerId: change.playerId,
         type: ChangeType.answerOffer,
-        uiType: ChangeUiType.toast,
+        uiUpdateType: UiUpdateType.notification,
       },
     ],
   };
@@ -92,16 +92,16 @@ export const triggerSellingOffer = (
 ): Game => {
   return {
     ...game,
-    incomingChanges: [
+    uiUpdates: [
       {
         amount,
-        modalType: ModalType.acceptDeclineModal,
         offerType: OfferType.sell,
         playerId: game.currentPlayerId,
+        promptType: PromptType.acceptDecline,
         propertyId: property.id,
         targetPlayerId,
         type: ChangeType.placeOffer,
-        uiType: ChangeUiType.modal,
+        uiUpdateType: UiUpdateType.prompt,
       },
     ],
   };

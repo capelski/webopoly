@@ -22,7 +22,6 @@ export const minifyGame = (game: Game): GameMinified => {
     cp: game.centerPot,
     d: game.dice,
     g: game.gamePhase,
-    i: game.incomingChanges,
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       i: player.id,
@@ -74,6 +73,7 @@ export const minifyGame = (game: Game): GameMinified => {
             t: square.type,
           };
     }),
+    u: game.uiUpdates,
   };
 };
 
@@ -87,7 +87,6 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
     currentPlayerId: game.ci,
     dice: game.d,
     gamePhase: game.g,
-    incomingChanges: game.i,
     players: game.p.map<Player>((p) => ({
       color: p.c,
       id: p.i,
@@ -112,5 +111,6 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
 
       return square;
     }),
+    uiUpdates: game.u,
   };
 };

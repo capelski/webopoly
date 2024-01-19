@@ -1,13 +1,13 @@
 import React from 'react';
-import { Button } from './button';
+import { Button } from '../button';
 
-interface AcceptDeclineModalProps {
+interface AcceptDeclinePromptProps {
   acceptHandler: () => void;
   children?: React.ReactNode;
   declineHandler: () => void;
 }
 
-export const AcceptDeclineModal: React.FC<AcceptDeclineModalProps> = (props) => {
+export const AcceptDeclinePrompt: React.FC<AcceptDeclinePromptProps> = (props) => {
   return (
     <div>
       {props.children}

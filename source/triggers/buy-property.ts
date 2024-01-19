@@ -1,4 +1,4 @@
-import { ChangeType, ChangeUiType, SquareType } from '../enums';
+import { ChangeType, SquareType, UiUpdateType } from '../enums';
 import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { Game } from '../types';
 
@@ -15,12 +15,12 @@ export const triggerBuyProperty = (game: Game): Game => {
 
   return {
     ...game,
-    incomingChanges: [
+    uiUpdates: [
       {
         playerId: currentPlayer.id,
         propertyId: currentSquare.id,
         type: ChangeType.buyProperty,
-        uiType: ChangeUiType.toast,
+        uiUpdateType: UiUpdateType.notification,
       },
     ],
   };

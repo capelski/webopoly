@@ -1,4 +1,4 @@
-import { ChangeType, ChangeUiType } from '../enums';
+import { ChangeType, UiUpdateType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import { Game } from '../types';
 
@@ -6,11 +6,11 @@ export const triggerEndTurn = (game: Game): Game => {
   const currentPlayer = getCurrentPlayer(game);
   return {
     ...game,
-    incomingChanges: [
+    uiUpdates: [
       {
         playerId: currentPlayer.id,
         type: ChangeType.endTurn,
-        uiType: ChangeUiType.silent,
+        uiUpdateType: UiUpdateType.silent,
       },
     ],
   };
