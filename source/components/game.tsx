@@ -8,7 +8,6 @@ import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers
 import { Game, Id, PromptUiUpdate, Square } from '../types';
 import { Button } from './button';
 import { ChangeComponent } from './change';
-import { FinishedModal } from './finished-modal';
 import { Historical } from './historical';
 import { Modal } from './modal';
 import { NavBar } from './nav-bar';
@@ -16,9 +15,8 @@ import { Players } from './players';
 import { PromptUpdate } from './prompt-update';
 import { SquareComponent } from './square';
 interface GameComponentProps {
-  clearGame: () => void;
   game: Game;
-  updateGame: (game: Game) => void;
+  updateGame: (game: Game | undefined) => void;
 }
 
 const getSquaresRefs = (
@@ -94,15 +92,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         </React.Fragment>
       ) : undefined}
 
-      {props.game.gamePhase === GamePhase.finished && (
-        <FinishedModal clearGame={props.clearGame} game={props.game} />
-      )}
-
       {clearGameModal && (
         <Modal>
           <div>Are you sure you want to clear the game?</div>
           <div>
-            <Button onClick={() => props.clearGame()}>Yes</Button>
+            <Button onClick={() => props.updateGame(undefined)}>Yes</Button>
             <Button onClick={() => setClearGameModal(false)}>No</Button>
           </div>
         </Modal>

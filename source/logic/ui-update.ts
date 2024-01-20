@@ -17,7 +17,7 @@ import {
   remainInJail,
   sellHouse,
 } from '.';
-import { ChangeType, GamePhase, PlayerStatus, UiUpdateType } from '../enums';
+import { ChangeType, PlayerStatus, PromptType, UiUpdateType } from '../enums';
 import { triggerAcceptOffer, triggerDeclineOffer, triggerMovePlayer } from '../triggers';
 import {
   Change,
@@ -81,7 +81,6 @@ export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdatePar
   });
 
   const changeHistory: Change[] = [];
-  let nextGamePhase = nextGame.gamePhase;
   const currentPlayer = getCurrentPlayer(nextGame);
 
   if (currentPlayer.money < 0) {
@@ -93,10 +92,11 @@ export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdatePar
 
     const remainingPlayers = nextGame.players.filter((p) => p.status === PlayerStatus.playing);
     if (remainingPlayers.length === 1) {
-      nextGamePhase = GamePhase.finished;
-      changeHistory.unshift({
-        playerId: currentPlayer.id,
+      newUiUpdates.push({
+        playerId: remainingPlayers[0].id,
+        promptType: PromptType.playerWin,
         type: ChangeType.playerWin,
+        uiUpdateType: UiUpdateType.prompt,
       });
     }
   }
@@ -108,7 +108,6 @@ export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdatePar
       ...currentUpdates.filter((n) => n.uiUpdateType !== UiUpdateType.silent).reverse(),
       ...nextGame.changeHistory,
     ],
-    gamePhase: nextGamePhase,
     uiUpdates: pendingUpdates.concat(newUiUpdates),
   };
 };

@@ -1,17 +1,18 @@
 import React from 'react';
 import { AnswerType, PromptType, UiUpdateType } from '../../enums';
-import { applyUiUpdates } from '../../logic';
+import { applyUiUpdates, getPlayerById } from '../../logic';
 import { Game, PromptUiUpdate } from '../../types';
 import { ChangeComponent } from '../change';
 import { Modal } from '../modal';
 import { AcceptDeclinePrompt } from './accept-decline-prompt';
 import { CardPromptComponent } from './card-prompt';
 import { OkPrompt } from './ok-prompt';
+import { PlayerWinPrompt } from './player-win-prompt';
 
 type PromptRenderer<T extends PromptType = PromptType> = (
   change: PromptUiUpdate & { promptType: T },
   game: Game,
-  updateGame: (game: Game) => void,
+  updateGame: (game: Game | undefined) => void,
 ) => React.ReactNode;
 
 const promptsMap: {
@@ -65,12 +66,21 @@ const promptsMap: {
       </OkPrompt>
     );
   },
+  [PromptType.playerWin]: (change, game, updateGame) => {
+    const winningPlayer = getPlayerById(game, change.playerId);
+    return (
+      <PlayerWinPrompt
+        clearGameHandler={() => updateGame(undefined)}
+        winningPlayer={winningPlayer}
+      />
+    );
+  },
 };
 
 interface PromptUpdateProps {
   change: PromptUiUpdate;
   game: Game;
-  updateGame: (game: Game) => void;
+  updateGame: (game: Game | undefined) => void;
 }
 
 export const PromptUpdate: React.FC<PromptUpdateProps> = (props) => {

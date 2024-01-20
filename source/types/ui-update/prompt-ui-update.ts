@@ -19,4 +19,14 @@ export type ConfirmationPrompt = Change & {
   uiUpdateType: UiUpdateType.prompt;
 };
 
-export type PromptUiUpdate = AcceptDeclinePrompt | CardPrompt | ConfirmationPrompt;
+export type PlayerWinPrompt = Change & {
+  promptType: PromptType.playerWin;
+  type: ChangeType.playerWin;
+  uiUpdateType: UiUpdateType.prompt;
+};
+
+export type PromptUiUpdate =
+  | AcceptDeclinePrompt
+  | CardPrompt
+  | ConfirmationPrompt
+  | PlayerWinPrompt;

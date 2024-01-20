@@ -17,7 +17,7 @@ export type PromptUpdateParams = {
       params: AcceptDeclinePromptParams;
     }
   | {
-      promptType?: PromptType.card | PromptType.confirmation;
+      promptType?: PromptType.card | PromptType.confirmation | PromptType.playerWin;
       params?: undefined;
     }
 );

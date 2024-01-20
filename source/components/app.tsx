@@ -9,14 +9,13 @@ const GAME_STORAGE_KEY = 'game';
 export const App: React.FC = () => {
   const [game, setGame] = useState<GameMinified>();
 
-  const updateGame = (game: GameMinified) => {
+  const updateGame = (game: GameMinified | undefined) => {
     setGame(game);
-    localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify(game));
-  };
-
-  const clearGame = () => {
-    setGame(undefined);
-    localStorage.removeItem(GAME_STORAGE_KEY);
+    if (game) {
+      localStorage.setItem(GAME_STORAGE_KEY, JSON.stringify(game));
+    } else {
+      localStorage.removeItem(GAME_STORAGE_KEY);
+    }
   };
 
   useEffect(() => {
@@ -31,10 +30,9 @@ export const App: React.FC = () => {
     <div>
       {game ? (
         <GameComponent
-          clearGame={clearGame}
           game={restoreMinifiedGame(game)}
-          updateGame={(game: Game) => {
-            updateGame(minifyGame(game));
+          updateGame={(game: Game | undefined) => {
+            updateGame(game && minifyGame(game));
           }}
         />
       ) : (

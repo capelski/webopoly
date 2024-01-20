@@ -113,10 +113,7 @@ const renderersMap: {
     description: `${player.name} pays ${currencySymbol}${change.tax} in taxes`,
     icon: taxSymbol,
   }),
-  [ChangeType.playerWin]: (player) => ({
-    description: `${player.name} wins the game`,
-    icon: '🏆',
-  }),
+  [ChangeType.playerWin]: false,
   [ChangeType.placeOffer]: (player, change, game) => {
     const square = getSquareById(game, change.propertyId);
     const owner = getPlayerById(game, change.targetPlayerId);
