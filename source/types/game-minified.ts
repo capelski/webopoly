@@ -1,4 +1,3 @@
-import { GamePhase } from '../enums';
 import { ChangeMinified } from './change-minified';
 import { Dice } from './dice';
 import { Id } from './id';
@@ -15,8 +14,6 @@ export type GameMinified = {
   ci: Id;
   /** dice */
   d: Dice;
-  /** gamePhase */
-  g: GamePhase;
   /** players */
   p: PlayerMinified[];
   /** squares */

@@ -1,6 +1,5 @@
 export * from './answer-type';
 export * from './change-type';
-export * from './game-phase';
 export * from './game-view';
 export * from './neighborhood';
 export * from './offer-type';

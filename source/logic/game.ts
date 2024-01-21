@@ -1,6 +1,5 @@
 import {
   ChangeType,
-  GamePhase,
   PlayerStatus,
   PromptType,
   PropertyType,
@@ -42,7 +41,6 @@ export const createGame = (nPlayers: number): GameMinified => {
     cp: 0,
     ci: currentPlayerId,
     d: [],
-    g: GamePhase.play,
     p: minifiedPlayers,
     s: minifiedSquares,
     u: [

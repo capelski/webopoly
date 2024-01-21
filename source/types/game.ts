@@ -1,4 +1,3 @@
-import { GamePhase } from '../enums';
 import { Change } from './change';
 import { Dice } from './dice';
 import { Id } from './id';
@@ -11,7 +10,6 @@ export type Game = {
   changeHistory: Change[];
   currentPlayerId: Id;
   dice: Dice;
-  gamePhase: GamePhase;
   players: Player[];
   squares: Square[];
   uiUpdates: UiUpdate[];

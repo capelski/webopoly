@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { GamePhase, GameView, SquareType, UiUpdateType } from '../enums';
+import { GameView, SquareType, UiUpdateType } from '../enums';
 import { applyUiUpdates, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerEndTurn } from '../triggers';
@@ -168,7 +168,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
               props.updateGame(triggerBuyProperty(props.game));
             }}
             disabled={
-              props.game.gamePhase !== GamePhase.play ||
               currentSquare.type !== SquareType.property ||
               !canBuyProperty(currentSquare, currentPlayer!)
             }
@@ -180,7 +179,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             onClick={() => {
               props.updateGame(triggerEndTurn(props.game));
             }}
-            disabled={props.game.gamePhase !== GamePhase.play}
           >
             End turn
           </Button>

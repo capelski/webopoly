@@ -21,7 +21,6 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    g: game.gamePhase,
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       i: player.id,
@@ -86,7 +85,6 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
     }),
     currentPlayerId: game.ci,
     dice: game.d,
-    gamePhase: game.g,
     players: game.p.map<Player>((p) => ({
       color: p.c,
       id: p.i,
