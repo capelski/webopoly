@@ -23,6 +23,7 @@ export const canBuildHouse = (game: Game, property: StreetSquare, player: Player
   const balancedHousesNumber = property.houses <= minHousesNumber;
 
   return (
+    property.status !== PropertyStatus.mortgaged &&
     allOwned &&
     property.houses < housesMax &&
     balancedHousesNumber &&

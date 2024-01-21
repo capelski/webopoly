@@ -1,4 +1,4 @@
-import { ChangeType, PropertyType, SquareType, UiUpdateType } from '../enums';
+import { ChangeType, PropertyStatus, PropertyType, SquareType, UiUpdateType } from '../enums';
 import {
   canBuildHouse,
   canSellHouse,
@@ -14,6 +14,7 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
   if (
     square.type !== SquareType.property ||
     square.propertyType !== PropertyType.street ||
+    square.status === PropertyStatus.mortgaged ||
     !square.ownerId
   ) {
     return game;
