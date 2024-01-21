@@ -3,4 +3,5 @@ export enum PromptType {
   card = 'card',
   confirmation = 'confirmation',
   playerWin = 'playerWin',
+  rollDice = 'rollDice',
 }

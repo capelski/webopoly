@@ -114,9 +114,6 @@ export const changesMap: {
     minify: (change) => ({ p: change.playerId, tj: change.turnsInJail, t: change.type }),
     restore: (c) => ({ playerId: c.p, turnsInJail: c.tj, type: c.t }),
   },
-  [ChangeType.rollDice]: {
-    minify: (change) => ({ d: change.dice, p: change.playerId, t: change.type }),
-    restore: (c) => ({ dice: c.d, playerId: c.p, type: c.t }),
-  },
+  [ChangeType.rollDice]: { minify: genericChangeMinifier, restore: genericChangeRestorer },
   [ChangeType.sellHouse]: { minify: propertyChangeMinifier, restore: propertyChangeRestorer },
 };

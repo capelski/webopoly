@@ -1,5 +1,4 @@
 import { AnswerType, ChangeType, OfferType } from '../enums';
-import { Dice } from './dice';
 import { Id } from './id';
 
 export type BaseChange = {
@@ -17,7 +16,8 @@ export type GenericChangeType =
   | ChangeType.getOutOfJail
   | ChangeType.goToJail
   | ChangeType.passGo
-  | ChangeType.playerWin;
+  | ChangeType.playerWin
+  | ChangeType.rollDice;
 
 export type GenericChange = BaseChange & {
   type: GenericChangeType;
@@ -56,11 +56,6 @@ export type RemainsInJailChange = BaseChange & {
   type: ChangeType.remainInJail;
 };
 
-export type RollDiceChange = BaseChange & {
-  dice: Dice;
-  type: ChangeType.rollDice;
-};
-
 export type OfferBaseChange = BaseChange & {
   amount: number;
   offerType: OfferType;
@@ -85,6 +80,5 @@ export type Change =
   | PayTaxChange
   | PropertyChange
   | RemainsInJailChange
-  | RollDiceChange
   | PlaceOfferChange
   | AnswerOfferChange;

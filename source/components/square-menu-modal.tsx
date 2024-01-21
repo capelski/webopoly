@@ -1,5 +1,5 @@
 import React from 'react';
-import { GamePhase, PropertyType, SquareModalType } from '../enums';
+import { PropertyType, SquareModalType } from '../enums';
 import {
   canBuildHouse,
   canClearMortgage,
@@ -36,10 +36,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
     <Modal>
       <div style={{ marginBottom: 16 }}>
         <Button
-          disabled={
-            props.game.gamePhase === GamePhase.rollDice ||
-            !canMortgage(props.square, currentPlayer.id)
-          }
+          disabled={!canMortgage(props.square, currentPlayer.id)}
           onClick={() => {
             props.setSquareModalType(undefined);
             props.updateGame(triggerMortgage(props.game, props.square.id));
@@ -50,10 +47,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
         </Button>
 
         <Button
-          disabled={
-            props.game.gamePhase === GamePhase.rollDice ||
-            !canClearMortgage(props.square, currentPlayer)
-          }
+          disabled={!canClearMortgage(props.square, currentPlayer)}
           onClick={() => {
             props.setSquareModalType(undefined);
             props.updateGame(triggerClearMortgage(props.game, props.square.id));
@@ -67,10 +61,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
       {props.square.propertyType === PropertyType.street && (
         <div style={{ marginBottom: 16 }}>
           <Button
-            disabled={
-              props.game.gamePhase === GamePhase.rollDice ||
-              !canBuildHouse(props.game, props.square, currentPlayer)
-            }
+            disabled={!canBuildHouse(props.game, props.square, currentPlayer)}
             onClick={() => {
               props.setSquareModalType(undefined);
               props.updateGame(triggerBuildHouse(props.game, props.square.id));
@@ -81,10 +72,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
           </Button>
 
           <Button
-            disabled={
-              props.game.gamePhase === GamePhase.rollDice ||
-              !canSellHouse(props.game, props.square, currentPlayer)
-            }
+            disabled={!canSellHouse(props.game, props.square, currentPlayer)}
             onClick={() => {
               props.setSquareModalType(undefined);
               props.updateGame(triggerSellHouse(props.game, props.square.id));
@@ -98,7 +86,6 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
 
       <div style={{ marginBottom: 16 }}>
         <Button
-          disabled={props.game.gamePhase === GamePhase.rollDice}
           onClick={() => {
             props.setSquareModalType(SquareModalType.placeOffer);
           }}

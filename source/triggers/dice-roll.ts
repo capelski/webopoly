@@ -11,7 +11,6 @@ export const triggerDiceRoll = (game: Game): Game => {
     gamePhase: GamePhase.play,
     uiUpdates: [
       {
-        dice: nextDice,
         playerId: currentPlayer.id,
         type: ChangeType.rollDice,
         uiUpdateType: UiUpdateType.silent,

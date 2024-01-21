@@ -1,6 +1,5 @@
 import { AnswerType, ChangeType, OfferType } from '../enums';
 import { GenericChangeType, PropertyChangeType } from './change';
-import { Dice } from './dice';
 import { Id } from './id';
 
 export type BaseChangeMinified = {
@@ -57,13 +56,6 @@ export type RemainsInJailChangeMinified = BaseChangeMinified & {
   t: ChangeType.remainInJail;
 };
 
-export type RollDiceChangeMinified = BaseChangeMinified & {
-  /** dice */
-  d: Dice;
-  /** type */
-  t: ChangeType.rollDice;
-};
-
 export type OfferBaseChangeMinified = BaseChangeMinified & {
   /** amount */
   a: number;
@@ -95,6 +87,5 @@ export type ChangeMinified =
   | PayTaxChangeMinified
   | PropertyChangeMinified
   | RemainsInJailChangeMinified
-  | RollDiceChangeMinified
   | PlaceOfferChangeMinified
   | AnswerOfferChangeMinified;

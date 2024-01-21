@@ -1,7 +1,9 @@
 import React from 'react';
 import { AnswerType, PromptType, UiUpdateType } from '../../enums';
 import { applyUiUpdates, getPlayerById } from '../../logic';
+import { triggerDiceRoll } from '../../triggers';
 import { Game, PromptUiUpdate } from '../../types';
+import { Button } from '../button';
 import { ChangeComponent } from '../change';
 import { Modal } from '../modal';
 import { AcceptDeclinePrompt } from './accept-decline-prompt';
@@ -73,6 +75,22 @@ const promptsMap: {
         clearGameHandler={() => updateGame(undefined)}
         winningPlayer={winningPlayer}
       />
+    );
+  },
+  [PromptType.rollDice]: (change, game, updateGame) => {
+    const player = getPlayerById(game, change.playerId);
+
+    return (
+      <React.Fragment>
+        <h2>{player.name}</h2>
+        <Button
+          onClick={() => {
+            updateGame(triggerDiceRoll(game));
+          }}
+        >
+          Roll dice
+        </Button>
+      </React.Fragment>
     );
   },
 };

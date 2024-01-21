@@ -25,8 +25,15 @@ export type PlayerWinPrompt = Change & {
   uiUpdateType: UiUpdateType.prompt;
 };
 
+export type RollDicePrompt = Change & {
+  promptType: PromptType.rollDice;
+  type: ChangeType.rollDice;
+  uiUpdateType: UiUpdateType.prompt;
+};
+
 export type PromptUiUpdate =
   | AcceptDeclinePrompt
   | CardPrompt
   | ConfirmationPrompt
-  | PlayerWinPrompt;
+  | PlayerWinPrompt
+  | RollDicePrompt;

@@ -1,6 +1,7 @@
 - Remove game phases in favor of prompt updates
 - Turn buy property into prompt ui update
 - Notification UI updates should occur AFTER the action has been applied
+- Prompts should be limited to one at a time, and notifications should not affect them
 - Pay fine to get out of jail
 - Implement Chance and Community Chest card actions
 - Trading properties with other players
