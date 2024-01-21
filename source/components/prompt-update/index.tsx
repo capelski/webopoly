@@ -103,5 +103,5 @@ interface PromptUpdateProps {
 
 export const PromptUpdate: React.FC<PromptUpdateProps> = (props) => {
   const renderer: PromptRenderer = promptsMap[props.change.promptType];
-  return <Modal>{renderer(props.change, props.game, props.updateGame)}</Modal>;
+  return <Modal inset="25% 20px">{renderer(props.change, props.game, props.updateGame)}</Modal>;
 };

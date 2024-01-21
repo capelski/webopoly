@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 interface ModalProps {
   closeHandler?: () => void;
   children?: React.ReactNode;
+  inset?: string;
   style?: CSSProperties;
 }
 
@@ -18,7 +19,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
         isOpen={true}
         onRequestClose={props.closeHandler}
         style={{
-          content: { display: 'flex', flexDirection: 'column', inset: 20 },
+          content: { display: 'flex', flexDirection: 'column', inset: props.inset || 20 },
           overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
         }}
       >
