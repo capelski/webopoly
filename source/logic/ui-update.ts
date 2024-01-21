@@ -96,11 +96,7 @@ export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdatePar
 
   return {
     ...nextGame,
-    changeHistory: [
-      ...changeHistory,
-      ...currentUpdates.filter((n) => n.uiUpdateType !== UiUpdateType.silent).reverse(),
-      ...nextGame.changeHistory,
-    ],
+    changeHistory: [...changeHistory, ...currentUpdates.reverse(), ...nextGame.changeHistory],
     uiUpdates: pendingUpdates.concat(newUiUpdates),
   };
 };

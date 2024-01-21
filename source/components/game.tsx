@@ -41,7 +41,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
-  const silentUpdates = props.game.uiUpdates.filter((c) => c.uiUpdateType === UiUpdateType.silent);
   const notificationUpdates = props.game.uiUpdates.filter(
     (c) => c.uiUpdateType === UiUpdateType.notification,
   );
@@ -50,9 +49,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   ) as PromptUiUpdate[];
 
   useEffect(() => {
-    if (silentUpdates.length > 0) {
-      props.updateGame(applyUiUpdates(props.game, { uiUpdateType: UiUpdateType.silent }));
-    } else if (notificationUpdates.length > 0) {
+    if (notificationUpdates.length > 0) {
       toast(
         <React.Fragment>
           {notificationUpdates.map((change, index) => (

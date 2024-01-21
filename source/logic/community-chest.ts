@@ -4,6 +4,7 @@ import { Card } from '../types';
 import { shuffleArray } from './array';
 import { payFee, payStreetRepairs, receiveFromAllPlayers, receivePayout } from './game';
 import { squaresMap } from './game-minified/squares-map';
+import { goToJail } from './player';
 
 const communityChestSource: Omit<Card, 'id'>[] = [
   {
@@ -37,9 +38,7 @@ const communityChestSource: Omit<Card, 'id'>[] = [
   //   text: 'Get Out of Jail Free',
   // },
   {
-    action: (game) => {
-      return triggerMovePlayer(game, 11, { sendToJail: true });
-    },
+    action: goToJail,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {

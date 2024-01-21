@@ -12,6 +12,7 @@ import {
   receivePayout,
 } from './game';
 import { squaresMap } from './game-minified/squares-map';
+import { goToJail } from './player';
 
 const chanceSource: Omit<Card, 'id'>[] = [
   {
@@ -79,9 +80,7 @@ const chanceSource: Omit<Card, 'id'>[] = [
     text: 'Go Back 3 Spaces',
   },
   {
-    action: (game) => {
-      return triggerMovePlayer(game, 11, { sendToJail: true });
-    },
+    action: goToJail,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {

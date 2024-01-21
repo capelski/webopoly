@@ -13,7 +13,6 @@ import { Change, Game, Id, UiUpdate } from '../types';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
-  sendToJail?: boolean;
 };
 
 export const triggerMovePlayer = (
@@ -39,22 +38,14 @@ export const triggerMovePlayer = (
       });
     }
 
-    const goesToJail = options.sendToJail || nextSquare.type === SquareType.goToJail;
+    const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      uiUpdates.push(
-        options.sendToJail
-          ? {
-              playerId: currentPlayer.id,
-              type: ChangeType.goToJail,
-              uiUpdateType: UiUpdateType.silent,
-            }
-          : {
-              playerId: currentPlayer.id,
-              promptType: PromptType.confirmation,
-              type: ChangeType.goToJail,
-              uiUpdateType: UiUpdateType.prompt,
-            },
-      );
+      uiUpdates.push({
+        playerId: currentPlayer.id,
+        promptType: PromptType.confirmation,
+        type: ChangeType.goToJail,
+        uiUpdateType: UiUpdateType.prompt,
+      });
     } else {
       const payRent = paysRent(currentPlayer, nextSquare);
       const payTaxes = nextSquare.type === SquareType.tax;
