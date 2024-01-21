@@ -1,12 +1,10 @@
 import {
-  clearMortgage,
   collectCenterPot,
   getChanceCardById,
   getCommunityChestCardById,
   getCurrentPlayer,
   getOutOfJail,
   goToJail,
-  mortgage,
   passGo,
   payRent,
   payTax,
@@ -32,7 +30,7 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
     const card = getChanceCardById(change.cardId);
     return card.action(game);
   },
-  [ChangeType.clearMortgage]: (game, change) => clearMortgage(game, change.propertyId),
+  [ChangeType.clearMortgage]: (game) => game,
   [ChangeType.communityChest]: (game, change) => {
     const card = getCommunityChestCardById(change.cardId);
     return card.action(game);
@@ -40,7 +38,7 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   [ChangeType.freeParking]: (game) => collectCenterPot(game),
   [ChangeType.getOutOfJail]: (game) => getOutOfJail(game),
   [ChangeType.goToJail]: (game) => goToJail(game),
-  [ChangeType.mortgage]: (game, change) => mortgage(game, change.propertyId),
+  [ChangeType.mortgage]: (game) => game,
   [ChangeType.passGo]: (game) => passGo(game),
   [ChangeType.payRent]: (game, change) => payRent(game, change.landlordId, change.rent),
   [ChangeType.payTax]: (game, change) => payTax(game, change.tax),

@@ -10,7 +10,7 @@ import {
   stationRent,
 } from '../parameters';
 import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
-import { getPlayerById, getSquareById } from './game';
+import { getPlayerById } from './game';
 
 export const canBuildHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
@@ -59,34 +59,6 @@ export const canSellHouse = (game: Game, property: StreetSquare, player: Player)
   const balancedHousesNumber = property.houses >= maxHousesNumber;
 
   return property.ownerId === player.id && property.houses > 0 && balancedHousesNumber;
-};
-
-export const clearMortgage = (game: Game, squareId: Id): Game => {
-  const property = getSquareById(game, squareId);
-
-  if (property.type !== SquareType.property) {
-    return game;
-  }
-
-  return {
-    ...game,
-    squares: game.squares.map((s) => {
-      return s.id === squareId
-        ? {
-            ...s,
-            status: undefined,
-          }
-        : s;
-    }),
-    players: game.players.map((p) => {
-      return p.id === property.ownerId
-        ? {
-            ...p,
-            money: p.money - getClearMortgageAmount(property),
-          }
-        : p;
-    }),
-  };
 };
 
 export const getBuildHouseAmount = (property: StreetSquare) => {
@@ -147,32 +119,4 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
 
 export const getSellHouseAmount = (property: StreetSquare) => {
   return Math.round((property.price / 5) * houseSellPercentage) * 5;
-};
-
-export const mortgage = (game: Game, squareId: Id): Game => {
-  const square = getSquareById(game, squareId);
-
-  if (square.type !== SquareType.property) {
-    return game;
-  }
-
-  return {
-    ...game,
-    squares: game.squares.map((s) => {
-      return s.id === squareId
-        ? {
-            ...s,
-            status: PropertyStatus.mortgaged,
-          }
-        : s;
-    }),
-    players: game.players.map((p) => {
-      return p.id === square.ownerId
-        ? {
-            ...p,
-            money: p.money + getMortgageAmount(square),
-          }
-        : p;
-    }),
-  };
 };

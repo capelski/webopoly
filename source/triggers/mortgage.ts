@@ -1,5 +1,12 @@
-import { ChangeType, SquareType, UiUpdateType } from '../enums';
-import { canClearMortgage, canMortgage, getPlayerById, getSquareById } from '../logic';
+import { ChangeType, PropertyStatus, SquareType, UiUpdateType } from '../enums';
+import {
+  canClearMortgage,
+  canMortgage,
+  getClearMortgageAmount,
+  getMortgageAmount,
+  getPlayerById,
+  getSquareById,
+} from '../logic';
 import { Game, Id } from '../types';
 
 export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
@@ -15,6 +22,22 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    players: game.players.map((p) => {
+      return p.id === square.ownerId
+        ? {
+            ...p,
+            money: p.money - getClearMortgageAmount(square),
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === squareId
+        ? {
+            ...s,
+            status: undefined,
+          }
+        : s;
+    }),
     uiUpdates: [
       {
         playerId: square.ownerId,
@@ -39,6 +62,22 @@ export const triggerMortgage = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    players: game.players.map((p) => {
+      return p.id === square.ownerId
+        ? {
+            ...p,
+            money: p.money + getMortgageAmount(square),
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === squareId
+        ? {
+            ...s,
+            status: PropertyStatus.mortgaged,
+          }
+        : s;
+    }),
     uiUpdates: [
       {
         playerId: square.ownerId,
