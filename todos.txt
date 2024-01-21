@@ -2,6 +2,9 @@
 - Split UiUpdates into notifications and prompts
 - Turn buy property into prompt ui update
 - Prompts should be limited to one at a time, and notifications should not affect them
+- Roll dice should not be a modal
+- Player bankruptcy should be a prompt
+- One Toast per each notification
 - Pay fine to get out of jail
 - Implement Chance and Community Chest card actions
 - Trading properties with other players

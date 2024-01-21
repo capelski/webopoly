@@ -12,6 +12,15 @@ export const collectCenterPot = (game: Game): Game => {
   };
 };
 
+export const doesPayRent = (player: Player, square: Square): boolean => {
+  return (
+    square.type === SquareType.property &&
+    square.ownerId !== undefined &&
+    square.ownerId !== player.id &&
+    square.status !== PropertyStatus.mortgaged
+  );
+};
+
 export const getsOutOfJail = (player: Player, dice: Dice): boolean => {
   return dice[0] === dice[1] && isPlayerInJail(player);
 };
@@ -77,16 +86,6 @@ export const payTax = (game: Game, tax: number): Game => {
     }),
   };
 };
-
-export const paysRent = (player: Player, square: Square): boolean => {
-  return (
-    square.type === SquareType.property &&
-    square.ownerId !== undefined &&
-    square.ownerId !== player.id &&
-    square.status !== PropertyStatus.mortgaged
-  );
-};
-
 export const remainInJail = (game: Game): Game => {
   return {
     ...game,

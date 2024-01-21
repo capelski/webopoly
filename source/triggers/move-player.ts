@@ -1,15 +1,21 @@
 import { ChangeType, PromptType, SquareType, TaxType, UiUpdateType } from '../enums';
 import {
+  collectCenterPot,
+  doesPayRent,
   getCurrentPlayer,
   getNextChanceCardId,
   getNextCommunityChestCardId,
+  getOutOfJail,
   getRentAmount,
   getsOutOfJail,
   isPlayerInJail,
   passesGo,
-  paysRent,
+  passGo,
+  payRent,
+  payTax,
+  remainInJail,
 } from '../logic';
-import { Change, Game, Id, UiUpdate } from '../types';
+import { Game, Id, UiUpdate } from '../types';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
@@ -20,19 +26,21 @@ export const triggerMovePlayer = (
   nextSquareId: Id,
   options: MovePlayerOptions = {},
 ): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const changeHistory: Change[] = [];
+  let nextGame: Game = { ...game };
+  let currentPlayer = getCurrentPlayer(nextGame);
   const uiUpdates: UiUpdate[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
-  const escapesJail = getsOutOfJail(currentPlayer, game.dice);
+  const escapesJail = getsOutOfJail(currentPlayer, nextGame.dice);
 
   if (!isInJail || escapesJail) {
-    const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
+    const nextSquare = nextGame.squares.find((s) => s.id === nextSquareId)!;
 
     if (escapesJail) {
+      nextGame = getOutOfJail(nextGame);
+      currentPlayer = getCurrentPlayer(nextGame);
       uiUpdates.push({
-        playerId: currentPlayer.id,
+        playerId: nextGame.currentPlayerId,
         type: ChangeType.getOutOfJail,
         uiUpdateType: UiUpdateType.notification,
       });
@@ -41,32 +49,36 @@ export const triggerMovePlayer = (
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       uiUpdates.push({
-        playerId: currentPlayer.id,
+        playerId: nextGame.currentPlayerId,
         promptType: PromptType.confirmation,
         type: ChangeType.goToJail,
         uiUpdateType: UiUpdateType.prompt,
       });
     } else {
-      const payRent = paysRent(currentPlayer, nextSquare);
+      const paysRent = doesPayRent(currentPlayer, nextSquare);
       const payTaxes = nextSquare.type === SquareType.tax;
-      const landsInFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
+      const collectsFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
       const landsInChance = nextSquare.type === SquareType.chance;
       const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
-      if (!options.preventPassGo && passesGo(game, currentPlayer.squareId, nextSquareId)) {
+      if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
+        nextGame = passGo(nextGame);
+        currentPlayer = getCurrentPlayer(nextGame);
         uiUpdates.push({
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           type: ChangeType.passGo,
           uiUpdateType: UiUpdateType.notification,
         });
       }
 
-      if (payRent && nextSquare.type === SquareType.property) {
-        const rent = getRentAmount(game, nextSquare);
+      if (paysRent && nextSquare.type === SquareType.property) {
+        const rent = getRentAmount(nextGame, nextSquare);
+        nextGame = payRent(nextGame, nextSquare.ownerId!, rent);
+        currentPlayer = getCurrentPlayer(nextGame);
 
         uiUpdates.push({
           landlordId: nextSquare.ownerId!,
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           rent,
           type: ChangeType.payRent,
           uiUpdateType: UiUpdateType.notification,
@@ -76,15 +88,19 @@ export const triggerMovePlayer = (
           nextSquare.taxType === TaxType.income
             ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
             : 100;
+        nextGame = payTax(nextGame, tax);
+        currentPlayer = getCurrentPlayer(nextGame);
         uiUpdates.push({
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           tax,
           type: ChangeType.payTax,
           uiUpdateType: UiUpdateType.notification,
         });
-      } else if (landsInFreeParking) {
+      } else if (collectsFreeParking) {
+        nextGame = collectCenterPot(nextGame);
+        currentPlayer = getCurrentPlayer(nextGame);
         uiUpdates.push({
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           pot: game.centerPot,
           type: ChangeType.freeParking,
           uiUpdateType: UiUpdateType.notification,
@@ -92,7 +108,7 @@ export const triggerMovePlayer = (
       } else if (landsInChance) {
         uiUpdates.push({
           cardId: getNextChanceCardId(),
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           promptType: PromptType.card,
           type: ChangeType.chance,
           uiUpdateType: UiUpdateType.prompt,
@@ -100,7 +116,7 @@ export const triggerMovePlayer = (
       } else if (landsInCommunityChest) {
         uiUpdates.push({
           cardId: getNextCommunityChestCardId(),
-          playerId: currentPlayer.id,
+          playerId: nextGame.currentPlayerId,
           promptType: PromptType.card,
           type: ChangeType.communityChest,
           uiUpdateType: UiUpdateType.prompt,
@@ -108,20 +124,22 @@ export const triggerMovePlayer = (
       }
     }
 
-    currentPlayer.squareId = nextSquareId;
+    nextGame = {
+      ...nextGame,
+      players: nextGame.players.map((p) => {
+        return p.id === currentPlayer.id ? { ...p, squareId: nextSquareId } : p;
+      }),
+    };
   } else {
-    const turnsInJail = currentPlayer.turnsInJail - 1;
+    nextGame = remainInJail(nextGame);
+    currentPlayer = getCurrentPlayer(nextGame);
     uiUpdates.push({
-      playerId: currentPlayer.id,
-      turnsInJail,
+      playerId: nextGame.currentPlayerId,
+      turnsInJail: currentPlayer.turnsInJail,
       type: ChangeType.remainInJail,
       uiUpdateType: UiUpdateType.notification,
     });
   }
 
-  return {
-    ...game,
-    changeHistory: changeHistory.concat(game.changeHistory),
-    uiUpdates,
-  };
+  return { ...nextGame, uiUpdates };
 };

@@ -1,15 +1,4 @@
-import {
-  collectCenterPot,
-  getChanceCardById,
-  getCommunityChestCardById,
-  getCurrentPlayer,
-  getOutOfJail,
-  goToJail,
-  passGo,
-  payRent,
-  payTax,
-  remainInJail,
-} from '.';
+import { getChanceCardById, getCommunityChestCardById, getCurrentPlayer, goToJail } from '.';
 import { ChangeType, PlayerStatus, PromptType, UiUpdateType } from '../enums';
 import { triggerAcceptOffer, triggerDeclineOffer } from '../triggers';
 import {
@@ -22,8 +11,8 @@ import {
 } from '../types';
 
 const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
-  [ChangeType.answerOffer]: (game) => game, // Not addressed here
-  [ChangeType.bankruptcy]: (game) => game, // Not addressed here
+  [ChangeType.answerOffer]: (game) => game,
+  [ChangeType.bankruptcy]: (game) => game,
   [ChangeType.buildHouse]: (game) => game,
   [ChangeType.buyProperty]: (game) => game,
   [ChangeType.chance]: (game, change) => {
@@ -35,13 +24,13 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
     const card = getCommunityChestCardById(change.cardId);
     return card.action(game);
   },
-  [ChangeType.freeParking]: (game) => collectCenterPot(game),
-  [ChangeType.getOutOfJail]: (game) => getOutOfJail(game),
+  [ChangeType.freeParking]: (game) => game,
+  [ChangeType.getOutOfJail]: (game) => game,
   [ChangeType.goToJail]: (game) => goToJail(game),
   [ChangeType.mortgage]: (game) => game,
-  [ChangeType.passGo]: (game) => passGo(game),
-  [ChangeType.payRent]: (game, change) => payRent(game, change.landlordId, change.rent),
-  [ChangeType.payTax]: (game, change) => payTax(game, change.tax),
+  [ChangeType.passGo]: (game) => game,
+  [ChangeType.payRent]: (game) => game,
+  [ChangeType.payTax]: (game) => game,
   [ChangeType.placeOffer]: (game, change, params) => {
     if (params.offerAnswer === 'accept') {
       return triggerAcceptOffer(game, change);
@@ -49,8 +38,8 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
       return triggerDeclineOffer(game, change);
     }
   },
-  [ChangeType.playerWin]: (game) => game, // Not addressed here
-  [ChangeType.remainInJail]: (game) => remainInJail(game),
+  [ChangeType.playerWin]: (game) => game,
+  [ChangeType.remainInJail]: (game) => game,
   [ChangeType.rollDice]: (game) => game,
   [ChangeType.sellHouse]: (game) => game,
 };
