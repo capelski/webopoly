@@ -69,7 +69,6 @@ export const changesMap: {
     minify: (change) => ({ c: change.cardId, p: change.playerId, t: change.type }),
     restore: (c) => ({ cardId: c.c, playerId: c.p, type: c.t }),
   },
-  [ChangeType.endTurn]: { minify: genericChangeMinifier, restore: genericChangeRestorer },
   [ChangeType.freeParking]: {
     minify: (change) => ({ p: change.playerId, po: change.pot, t: change.type }),
     restore: (c) => ({ playerId: c.p, pot: c.po, type: c.t }),

@@ -54,22 +54,6 @@ export const createGame = (nPlayers: number): GameMinified => {
   };
 };
 
-export const endTurn = (game: Game): Game => {
-  const nextPlayerId = getNextPlayerId(game);
-  return {
-    ...game,
-    currentPlayerId: nextPlayerId,
-    uiUpdates: [
-      {
-        playerId: nextPlayerId,
-        promptType: PromptType.rollDice,
-        type: ChangeType.rollDice,
-        uiUpdateType: UiUpdateType.prompt,
-      },
-    ],
-  };
-};
-
 export const getCurrentPlayer = (game: Game): Player => {
   return game.players.find((p) => p.id === game.currentPlayerId)!;
 };

@@ -12,7 +12,6 @@ export type CardChange = BaseChange & {
 
 export type GenericChangeType =
   | ChangeType.bankruptcy
-  | ChangeType.endTurn
   | ChangeType.getOutOfJail
   | ChangeType.goToJail
   | ChangeType.passGo

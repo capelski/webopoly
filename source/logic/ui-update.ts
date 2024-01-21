@@ -3,7 +3,6 @@ import {
   buyProperty,
   clearMortgage,
   collectCenterPot,
-  endTurn,
   getChanceCardById,
   getCommunityChestCardById,
   getCurrentPlayer,
@@ -42,7 +41,6 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
     const card = getCommunityChestCardById(change.cardId);
     return card.action(game);
   },
-  [ChangeType.endTurn]: (game) => endTurn(game),
   [ChangeType.freeParking]: (game) => collectCenterPot(game),
   [ChangeType.getOutOfJail]: (game) => getOutOfJail(game),
   [ChangeType.goToJail]: (game) => goToJail(game),

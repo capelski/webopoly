@@ -78,7 +78,6 @@ const renderersMap: {
     description: `${player.name}: ${getCommunityChestCardById(change.cardId).text}`,
     icon: communityChestSymbol,
   }),
-  [ChangeType.endTurn]: false,
   [ChangeType.freeParking]: (player, change) => ({
     description: `${player.name} collects ${currencySymbol}${change.pot} from Free Parking`,
     icon: parkingSymbol,

@@ -1,16 +1,18 @@
-import { ChangeType, UiUpdateType } from '../enums';
-import { getCurrentPlayer } from '../logic';
+import { ChangeType, PromptType, UiUpdateType } from '../enums';
+import { getNextPlayerId } from '../logic';
 import { Game } from '../types';
 
 export const triggerEndTurn = (game: Game): Game => {
-  const currentPlayer = getCurrentPlayer(game);
+  const nextPlayerId = getNextPlayerId(game);
   return {
     ...game,
+    currentPlayerId: nextPlayerId,
     uiUpdates: [
       {
-        playerId: currentPlayer.id,
-        type: ChangeType.endTurn,
-        uiUpdateType: UiUpdateType.silent,
+        playerId: nextPlayerId,
+        promptType: PromptType.rollDice,
+        type: ChangeType.rollDice,
+        uiUpdateType: UiUpdateType.prompt,
       },
     ],
   };

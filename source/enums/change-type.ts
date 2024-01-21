@@ -6,7 +6,6 @@ export enum ChangeType {
   chance = 'chance',
   clearMortgage = 'clearMortgage',
   communityChest = 'communityChest',
-  endTurn = 'endTurn',
   freeParking = 'freeParking',
   getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',
