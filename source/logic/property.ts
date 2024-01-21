@@ -12,29 +12,6 @@ import {
 import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
 import { getPlayerById, getSquareById } from './game';
 
-export const buildHouse = (game: Game, squareId: Id): Game => {
-  const property = getSquareById(game, squareId);
-
-  if (property.type !== SquareType.property || property.propertyType !== PropertyType.street) {
-    return game;
-  }
-
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
-        ? {
-            ...p,
-            money: p.money - getBuildHouseAmount(property),
-          }
-        : p;
-    }),
-    squares: game.squares.map((s) => {
-      return s.id === property.id ? { ...s, houses: property.houses + 1 } : s;
-    }),
-  };
-};
-
 export const canBuildHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
   const allOwned = neighborhoodStreets.every((p) => p.ownerId === player.id);
@@ -196,29 +173,6 @@ export const mortgage = (game: Game, squareId: Id): Game => {
             money: p.money + getMortgageAmount(square),
           }
         : p;
-    }),
-  };
-};
-
-export const sellHouse = (game: Game, squareId: Id): Game => {
-  const property = getSquareById(game, squareId);
-
-  if (property.type !== SquareType.property || property.propertyType !== PropertyType.street) {
-    return game;
-  }
-
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
-        ? {
-            ...p,
-            money: p.money + getSellHouseAmount(property),
-          }
-        : p;
-    }),
-    squares: game.squares.map((s) => {
-      return s.id === property.id ? { ...s, houses: property.houses - 1 } : s;
     }),
   };
 };

@@ -1,5 +1,12 @@
 import { ChangeType, PropertyType, SquareType, UiUpdateType } from '../enums';
-import { canBuildHouse, canSellHouse, getPlayerById, getSquareById } from '../logic';
+import {
+  canBuildHouse,
+  canSellHouse,
+  getBuildHouseAmount,
+  getPlayerById,
+  getSellHouseAmount,
+  getSquareById,
+} from '../logic';
 import { Game, Id } from '../types';
 
 export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
@@ -19,6 +26,17 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId
+        ? {
+            ...p,
+            money: p.money - getBuildHouseAmount(square),
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === square.id ? { ...s, houses: square.houses + 1 } : s;
+    }),
     uiUpdates: [
       {
         playerId: square.ownerId,
@@ -47,6 +65,17 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId
+        ? {
+            ...p,
+            money: p.money + getSellHouseAmount(square),
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === square.id ? { ...s, houses: square.houses - 1 } : s;
+    }),
     uiUpdates: [
       {
         playerId: square.ownerId,

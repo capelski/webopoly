@@ -1,5 +1,4 @@
 import {
-  buildHouse,
   clearMortgage,
   collectCenterPot,
   getChanceCardById,
@@ -12,7 +11,6 @@ import {
   payRent,
   payTax,
   remainInJail,
-  sellHouse,
 } from '.';
 import { ChangeType, PlayerStatus, PromptType, UiUpdateType } from '../enums';
 import { triggerAcceptOffer, triggerDeclineOffer } from '../triggers';
@@ -28,7 +26,7 @@ import {
 const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   [ChangeType.answerOffer]: (game) => game, // Not addressed here
   [ChangeType.bankruptcy]: (game) => game, // Not addressed here
-  [ChangeType.buildHouse]: (game, change) => buildHouse(game, change.propertyId),
+  [ChangeType.buildHouse]: (game) => game,
   [ChangeType.buyProperty]: (game) => game,
   [ChangeType.chance]: (game, change) => {
     const card = getChanceCardById(change.cardId);
@@ -56,7 +54,7 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   [ChangeType.playerWin]: (game) => game, // Not addressed here
   [ChangeType.remainInJail]: (game) => remainInJail(game),
   [ChangeType.rollDice]: (game) => game,
-  [ChangeType.sellHouse]: (game, change) => sellHouse(game, change.propertyId),
+  [ChangeType.sellHouse]: (game) => game,
 };
 
 export const applyUiUpdates = (game: Game, { params, uiUpdateType }: UiUpdateParams): Game => {
