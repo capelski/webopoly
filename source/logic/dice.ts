@@ -1,7 +1,7 @@
 import { Dice } from '../types';
 
 export const getDiceRoll = (): Dice => {
-  return [35];
+  // return [X, X];
   return [Math.max(1, Math.round(Math.random() * 6)), Math.max(1, Math.round(Math.random() * 6))];
 };
 
