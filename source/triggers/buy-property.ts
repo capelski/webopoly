@@ -15,6 +15,18 @@ export const triggerBuyProperty = (game: Game): Game => {
 
   return {
     ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId
+        ? {
+            ...p,
+            properties: p.properties.concat([currentSquare.id]),
+            money: p.money - currentSquare.price,
+          }
+        : p;
+    }),
+    squares: game.squares.map((s) => {
+      return s.id === currentSquare.id ? { ...s, ownerId: game.currentPlayerId } : s;
+    }),
     uiUpdates: [
       {
         playerId: currentPlayer.id,

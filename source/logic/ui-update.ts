@@ -1,6 +1,5 @@
 import {
   buildHouse,
-  buyProperty,
   clearMortgage,
   collectCenterPot,
   getChanceCardById,
@@ -30,7 +29,7 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   [ChangeType.answerOffer]: (game) => game, // Not addressed here
   [ChangeType.bankruptcy]: (game) => game, // Not addressed here
   [ChangeType.buildHouse]: (game, change) => buildHouse(game, change.propertyId),
-  [ChangeType.buyProperty]: (game, change) => buyProperty(game, change.propertyId),
+  [ChangeType.buyProperty]: (game) => game,
   [ChangeType.chance]: (game, change) => {
     const card = getChanceCardById(change.cardId);
     return card.action(game);
