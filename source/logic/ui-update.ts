@@ -6,7 +6,6 @@ import {
   getChanceCardById,
   getCommunityChestCardById,
   getCurrentPlayer,
-  getNextSquareId,
   getOutOfJail,
   goToJail,
   mortgage,
@@ -17,7 +16,7 @@ import {
   sellHouse,
 } from '.';
 import { ChangeType, PlayerStatus, PromptType, UiUpdateType } from '../enums';
-import { triggerAcceptOffer, triggerDeclineOffer, triggerMovePlayer } from '../triggers';
+import { triggerAcceptOffer, triggerDeclineOffer } from '../triggers';
 import {
   Change,
   Game,
@@ -57,11 +56,7 @@ const transformersMap: { [TKey in ChangeType]: UiUpdateTransformer<TKey> } = {
   },
   [ChangeType.playerWin]: (game) => game, // Not addressed here
   [ChangeType.remainInJail]: (game) => remainInJail(game),
-  [ChangeType.rollDice]: (game) => {
-    const movement = game.dice.reduce((x, y) => x + y, 0);
-    const nextSquareId = getNextSquareId(game, movement);
-    return triggerMovePlayer(game, nextSquareId);
-  },
+  [ChangeType.rollDice]: (game) => game,
   [ChangeType.sellHouse]: (game, change) => sellHouse(game, change.propertyId),
 };
 
