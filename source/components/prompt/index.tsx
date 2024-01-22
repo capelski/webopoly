@@ -8,9 +8,8 @@ import {
   goToJail,
 } from '../../logic';
 import { currencySymbol } from '../../parameters';
-import { triggerAcceptOffer, triggerDeclineOffer, triggerDiceRoll } from '../../triggers';
+import { triggerAcceptOffer, triggerDeclineOffer } from '../../triggers';
 import { Game, Notification, Prompt } from '../../types';
-import { Button } from '../button';
 import { Modal } from '../modal';
 import { NotificationComponent } from '../notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
@@ -123,22 +122,6 @@ const renderersMap: {
         clearGameHandler={() => updateGame(undefined)}
         winningPlayer={winningPlayer}
       />
-    );
-  },
-  [PromptType.rollDice]: (prompt, game, updateGame) => {
-    const player = getPlayerById(game, prompt.playerId);
-
-    return (
-      <React.Fragment>
-        <h2>{player.name}</h2>
-        <Button
-          onClick={() => {
-            updateGame(triggerDiceRoll(game));
-          }}
-        >
-          Roll dice
-        </Button>
-      </React.Fragment>
     );
   },
 };

@@ -1,4 +1,3 @@
-import { PromptType } from '../enums';
 import { getNextPlayerId } from '../logic';
 import { Game } from '../types';
 
@@ -7,9 +6,6 @@ export const triggerEndTurn = (game: Game): Game => {
   return {
     ...game,
     currentPlayerId: nextPlayerId,
-    prompt: {
-      playerId: nextPlayerId,
-      type: PromptType.rollDice,
-    },
+    mustRollDice: true,
   };
 };

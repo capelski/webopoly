@@ -4,7 +4,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { GameView, SquareType } from '../enums';
 import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
-import { triggerBuyProperty, triggerEndTurn } from '../triggers';
+import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
 import { Game, Id, Square } from '../types';
 import { Button } from './button';
 import { Historical } from './historical';
@@ -152,6 +152,15 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
         <div>
           <Button
+            disabled={!props.game.mustRollDice}
+            onClick={() => {
+              props.updateGame(triggerDiceRoll(props.game));
+            }}
+          >
+            Roll dice
+          </Button>
+
+          <Button
             onClick={() => {
               props.updateGame(triggerBuyProperty(props.game));
             }}
@@ -164,7 +173,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           </Button>
 
           <Button
-            disabled={!!props.game.prompt}
+            disabled={props.game.mustRollDice || !!props.game.prompt}
             onClick={() => {
               props.updateGame(triggerEndTurn(props.game));
             }}

@@ -17,6 +17,7 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
+    m: game.mustRollDice,
     n: game.notifications.map<NotificationMinified>((notification) => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
@@ -80,20 +81,21 @@ export const minifyGame = (game: Game): GameMinified => {
   };
 };
 
-export const restoreMinifiedGame = (game: GameMinified): Game => {
+export const restoreMinifiedGame = (g: GameMinified): Game => {
   return {
-    centerPot: game.cp,
-    currentPlayerId: game.ci,
-    dice: game.d,
-    notifications: game.n.map<Notification>((n) => {
+    centerPot: g.cp,
+    currentPlayerId: g.ci,
+    dice: g.d,
+    mustRollDice: g.m,
+    notifications: g.n.map<Notification>((n) => {
       const restore: Restorer = notificationsMap[n.t].restore;
       return restore(n);
     }),
-    pastNotifications: game.pa.map<Notification>((n) => {
+    pastNotifications: g.pa.map<Notification>((n) => {
       const restore: Restorer = notificationsMap[n.t].restore;
       return restore(n);
     }),
-    players: game.p.map<Player>((p) => ({
+    players: g.p.map<Player>((p) => ({
       color: p.c,
       id: p.i,
       money: p.m,
@@ -103,8 +105,8 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
       squareId: p.si,
       turnsInJail: p.t,
     })),
-    prompt: game.pr,
-    squares: game.s.map<Square>((s) => {
+    prompt: g.pr,
+    squares: g.s.map<Square>((s) => {
       const square = squaresMap[s.i];
 
       if (square.type === SquareType.property && s.t === SquareType.property) {

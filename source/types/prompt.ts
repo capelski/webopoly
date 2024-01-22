@@ -11,7 +11,7 @@ export type CardPrompt = PromptBase & {
 };
 
 export type GenericPrompt = PromptBase & {
-  type: PromptType.goToJail | PromptType.playerWin | PromptType.rollDice;
+  type: PromptType.goToJail | PromptType.playerWin;
 };
 
 export type AnswerOfferPrompt = PromptBase & {

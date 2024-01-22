@@ -4,5 +4,4 @@ export enum PromptType {
   communityChest = 'communityChest',
   goToJail = 'goToJail',
   playerWin = 'playerWin', // TODO
-  rollDice = 'rollDice',
 }

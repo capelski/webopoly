@@ -1,4 +1,4 @@
-import { PlayerStatus, PromptType, PropertyType, SquareType } from '../enums';
+import { PlayerStatus, PropertyType, SquareType } from '../enums';
 import { playerInitialMoney } from '../parameters';
 import {
   Game,
@@ -34,12 +34,10 @@ export const createGame = (nPlayers: number): GameMinified => {
     ci: currentPlayerId,
     d: [],
     n: [],
+    m: true,
     pa: [],
     p: minifiedPlayers,
-    pr: {
-      playerId: currentPlayerId,
-      type: PromptType.rollDice,
-    },
+    pr: undefined,
     s: minifiedSquares,
   };
 };

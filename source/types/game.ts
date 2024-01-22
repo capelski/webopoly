@@ -9,6 +9,7 @@ export type Game = {
   centerPot: number;
   currentPlayerId: Id;
   dice: Dice;
+  mustRollDice: boolean;
   notifications: Notification[];
   pastNotifications: Notification[];
   players: Player[];

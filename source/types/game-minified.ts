@@ -12,6 +12,8 @@ export type GameMinified = {
   ci: Id;
   /** dice */
   d: Dice;
+  /** mustRollDice */
+  m: boolean;
   /** notifications */
   n: NotificationMinified[];
   /** pastNotifications */
