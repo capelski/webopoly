@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '../button';
 
-interface AcceptDeclinePromptProps {
+interface AnswerOfferPromptProps {
   acceptHandler: () => void;
   children?: React.ReactNode;
   declineHandler: () => void;
 }
 
-export const AcceptDeclinePrompt: React.FC<AcceptDeclinePromptProps> = (props) => {
+export const AnswerOfferPrompt: React.FC<AnswerOfferPromptProps> = (props) => {
   return (
     <div>
       {props.children}

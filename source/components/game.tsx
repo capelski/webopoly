@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
-import { GameView, SquareType, UiUpdateType } from '../enums';
-import { applyUiUpdates, canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { GameView, SquareType } from '../enums';
+import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerEndTurn } from '../triggers';
-import { Game, Id, PromptUiUpdate, Square } from '../types';
+import { Game, Id, Square } from '../types';
 import { Button } from './button';
-import { ChangeComponent } from './change';
 import { Historical } from './historical';
 import { Modal } from './modal';
 import { NavBar } from './nav-bar';
+import { NotificationComponent } from './notification';
 import { Players } from './players';
-import { PromptUpdate } from './prompt-update';
+import { PromptComponent } from './prompt';
 import { SquareComponent } from './square';
 interface GameComponentProps {
   game: Game;
@@ -35,58 +35,49 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const [gameView, setGameView] = useState(GameView.board);
   const [clearGameModal, setClearGameModal] = useState(false);
   const [refs] = useState(getSquaresRefs(props.game.squares));
-  const [displayPromptsModal, setDisplayPromptsModal] = useState(false);
+  const [displayPrompt, setDisplayPrompt] = useState(false);
 
   useEffect(() => {
     refs[currentSquare.id].current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [props.game]);
 
-  const notificationUpdates = props.game.uiUpdates.filter(
-    (c) => c.uiUpdateType === UiUpdateType.notification,
-  );
-  const promptUpdates = props.game.uiUpdates.filter(
-    (c) => c.uiUpdateType === UiUpdateType.prompt,
-  ) as PromptUiUpdate[];
+  useEffect(() => {
+    if (props.game.notifications.length > 0) {
+      props.game.notifications.forEach((notification) => {
+        toast(<NotificationComponent notification={notification} game={props.game} />, {
+          autoClose: 3000,
+        });
+      });
+      props.updateGame({
+        ...props.game,
+        notifications: [],
+        pastNotifications: [...props.game.notifications, ...props.game.pastNotifications],
+      });
+    }
+  }, [props.game.notifications]);
 
   useEffect(() => {
-    if (notificationUpdates.length > 0) {
-      toast(
-        <React.Fragment>
-          {notificationUpdates.map((change, index) => (
-            <ChangeComponent change={change} game={props.game} key={index} />
-          ))}
-        </React.Fragment>,
-        { autoClose: 3000 },
-      );
-      props.updateGame(applyUiUpdates(props.game, { uiUpdateType: UiUpdateType.notification }));
-    } else if (promptUpdates.length > 0) {
+    if (props.game.prompt) {
       setTimeout(() => {
-        setDisplayPromptsModal(true);
+        setDisplayPrompt(true);
       }, 800);
     }
-  }, [props.game.uiUpdates]);
+  }, [props.game.prompt]);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
 
-      {displayPromptsModal ? (
-        <React.Fragment>
-          {promptUpdates.map((change, index) => {
-            return (
-              <PromptUpdate
-                game={props.game}
-                key={index}
-                change={change}
-                updateGame={(game) => {
-                  setDisplayPromptsModal(false);
-                  return props.updateGame(game);
-                }}
-              />
-            );
-          })}
-        </React.Fragment>
+      {displayPrompt && props.game.prompt ? (
+        <PromptComponent
+          game={props.game}
+          prompt={props.game.prompt}
+          updateGame={(game) => {
+            setDisplayPrompt(false);
+            return props.updateGame(game);
+          }}
+        />
       ) : undefined}
 
       {clearGameModal && (
@@ -173,6 +164,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           </Button>
 
           <Button
+            disabled={!!props.game.prompt}
             onClick={() => {
               props.updateGame(triggerEndTurn(props.game));
             }}

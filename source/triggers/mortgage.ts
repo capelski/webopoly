@@ -1,4 +1,4 @@
-import { ChangeType, PropertyStatus, SquareType, UiUpdateType } from '../enums';
+import { NotificationType, PropertyStatus, SquareType } from '../enums';
 import {
   canClearMortgage,
   canMortgage,
@@ -22,6 +22,13 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    notifications: [
+      {
+        playerId: square.ownerId,
+        propertyId: squareId,
+        type: NotificationType.clearMortgage,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === square.ownerId
         ? {
@@ -38,14 +45,6 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
           }
         : s;
     }),
-    uiUpdates: [
-      {
-        playerId: square.ownerId,
-        propertyId: squareId,
-        type: ChangeType.clearMortgage,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };
 
@@ -62,6 +61,13 @@ export const triggerMortgage = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    notifications: [
+      {
+        playerId: square.ownerId,
+        propertyId: squareId,
+        type: NotificationType.mortgage,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === square.ownerId
         ? {
@@ -78,13 +84,5 @@ export const triggerMortgage = (game: Game, squareId: Id): Game => {
           }
         : s;
     }),
-    uiUpdates: [
-      {
-        playerId: square.ownerId,
-        propertyId: squareId,
-        type: ChangeType.mortgage,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };

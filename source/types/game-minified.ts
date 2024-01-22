@@ -1,23 +1,25 @@
-import { ChangeMinified } from './change-minified';
 import { Dice } from './dice';
 import { Id } from './id';
+import { NotificationMinified } from './notification-minified';
 import { PlayerMinified } from './player-minified';
+import { Prompt } from './prompt';
 import { SquareMinified } from './square-minified';
-import { UiUpdate } from './ui-update';
 
 export type GameMinified = {
   /** centerPot */
   cp: number;
-  /** changeHistory */
-  ch: ChangeMinified[];
   /** currentPlayerId */
   ci: Id;
   /** dice */
   d: Dice;
+  /** notifications */
+  n: NotificationMinified[];
+  /** pastNotifications */
+  pa: NotificationMinified[];
   /** players */
   p: PlayerMinified[];
+  /** prompt */
+  pr: Prompt | undefined;
   /** squares */
   s: SquareMinified[];
-  /** uiUpdates */
-  u: UiUpdate[];
 };

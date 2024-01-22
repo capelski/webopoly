@@ -1,4 +1,4 @@
-import { ChangeType, SquareType, UiUpdateType } from '../enums';
+import { NotificationType, SquareType } from '../enums';
 import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { Game } from '../types';
 
@@ -15,6 +15,13 @@ export const triggerBuyProperty = (game: Game): Game => {
 
   return {
     ...game,
+    notifications: [
+      {
+        playerId: currentPlayer.id,
+        propertyId: currentSquare.id,
+        type: NotificationType.buyProperty,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? {
@@ -27,13 +34,5 @@ export const triggerBuyProperty = (game: Game): Game => {
     squares: game.squares.map((s) => {
       return s.id === currentSquare.id ? { ...s, ownerId: game.currentPlayerId } : s;
     }),
-    uiUpdates: [
-      {
-        playerId: currentPlayer.id,
-        propertyId: currentSquare.id,
-        type: ChangeType.buyProperty,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };

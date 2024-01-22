@@ -1,26 +1,30 @@
 import { PropertyType, SquareType } from '../../enums';
 import {
-  Change,
-  ChangeMinified,
   Game,
   GameMinified,
+  Notification,
+  NotificationMinified,
   Player,
   PlayerMinified,
   Square,
   SquareMinified,
 } from '../../types';
-import { changesMap, Minifier, Restorer } from './changes-map';
+import { Minifier, notificationsMap, Restorer } from './notifications-map';
 import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
   return {
-    ch: game.changeHistory.map<ChangeMinified>((change) => {
-      const minify: Minifier = changesMap[change.type].minify;
-      return minify(change);
-    }),
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
+    n: game.notifications.map<NotificationMinified>((notification) => {
+      const minify: Minifier = notificationsMap[notification.type].minify;
+      return minify(notification);
+    }),
+    pa: game.pastNotifications.map<NotificationMinified>((notification) => {
+      const minify: Minifier = notificationsMap[notification.type].minify;
+      return minify(notification);
+    }),
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       i: player.id,
@@ -31,6 +35,7 @@ export const minifyGame = (game: Game): GameMinified => {
       si: player.squareId,
       t: player.turnsInJail,
     })),
+    pr: game.prompt,
     s: game.squares.map<SquareMinified>((square) => {
       return square.type === SquareType.chance ||
         square.type === SquareType.communityChest ||
@@ -72,19 +77,22 @@ export const minifyGame = (game: Game): GameMinified => {
             t: square.type,
           };
     }),
-    u: game.uiUpdates,
   };
 };
 
 export const restoreMinifiedGame = (game: GameMinified): Game => {
   return {
     centerPot: game.cp,
-    changeHistory: game.ch.map<Change>((c) => {
-      const restore: Restorer = changesMap[c.t].restore;
-      return restore(c);
-    }),
     currentPlayerId: game.ci,
     dice: game.d,
+    notifications: game.n.map<Notification>((n) => {
+      const restore: Restorer = notificationsMap[n.t].restore;
+      return restore(n);
+    }),
+    pastNotifications: game.pa.map<Notification>((n) => {
+      const restore: Restorer = notificationsMap[n.t].restore;
+      return restore(n);
+    }),
     players: game.p.map<Player>((p) => ({
       color: p.c,
       id: p.i,
@@ -95,6 +103,7 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
       squareId: p.si,
       turnsInJail: p.t,
     })),
+    prompt: game.pr,
     squares: game.s.map<Square>((s) => {
       const square = squaresMap[s.i];
 
@@ -109,6 +118,5 @@ export const restoreMinifiedGame = (game: GameMinified): Game => {
 
       return square;
     }),
-    uiUpdates: game.u,
   };
 };

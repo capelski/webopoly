@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { ChangeType } from '../../enums';
+import { PromptType } from '../../enums';
 import { getChanceCardById, getCommunityChestCardById } from '../../logic';
 import { Id } from '../../types';
 import { Button } from '../button';
 import { OkPrompt } from './ok-prompt';
 
-interface CardPromptComponentProps {
+interface CardPromptProps {
   cardId: Id;
   okHandler: () => void;
-  type: ChangeType.chance | ChangeType.communityChest;
+  type: PromptType.chance | PromptType.communityChest;
 }
 
-export const CardPromptComponent: React.FC<CardPromptComponentProps> = (props) => {
+export const CardPrompt: React.FC<CardPromptProps> = (props) => {
   const [revealed, setRevealed] = useState(false);
   const card =
-    props.type === ChangeType.chance
+    props.type === PromptType.chance
       ? getChanceCardById(props.cardId)
       : getCommunityChestCardById(props.cardId);
 
@@ -26,7 +26,7 @@ export const CardPromptComponent: React.FC<CardPromptComponentProps> = (props) =
         </OkPrompt>
       ) : (
         <div>
-          <h3>{props.type === ChangeType.chance ? 'Chance' : 'Community chest'} card</h3>
+          <h3>{props.type === PromptType.chance ? 'Chance' : 'Community chest'} card</h3>
           <Button
             onClick={() => {
               setRevealed(true);

@@ -1,16 +1,17 @@
-import { Change } from './change';
 import { Dice } from './dice';
 import { Id } from './id';
+import { Notification } from './notification';
 import { Player } from './player';
+import { Prompt } from './prompt';
 import { Square } from './square';
-import { UiUpdate } from './ui-update';
 
 export type Game = {
   centerPot: number;
-  changeHistory: Change[];
   currentPlayerId: Id;
   dice: Dice;
+  notifications: Notification[];
+  pastNotifications: Notification[];
   players: Player[];
+  prompt: Prompt | undefined;
   squares: Square[];
-  uiUpdates: UiUpdate[];
 };

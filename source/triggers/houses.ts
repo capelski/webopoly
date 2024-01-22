@@ -1,4 +1,4 @@
-import { ChangeType, PropertyStatus, PropertyType, SquareType, UiUpdateType } from '../enums';
+import { NotificationType, PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   canBuildHouse,
   canSellHouse,
@@ -27,6 +27,13 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    notifications: [
+      {
+        playerId: square.ownerId,
+        propertyId: squareId,
+        type: NotificationType.buildHouse,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? {
@@ -38,14 +45,6 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
     squares: game.squares.map((s) => {
       return s.id === square.id ? { ...s, houses: square.houses + 1 } : s;
     }),
-    uiUpdates: [
-      {
-        playerId: square.ownerId,
-        propertyId: squareId,
-        type: ChangeType.buildHouse,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };
 
@@ -66,6 +65,13 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
 
   return {
     ...game,
+    notifications: [
+      {
+        playerId: square.ownerId,
+        propertyId: squareId,
+        type: NotificationType.sellHouse,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? {
@@ -77,13 +83,5 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
     squares: game.squares.map((s) => {
       return s.id === square.id ? { ...s, houses: square.houses - 1 } : s;
     }),
-    uiUpdates: [
-      {
-        playerId: square.ownerId,
-        propertyId: squareId,
-        type: ChangeType.sellHouse,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };

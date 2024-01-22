@@ -1,6 +1,6 @@
-export enum ChangeType {
+export enum NotificationType {
   answerOffer = 'answerOffer',
-  bankruptcy = 'bankruptcy',
+  bankruptcy = 'bankruptcy', // TODO
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',
   chance = 'chance',
@@ -13,9 +13,6 @@ export enum ChangeType {
   passGo = 'passGo',
   payRent = 'payRent',
   payTax = 'payTax',
-  placeOffer = 'placeOffer',
-  playerWin = 'playerWin',
   remainInJail = 'remainInJail',
-  rollDice = 'rollDice',
   sellHouse = 'sellHouse',
 }

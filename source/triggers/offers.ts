@@ -1,45 +1,44 @@
-import { AnswerType, ChangeType, OfferType, PromptType, UiUpdateType } from '../enums';
+import { AnswerType, NotificationType, OfferType, PromptType } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { AcceptDeclinePrompt, Game, Id, PropertySquare } from '../types';
+import { AnswerOfferPrompt, Game, Id, PropertySquare } from '../types';
 
-export const triggerAcceptOffer = (game: Game, change: AcceptDeclinePrompt): Game => {
+export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game => {
   const { buyerId, sellerId } =
-    change.offerType === OfferType.sell
-      ? { buyerId: change.targetPlayerId, sellerId: change.playerId }
-      : { buyerId: change.playerId, sellerId: change.targetPlayerId };
+    prompt.offerType === OfferType.sell
+      ? { buyerId: prompt.targetPlayerId, sellerId: prompt.playerId }
+      : { buyerId: prompt.playerId, sellerId: prompt.targetPlayerId };
 
   return {
     ...game,
+    notifications: [
+      {
+        amount: prompt.amount,
+        answer: AnswerType.accept,
+        offerType: prompt.offerType,
+        playerId: prompt.targetPlayerId,
+        propertyId: prompt.propertyId,
+        targetPlayerId: prompt.playerId,
+        type: NotificationType.answerOffer,
+      },
+    ],
     squares: game.squares.map((s) => {
-      return s.id === change.propertyId ? { ...s, ownerId: buyerId } : s;
+      return s.id === prompt.propertyId ? { ...s, ownerId: buyerId } : s;
     }),
     players: game.players.map((p) => {
       return p.id === buyerId
         ? {
             ...p,
-            properties: p.properties.concat(change.propertyId),
-            money: p.money - change.amount,
+            properties: p.properties.concat(prompt.propertyId),
+            money: p.money - prompt.amount,
           }
         : p.id === sellerId
         ? {
             ...p,
-            properties: p.properties.filter((pId) => pId !== change.propertyId),
-            money: p.money + change.amount,
+            properties: p.properties.filter((pId) => pId !== prompt.propertyId),
+            money: p.money + prompt.amount,
           }
         : p;
     }),
-    uiUpdates: [
-      {
-        amount: change.amount,
-        answer: AnswerType.accept,
-        offerType: change.offerType,
-        playerId: change.targetPlayerId,
-        propertyId: change.propertyId,
-        targetPlayerId: change.playerId,
-        type: ChangeType.answerOffer,
-        uiUpdateType: UiUpdateType.notification,
-      },
-    ],
   };
 };
 
@@ -51,34 +50,29 @@ export const triggerBuyingOffer = (game: Game, property: PropertySquare, amount:
 
   return {
     ...game,
-    uiUpdates: [
-      {
-        amount,
-        offerType: OfferType.buy,
-        playerId: currentPlayer.id,
-        promptType: PromptType.acceptDecline,
-        propertyId: property.id,
-        targetPlayerId: property.ownerId,
-        type: ChangeType.placeOffer,
-        uiUpdateType: UiUpdateType.prompt,
-      },
-    ],
+    prompt: {
+      amount,
+      offerType: OfferType.buy,
+      playerId: currentPlayer.id,
+      propertyId: property.id,
+      targetPlayerId: property.ownerId,
+      type: PromptType.answerOffer,
+    },
   };
 };
 
-export const triggerDeclineOffer = (game: Game, change: AcceptDeclinePrompt): Game => {
+export const triggerDeclineOffer = (game: Game, prompt: AnswerOfferPrompt): Game => {
   return {
     ...game,
-    uiUpdates: [
+    notifications: [
       {
-        amount: change.amount,
+        amount: prompt.amount,
         answer: AnswerType.decline,
-        offerType: change.offerType,
-        playerId: change.targetPlayerId,
-        propertyId: change.propertyId,
-        targetPlayerId: change.playerId,
-        type: ChangeType.answerOffer,
-        uiUpdateType: UiUpdateType.notification,
+        offerType: prompt.offerType,
+        playerId: prompt.targetPlayerId,
+        propertyId: prompt.propertyId,
+        targetPlayerId: prompt.playerId,
+        type: NotificationType.answerOffer,
       },
     ],
   };
@@ -92,17 +86,13 @@ export const triggerSellingOffer = (
 ): Game => {
   return {
     ...game,
-    uiUpdates: [
-      {
-        amount,
-        offerType: OfferType.sell,
-        playerId: game.currentPlayerId,
-        promptType: PromptType.acceptDecline,
-        propertyId: property.id,
-        targetPlayerId,
-        type: ChangeType.placeOffer,
-        uiUpdateType: UiUpdateType.prompt,
-      },
-    ],
+    prompt: {
+      amount,
+      offerType: OfferType.sell,
+      playerId: game.currentPlayerId,
+      propertyId: property.id,
+      targetPlayerId,
+      type: PromptType.answerOffer,
+    },
   };
 };

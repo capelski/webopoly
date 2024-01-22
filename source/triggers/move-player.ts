@@ -1,4 +1,4 @@
-import { ChangeType, PromptType, SquareType, TaxType, UiUpdateType } from '../enums';
+import { NotificationType, PromptType, SquareType, TaxType } from '../enums';
 import {
   collectCenterPot,
   doesPayRent,
@@ -15,7 +15,7 @@ import {
   payTax,
   remainInJail,
 } from '../logic';
-import { Game, Id, UiUpdate } from '../types';
+import { Game, Id, Notification } from '../types';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
@@ -28,7 +28,7 @@ export const triggerMovePlayer = (
 ): Game => {
   let nextGame: Game = { ...game };
   let currentPlayer = getCurrentPlayer(nextGame);
-  const uiUpdates: UiUpdate[] = [];
+  const notifications: Notification[] = [];
 
   const isInJail = isPlayerInJail(currentPlayer);
   const escapesJail = getsOutOfJail(currentPlayer, nextGame.dice);
@@ -39,21 +39,18 @@ export const triggerMovePlayer = (
     if (escapesJail) {
       nextGame = getOutOfJail(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
-      uiUpdates.push({
+      notifications.push({
         playerId: nextGame.currentPlayerId,
-        type: ChangeType.getOutOfJail,
-        uiUpdateType: UiUpdateType.notification,
+        type: NotificationType.getOutOfJail,
       });
     }
 
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
-      uiUpdates.push({
+      nextGame.prompt = {
         playerId: nextGame.currentPlayerId,
-        promptType: PromptType.confirmation,
-        type: ChangeType.goToJail,
-        uiUpdateType: UiUpdateType.prompt,
-      });
+        type: PromptType.goToJail,
+      };
     } else {
       const paysRent = doesPayRent(currentPlayer, nextSquare);
       const payTaxes = nextSquare.type === SquareType.tax;
@@ -64,10 +61,9 @@ export const triggerMovePlayer = (
       if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
         nextGame = passGo(nextGame);
         currentPlayer = getCurrentPlayer(nextGame);
-        uiUpdates.push({
+        notifications.push({
           playerId: nextGame.currentPlayerId,
-          type: ChangeType.passGo,
-          uiUpdateType: UiUpdateType.notification,
+          type: NotificationType.passGo,
         });
       }
 
@@ -76,12 +72,11 @@ export const triggerMovePlayer = (
         nextGame = payRent(nextGame, nextSquare.ownerId!, rent);
         currentPlayer = getCurrentPlayer(nextGame);
 
-        uiUpdates.push({
+        notifications.push({
           landlordId: nextSquare.ownerId!,
           playerId: nextGame.currentPlayerId,
           rent,
-          type: ChangeType.payRent,
-          uiUpdateType: UiUpdateType.notification,
+          type: NotificationType.payRent,
         });
       } else if (payTaxes) {
         const tax =
@@ -90,37 +85,31 @@ export const triggerMovePlayer = (
             : 100;
         nextGame = payTax(nextGame, tax);
         currentPlayer = getCurrentPlayer(nextGame);
-        uiUpdates.push({
+        notifications.push({
           playerId: nextGame.currentPlayerId,
           tax,
-          type: ChangeType.payTax,
-          uiUpdateType: UiUpdateType.notification,
+          type: NotificationType.payTax,
         });
       } else if (collectsFreeParking) {
         nextGame = collectCenterPot(nextGame);
         currentPlayer = getCurrentPlayer(nextGame);
-        uiUpdates.push({
+        notifications.push({
           playerId: nextGame.currentPlayerId,
           pot: game.centerPot,
-          type: ChangeType.freeParking,
-          uiUpdateType: UiUpdateType.notification,
+          type: NotificationType.freeParking,
         });
       } else if (landsInChance) {
-        uiUpdates.push({
+        nextGame.prompt = {
           cardId: getNextChanceCardId(),
           playerId: nextGame.currentPlayerId,
-          promptType: PromptType.card,
-          type: ChangeType.chance,
-          uiUpdateType: UiUpdateType.prompt,
-        });
+          type: PromptType.chance,
+        };
       } else if (landsInCommunityChest) {
-        uiUpdates.push({
+        nextGame.prompt = {
           cardId: getNextCommunityChestCardId(),
           playerId: nextGame.currentPlayerId,
-          promptType: PromptType.card,
-          type: ChangeType.communityChest,
-          uiUpdateType: UiUpdateType.prompt,
-        });
+          type: PromptType.communityChest,
+        };
       }
     }
 
@@ -133,13 +122,12 @@ export const triggerMovePlayer = (
   } else {
     nextGame = remainInJail(nextGame);
     currentPlayer = getCurrentPlayer(nextGame);
-    uiUpdates.push({
+    notifications.push({
       playerId: nextGame.currentPlayerId,
       turnsInJail: currentPlayer.turnsInJail,
-      type: ChangeType.remainInJail,
-      uiUpdateType: UiUpdateType.notification,
+      type: NotificationType.remainInJail,
     });
   }
 
-  return { ...nextGame, uiUpdates };
+  return { ...nextGame, notifications };
 };

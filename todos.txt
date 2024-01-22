@@ -1,15 +1,28 @@
-- Notification UI updates should occur AFTER the action has been applied
-- Split UiUpdates into notifications and prompts
-- Turn buy property into prompt ui update
-- Prompts should be limited to one at a time, and notifications should not affect them
 - Roll dice should not be a modal
-- Player bankruptcy should be a prompt
-- One Toast per each notification
 - Pay fine to get out of jail
+- Up on every action triggered, evaluate the current player status
+  if (currentPlayer.money < 0) {
+    changeHistory.unshift({
+      playerId: currentPlayer.id,
+      type: PromptType.bankruptcy,
+    });
+    currentPlayer.status = PlayerStatus.bankrupt;
+
+    const remainingPlayers = nextGame.players.filter((p) => p.status === PlayerStatus.playing);
+    if (remainingPlayers.length === 1) {
+      newUiUpdates.push({
+        playerId: remainingPlayers[0].id,
+        promptType: PromptType.playerWin,
+        type: PromptType.playerWin,
+        uiUpdateType: UiUpdateType.prompt,
+      });
+    }
+  }
+- Player bankruptcy should be a prompt
+- Turn buy property into prompt ui update?
 - Implement Chance and Community Chest card actions
 - Trading properties with other players
 - Allow mortgaging properties / selling houses when player goes bankrupt
 - Roll doubles => Extra turn
 - Make parameters.ts modifiable on createGame
-- House pricing based on property price percentage
-- Display error toast on disabled buttons
+- Display error toast on disabled buttons?

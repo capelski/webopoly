@@ -6,4 +6,3 @@ export * from './game';
 export * from './game-minified';
 export * from './player';
 export * from './property';
-export * from './ui-update';

@@ -1,7 +1,7 @@
 export * from './answer-type';
-export * from './change-type';
 export * from './game-view';
 export * from './neighborhood';
+export * from './notification-type';
 export * from './offer-type';
 export * from './player-status';
 export * from './prompt-type';
@@ -10,4 +10,3 @@ export * from './property-type';
 export * from './square-modal-type';
 export * from './square-type';
 export * from './tax-type';
-export * from './ui-update-type';
