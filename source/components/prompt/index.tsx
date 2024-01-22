@@ -1,12 +1,6 @@
 import React from 'react';
 import { NotificationType, OfferType, PromptType } from '../../enums';
-import {
-  getChanceCardById,
-  getCommunityChestCardById,
-  getPlayerById,
-  getSquareById,
-  goToJail,
-} from '../../logic';
+import { getPlayerById, getSquareById, goToJail } from '../../logic';
 import { currencySymbol } from '../../parameters';
 import { triggerAcceptOffer, triggerDeclineOffer } from '../../triggers';
 import { Game, Notification, Prompt } from '../../types';
@@ -52,53 +46,17 @@ const renderersMap: {
   },
   [PromptType.chance]: (prompt, game, updateGame) => {
     return (
-      <CardPrompt
-        okHandler={() => {
-          const card = getChanceCardById(prompt.cardId);
-          const nextGame = card.action({
-            ...game,
-            pastNotifications: [
-              {
-                cardId: prompt.cardId,
-                playerId: prompt.playerId,
-                type: NotificationType.chance,
-              },
-              ...game.pastNotifications,
-            ],
-          });
-          updateGame(nextGame);
-        }}
-        cardId={prompt.cardId}
-        type={prompt.type}
-      />
+      <CardPrompt cardId={prompt.cardId} game={game} type={prompt.type} updateGame={updateGame} />
     );
   },
   [PromptType.communityChest]: (prompt, game, updateGame) => {
     return (
-      <CardPrompt
-        okHandler={() => {
-          const card = getCommunityChestCardById(prompt.cardId);
-          const nextGame = card.action({
-            ...game,
-            pastNotifications: [
-              {
-                cardId: prompt.cardId,
-                playerId: prompt.playerId,
-                type: NotificationType.communityChest,
-              },
-              ...game.pastNotifications,
-            ],
-          });
-          updateGame(nextGame);
-        }}
-        cardId={prompt.cardId}
-        type={prompt.type}
-      />
+      <CardPrompt cardId={prompt.cardId} game={game} type={prompt.type} updateGame={updateGame} />
     );
   },
-  [PromptType.goToJail]: (prompt, game, updateGame) => {
+  [PromptType.goToJail]: (_prompt, game, updateGame) => {
     const notification: Notification = {
-      playerId: prompt.playerId,
+      playerId: game.currentPlayerId,
       type: NotificationType.goToJail,
     };
     return (

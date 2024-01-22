@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { PromptType } from '../../enums';
+import { NotificationType, PromptType } from '../../enums';
 import { getChanceCardById, getCommunityChestCardById } from '../../logic';
-import { Id } from '../../types';
+import { Game, Id } from '../../types';
 import { Button } from '../button';
 import { OkPrompt } from './ok-prompt';
 
 interface CardPromptProps {
   cardId: Id;
-  okHandler: () => void;
+  game: Game;
   type: PromptType.chance | PromptType.communityChest;
+  updateGame: (game: Game | undefined) => void;
 }
 
 export const CardPrompt: React.FC<CardPromptProps> = (props) => {
@@ -18,10 +19,28 @@ export const CardPrompt: React.FC<CardPromptProps> = (props) => {
       ? getChanceCardById(props.cardId)
       : getCommunityChestCardById(props.cardId);
 
+  const okHandler = () => {
+    const nextGame: Game = card.action({
+      ...props.game,
+      pastNotifications: [
+        {
+          cardId: props.cardId,
+          playerId: props.game.currentPlayerId,
+          type:
+            props.type === PromptType.chance
+              ? NotificationType.chance
+              : NotificationType.communityChest,
+        },
+        ...props.game.pastNotifications,
+      ],
+    });
+    props.updateGame(nextGame);
+  };
+
   return (
     <React.Fragment>
       {revealed ? (
-        <OkPrompt okHandler={props.okHandler}>
+        <OkPrompt okHandler={okHandler}>
           <p>{card.text}</p>
         </OkPrompt>
       ) : (
