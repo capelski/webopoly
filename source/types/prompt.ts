@@ -3,7 +3,8 @@ import { Id } from './id';
 
 export type CardPrompt = {
   cardId: Id;
-  type: PromptType.chance | PromptType.communityChest;
+  cardType: 'chance' | 'community';
+  type: PromptType.card;
 };
 
 export type GenericPrompt = {

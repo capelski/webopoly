@@ -1,8 +1,6 @@
 import React from 'react';
-import { NotificationType, OfferType, PromptType } from '../../enums';
-import { getPlayerById, getSquareById, goToJail } from '../../logic';
-import { currencySymbol } from '../../parameters';
-import { triggerAcceptOffer, triggerDeclineOffer } from '../../triggers';
+import { NotificationType, PromptType } from '../../enums';
+import { getPlayerById, goToJail } from '../../logic';
 import { Game, Notification, Prompt } from '../../types';
 import { Modal } from '../modal';
 import { NotificationComponent } from '../notification';
@@ -10,74 +8,37 @@ import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
 import { OkPrompt } from './ok-prompt';
 import { PlayerWinPrompt } from './player-win-prompt';
-
-type PromptRenderer<T extends PromptType = PromptType> = (
-  prompt: Prompt & { type: T },
-  game: Game,
-  updateGame: (game: Game | undefined) => void,
-) => React.ReactNode;
+import { PromptInterface } from './prompt-interface';
 
 const renderersMap: {
-  [TKey in PromptType]: PromptRenderer<TKey>;
+  [TKey in PromptType]: PromptInterface<TKey>;
 } = {
-  [PromptType.answerOffer]: (prompt, game, updateGame) => {
-    const player = getSquareById(game, prompt.playerId);
-    const square = getSquareById(game, prompt.propertyId);
-    const owner = getPlayerById(game, prompt.targetPlayerId);
-    const isBuyingOffer = prompt.offerType === OfferType.buy;
-
-    return (
-      <AnswerOfferPrompt
-        acceptHandler={() => {
-          updateGame(triggerAcceptOffer(game, prompt));
-        }}
-        declineHandler={() => {
-          updateGame(triggerDeclineOffer(game, prompt));
-        }}
-      >
-        <div>
-          <span>{isBuyingOffer ? '⬅️' : '➡️'}</span>
-          <span style={{ paddingLeft: 8 }}>{`${player.name} places ${currencySymbol}${
-            prompt.amount
-          } ${isBuyingOffer ? 'BUY' : 'SELL'} offer for ${square.name} to ${owner.name}`}</span>
-        </div>
-      </AnswerOfferPrompt>
-    );
-  },
-  [PromptType.chance]: (prompt, game, updateGame) => {
-    return (
-      <CardPrompt cardId={prompt.cardId} game={game} type={prompt.type} updateGame={updateGame} />
-    );
-  },
-  [PromptType.communityChest]: (prompt, game, updateGame) => {
-    return (
-      <CardPrompt cardId={prompt.cardId} game={game} type={prompt.type} updateGame={updateGame} />
-    );
-  },
-  [PromptType.goToJail]: (_prompt, game, updateGame) => {
+  [PromptType.answerOffer]: AnswerOfferPrompt,
+  [PromptType.card]: CardPrompt,
+  [PromptType.goToJail]: (props) => {
     const notification: Notification = {
-      playerId: game.currentPlayerId,
+      playerId: props.game.currentPlayerId,
       type: NotificationType.goToJail,
     };
     return (
       <OkPrompt
         okHandler={() => {
           const nextGame = goToJail({
-            ...game,
-            pastNotifications: [notification, ...game.pastNotifications],
+            ...props.game,
+            pastNotifications: [notification, ...props.game.pastNotifications],
           });
-          updateGame(nextGame);
+          props.updateGame(nextGame);
         }}
       >
-        <NotificationComponent game={game} notification={notification} />
+        <NotificationComponent game={props.game} notification={notification} />
       </OkPrompt>
     );
   },
-  [PromptType.playerWin]: (prompt, game, updateGame) => {
-    const winningPlayer = getPlayerById(game, prompt.playerId);
+  [PromptType.playerWin]: (props) => {
+    const winningPlayer = getPlayerById(props.game, props.prompt.playerId);
     return (
       <PlayerWinPrompt
-        clearGameHandler={() => updateGame(undefined)}
+        clearGameHandler={() => props.updateGame(undefined)}
         winningPlayer={winningPlayer}
       />
     );
@@ -91,10 +52,14 @@ interface PromptComponentProps {
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
-  const renderer: PromptRenderer = renderersMap[props.prompt.type];
+  const renderer: PromptInterface = renderersMap[props.prompt.type];
   /* Unsetting the current prompt here, as the next trigger could set another prompt
    * (e.g. rollDice -> chanceCard) */
   const nextGame: Game = { ...props.game, prompt: undefined };
 
-  return <Modal inset="25% 20px">{renderer(props.prompt, nextGame, props.updateGame)}</Modal>;
+  return (
+    <Modal inset="25% 20px">
+      {renderer({ game: nextGame, prompt: props.prompt, updateGame: props.updateGame })}
+    </Modal>
+  );
 };

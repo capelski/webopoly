@@ -100,12 +100,14 @@ export const triggerMovePlayer = (
       } else if (landsInChance) {
         nextGame.prompt = {
           cardId: getNextChanceCardId(),
-          type: PromptType.chance,
+          cardType: 'chance',
+          type: PromptType.card,
         };
       } else if (landsInCommunityChest) {
         nextGame.prompt = {
           cardId: getNextCommunityChestCardId(),
-          type: PromptType.communityChest,
+          cardType: 'community',
+          type: PromptType.card,
         };
       }
     }

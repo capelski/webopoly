@@ -1,7 +1,6 @@
 export enum PromptType {
   answerOffer = 'answerOffer',
-  chance = 'chance',
-  communityChest = 'communityChest',
+  card = 'card',
   goToJail = 'goToJail',
   playerWin = 'playerWin', // TODO
 }

@@ -1,35 +1,26 @@
 import React, { useState } from 'react';
 import { NotificationType, PromptType } from '../../enums';
 import { getChanceCardById, getCommunityChestCardById } from '../../logic';
-import { Game, Id } from '../../types';
+import { Game } from '../../types';
 import { Button } from '../button';
 import { OkPrompt } from './ok-prompt';
+import { PromptInterface } from './prompt-interface';
 
-interface CardPromptProps {
-  cardId: Id;
-  game: Game;
-  type: PromptType.chance | PromptType.communityChest;
-  updateGame: (game: Game | undefined) => void;
-}
-
-export const CardPrompt: React.FC<CardPromptProps> = (props) => {
+export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
   const [revealed, setRevealed] = useState(false);
-  const card =
-    props.type === PromptType.chance
-      ? getChanceCardById(props.cardId)
-      : getCommunityChestCardById(props.cardId);
+  const isChanceCard = props.prompt.cardType === 'chance';
+  const card = isChanceCard
+    ? getChanceCardById(props.prompt.cardId)
+    : getCommunityChestCardById(props.prompt.cardId);
 
   const okHandler = () => {
     const nextGame: Game = card.action({
       ...props.game,
       pastNotifications: [
         {
-          cardId: props.cardId,
+          cardId: props.prompt.cardId,
           playerId: props.game.currentPlayerId,
-          type:
-            props.type === PromptType.chance
-              ? NotificationType.chance
-              : NotificationType.communityChest,
+          type: isChanceCard ? NotificationType.chance : NotificationType.communityChest,
         },
         ...props.game.pastNotifications,
       ],
@@ -45,7 +36,7 @@ export const CardPrompt: React.FC<CardPromptProps> = (props) => {
         </OkPrompt>
       ) : (
         <div>
-          <h3>{props.type === PromptType.chance ? 'Chance' : 'Community chest'} card</h3>
+          <h3>{isChanceCard ? 'Chance' : 'Community chest'} card</h3>
           <Button
             onClick={() => {
               setRevealed(true);
