@@ -152,7 +152,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
         <div>
           <Button
-            disabled={!props.game.mustRollDice}
+            disabled={!props.game.mustStartTurn}
             onClick={() => {
               props.updateGame(triggerDiceRoll(props.game));
             }}
@@ -173,7 +173,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           </Button>
 
           <Button
-            disabled={props.game.mustRollDice || !!props.game.prompt}
+            disabled={props.game.mustStartTurn || !!props.game.prompt}
             onClick={() => {
               props.updateGame(triggerEndTurn(props.game));
             }}

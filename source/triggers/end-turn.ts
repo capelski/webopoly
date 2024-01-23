@@ -6,6 +6,6 @@ export const triggerEndTurn = (game: Game): Game => {
   return {
     ...game,
     currentPlayerId: nextPlayerId,
-    mustRollDice: true,
+    mustStartTurn: true,
   };
 };

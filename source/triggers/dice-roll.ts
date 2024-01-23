@@ -6,6 +6,6 @@ export const triggerDiceRoll = (game: Game): Game => {
   const nextDice = getDiceRoll();
   const movement = nextDice.reduce((x, y) => x + y, 0);
   const nextSquareId = getNextSquareId(game, movement);
-  const nextGame: Game = { ...game, dice: nextDice, mustRollDice: false };
+  const nextGame: Game = { ...game, dice: nextDice, mustStartTurn: false };
   return triggerMovePlayer(nextGame, nextSquareId);
 };
