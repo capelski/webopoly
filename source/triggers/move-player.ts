@@ -48,7 +48,6 @@ export const triggerMovePlayer = (
     const goesToJail = nextSquare.type === SquareType.goToJail;
     if (goesToJail) {
       nextGame.prompt = {
-        playerId: nextGame.currentPlayerId,
         type: PromptType.goToJail,
       };
     } else {
@@ -101,13 +100,11 @@ export const triggerMovePlayer = (
       } else if (landsInChance) {
         nextGame.prompt = {
           cardId: getNextChanceCardId(),
-          playerId: nextGame.currentPlayerId,
           type: PromptType.chance,
         };
       } else if (landsInCommunityChest) {
         nextGame.prompt = {
           cardId: getNextCommunityChestCardId(),
-          playerId: nextGame.currentPlayerId,
           type: PromptType.communityChest,
         };
       }

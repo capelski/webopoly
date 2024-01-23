@@ -1,25 +1,27 @@
 import { OfferType, PromptType } from '../enums';
 import { Id } from './id';
 
-type PromptBase = {
-  playerId: Id;
-};
-
-export type CardPrompt = PromptBase & {
+export type CardPrompt = {
   cardId: Id;
   type: PromptType.chance | PromptType.communityChest;
 };
 
-export type GenericPrompt = PromptBase & {
-  type: PromptType.goToJail | PromptType.playerWin;
+export type GenericPrompt = {
+  type: PromptType.goToJail;
 };
 
-export type AnswerOfferPrompt = PromptBase & {
+export type PlayerWinPrompt = {
+  playerId: Id;
+  type: PromptType.playerWin;
+};
+
+export type AnswerOfferPrompt = {
   amount: number;
   offerType: OfferType;
+  playerId: Id;
   propertyId: Id;
   targetPlayerId: Id;
   type: PromptType.answerOffer;
 };
 
-export type Prompt = CardPrompt | GenericPrompt | AnswerOfferPrompt;
+export type Prompt = CardPrompt | GenericPrompt | PlayerWinPrompt | AnswerOfferPrompt;
