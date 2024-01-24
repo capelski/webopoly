@@ -6,6 +6,7 @@ import { Modal } from '../modal';
 import { NotificationComponent } from '../notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
+import { JailOptionsPrompt } from './jail-options-prompt';
 import { OkPrompt } from './ok-prompt';
 import { PlayerWinPrompt } from './player-win-prompt';
 import { PromptInterface } from './prompt-interface';
@@ -34,6 +35,7 @@ const renderersMap: {
       </OkPrompt>
     );
   },
+  [PromptType.jailOptions]: JailOptionsPrompt,
   [PromptType.playerWin]: (props) => {
     const winningPlayer = getPlayerById(props.game, props.prompt.playerId);
     return (
@@ -48,7 +50,7 @@ const renderersMap: {
 interface PromptComponentProps {
   game: Game;
   prompt: Prompt;
-  updateGame: (game: Game | undefined) => void;
+  updateGame: (game: Game | undefined, keepPromptDisplay?: boolean) => void;
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {

@@ -8,7 +8,7 @@ interface OkPromptProps {
 
 export const OkPrompt: React.FC<OkPromptProps> = (props) => {
   return (
-    <div>
+    <div style={{ textAlign: 'center' }}>
       {props.children}
       <Button onClick={props.okHandler}>Ok</Button>
     </div>

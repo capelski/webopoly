@@ -1,6 +1,7 @@
 import React from 'react';
 import { AnswerType, NotificationType, OfferType } from '../enums';
 import {
+  diceToString,
   getChanceCardById,
   getCommunityChestCardById,
   getPlayerById,
@@ -83,7 +84,7 @@ const renderersMap: {
     icon: parkingSymbol,
   }),
   [NotificationType.getOutOfJail]: (player, _notification, game) => ({
-    description: `${player.name} rolls ${game.dice.join('-')} and gets out of jail`,
+    description: `${player.name} rolls ${diceToString(game.dice)} and gets out of jail`,
     icon: '🎉',
   }),
   [NotificationType.goToJail]: (player) => ({

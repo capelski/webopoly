@@ -10,6 +10,7 @@ export const mortgageSymbol = '🏦';
 export const parkingSymbol = '🅿️';
 export const taxSymbol = '💰';
 
+export const jailFine = 150;
 export const passGoMoney = 200;
 export const playerInitialMoney = 1500;
 export const rentPercentage = 0.05;

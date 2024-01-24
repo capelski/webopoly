@@ -1,6 +1,6 @@
 import { PropertyStatus, SquareType } from '../enums';
 import { passGoMoney } from '../parameters';
-import { Dice, Game, Id, Player, Square } from '../types';
+import { Dice, Game, Id, Notification, Player, Square } from '../types';
 
 export const collectCenterPot = (game: Game): Game => {
   return {
@@ -25,9 +25,10 @@ export const getsOutOfJail = (player: Player, dice: Dice): boolean => {
   return dice[0] === dice[1] && isPlayerInJail(player);
 };
 
-export const getOutOfJail = (game: Game): Game => {
+export const getOutOfJail = (game: Game, notification: Notification): Game => {
   return {
     ...game,
+    pastNotifications: [notification, ...game.pastNotifications],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, turnsInJail: 0 } : p;
     }),
@@ -86,11 +87,14 @@ export const payTax = (game: Game, tax: number): Game => {
     }),
   };
 };
-export const remainInJail = (game: Game): Game => {
+export const remainInJail = (game: Game, notification: Notification): Game => {
+  const nextPlayers = game.players.map((p) => {
+    return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail - 1 } : p;
+  });
+
   return {
     ...game,
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail - 1 } : p;
-    }),
+    pastNotifications: [notification, ...game.pastNotifications],
+    players: nextPlayers,
   };
 };

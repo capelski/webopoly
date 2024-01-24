@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { toast, ToastContainer } from 'react-toastify';
 import { GameView, SquareType } from '../enums';
-import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
+import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
 import { Game, Id, Square } from '../types';
@@ -57,7 +57,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   }, [props.game.notifications]);
 
   useEffect(() => {
-    if (props.game.prompt) {
+    if (props.game.prompt && !displayPrompt) {
       setTimeout(() => {
         setDisplayPrompt(true);
       }, 800);
@@ -73,8 +73,10 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <PromptComponent
           game={props.game}
           prompt={props.game.prompt}
-          updateGame={(game) => {
-            setDisplayPrompt(false);
+          updateGame={(game, keepPromptDisplay = false) => {
+            if (!keepPromptDisplay) {
+              setDisplayPrompt(false);
+            }
             return props.updateGame(game);
           }}
         />
@@ -143,7 +145,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
         <div>
           <span style={{ fontSize: 24, padding: '0 8px' }}>
-            {diceSymbol} {props.game.dice.join('-') || '-'}
+            {diceSymbol} {diceToString(props.game.dice)}
           </span>
           <span style={{ fontSize: 24, padding: '0 8px' }}>
             {parkingSymbol} {props.game.centerPot}
@@ -152,7 +154,9 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
         <div>
           <Button
-            disabled={!props.game.mustStartTurn}
+            disabled={
+              !props.game.mustStartTurn || (props.game.mustStartTurn && !!props.game.prompt)
+            }
             onClick={() => {
               props.updateGame(triggerDiceRoll(props.game));
             }}

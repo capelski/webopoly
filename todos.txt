@@ -1,5 +1,9 @@
-- Roll dice should not be a modal
+- Move notifications to logic functions (e.g. move player)
 - Pay fine to get out of jail
+
+- Implement get out of jail card actions
+
+- Paying actions should only be applied if the player has enough money
 - Up on every action triggered, evaluate the current player status
   if (currentPlayer.money < 0) {
     changeHistory.unshift({
@@ -19,8 +23,8 @@
     }
   }
 - Player bankruptcy should be a prompt
+
 - Turn buy property into prompt ui update?
-- Implement Chance and Community Chest card actions
 - Trading properties with other players
 - Allow mortgaging properties / selling houses when player goes bankrupt
 - Roll doubles => Extra turn
