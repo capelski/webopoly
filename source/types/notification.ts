@@ -5,9 +5,23 @@ type NotificationBase = {
   playerId: Id;
 };
 
+export type AnswerOfferNotification = NotificationBase & {
+  amount: number;
+  answer: AnswerType;
+  offerType: OfferType;
+  propertyId: Id;
+  targetPlayerId: Id;
+  type: NotificationType.answerOffer;
+};
+
 export type CardNotification = NotificationBase & {
   cardId: Id;
   type: NotificationType.chance | NotificationType.communityChest;
+};
+
+export type FreeParkingNotification = NotificationBase & {
+  pot: number;
+  type: NotificationType.freeParking;
 };
 
 export type GenericNotificationType =
@@ -18,6 +32,17 @@ export type GenericNotificationType =
 
 export type GenericNotification = NotificationBase & {
   type: GenericNotificationType;
+};
+
+export type PayRentNotification = NotificationBase & {
+  landlordId: Id;
+  rent: number;
+  type: NotificationType.payRent;
+};
+
+export type PayTaxNotification = NotificationBase & {
+  tax: number;
+  type: NotificationType.payTax;
 };
 
 export type PropertyNotificationType =
@@ -32,42 +57,17 @@ export type PropertyNotification = NotificationBase & {
   type: PropertyNotificationType;
 };
 
-export type FreeParkingNotification = NotificationBase & {
-  pot: number;
-  type: NotificationType.freeParking;
-};
-
-export type PayRentNotification = NotificationBase & {
-  landlordId: Id;
-  rent: number;
-  type: NotificationType.payRent;
-};
-
-export type PayTaxNotification = NotificationBase & {
-  tax: number;
-  type: NotificationType.payTax;
-};
-
 export type RemainsInJailNotification = NotificationBase & {
   turnsInJail: number;
   type: NotificationType.remainInJail;
 };
 
-export type AnswerOfferNotification = NotificationBase & {
-  amount: number;
-  answer: AnswerType;
-  offerType: OfferType;
-  propertyId: Id;
-  targetPlayerId: Id;
-  type: NotificationType.answerOffer;
-};
-
 export type Notification =
+  | AnswerOfferNotification
   | CardNotification
   | FreeParkingNotification
   | GenericNotification
   | PayRentNotification
   | PayTaxNotification
   | PropertyNotification
-  | RemainsInJailNotification
-  | AnswerOfferNotification;
+  | RemainsInJailNotification;
