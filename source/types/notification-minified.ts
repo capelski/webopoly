@@ -1,6 +1,10 @@
 import { AnswerType, NotificationType, OfferType } from '../enums';
 import { Id } from './id';
-import { GenericNotificationType, PropertyNotificationType } from './notification';
+import {
+  CardNotificationType,
+  GenericNotificationType,
+  PropertyNotificationType,
+} from './notification';
 
 type BaseNotificationMinified = {
   /** playerId */
@@ -26,7 +30,7 @@ export type CardNotificationMinified = BaseNotificationMinified & {
   /** cardId */
   c: Id;
   /** type */
-  t: NotificationType.chance | NotificationType.communityChest;
+  t: CardNotificationType;
 };
 
 export type FreeParkingNotificationMinified = BaseNotificationMinified & {

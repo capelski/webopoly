@@ -14,9 +14,11 @@ export type AnswerOfferNotification = NotificationBase & {
   type: NotificationType.answerOffer;
 };
 
+export type CardNotificationType = NotificationType.chance | NotificationType.communityChest;
+
 export type CardNotification = NotificationBase & {
   cardId: Id;
-  type: NotificationType.chance | NotificationType.communityChest;
+  type: CardNotificationType;
 };
 
 export type FreeParkingNotification = NotificationBase & {
