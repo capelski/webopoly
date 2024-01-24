@@ -104,9 +104,9 @@ export const notificationsMap: {
     minify: (notification) => ({ ...baseMinifier(notification), ta: notification.tax }),
     restore: (n) => ({ ...baseRestorer(n), tax: n.ta }),
   },
-  [NotificationType.remainInJail]: {
+  [NotificationType.sellHouse]: <Mapper<NotificationType.sellHouse>>propertyMappers,
+  [NotificationType.turnInJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), tj: notification.turnsInJail }),
     restore: (n) => ({ ...baseRestorer(n), turnsInJail: n.tj }),
   },
-  [NotificationType.sellHouse]: <Mapper<NotificationType.sellHouse>>propertyMappers,
 };

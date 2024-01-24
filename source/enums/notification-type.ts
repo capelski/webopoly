@@ -13,6 +13,6 @@ export enum NotificationType {
   passGo = 'passGo',
   payRent = 'payRent',
   payTax = 'payTax',
-  remainInJail = 'remainInJail',
   sellHouse = 'sellHouse',
+  turnInJail = 'turnInJail',
 }

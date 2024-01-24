@@ -14,6 +14,7 @@ import {
   goSymbol,
   goToJailSymbol,
   houseSymbol,
+  jailFine,
   jailSymbol,
   mortgageSymbol,
   parkingSymbol,
@@ -88,7 +89,7 @@ const renderersMap: {
     icon: '🎉',
   }),
   [NotificationType.goToJail]: (player) => ({
-    description: `${player.name} goes to jail for 3 turns`,
+    description: `${player.name} goes to jail`,
     icon: goToJailSymbol,
   }),
   [NotificationType.mortgage]: (player, notification, game) => {
@@ -113,12 +114,6 @@ const renderersMap: {
     description: `${player.name} pays ${currencySymbol}${notification.tax} in taxes`,
     icon: taxSymbol,
   }),
-  [NotificationType.remainInJail]: (player, notification) => ({
-    description: `${player.name} remains in jail for ${
-      notification.turnsInJail === 0 ? 'the last turn' : `${notification.turnsInJail} more turn(s)`
-    }`,
-    icon: jailSymbol,
-  }),
   [NotificationType.sellHouse]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
@@ -126,6 +121,16 @@ const renderersMap: {
       icon: '🏚️',
     };
   },
+  [NotificationType.turnInJail]: (player, notification) => ({
+    description: `${player.name} doesn't roll doubles; ${
+      notification.turnsInJail === 1
+        ? '1st turn in jail'
+        : notification.turnsInJail === 2
+        ? '2nd turn in jail'
+        : `${currencySymbol}${jailFine} fine to get out`
+    }`,
+    icon: jailSymbol,
+  }),
 };
 
 interface NotificationComponentProps {

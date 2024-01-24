@@ -59,9 +59,9 @@ export type PropertyNotification = NotificationBase & {
   type: PropertyNotificationType;
 };
 
-export type RemainsInJailNotification = NotificationBase & {
+export type TurnInJailNotification = NotificationBase & {
   turnsInJail: number;
-  type: NotificationType.remainInJail;
+  type: NotificationType.turnInJail;
 };
 
 export type Notification =
@@ -72,4 +72,4 @@ export type Notification =
   | PayRentNotification
   | PayTaxNotification
   | PropertyNotification
-  | RemainsInJailNotification;
+  | TurnInJailNotification;

@@ -1,5 +1,5 @@
 import { PropertyStatus, SquareType } from '../enums';
-import { passGoMoney } from '../parameters';
+import { jailFine, passGoMoney } from '../parameters';
 import { Dice, Game, Id, Notification, Player, Square } from '../types';
 
 export const collectCenterPot = (game: Game): Game => {
@@ -22,15 +22,27 @@ export const doesPayRent = (player: Player, square: Square): boolean => {
 };
 
 export const getsOutOfJail = (player: Player, dice: Dice): boolean => {
-  return dice[0] === dice[1] && isPlayerInJail(player);
+  return player.isInJail && dice[0] === dice[1];
 };
 
-export const getOutOfJail = (game: Game, notification: Notification): Game => {
+export const getOutOfJail = (
+  game: Game,
+  { notification, paysJailFine }: { notification?: Notification; paysJailFine?: boolean } = {},
+): Game => {
   return {
     ...game,
-    pastNotifications: [notification, ...game.pastNotifications],
+    pastNotifications: notification
+      ? [notification, ...game.pastNotifications]
+      : game.pastNotifications,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, turnsInJail: 0 } : p;
+      return p.id === game.currentPlayerId
+        ? {
+            ...p,
+            isInJail: false,
+            money: paysJailFine ? p.money - jailFine : p.money,
+            turnsInJail: 0,
+          }
+        : p;
     }),
   };
 };
@@ -41,13 +53,9 @@ export const goToJail = (game: Game): Game => {
   return {
     ...game,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, turnsInJail: 3 } : p;
+      return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),
   };
-};
-
-export const isPlayerInJail = (player: Player): boolean => {
-  return player.turnsInJail > 0;
 };
 
 export const passesGo = (game: Game, currentSquareId: number, nextSquareId: number): boolean => {
@@ -87,9 +95,10 @@ export const payTax = (game: Game, tax: number): Game => {
     }),
   };
 };
-export const remainInJail = (game: Game, notification: Notification): Game => {
+
+export const turnInJail = (game: Game, notification: Notification): Game => {
   const nextPlayers = game.players.map((p) => {
-    return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail - 1 } : p;
+    return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail + 1 } : p;
   });
 
   return {

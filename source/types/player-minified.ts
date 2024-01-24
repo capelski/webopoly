@@ -6,6 +6,8 @@ export type PlayerMinified = {
   c: string;
   /** id */
   i: Id;
+  /** isInJail */
+  ij: boolean;
   /** money */
   m: number;
   /** name */

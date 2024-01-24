@@ -68,11 +68,11 @@ export type PropertyNotificationMinified = BaseNotificationMinified & {
   t: PropertyNotificationType;
 };
 
-export type RemainsInJailNotificationMinified = BaseNotificationMinified & {
+export type TurnInJailNotificationMinified = BaseNotificationMinified & {
   /** turnsInJail */
   tj: number;
   /** type */
-  t: NotificationType.remainInJail;
+  t: NotificationType.turnInJail;
 };
 
 export type NotificationMinified =
@@ -83,4 +83,4 @@ export type NotificationMinified =
   | PayRentNotificationMinified
   | PayTaxNotificationMinified
   | PropertyNotificationMinified
-  | RemainsInJailNotificationMinified;
+  | TurnInJailNotificationMinified;

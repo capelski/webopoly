@@ -7,7 +7,7 @@ import {
   SquareType,
   TaxType,
 } from '../enums';
-import { getCurrentPlayer, getPlayerById, isPlayerInJail } from '../logic';
+import { getCurrentPlayer, getPlayerById } from '../logic';
 import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
 import { Game, Square } from '../types';
 import { PlayerAvatar } from './player-avatar';
@@ -102,7 +102,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
       >
         <PlayersInSquare
           currentPlayerId={currentPlayer.id}
-          players={playersInSquare.filter((p) => !isPlayerInJail(p))}
+          players={playersInSquare.filter((p) => !p.isInJail)}
         />
       </div>
 
@@ -154,7 +154,7 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           >
             <PlayersInSquare
               currentPlayerId={currentPlayer.id}
-              players={playersInSquare.filter(isPlayerInJail)}
+              players={playersInSquare.filter((p) => p.isInJail)}
             />
           </div>
         ) : undefined}

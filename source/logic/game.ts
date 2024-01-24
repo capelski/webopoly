@@ -20,6 +20,7 @@ export const createGame = (nPlayers: number): GameMinified => {
   const minifiedPlayers = [...Array(nPlayers)].map<PlayerMinified>((_, index) => ({
     c: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
     i: index + 1,
+    ij: false,
     m: playerInitialMoney,
     n: `Player ${index + 1}`,
     p: [],

@@ -5,10 +5,10 @@ import {
   getCurrentPlayer,
   getOutOfJail,
   getsOutOfJail,
-  remainInJail,
+  turnInJail,
 } from '../../logic';
-import { currencySymbol, diceSymbol, jailSymbol } from '../../parameters';
-import { applyDiceRoll, triggerDiceRoll, triggerEndTurn } from '../../triggers';
+import { currencySymbol, diceSymbol, jailFine, jailSymbol } from '../../parameters';
+import { applyDiceRoll, triggerDiceRoll } from '../../triggers';
 import { Notification } from '../../types';
 import { Button } from '../button';
 import { NotificationComponent } from '../notification';
@@ -25,18 +25,27 @@ const JailDiceRollPrompt: PromptInterface<PromptType.jailOptions> = (props) => {
       }
     : {
         playerId: props.game.currentPlayerId,
-        turnsInJail: player.turnsInJail - 1,
-        type: NotificationType.remainInJail,
+        turnsInJail: player.turnsInJail + 1,
+        type: NotificationType.turnInJail,
       };
 
   return (
     <OkPrompt
       okHandler={() => {
-        props.updateGame(
-          escapesJail
-            ? applyDiceRoll(getOutOfJail(props.game, notification))
-            : triggerEndTurn(remainInJail(props.game, notification)),
-        );
+        if (escapesJail) {
+          props.updateGame(applyDiceRoll(getOutOfJail(props.game, { notification })));
+        } else {
+          let nextGame = turnInJail(props.game, notification);
+          const currentPlayer = getCurrentPlayer(nextGame);
+          const escapesJail = currentPlayer.turnsInJail === 3;
+
+          if (escapesJail) {
+            nextGame = getOutOfJail(nextGame, { paysJailFine: true });
+            nextGame = applyDiceRoll(nextGame);
+          }
+
+          props.updateGame(nextGame);
+        }
       }}
     >
       <h2>
@@ -76,7 +85,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
           }}
         >
           Pay {currencySymbol}
-          {150} fine
+          {jailFine} fine
         </Button>
 
         <Button
