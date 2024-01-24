@@ -27,12 +27,17 @@ export const getsOutOfJail = (player: Player, dice: Dice): boolean => {
 
 export const getOutOfJail = (
   game: Game,
-  { notification, paysJailFine }: { notification?: Notification; paysJailFine?: boolean } = {},
+  {
+    notification,
+    pastNotification,
+    paysJailFine,
+  }: { notification?: Notification; pastNotification?: Notification; paysJailFine?: boolean } = {},
 ): Game => {
   return {
     ...game,
-    pastNotifications: notification
-      ? [notification, ...game.pastNotifications]
+    notifications: notification ? [notification] : [],
+    pastNotifications: pastNotification
+      ? [pastNotification, ...game.pastNotifications]
       : game.pastNotifications,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
@@ -96,14 +101,13 @@ export const payTax = (game: Game, tax: number): Game => {
   };
 };
 
-export const turnInJail = (game: Game, notification: Notification): Game => {
+export const turnInJail = (game: Game): Game => {
   const nextPlayers = game.players.map((p) => {
     return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail + 1 } : p;
   });
 
   return {
     ...game,
-    pastNotifications: [notification, ...game.pastNotifications],
     players: nextPlayers,
   };
 };

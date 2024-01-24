@@ -88,7 +88,10 @@ export const notificationsMap: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),
     restore: (n) => ({ ...baseRestorer(n), pot: n.po }),
   },
-  [NotificationType.getOutOfJail]: <Mapper<NotificationType.getOutOfJail>>genericMappers,
+  [NotificationType.getOutOfJail]: {
+    minify: (notification) => ({ ...baseMinifier(notification), m: notification.medium }),
+    restore: (n) => ({ ...baseRestorer(n), medium: n.m }),
+  },
   [NotificationType.goToJail]: <Mapper<NotificationType.goToJail>>genericMappers,
   [NotificationType.mortgage]: <Mapper<NotificationType.mortgage>>propertyMappers,
   [NotificationType.passGo]: <Mapper<NotificationType.passGo>>genericMappers,

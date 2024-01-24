@@ -1,5 +1,6 @@
 export * from './answer-type';
 export * from './game-view';
+export * from './jail-medium';
 export * from './neighborhood';
 export * from './notification-type';
 export * from './offer-type';

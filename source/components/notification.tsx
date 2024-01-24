@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnswerType, NotificationType, OfferType } from '../enums';
+import { AnswerType, JailMedium, NotificationType, OfferType } from '../enums';
 import {
   diceToString,
   getChanceCardById,
@@ -84,10 +84,16 @@ const renderersMap: {
     description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
     icon: parkingSymbol,
   }),
-  [NotificationType.getOutOfJail]: (player, _notification, game) => ({
-    description: `${player.name} rolls ${diceToString(game.dice)} and gets out of jail`,
-    icon: '🎉',
-  }),
+  [NotificationType.getOutOfJail]: (player, notification, game) => {
+    const reason =
+      notification.medium === JailMedium.dice
+        ? `rolls ${diceToString(game.dice)}`
+        : `pays ${currencySymbol}${jailFine}`;
+    return {
+      description: `${player.name} ${reason} and gets out of jail`,
+      icon: '🎉',
+    };
+  },
   [NotificationType.goToJail]: (player) => ({
     description: `${player.name} goes to jail`,
     icon: goToJailSymbol,
