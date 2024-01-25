@@ -1,6 +1,6 @@
-import { PropertyStatus, SquareType } from '../enums';
-import { jailFine, passGoMoney } from '../parameters';
-import { Dice, Game, Id, Notification, Player, Square } from '../types';
+import { JailMedium, NotificationType, PropertyStatus, SquareType } from '../enums';
+import { jailFine, maxTurnsInJail, passGoMoney } from '../parameters';
+import { Game, Id, Notification, Player, Square } from '../types';
 
 export const collectCenterPot = (game: Game): Game => {
   return {
@@ -21,30 +21,53 @@ export const doesPayRent = (player: Player, square: Square): boolean => {
   );
 };
 
-export const getsOutOfJail = (player: Player, dice: Dice): boolean => {
-  return player.isInJail && dice[0] === dice[1];
-};
+export const getOutOfJail = (game: Game, medium: JailMedium): Game => {
+  const notifications: Notification[] =
+    medium === JailMedium.card || medium === JailMedium.fine
+      ? [
+          {
+            medium,
+            playerId: game.currentPlayerId,
+            type: NotificationType.getOutOfJail,
+          },
+        ]
+      : [];
 
-export const getOutOfJail = (
-  game: Game,
-  {
-    notification,
-    pastNotification,
-    paysJailFine,
-  }: { notification?: Notification; pastNotification?: Notification; paysJailFine?: boolean } = {},
-): Game => {
+  const pastNotifications: Notification[] =
+    medium === JailMedium.dice
+      ? [
+          {
+            medium: JailMedium.dice,
+            playerId: game.currentPlayerId,
+            type: NotificationType.getOutOfJail,
+          },
+          ...game.pastNotifications,
+        ]
+      : medium === JailMedium.lastTurn
+      ? [
+          {
+            playerId: game.currentPlayerId,
+            turnsInJail: maxTurnsInJail,
+            type: NotificationType.turnInJail,
+          },
+          ...game.pastNotifications,
+        ]
+      : game.pastNotifications;
+
   return {
     ...game,
-    notifications: notification ? [notification] : [],
-    pastNotifications: pastNotification
-      ? [pastNotification, ...game.pastNotifications]
-      : game.pastNotifications,
+    notifications,
+    pastNotifications,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? {
             ...p,
+            getOutOfJail: medium === JailMedium.card ? p.getOutOfJail - 1 : p.getOutOfJail,
             isInJail: false,
-            money: paysJailFine ? p.money - jailFine : p.money,
+            money:
+              medium === JailMedium.fine || medium === JailMedium.lastTurn
+                ? p.money - jailFine
+                : p.money,
             turnsInJail: 0,
           }
         : p;
@@ -102,12 +125,26 @@ export const payTax = (game: Game, tax: number): Game => {
 };
 
 export const turnInJail = (game: Game): Game => {
+  let count = 0;
+
   const nextPlayers = game.players.map((p) => {
-    return p.id === game.currentPlayerId ? { ...p, turnsInJail: p.turnsInJail + 1 } : p;
+    return p.id === game.currentPlayerId ? { ...p, turnsInJail: (count = p.turnsInJail + 1) } : p;
   });
+  const pastNotifications: Notification[] =
+    count < maxTurnsInJail
+      ? [
+          {
+            playerId: game.currentPlayerId,
+            turnsInJail: count,
+            type: NotificationType.turnInJail,
+          },
+          ...game.pastNotifications,
+        ]
+      : game.pastNotifications;
 
   return {
     ...game,
+    pastNotifications,
     players: nextPlayers,
   };
 };

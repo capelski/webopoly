@@ -31,12 +31,17 @@ const communityChestSource: Omit<Card, 'id'>[] = [
     },
     text: `From sale of stock you get ${currencySymbol}50`,
   },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Get Out of Jail Free',
-  // },
+  {
+    action: (game) => {
+      return {
+        ...game,
+        players: game.players.map((p) => {
+          return p.id === game.currentPlayerId ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
+        }),
+      };
+    },
+    text: 'Get Out of Jail Free',
+  },
   {
     action: goToJail,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,

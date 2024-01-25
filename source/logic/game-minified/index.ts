@@ -28,6 +28,7 @@ export const minifyGame = (game: Game): GameMinified => {
     }),
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
+      g: player.getOutOfJail,
       i: player.id,
       ij: player.isInJail,
       m: player.money,
@@ -98,6 +99,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
     }),
     players: g.p.map<Player>((p) => ({
       color: p.c,
+      getOutOfJail: p.g,
       id: p.i,
       isInJail: p.ij,
       money: p.m,

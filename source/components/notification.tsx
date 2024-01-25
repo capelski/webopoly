@@ -11,11 +11,13 @@ import {
   chanceSymbol,
   communityChestSymbol,
   currencySymbol,
+  getOutJailSymbol,
   goSymbol,
   goToJailSymbol,
   houseSymbol,
   jailFine,
   jailSymbol,
+  maxTurnsInJail,
   mortgageSymbol,
   parkingSymbol,
   passGoMoney,
@@ -86,12 +88,14 @@ const renderersMap: {
   }),
   [NotificationType.getOutOfJail]: (player, notification, game) => {
     const reason =
-      notification.medium === JailMedium.dice
-        ? `rolls ${diceToString(game.dice)}`
-        : `pays ${currencySymbol}${jailFine}`;
+      notification.medium === JailMedium.card
+        ? 'uses Get Out of Jail Free card'
+        : notification.medium === JailMedium.dice
+        ? `rolls ${diceToString(game.dice)} and gets out of jail`
+        : `pays ${currencySymbol}${jailFine} fine to get out of jail`;
     return {
-      description: `${player.name} ${reason} and gets out of jail`,
-      icon: '🎉',
+      description: `${player.name} ${reason}`,
+      icon: getOutJailSymbol,
     };
   },
   [NotificationType.goToJail]: (player) => ({
@@ -129,11 +133,9 @@ const renderersMap: {
   },
   [NotificationType.turnInJail]: (player, notification) => ({
     description: `${player.name} doesn't roll doubles; ${
-      notification.turnsInJail === 1
-        ? '1st turn in jail'
-        : notification.turnsInJail === 2
-        ? '2nd turn in jail'
-        : `${currencySymbol}${jailFine} fine to get out`
+      notification.turnsInJail < maxTurnsInJail
+        ? `${notification.turnsInJail} turn(s) in jail`
+        : `pays ${currencySymbol}${jailFine} fine and gets out`
     }`,
     icon: jailSymbol,
   }),

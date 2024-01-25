@@ -4,6 +4,8 @@ import { Id } from './id';
 export type PlayerMinified = {
   /** color */
   c: string;
+  /** getOutOfJail */
+  g: number;
   /** id */
   i: Id;
   /** isInJail */

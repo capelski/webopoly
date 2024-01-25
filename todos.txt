@@ -1,8 +1,3 @@
-- Move notifications to logic functions (e.g. move player)
-- Pay fine to get out of jail
-
-- Implement get out of jail card actions
-
 - Paying actions should only be applied if the player has enough money
 - Up on every action triggered, evaluate the current player status
   if (currentPlayer.money < 0) {
@@ -23,10 +18,9 @@
     }
   }
 - Player bankruptcy should be a prompt
-
-- Turn buy property into prompt ui update?
-- Trading properties with other players
 - Allow mortgaging properties / selling houses when player goes bankrupt
+
+- Trading properties with other players
 - Roll doubles => Extra turn
 - Make parameters.ts modifiable on createGame
 - Display error toast on disabled buttons?

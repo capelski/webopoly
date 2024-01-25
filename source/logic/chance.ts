@@ -66,12 +66,17 @@ const chanceSource: Omit<Card, 'id'>[] = [
     },
     text: `Bank pays you dividend of ${currencySymbol}50`,
   },
-  // {
-  //   action: (game) => {
-  //     return game;
-  //   },
-  //   text: 'Get Out of Jail Free',
-  // },
+  {
+    action: (game) => {
+      return {
+        ...game,
+        players: game.players.map((p) => {
+          return p.id === game.currentPlayerId ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
+        }),
+      };
+    },
+    text: 'Get Out of Jail Free',
+  },
   {
     action: (game) => {
       const nextSquareId = getNextSquareId(game, -3);

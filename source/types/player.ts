@@ -3,6 +3,7 @@ import { Id } from './id';
 
 export type Player = {
   color: string;
+  getOutOfJail: number;
   id: Id;
   isInJail: boolean;
   money: number;

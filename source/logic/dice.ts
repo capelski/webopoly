@@ -10,3 +10,7 @@ export const getDiceRoll = (): Dice => {
 export const getDiceMovement = (dice: Dice): number => {
   return dice.reduce((x, y) => x + y, 0);
 };
+
+export const isDoublesRoll = (dice: Dice): boolean => {
+  return dice[0] === dice[1];
+};

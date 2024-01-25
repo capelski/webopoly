@@ -1,6 +1,6 @@
 import React from 'react';
 import { PlayerStatus } from '../enums';
-import { currencySymbol } from '../parameters';
+import { currencySymbol, getOutJailSymbol } from '../parameters';
 import { Player } from '../types';
 
 interface PlayerComponentProps {
@@ -26,6 +26,9 @@ export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
         {currencySymbol} {props.player.money}
       </span>
       <span style={{ paddingLeft: 8 }}>🧱 {props.player.properties.length}</span>
+      <span style={{ paddingLeft: 8 }}>
+        {getOutJailSymbol} {props.player.getOutOfJail}
+      </span>
     </div>
   );
 };

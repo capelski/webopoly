@@ -1,4 +1,6 @@
 export enum JailMedium {
-  fine = 'fine',
+  card = 'card',
   dice = 'dice',
+  fine = 'fine',
+  lastTurn = 'lastTurn',
 }
