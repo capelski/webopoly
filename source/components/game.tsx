@@ -1,13 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { Id, toast, ToastContainer } from 'react-toastify';
-import { GameView, SquareType } from '../enums';
-import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../logic';
-import { diceSymbol, parkingSymbol } from '../parameters';
-import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
+import { GameView } from '../enums';
+import { getCurrentSquare } from '../logic';
 import { Game, Square } from '../types';
-import { Button } from './common/button';
-import { Modal } from './common/modal';
+import { ActionsBar } from './actions-bar';
 import { NotificationComponent } from './common/notification';
 import { Historical } from './historical';
 import { MobileBar } from './mobile-bar';
@@ -30,11 +27,9 @@ const getSquaresRefs = (
 };
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
-  const currentPlayer = getCurrentPlayer(props.game);
   const currentSquare = getCurrentSquare(props.game);
   const isDesktop = useMediaQuery({ minWidth: 768 });
   const [gameView, setGameView] = useState(GameView.board);
-  const [clearGameModal, setClearGameModal] = useState(false);
   const [refs] = useState(getSquaresRefs(props.game.squares));
   const [displayPrompt, setDisplayPrompt] = useState(false);
 
@@ -82,16 +77,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           }}
         />
       ) : undefined}
-
-      {clearGameModal && (
-        <Modal>
-          <div>Are you sure you want to clear the game?</div>
-          <div>
-            <Button onClick={() => props.updateGame(undefined)}>Yes</Button>
-            <Button onClick={() => setClearGameModal(false)}>No</Button>
-          </div>
-        </Modal>
-      )}
 
       <div
         style={{
@@ -143,61 +128,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         )}
       </div>
 
-      <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
-        <div>
-          <span style={{ fontSize: 24, padding: '0 8px' }}>
-            {diceSymbol} {diceToString(props.game.dice)}
-          </span>
-          <span style={{ fontSize: 24, padding: '0 8px' }}>
-            {parkingSymbol} {props.game.centerPot}
-          </span>
-        </div>
-
-        <div>
-          <Button
-            disabled={
-              !props.game.mustStartTurn || (props.game.mustStartTurn && !!props.game.prompt)
-            }
-            onClick={() => {
-              props.updateGame(triggerDiceRoll(props.game));
-            }}
-          >
-            Roll dice
-          </Button>
-
-          <Button
-            onClick={() => {
-              props.updateGame(triggerBuyProperty(props.game));
-            }}
-            disabled={
-              currentSquare.type !== SquareType.property ||
-              !canBuyProperty(currentSquare, currentPlayer!)
-            }
-          >
-            Buy
-          </Button>
-
-          <Button
-            disabled={props.game.mustStartTurn || !!props.game.prompt}
-            onClick={() => {
-              props.updateGame(triggerEndTurn(props.game));
-            }}
-          >
-            End turn
-          </Button>
-
-          <div style={{ marginTop: 8 }}>
-            <Button
-              onClick={() => {
-                setClearGameModal(true);
-              }}
-              style={{ color: 'red' }}
-            >
-              Clear game
-            </Button>
-          </div>
-        </div>
-      </div>
+      <ActionsBar game={props.game} updateGame={props.updateGame} />
     </div>
   );
 };
