@@ -10,7 +10,7 @@ import { Button } from './common/button';
 import { Modal } from './common/modal';
 import { NotificationComponent } from './common/notification';
 import { Historical } from './historical';
-import { NavBar } from './nav-bar';
+import { MobileBar } from './mobile-bar';
 import { Players } from './player/players';
 import { PromptComponent } from './prompt/prompt';
 import { SquareComponent } from './square/square';
@@ -67,7 +67,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      {!isDesktop && <NavBar gameView={gameView} setGameView={setGameView} />}
+      {!isDesktop && <MobileBar gameView={gameView} setGameView={setGameView} />}
       <ToastContainer />
 
       {displayPrompt && props.game.prompt ? (
