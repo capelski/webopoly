@@ -1,6 +1,6 @@
 import React from 'react';
 import { Game } from '../types';
-import { NotificationComponent } from './notification';
+import { NotificationComponent } from './common/notification';
 
 interface HistoricalProps {
   game: Game;

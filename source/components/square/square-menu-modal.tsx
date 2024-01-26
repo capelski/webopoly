@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyType, SquareModalType } from '../enums';
+import { PropertyType, SquareModalType } from '../../enums';
 import {
   canBuildHouse,
   canClearMortgage,
@@ -10,17 +10,17 @@ import {
   getCurrentPlayer,
   getMortgageAmount,
   getSellHouseAmount,
-} from '../logic';
-import { currencySymbol } from '../parameters';
+} from '../../logic';
+import { currencySymbol } from '../../parameters';
 import {
   triggerBuildHouse,
   triggerClearMortgage,
   triggerMortgage,
   triggerSellHouse,
-} from '../triggers';
-import { Game, PropertySquare } from '../types';
-import { Button } from './button';
-import { Modal } from './modal';
+} from '../../triggers';
+import { Game, PropertySquare } from '../../types';
+import { Button } from '../common/button';
+import { Modal } from '../common/modal';
 
 interface SquareMenuModalProps {
   game: Game;

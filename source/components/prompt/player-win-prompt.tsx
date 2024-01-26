@@ -1,6 +1,6 @@
 import React from 'react';
 import { Player } from '../../types';
-import { Button } from '../button';
+import { Button } from '../common/button';
 
 interface PlayerWinPromptProps {
   clearGameHandler: () => void;

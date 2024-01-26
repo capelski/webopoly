@@ -1,12 +1,12 @@
 import React from 'react';
-import { AnswerType, JailMedium, NotificationType, OfferType } from '../enums';
+import { AnswerType, JailMedium, NotificationType, OfferType } from '../../enums';
 import {
   diceToString,
   getChanceCardById,
   getCommunityChestCardById,
   getPlayerById,
   getSquareById,
-} from '../logic';
+} from '../../logic';
 import {
   chanceSymbol,
   communityChestSymbol,
@@ -22,8 +22,8 @@ import {
   parkingSymbol,
   passGoMoney,
   taxSymbol,
-} from '../parameters';
-import { Game, Notification, Player } from '../types';
+} from '../../parameters';
+import { Game, Notification, Player } from '../../types';
 
 type Renderer<T = NotificationType> = (
   player: Player,

@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { toast, ToastContainer } from 'react-toastify';
+import { Id, toast, ToastContainer } from 'react-toastify';
 import { GameView, SquareType } from '../enums';
 import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../logic';
 import { diceSymbol, parkingSymbol } from '../parameters';
 import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
-import { Game, Id, Square } from '../types';
-import { Button } from './button';
+import { Game, Square } from '../types';
+import { Button } from './common/button';
+import { Modal } from './common/modal';
+import { NotificationComponent } from './common/notification';
 import { Historical } from './historical';
-import { Modal } from './modal';
 import { NavBar } from './nav-bar';
-import { NotificationComponent } from './notification';
-import { Players } from './players';
-import { PromptComponent } from './prompt';
-import { SquareComponent } from './square';
+import { Players } from './player/players';
+import { PromptComponent } from './prompt/prompt';
+import { SquareComponent } from './square/square';
+
 interface GameComponentProps {
   game: Game;
   updateGame: (game: Game | undefined) => void;

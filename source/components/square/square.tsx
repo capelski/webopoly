@@ -6,11 +6,11 @@ import {
   SquareModalType,
   SquareType,
   TaxType,
-} from '../enums';
-import { getCurrentPlayer, getPlayerById } from '../logic';
-import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../parameters';
-import { Game, Square } from '../types';
-import { PlayerAvatar } from './player-avatar';
+} from '../../enums';
+import { getCurrentPlayer, getPlayerById } from '../../logic';
+import { currencySymbol, houseSymbol, mortgageSymbol, passGoMoney } from '../../parameters';
+import { Game, Square } from '../../types';
+import { PlayerAvatar } from '../common/player-avatar';
 import { PlayersInSquare } from './players-in-square';
 import { SquareMenuModal } from './square-menu-modal';
 import { SquareOfferModal } from './square-offer-modal';

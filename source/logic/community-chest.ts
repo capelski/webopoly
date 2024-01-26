@@ -3,7 +3,7 @@ import { triggerMovePlayer } from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
 import { payFee, payStreetRepairs, receiveFromAllPlayers, receivePayout } from './game';
-import { squaresMap } from './game-minified/squares-map';
+import { squaresMap } from './minification/squares-map';
 import { goToJail } from './player';
 
 const communityChestSource: Omit<Card, 'id'>[] = [

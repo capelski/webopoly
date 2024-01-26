@@ -1,5 +1,5 @@
 import React from 'react';
-import { Player } from '../types';
+import { Player } from '../../types';
 import { PlayerComponent } from './player';
 
 interface PlayersProps {

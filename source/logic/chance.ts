@@ -11,7 +11,7 @@ import {
   payToAllPlayers,
   receivePayout,
 } from './game';
-import { squaresMap } from './game-minified/squares-map';
+import { squaresMap } from './minification/squares-map';
 import { goToJail } from './player';
 
 const chanceSource: Omit<Card, 'id'>[] = [

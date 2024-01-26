@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createGame } from '../logic';
 import { GameMinified } from '../types';
-import { Button } from './button';
+import { Button } from './common/button';
 
 interface CreateGameProps {
   setGame: (game: GameMinified) => void;

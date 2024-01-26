@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyType, SquareType } from '../enums';
+import { PropertyType, SquareType } from '../../enums';
 import {
   chanceSymbol,
   communityChestSymbol,
@@ -8,8 +8,8 @@ import {
   jailSymbol,
   parkingSymbol,
   taxSymbol,
-} from '../parameters';
-import { Square } from '../types';
+} from '../../parameters';
+import { Square } from '../../types';
 
 interface SquareTypeComponentProps {
   square: Square;

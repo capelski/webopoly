@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NotificationType, PromptType } from '../../enums';
 import { getChanceCardById, getCommunityChestCardById } from '../../logic';
 import { Game } from '../../types';
-import { Button } from '../button';
+import { Button } from '../common/button';
 import { OkPrompt } from './ok-prompt';
 import { PromptInterface } from './prompt-interface';
 

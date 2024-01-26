@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { SquareModalType } from '../enums';
-import { getCurrentPlayer, getOtherPlayers } from '../logic';
-import { currencySymbol } from '../parameters';
-import { triggerBuyingOffer, triggerSellingOffer } from '../triggers';
-import { Game, Id, PropertySquare } from '../types';
-import { Button } from './button';
-import { Modal } from './modal';
+import { SquareModalType } from '../../enums';
+import { getCurrentPlayer, getOtherPlayers } from '../../logic';
+import { currencySymbol } from '../../parameters';
+import { triggerBuyingOffer, triggerSellingOffer } from '../../triggers';
+import { Game, Id, PropertySquare } from '../../types';
+import { Button } from '../common/button';
+import { Modal } from '../common/modal';
 
 interface SquareOfferModalProps {
   game: Game;

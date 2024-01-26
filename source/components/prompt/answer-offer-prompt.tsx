@@ -3,7 +3,7 @@ import { OfferType, PromptType } from '../../enums';
 import { getPlayerById, getSquareById } from '../../logic';
 import { currencySymbol } from '../../parameters';
 import { triggerAcceptOffer, triggerDeclineOffer } from '../../triggers';
-import { Button } from '../button';
+import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
 export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props) => {

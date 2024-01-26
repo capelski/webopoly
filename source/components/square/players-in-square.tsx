@@ -1,6 +1,6 @@
 import React from 'react';
-import { Player } from '../types';
-import { PlayerAvatar } from './player-avatar';
+import { Player } from '../../types';
+import { PlayerAvatar } from '../common/player-avatar';
 
 interface PlayersInSquareProps {
   currentPlayerId: number;

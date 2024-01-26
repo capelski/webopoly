@@ -9,8 +9,8 @@ import {
 } from '../../logic';
 import { currencySymbol, diceSymbol, jailFine, jailSymbol, maxTurnsInJail } from '../../parameters';
 import { applyDiceRoll, triggerDiceRoll, triggerEndTurn } from '../../triggers';
-import { Button } from '../button';
-import { NotificationComponent } from '../notification';
+import { Button } from '../common/button';
+import { NotificationComponent } from '../common/notification';
 import { OkPrompt } from './ok-prompt';
 import { PromptInterface } from './prompt-interface';
 

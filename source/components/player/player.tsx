@@ -1,7 +1,7 @@
 import React from 'react';
-import { PlayerStatus } from '../enums';
-import { currencySymbol, getOutJailSymbol } from '../parameters';
-import { Player } from '../types';
+import { PlayerStatus } from '../../enums';
+import { currencySymbol, getOutJailSymbol } from '../../parameters';
+import { Player } from '../../types';
 
 interface PlayerComponentProps {
   isActive: boolean;
