@@ -1,15 +1,6 @@
 import { PlayerStatus, PropertyType, SquareType } from '../enums';
 import { playerInitialMoney } from '../parameters';
-import {
-  Game,
-  GameMinified,
-  Id,
-  Player,
-  PlayerMinified,
-  Square,
-  SquareMinified,
-  StreetSquare,
-} from '../types';
+import { Game, GameMinified, Id, Player, PlayerMinified, Square, SquareMinified } from '../types';
 
 export const createGame = (nPlayers: number): GameMinified => {
   const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
@@ -91,59 +82,4 @@ export const getPlayerById = (game: Game, playerId: Id): Player => {
 
 export const getSquareById = (game: Game, squareId: Id): Square => {
   return game.squares.find((s) => s.id === squareId)!;
-};
-
-export const payFee = (game: Game, fee: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  return {
-    ...game,
-    centerPot: game.centerPot + fee,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, money: p.money - fee } : p;
-    }),
-  };
-};
-
-export const payStreetRepairs = (game: Game, housePrice: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const playerStreets = game.squares.filter(
-    (s) =>
-      s.type === SquareType.property &&
-      s.propertyType === PropertyType.street &&
-      s.ownerId === currentPlayer.id,
-  ) as StreetSquare[];
-  const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
-  return payFee(game, houses * housePrice);
-};
-
-export const payToAllPlayers = (game: Game, amount: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const activePlayersId = game.players
-    .filter((p) => p.status !== PlayerStatus.bankrupt && p.id !== currentPlayer.id)
-    .map((p) => p.id);
-
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id
-        ? { ...p, money: p.money - activePlayersId.length * amount }
-        : activePlayersId.includes(p.id)
-        ? { ...p, money: p.money + amount }
-        : p;
-    }),
-  };
-};
-
-export const receiveFromAllPlayers = (game: Game, amount: number): Game => {
-  return payToAllPlayers(game, -amount);
-};
-
-export const receivePayout = (game: Game, payout: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
-    }),
-  };
 };

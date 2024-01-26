@@ -1,10 +1,16 @@
 import { currencySymbol, passGoMoney } from '../parameters';
-import { triggerMovePlayer } from '../triggers';
+import {
+  triggerGetOutOfJailCard,
+  triggerGoToJail,
+  triggerMovePlayer,
+  triggerPayFee,
+  triggerPayStreetRepairs,
+  triggerReceiveFromAllPlayers,
+  triggerReceivePayout,
+} from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
-import { payFee, payStreetRepairs, receiveFromAllPlayers, receivePayout } from './game';
 import { squaresMap } from './minification/squares-map';
-import { goToJail } from './player';
 
 const communityChestSource: Omit<Card, 'id'>[] = [
   {
@@ -15,94 +21,87 @@ const communityChestSource: Omit<Card, 'id'>[] = [
   },
   {
     action: (game) => {
-      return receivePayout(game, 200);
+      return triggerReceivePayout(game, 200);
     },
     text: `Bank error in your favour. Collect ${currencySymbol}200`,
   },
   {
     action: (game) => {
-      return payFee(game, 50);
+      return triggerPayFee(game, 50);
     },
     text: `Doctor's fee. Pay ${currencySymbol}50`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 50);
+      return triggerReceivePayout(game, 50);
     },
     text: `From sale of stock you get ${currencySymbol}50`,
   },
   {
-    action: (game) => {
-      return {
-        ...game,
-        players: game.players.map((p) => {
-          return p.id === game.currentPlayerId ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
-        }),
-      };
-    },
+    action: triggerGetOutOfJailCard,
     text: 'Get Out of Jail Free',
   },
   {
-    action: goToJail,
+    action: triggerGoToJail,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 100);
+      return triggerReceivePayout(game, 100);
     },
     text: `Holiday fund matures. Receive ${currencySymbol}100`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 20);
+      return triggerReceivePayout(game, 20);
     },
     text: `Income tax refund. Collect ${currencySymbol}20`,
   },
   {
     action: (game) => {
-      return receiveFromAllPlayers(game, 10);
+      return triggerReceiveFromAllPlayers(game, 10);
     },
     text: `It is your birthday. Collect ${currencySymbol}10 from every player`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 100);
+      return triggerReceivePayout(game, 100);
     },
     text: `Life insurance matures. Collect ${currencySymbol}100`,
   },
   {
     action: (game) => {
-      return payFee(game, 100);
+      return triggerPayFee(game, 100);
     },
     text: `Pay hospital fees of ${currencySymbol}100`,
   },
   {
     action: (game) => {
-      return payFee(game, 50);
+      return triggerPayFee(game, 50);
     },
     text: `Pay school fees of ${currencySymbol}50`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 25);
+      return triggerReceivePayout(game, 25);
     },
     text: `Receive ${currencySymbol}25 consultancy fee`,
   },
   {
     action: (game) => {
-      return payStreetRepairs(game, 40);
+      return triggerPayStreetRepairs(game, 40);
     },
     text: `You are assessed for street repairs: ${currencySymbol}40 per house`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 10);
+      return triggerReceivePayout(game, 10);
     },
     text: `You have won second prize in a beauty contest. Collect ${currencySymbol}10`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 100);
+      return triggerReceivePayout(game, 100);
     },
     text: `You inherit ${currencySymbol}100`,
   },

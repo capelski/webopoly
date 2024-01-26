@@ -1,14 +1,14 @@
 import React from 'react';
 import { JailMedium, NotificationType, PromptType } from '../../enums';
-import {
-  diceToString,
-  getCurrentPlayer,
-  getOutOfJail,
-  isDoublesRoll,
-  turnInJail,
-} from '../../logic';
+import { diceToString, getCurrentPlayer, isDoublesRoll } from '../../logic';
 import { currencySymbol, diceSymbol, jailFine, jailSymbol, maxTurnsInJail } from '../../parameters';
-import { applyDiceRoll, triggerDiceRoll, triggerEndTurn } from '../../triggers';
+import {
+  applyDiceRoll,
+  triggerDiceRoll,
+  triggerEndTurn,
+  triggerGetOutOfJail,
+  triggerTurnInJail,
+} from '../../triggers';
 import { Button } from '../common/button';
 import { NotificationComponent } from '../common/notification';
 import { OkPrompt } from './ok-prompt';
@@ -24,15 +24,15 @@ const JailDiceRollPrompt: PromptInterface<PromptType.jailOptions> = (props) => {
         let nextGame = props.game;
 
         if (isDoubles) {
-          nextGame = getOutOfJail(nextGame, JailMedium.dice);
+          nextGame = triggerGetOutOfJail(nextGame, JailMedium.dice);
           nextGame = applyDiceRoll(nextGame);
         } else {
-          nextGame = turnInJail(nextGame);
+          nextGame = triggerTurnInJail(nextGame);
           const currentPlayer = getCurrentPlayer(nextGame);
           const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail;
 
           if (isLastTurnInJail) {
-            nextGame = getOutOfJail(nextGame, JailMedium.lastTurn);
+            nextGame = triggerGetOutOfJail(nextGame, JailMedium.lastTurn);
             nextGame = applyDiceRoll(nextGame);
           }
         }
@@ -90,7 +90,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
           onClick={() => {
             let nextGame = props.game;
 
-            nextGame = getOutOfJail(nextGame, JailMedium.fine);
+            nextGame = triggerGetOutOfJail(nextGame, JailMedium.fine);
             nextGame = triggerEndTurn(nextGame);
 
             props.updateGame(nextGame);
@@ -103,7 +103,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
         <Button
           disabled={!player.getOutOfJail}
           onClick={() => {
-            props.updateGame(getOutOfJail(props.game, JailMedium.card));
+            props.updateGame(triggerGetOutOfJail(props.game, JailMedium.card));
           }}
         >
           Use Get out of Jail card

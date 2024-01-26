@@ -1,6 +1,7 @@
 import React from 'react';
 import { NotificationType, PromptType } from '../../enums';
-import { getPlayerById, goToJail } from '../../logic';
+import { getPlayerById } from '../../logic';
+import { triggerGoToJail } from '../../triggers';
 import { Notification } from '../../types';
 import { NotificationComponent } from '../common/notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
@@ -20,14 +21,16 @@ export const renderersMap: {
       playerId: props.game.currentPlayerId,
       type: NotificationType.goToJail,
     };
+
     return (
       <OkPrompt
         okHandler={() => {
-          const nextGame = goToJail({
-            ...props.game,
-            pastNotifications: [notification, ...props.game.pastNotifications],
-          });
-          props.updateGame(nextGame);
+          props.updateGame(
+            triggerGoToJail({
+              ...props.game,
+              pastNotifications: [notification, ...props.game.pastNotifications],
+            }),
+          );
         }}
       >
         <NotificationComponent game={props.game} notification={notification} />

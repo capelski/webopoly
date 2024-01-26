@@ -1,18 +1,18 @@
 import { PropertyType } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
-import { triggerMovePlayer } from '../triggers';
+import {
+  triggerGetOutOfJailCard,
+  triggerGoToJail,
+  triggerMovePlayer,
+  triggerPayFee,
+  triggerPayStreetRepairs,
+  triggerPayToAllPlayers,
+  triggerReceivePayout,
+} from '../triggers';
 import { Card } from '../types';
 import { shuffleArray } from './array';
-import {
-  getNextPropertyOfTypeId,
-  getNextSquareId,
-  payFee,
-  payStreetRepairs,
-  payToAllPlayers,
-  receivePayout,
-} from './game';
+import { getNextPropertyOfTypeId, getNextSquareId } from './game';
 import { squaresMap } from './minification/squares-map';
-import { goToJail } from './player';
 
 const chanceSource: Omit<Card, 'id'>[] = [
   {
@@ -62,19 +62,12 @@ const chanceSource: Omit<Card, 'id'>[] = [
   },
   {
     action: (game) => {
-      return receivePayout(game, 50);
+      return triggerReceivePayout(game, 50);
     },
     text: `Bank pays you dividend of ${currencySymbol}50`,
   },
   {
-    action: (game) => {
-      return {
-        ...game,
-        players: game.players.map((p) => {
-          return p.id === game.currentPlayerId ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
-        }),
-      };
-    },
+    action: triggerGetOutOfJailCard,
     text: 'Get Out of Jail Free',
   },
   {
@@ -85,18 +78,18 @@ const chanceSource: Omit<Card, 'id'>[] = [
     text: 'Go Back 3 Spaces',
   },
   {
-    action: goToJail,
+    action: triggerGoToJail,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {
     action: (game) => {
-      return payStreetRepairs(game, 25);
+      return triggerPayStreetRepairs(game, 25);
     },
     text: `Make general repairs on all your property: pay ${currencySymbol}25 for each house`,
   },
   {
     action: (game) => {
-      return payFee(game, 15);
+      return triggerPayFee(game, 15);
     },
     text: `Speeding fine ${currencySymbol}15`,
   },
@@ -108,13 +101,13 @@ const chanceSource: Omit<Card, 'id'>[] = [
   },
   {
     action: (game) => {
-      return payToAllPlayers(game, 50);
+      return triggerPayToAllPlayers(game, 50);
     },
     text: `You have been elected Chairman of the Board. Pay each player ${currencySymbol}50`,
   },
   {
     action: (game) => {
-      return receivePayout(game, 150);
+      return triggerReceivePayout(game, 150);
     },
     text: `Your building loan matures. Collect ${currencySymbol}150`,
   },

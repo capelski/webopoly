@@ -1,17 +1,15 @@
 import { NotificationType, PromptType, SquareType, TaxType } from '../enums';
 import {
-  collectCenterPot,
   doesPayRent,
   getCurrentPlayer,
   getNextChanceCardId,
   getNextCommunityChestCardId,
   getRentAmount,
   passesGo,
-  passGo,
-  payRent,
-  payTax,
 } from '../logic';
+import { passGoMoney } from '../parameters';
 import { Game, Id, Notification } from '../types';
+import { triggerPayRent, triggerPayTax } from './payments';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
@@ -40,7 +38,7 @@ export const triggerMovePlayer = (
     const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
     if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
-      nextGame = passGo(nextGame);
+      nextGame = triggerPassGo(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
       notifications.push({
         playerId: nextGame.currentPlayerId,
@@ -50,7 +48,7 @@ export const triggerMovePlayer = (
 
     if (paysRent && nextSquare.type === SquareType.property) {
       const rent = getRentAmount(nextGame, nextSquare);
-      nextGame = payRent(nextGame, nextSquare.ownerId!, rent);
+      nextGame = triggerPayRent(nextGame, nextSquare.ownerId!, rent);
       currentPlayer = getCurrentPlayer(nextGame);
 
       notifications.push({
@@ -64,7 +62,7 @@ export const triggerMovePlayer = (
         nextSquare.taxType === TaxType.income
           ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
           : 100;
-      nextGame = payTax(nextGame, tax);
+      nextGame = triggerPayTax(nextGame, tax);
       currentPlayer = getCurrentPlayer(nextGame);
       notifications.push({
         playerId: nextGame.currentPlayerId,
@@ -72,7 +70,7 @@ export const triggerMovePlayer = (
         type: NotificationType.payTax,
       });
     } else if (collectsFreeParking) {
-      nextGame = collectCenterPot(nextGame);
+      nextGame = triggerFreeParking(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
       notifications.push({
         playerId: nextGame.currentPlayerId,
@@ -102,4 +100,23 @@ export const triggerMovePlayer = (
   };
 
   return { ...nextGame, notifications };
+};
+
+export const triggerPassGo = (game: Game): Game => {
+  return {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
+    }),
+  };
+};
+
+export const triggerFreeParking = (game: Game): Game => {
+  return {
+    ...game,
+    centerPot: 0,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
+    }),
+  };
 };
