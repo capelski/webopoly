@@ -22,7 +22,7 @@ export const triggerMovePlayer = (
 ): Game => {
   let nextGame: Game = { ...game };
   let currentPlayer = getCurrentPlayer(nextGame);
-  const notifications: Notification[] = [];
+  const notifications: Notification[] = [...game.notifications];
   const nextSquare = nextGame.squares.find((s) => s.id === nextSquareId)!;
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
@@ -38,7 +38,7 @@ export const triggerMovePlayer = (
     const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
 
     if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
-      nextGame = triggerPassGo(nextGame);
+      nextGame = applyPassGo(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
       notifications.push({
         playerId: nextGame.currentPlayerId,
@@ -70,7 +70,7 @@ export const triggerMovePlayer = (
         type: NotificationType.payTax,
       });
     } else if (collectsFreeParking) {
-      nextGame = triggerFreeParking(nextGame);
+      nextGame = applyFreeParking(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
       notifications.push({
         playerId: nextGame.currentPlayerId,
@@ -102,21 +102,21 @@ export const triggerMovePlayer = (
   return { ...nextGame, notifications };
 };
 
-export const triggerPassGo = (game: Game): Game => {
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
-    }),
-  };
-};
-
-export const triggerFreeParking = (game: Game): Game => {
+const applyFreeParking = (game: Game): Game => {
   return {
     ...game,
     centerPot: 0,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
+    }),
+  };
+};
+
+const applyPassGo = (game: Game): Game => {
+  return {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
     }),
   };
 };

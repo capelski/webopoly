@@ -19,7 +19,7 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
       props.updateGame({
         ...props.game,
         notifications: [],
-        pastNotifications: [...props.game.notifications, ...props.game.pastNotifications],
+        pastNotifications: [...props.game.notifications.reverse(), ...props.game.pastNotifications],
       });
     }
   }, [props.game.notifications]);

@@ -7,7 +7,7 @@ import { renderersMap } from './renderers-map';
 interface PromptComponentProps {
   game: Game;
   prompt: Prompt;
-  updateGame: (game: Game | undefined, keepPromptDisplay?: boolean) => void;
+  updateGame: (game: Game | undefined) => void;
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {

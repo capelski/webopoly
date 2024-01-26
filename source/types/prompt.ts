@@ -8,12 +8,7 @@ export type CardPrompt = {
 };
 
 export type GenericPrompt = {
-  type: PromptType.goToJail;
-};
-
-export type JailOptionsPrompt = {
-  hasRolledDice: boolean;
-  type: PromptType.jailOptions;
+  type: PromptType.goToJail | PromptType.jailOptions;
 };
 
 export type PlayerWinPrompt = {
@@ -30,9 +25,4 @@ export type AnswerOfferPrompt = {
   type: PromptType.answerOffer;
 };
 
-export type Prompt =
-  | CardPrompt
-  | GenericPrompt
-  | JailOptionsPrompt
-  | PlayerWinPrompt
-  | AnswerOfferPrompt;
+export type Prompt = CardPrompt | GenericPrompt | PlayerWinPrompt | AnswerOfferPrompt;

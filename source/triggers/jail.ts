@@ -6,7 +6,7 @@ import { triggerEndTurn } from './end-turn';
 
 export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
   const notifications: Notification[] =
-    medium === JailMedium.card || medium === JailMedium.fine
+    medium === JailMedium.card || medium === JailMedium.dice || medium === JailMedium.fine
       ? [
           {
             medium,
@@ -14,33 +14,11 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
             type: NotificationType.getOutOfJail,
           },
         ]
-      : [];
-
-  const pastNotifications: Notification[] =
-    medium === JailMedium.dice
-      ? [
-          {
-            medium: JailMedium.dice,
-            playerId: game.currentPlayerId,
-            type: NotificationType.getOutOfJail,
-          },
-          ...game.pastNotifications,
-        ]
-      : medium === JailMedium.lastTurn
-      ? [
-          {
-            playerId: game.currentPlayerId,
-            turnsInJail: maxTurnsInJail,
-            type: NotificationType.turnInJail,
-          },
-          ...game.pastNotifications,
-        ]
-      : game.pastNotifications;
+      : game.notifications;
 
   let nextGame: Game = {
     ...game,
     notifications,
-    pastNotifications,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? {
@@ -92,21 +70,16 @@ export const triggerTurnInJail = (game: Game): Game => {
   const nextPlayers = game.players.map((p) => {
     return p.id === game.currentPlayerId ? { ...p, turnsInJail: (count = p.turnsInJail + 1) } : p;
   });
-  const pastNotifications: Notification[] =
-    count < maxTurnsInJail
-      ? [
-          {
-            playerId: game.currentPlayerId,
-            turnsInJail: count,
-            type: NotificationType.turnInJail,
-          },
-          ...game.pastNotifications,
-        ]
-      : game.pastNotifications;
 
   let nextGame: Game = {
     ...game,
-    pastNotifications,
+    notifications: [
+      {
+        playerId: game.currentPlayerId,
+        turnsInJail: count,
+        type: NotificationType.turnInJail,
+      },
+    ],
     players: nextPlayers,
   };
 

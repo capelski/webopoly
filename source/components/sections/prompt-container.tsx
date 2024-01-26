@@ -4,7 +4,7 @@ import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {
   game: Game;
-  updateGame: (game: Game | undefined, keepPromptDisplay?: boolean) => void;
+  updateGame: (game: Game | undefined) => void;
 }
 
 export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
@@ -22,10 +22,8 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
     <PromptComponent
       game={props.game}
       prompt={props.game.prompt}
-      updateGame={(game, keepPromptDisplay = false) => {
-        if (!keepPromptDisplay) {
-          setDisplayPrompt(false);
-        }
+      updateGame={(game) => {
+        setDisplayPrompt(false);
         return props.updateGame(game);
       }}
     />

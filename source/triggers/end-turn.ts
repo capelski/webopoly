@@ -12,7 +12,6 @@ export const triggerEndTurn = (game: Game): Game => {
     mustStartTurn: true,
     prompt: nextPlayer.isInJail
       ? {
-          hasRolledDice: false,
           type: PromptType.jailOptions,
         }
       : undefined,

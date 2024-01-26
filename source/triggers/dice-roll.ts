@@ -1,6 +1,7 @@
-import { PromptType } from '../enums';
-import { getDiceRoll, getNextSquareId } from '../logic';
+import { JailMedium } from '../enums';
+import { getDiceRoll, getNextSquareId, isDoublesRoll } from '../logic';
 import { Game } from '../types';
+import { triggerGetOutOfJail, triggerTurnInJail } from './jail';
 import { triggerMovePlayer } from './move-player';
 
 export const applyDiceRoll = (game: Game): Game => {
@@ -13,10 +14,13 @@ export const triggerDiceRoll = (game: Game, isInJail = false): Game => {
   let nextGame: Game = { ...game, dice: getDiceRoll(), mustStartTurn: false };
 
   if (isInJail) {
-    nextGame.prompt = {
-      hasRolledDice: true,
-      type: PromptType.jailOptions,
-    };
+    const isDoubles = isDoublesRoll(nextGame.dice);
+
+    if (isDoubles) {
+      nextGame = triggerGetOutOfJail(nextGame, JailMedium.dice);
+    } else {
+      nextGame = triggerTurnInJail(nextGame);
+    }
   } else {
     nextGame = applyDiceRoll(nextGame);
   }
