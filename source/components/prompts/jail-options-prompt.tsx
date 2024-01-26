@@ -1,14 +1,8 @@
 import React from 'react';
 import { JailMedium, NotificationType, PromptType } from '../../enums';
 import { diceToString, getCurrentPlayer, isDoublesRoll } from '../../logic';
-import { currencySymbol, diceSymbol, jailFine, jailSymbol, maxTurnsInJail } from '../../parameters';
-import {
-  applyDiceRoll,
-  triggerDiceRoll,
-  triggerEndTurn,
-  triggerGetOutOfJail,
-  triggerTurnInJail,
-} from '../../triggers';
+import { currencySymbol, diceSymbol, jailFine, jailSymbol } from '../../parameters';
+import { triggerDiceRoll, triggerGetOutOfJail, triggerTurnInJail } from '../../triggers';
 import { Button } from '../common/button';
 import { NotificationComponent } from '../common/notification';
 import { OkPrompt } from './ok-prompt';
@@ -21,23 +15,11 @@ const JailDiceRollPrompt: PromptInterface<PromptType.jailOptions> = (props) => {
   return (
     <OkPrompt
       okHandler={() => {
-        let nextGame = props.game;
-
-        if (isDoubles) {
-          nextGame = triggerGetOutOfJail(nextGame, JailMedium.dice);
-          nextGame = applyDiceRoll(nextGame);
-        } else {
-          nextGame = triggerTurnInJail(nextGame);
-          const currentPlayer = getCurrentPlayer(nextGame);
-          const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail;
-
-          if (isLastTurnInJail) {
-            nextGame = triggerGetOutOfJail(nextGame, JailMedium.lastTurn);
-            nextGame = applyDiceRoll(nextGame);
-          }
-        }
-
-        props.updateGame(nextGame);
+        props.updateGame(
+          isDoubles
+            ? triggerGetOutOfJail(props.game, JailMedium.dice)
+            : triggerTurnInJail(props.game),
+        );
       }}
     >
       <h2>
@@ -88,12 +70,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
         <Button
           disabled={player.money < jailFine || player.turnsInJail === 2}
           onClick={() => {
-            let nextGame = props.game;
-
-            nextGame = triggerGetOutOfJail(nextGame, JailMedium.fine);
-            nextGame = triggerEndTurn(nextGame);
-
-            props.updateGame(nextGame);
+            props.updateGame(triggerGetOutOfJail(props.game, JailMedium.fine));
           }}
         >
           Pay {currencySymbol}

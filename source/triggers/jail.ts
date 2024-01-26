@@ -1,6 +1,8 @@
 import { JailMedium, NotificationType, SquareType } from '../enums';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, Notification } from '../types';
+import { applyDiceRoll } from './dice-roll';
+import { triggerEndTurn } from './end-turn';
 
 export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
   const notifications: Notification[] =
@@ -35,7 +37,7 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
         ]
       : game.pastNotifications;
 
-  return {
+  let nextGame: Game = {
     ...game,
     notifications,
     pastNotifications,
@@ -54,6 +56,14 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
         : p;
     }),
   };
+
+  if (medium === JailMedium.fine) {
+    nextGame = triggerEndTurn(nextGame);
+  } else if (medium === JailMedium.dice || medium === JailMedium.lastTurn) {
+    nextGame = applyDiceRoll(nextGame);
+  }
+
+  return nextGame;
 };
 
 export const triggerGetOutOfJailCard = (game: Game) => {
@@ -94,9 +104,15 @@ export const triggerTurnInJail = (game: Game): Game => {
         ]
       : game.pastNotifications;
 
-  return {
+  let nextGame: Game = {
     ...game,
     pastNotifications,
     players: nextPlayers,
   };
+
+  if (count === maxTurnsInJail) {
+    nextGame = triggerGetOutOfJail(nextGame, JailMedium.lastTurn);
+  }
+
+  return nextGame;
 };
