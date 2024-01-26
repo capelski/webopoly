@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { SquareType } from '../enums';
-import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../logic';
-import { diceSymbol, parkingSymbol } from '../parameters';
-import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../triggers';
-import { Game } from '../types';
-import { Button } from './common/button';
-import { Modal } from './common/modal';
+import { SquareType } from '../../enums';
+import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../../logic';
+import { diceSymbol, parkingSymbol } from '../../parameters';
+import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../../triggers';
+import { Game } from '../../types';
+import { Button } from '../common/button';
+import { Modal } from '../common/modal';
 
 interface ActionsBarProps {
   game: Game;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameView } from '../enums';
+import { GameView } from '../../enums';
 
 interface MobileBarTabProps extends MobileBarProps {
   text: string;
@@ -39,7 +39,7 @@ export const MobileBar: React.FC<MobileBarProps> = (props) => {
       }}
     >
       <MobileBarTab {...props} view={GameView.board} text="🧭" />
-      <MobileBarTab {...props} view={GameView.players} text="👤" />
+      <MobileBarTab {...props} view={GameView.panel} text="👤" />
     </div>
   );
 };
