@@ -1,6 +1,34 @@
-import { CardType, PromptType } from '../enums';
-import { chanceCards, communityChestCards, shuffleArray } from '../logic';
-import { Game } from '../types';
+import { CardType, NotificationType, PromptType } from '../enums';
+import {
+  chanceCards,
+  communityChestCards,
+  getChanceCardById,
+  getCommunityChestCardById,
+  shuffleArray,
+} from '../logic';
+import { CardPrompt, Game } from '../types';
+
+export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
+  const nextGame: Game = {
+    ...game,
+    pastNotifications: [
+      {
+        cardId: prompt.cardId,
+        cardType: prompt.cardType,
+        playerId: game.currentPlayerId,
+        type: NotificationType.card,
+      },
+      ...game.pastNotifications,
+    ],
+  };
+
+  const card =
+    prompt.cardType === CardType.chance
+      ? getChanceCardById(prompt.cardId)
+      : getCommunityChestCardById(prompt.cardId);
+
+  return card.action(nextGame);
+};
 
 export const triggerCardPrompt = (game: Game, cardType: CardType): Game => {
   const nextCardIs = {

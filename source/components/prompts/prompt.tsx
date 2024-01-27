@@ -2,7 +2,7 @@ import React from 'react';
 import { Game, Prompt } from '../../types';
 import { Modal } from '../common/modal';
 import { PromptInterface } from './prompt-interface';
-import { renderersMap } from './renderers-map';
+import { promptsMap } from './prompts-map';
 
 interface PromptComponentProps {
   game: Game;
@@ -11,7 +11,7 @@ interface PromptComponentProps {
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
-  const renderer: PromptInterface = renderersMap[props.prompt.type];
+  const renderer: PromptInterface = promptsMap[props.prompt.type];
   /* Unsetting the current prompt here, as the next trigger could set another prompt
    * (e.g. rollDice -> chanceCard) */
   const nextGame: Game = { ...props.game, prompt: undefined };

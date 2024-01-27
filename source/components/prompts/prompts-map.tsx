@@ -2,7 +2,6 @@ import React from 'react';
 import { NotificationType, PromptType } from '../../enums';
 import { getPlayerById } from '../../logic';
 import { triggerGoToJail } from '../../triggers';
-import { Notification } from '../../types';
 import { NotificationComponent } from '../common/notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
@@ -11,29 +10,25 @@ import { OkPrompt } from './ok-prompt';
 import { PlayerWinPrompt } from './player-win-prompt';
 import { PromptInterface } from './prompt-interface';
 
-export const renderersMap: {
+export const promptsMap: {
   [TKey in PromptType]: PromptInterface<TKey>;
 } = {
   [PromptType.answerOffer]: AnswerOfferPrompt,
   [PromptType.card]: CardPrompt,
   [PromptType.goToJail]: (props) => {
-    const notification: Notification = {
-      playerId: props.game.currentPlayerId,
-      type: NotificationType.goToJail,
-    };
-
     return (
       <OkPrompt
         okHandler={() => {
-          props.updateGame(
-            triggerGoToJail({
-              ...props.game,
-              pastNotifications: [notification, ...props.game.pastNotifications],
-            }),
-          );
+          props.updateGame(triggerGoToJail(props.game));
         }}
       >
-        <NotificationComponent game={props.game} notification={notification} />
+        <NotificationComponent
+          game={props.game}
+          notification={{
+            playerId: props.game.currentPlayerId,
+            type: NotificationType.goToJail,
+          }}
+        />
       </OkPrompt>
     );
   },

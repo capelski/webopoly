@@ -77,7 +77,9 @@ const chanceSource: Omit<Card, 'id'>[] = [
     text: 'Go Back 3 Spaces',
   },
   {
-    action: triggerGoToJail,
+    action: (game) => {
+      return triggerGoToJail(game, { skipPastNotification: true });
+    },
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {

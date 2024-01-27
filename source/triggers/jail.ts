@@ -54,11 +54,29 @@ export const triggerGetOutOfJailCard = (game: Game) => {
   };
 };
 
-export const triggerGoToJail = (game: Game): Game => {
+export const triggerGoToJail = (
+  game: Game,
+  {
+    skipPastNotification,
+  }: {
+    /** This trigger can be activated from Cards as well, which already generate a notification  */
+    skipPastNotification?: boolean;
+  } = {},
+): Game => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
+  const pastNotifications: Notification[] = skipPastNotification
+    ? game.pastNotifications
+    : [
+        {
+          playerId: game.currentPlayerId,
+          type: NotificationType.goToJail,
+        },
+        ...game.pastNotifications,
+      ];
 
   return {
     ...game,
+    pastNotifications,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),

@@ -41,7 +41,9 @@ const communityChestSource: Omit<Card, 'id'>[] = [
     text: 'Get Out of Jail Free',
   },
   {
-    action: triggerGoToJail,
+    action: (game) => {
+      return triggerGoToJail(game, { skipPastNotification: true });
+    },
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {
