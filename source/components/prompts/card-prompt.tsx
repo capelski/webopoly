@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NotificationType, PromptType } from '../../enums';
+import { CardType, NotificationType, PromptType } from '../../enums';
 import { getChanceCardById, getCommunityChestCardById } from '../../logic';
 import { Game } from '../../types';
 import { Button } from '../common/button';
@@ -8,7 +8,7 @@ import { PromptInterface } from './prompt-interface';
 
 export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
   const [revealed, setRevealed] = useState(false);
-  const isChanceCard = props.prompt.cardType === 'chance';
+  const isChanceCard = props.prompt.cardType === CardType.chance;
   const card = isChanceCard
     ? getChanceCardById(props.prompt.cardId)
     : getCommunityChestCardById(props.prompt.cardId);
@@ -19,8 +19,9 @@ export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
       pastNotifications: [
         {
           cardId: props.prompt.cardId,
+          cardType: props.prompt.cardType,
           playerId: props.game.currentPlayerId,
-          type: isChanceCard ? NotificationType.chance : NotificationType.communityChest,
+          type: NotificationType.card,
         },
         ...props.game.pastNotifications,
       ],

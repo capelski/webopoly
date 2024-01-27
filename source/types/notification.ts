@@ -1,4 +1,4 @@
-import { AnswerType, JailMedium, NotificationType, OfferType } from '../enums';
+import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../enums';
 import { Id } from './id';
 
 type NotificationBase = {
@@ -14,11 +14,10 @@ export type AnswerOfferNotification = NotificationBase & {
   type: NotificationType.answerOffer;
 };
 
-export type CardNotificationType = NotificationType.chance | NotificationType.communityChest;
-
 export type CardNotification = NotificationBase & {
   cardId: Id;
-  type: CardNotificationType;
+  cardType: CardType;
+  type: NotificationType.card;
 };
 
 export type FreeParkingNotification = NotificationBase & {

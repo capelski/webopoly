@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnswerType, JailMedium, NotificationType, OfferType } from '../../enums';
+import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../../enums';
 import {
   diceToString,
   getChanceCardById,
@@ -67,10 +67,16 @@ const renderersMap: {
       icon: '💵',
     };
   },
-  [NotificationType.chance]: (player, notification) => ({
-    description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
-    icon: chanceSymbol,
-  }),
+  [NotificationType.card]: (player, notification) =>
+    notification.cardType === CardType.chance
+      ? {
+          description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
+          icon: chanceSymbol,
+        }
+      : {
+          description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
+          icon: communityChestSymbol,
+        },
   [NotificationType.clearMortgage]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
@@ -78,10 +84,6 @@ const renderersMap: {
       icon: '❎',
     };
   },
-  [NotificationType.communityChest]: (player, notification) => ({
-    description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
-    icon: communityChestSymbol,
-  }),
   [NotificationType.freeParking]: (player, notification) => ({
     description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
     icon: parkingSymbol,

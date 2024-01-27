@@ -1,10 +1,6 @@
-import { AnswerType, JailMedium, NotificationType, OfferType } from '../enums';
+import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../enums';
 import { Id } from './id';
-import {
-  CardNotificationType,
-  GenericNotificationType,
-  PropertyNotificationType,
-} from './notification';
+import { GenericNotificationType, PropertyNotificationType } from './notification';
 
 type BaseNotificationMinified = {
   /** playerId */
@@ -28,9 +24,11 @@ export type AnswerOfferNotificationMinified = BaseNotificationMinified & {
 
 export type CardNotificationMinified = BaseNotificationMinified & {
   /** cardId */
-  c: Id;
+  ci: Id;
+  /** cardType */
+  ct: CardType;
   /** type */
-  t: CardNotificationType;
+  t: NotificationType.card;
 };
 
 export type FreeParkingNotificationMinified = BaseNotificationMinified & {

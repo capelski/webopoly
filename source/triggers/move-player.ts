@@ -1,4 +1,4 @@
-import { NotificationType, PromptType, SquareType, TaxType } from '../enums';
+import { CardType, NotificationType, PromptType, SquareType, TaxType } from '../enums';
 import {
   doesPayRent,
   getCurrentPlayer,
@@ -58,13 +58,13 @@ export const triggerMovePlayer = (
     } else if (landsInChance) {
       nextGame.prompt = {
         cardId: getNextChanceCardId(),
-        cardType: 'chance',
+        cardType: CardType.chance,
         type: PromptType.card,
       };
     } else if (landsInCommunityChest) {
       nextGame.prompt = {
         cardId: getNextCommunityChestCardId(),
-        cardType: 'community',
+        cardType: CardType.communityChest,
         type: PromptType.card,
       };
     }

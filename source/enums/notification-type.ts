@@ -3,9 +3,8 @@ export enum NotificationType {
   bankruptcy = 'bankruptcy', // TODO
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',
-  chance = 'chance',
+  card = 'card',
   clearMortgage = 'clearMortgage',
-  communityChest = 'communityChest',
   freeParking = 'freeParking',
   getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',

@@ -1,9 +1,9 @@
-import { OfferType, PromptType } from '../enums';
+import { CardType, OfferType, PromptType } from '../enums';
 import { Id } from './id';
 
 export type CardPrompt = {
   cardId: Id;
-  cardType: 'chance' | 'community';
+  cardType: CardType;
   type: PromptType.card;
 };
 

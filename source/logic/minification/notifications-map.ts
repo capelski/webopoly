@@ -1,6 +1,5 @@
 import { NotificationType } from '../../enums';
 import {
-  CardNotificationType,
   GenericNotificationType,
   Id,
   Notification,
@@ -29,17 +28,6 @@ const baseRestorer = <T extends NotificationType>(n: {
   p: Id;
   t: T;
 }): { playerId: Id; type: T } => ({ playerId: n.p, type: n.t });
-
-const cardMappers: Mapper<CardNotificationType> = {
-  minify: (notification) => ({
-    ...baseMinifier(notification),
-    c: notification.cardId,
-  }),
-  restore: (n) => ({
-    ...baseRestorer(n),
-    cardId: n.c,
-  }),
-};
 
 const genericMappers: Mapper<GenericNotificationType> = {
   minify: baseMinifier,
@@ -81,9 +69,19 @@ export const notificationsMap: {
   [NotificationType.bankruptcy]: <Mapper<NotificationType.bankruptcy>>genericMappers,
   [NotificationType.buyProperty]: <Mapper<NotificationType.buyProperty>>propertyMappers,
   [NotificationType.buildHouse]: <Mapper<NotificationType.buildHouse>>propertyMappers,
-  [NotificationType.chance]: <Mapper<NotificationType.chance>>cardMappers,
+  [NotificationType.card]: {
+    minify: (notification) => ({
+      ...baseMinifier(notification),
+      ci: notification.cardId,
+      ct: notification.cardType,
+    }),
+    restore: (n) => ({
+      ...baseRestorer(n),
+      cardId: n.ci,
+      cardType: n.ct,
+    }),
+  },
   [NotificationType.clearMortgage]: <Mapper<NotificationType.clearMortgage>>propertyMappers,
-  [NotificationType.communityChest]: <Mapper<NotificationType.communityChest>>cardMappers,
   [NotificationType.freeParking]: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),
     restore: (n) => ({ ...baseRestorer(n), pot: n.po }),
