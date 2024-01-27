@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SquareModalType } from '../../enums';
-import { getCurrentPlayer, getOtherPlayers } from '../../logic';
+import { getCurrentPlayer, getOtherPlayers, getPlayerById } from '../../logic';
 import { currencySymbol } from '../../parameters';
 import { triggerBuyingOffer, triggerSellingOffer } from '../../triggers';
 import { Game, Id, PropertySquare } from '../../types';
@@ -19,26 +19,19 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
   const [offer, setOffer] = useState(0);
   const [targetPlayerId, setTargetPlayerId] = useState<Id | undefined>(undefined);
 
+  const isSellingOffer = props.game.currentPlayerId === props.square.ownerId;
   const currentPlayer = getCurrentPlayer(props.game);
   const otherPlayers = getOtherPlayers(props.game, currentPlayer.id);
-  const isSellingOffer = props.game.currentPlayerId === props.square.ownerId;
+  const targetPlayer = !!targetPlayerId && getPlayerById(props.game, targetPlayerId);
+
+  const maxAmount = isSellingOffer
+    ? targetPlayer
+      ? targetPlayer.money
+      : undefined
+    : currentPlayer.money;
 
   return (
     <Modal>
-      <div style={{ marginBottom: 16 }}>
-        {currencySymbol}
-        <input
-          onChange={(event) => {
-            const parsedValue = Math.round(parseInt(event.target.value)) || 0;
-            setOffer(Math.min(parsedValue, currentPlayer.money));
-          }}
-          type="number"
-          max={isSellingOffer ? undefined : currentPlayer.money}
-          min={0}
-          value={offer || ''}
-        />
-      </div>
-
       {isSellingOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (
@@ -59,6 +52,21 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
       )}
 
       <div style={{ marginBottom: 16 }}>
+        {currencySymbol}
+        <input
+          disabled={isSellingOffer && !targetPlayerId}
+          onChange={(event) => {
+            const parsedValue = Math.round(parseInt(event.target.value)) || 0;
+            setOffer(Math.min(parsedValue, maxAmount!));
+          }}
+          type="number"
+          max={maxAmount}
+          min={0}
+          value={offer || ''}
+        />
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
         <Button
           disabled={offer <= 0 || (isSellingOffer && !targetPlayerId)}
           onClick={() => {
@@ -73,7 +81,6 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
           Send offer
         </Button>
       </div>
-
       <Button
         onClick={() => {
           props.setSquareModalType(undefined);
