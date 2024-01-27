@@ -1,4 +1,4 @@
-import { PlayerStatus, PropertyType, SquareType } from '../enums';
+import { NotificationType, PlayerStatus, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import { Game, Id, StreetSquare } from '../types';
 
@@ -16,6 +16,15 @@ export const triggerPayFee = (game: Game, fee: number): Game => {
 export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game => {
   return {
     ...game,
+    notifications: [
+      ...game.notifications,
+      {
+        landlordId,
+        playerId: game.currentPlayerId,
+        rent,
+        type: NotificationType.payRent,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId
         ? { ...p, money: p.money - rent }
@@ -42,6 +51,14 @@ export const triggerPayTax = (game: Game, tax: number): Game => {
   return {
     ...game,
     centerPot: game.centerPot + tax,
+    notifications: [
+      ...game.notifications,
+      {
+        playerId: game.currentPlayerId,
+        tax,
+        type: NotificationType.payTax,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money - tax } : p;
     }),

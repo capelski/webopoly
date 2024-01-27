@@ -11,6 +11,7 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         amount: prompt.amount,
         answer: AnswerType.accept,
@@ -65,6 +66,7 @@ export const triggerDeclineOffer = (game: Game, prompt: AnswerOfferPrompt): Game
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         amount: prompt.amount,
         answer: AnswerType.decline,

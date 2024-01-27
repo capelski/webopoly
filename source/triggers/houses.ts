@@ -28,6 +28,7 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: square.ownerId,
         propertyId: squareId,
@@ -66,6 +67,7 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: square.ownerId,
         propertyId: squareId,

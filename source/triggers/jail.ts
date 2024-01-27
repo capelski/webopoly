@@ -8,6 +8,7 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
   const notifications: Notification[] =
     medium === JailMedium.card || medium === JailMedium.dice || medium === JailMedium.fine
       ? [
+          ...game.notifications,
           {
             medium,
             playerId: game.currentPlayerId,
@@ -74,6 +75,7 @@ export const triggerTurnInJail = (game: Game): Game => {
   let nextGame: Game = {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: game.currentPlayerId,
         turnsInJail: count,

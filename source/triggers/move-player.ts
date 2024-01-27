@@ -8,7 +8,7 @@ import {
   passesGo,
 } from '../logic';
 import { passGoMoney } from '../parameters';
-import { Game, Id, Notification } from '../types';
+import { Game, Id } from '../types';
 import { triggerPayRent, triggerPayTax } from './payments';
 
 export type MovePlayerOptions = {
@@ -22,7 +22,6 @@ export const triggerMovePlayer = (
 ): Game => {
   let nextGame: Game = { ...game };
   let currentPlayer = getCurrentPlayer(nextGame);
-  const notifications: Notification[] = [...game.notifications];
   const nextSquare = nextGame.squares.find((s) => s.id === nextSquareId)!;
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
@@ -40,23 +39,12 @@ export const triggerMovePlayer = (
     if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
       nextGame = applyPassGo(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
-      notifications.push({
-        playerId: nextGame.currentPlayerId,
-        type: NotificationType.passGo,
-      });
     }
 
     if (paysRent && nextSquare.type === SquareType.property) {
       const rent = getRentAmount(nextGame, nextSquare);
       nextGame = triggerPayRent(nextGame, nextSquare.ownerId!, rent);
       currentPlayer = getCurrentPlayer(nextGame);
-
-      notifications.push({
-        landlordId: nextSquare.ownerId!,
-        playerId: nextGame.currentPlayerId,
-        rent,
-        type: NotificationType.payRent,
-      });
     } else if (payTaxes) {
       const tax =
         nextSquare.taxType === TaxType.income
@@ -64,19 +52,9 @@ export const triggerMovePlayer = (
           : 100;
       nextGame = triggerPayTax(nextGame, tax);
       currentPlayer = getCurrentPlayer(nextGame);
-      notifications.push({
-        playerId: nextGame.currentPlayerId,
-        tax,
-        type: NotificationType.payTax,
-      });
     } else if (collectsFreeParking) {
       nextGame = applyFreeParking(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
-      notifications.push({
-        playerId: nextGame.currentPlayerId,
-        pot: game.centerPot,
-        type: NotificationType.freeParking,
-      });
     } else if (landsInChance) {
       nextGame.prompt = {
         cardId: getNextChanceCardId(),
@@ -99,13 +77,21 @@ export const triggerMovePlayer = (
     }),
   };
 
-  return { ...nextGame, notifications };
+  return nextGame;
 };
 
 const applyFreeParking = (game: Game): Game => {
   return {
     ...game,
     centerPot: 0,
+    notifications: [
+      ...game.notifications,
+      {
+        playerId: game.currentPlayerId,
+        pot: game.centerPot,
+        type: NotificationType.freeParking,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
     }),
@@ -115,6 +101,13 @@ const applyFreeParking = (game: Game): Game => {
 const applyPassGo = (game: Game): Game => {
   return {
     ...game,
+    notifications: [
+      ...game.notifications,
+      {
+        playerId: game.currentPlayerId,
+        type: NotificationType.passGo,
+      },
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
     }),

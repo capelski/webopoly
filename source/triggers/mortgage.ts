@@ -23,6 +23,7 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: square.ownerId,
         propertyId: squareId,
@@ -62,6 +63,7 @@ export const triggerMortgage = (game: Game, squareId: Id): Game => {
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: square.ownerId,
         propertyId: squareId,

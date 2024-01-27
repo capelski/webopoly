@@ -16,6 +16,7 @@ export const triggerBuyProperty = (game: Game): Game => {
   return {
     ...game,
     notifications: [
+      ...game.notifications,
       {
         playerId: currentPlayer.id,
         propertyId: currentSquare.id,
