@@ -86,7 +86,11 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
 
       <div style={{ marginBottom: 16 }}>
         <Button
-          disabled={props.game.mustStartTurn || !!props.game.prompt}
+          disabled={
+            props.game.mustStartTurn ||
+            !!props.game.prompt ||
+            (props.square.propertyType === PropertyType.street && props.square.houses > 0)
+          }
           onClick={() => {
             props.setSquareModalType(SquareModalType.placeOffer);
           }}
