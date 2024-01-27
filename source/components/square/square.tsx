@@ -93,21 +93,6 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
 
       <div
         style={{
-          borderRight: '1px solid #ccc',
-          fontSize: 22,
-          width: '20%',
-          height: '100%',
-          textAlign: 'center',
-        }}
-      >
-        <PlayersInSquare
-          currentPlayerId={currentPlayer.id}
-          players={playersInSquare.filter((p) => !p.isInJail)}
-        />
-      </div>
-
-      <div
-        style={{
           display: 'flex',
           alignItems: 'center',
           backgroundColor,
@@ -192,6 +177,21 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           )}
         </div>
       )}
+
+      <div
+        style={{
+          borderLeft: '1px solid #ccc',
+          fontSize: 22,
+          width: '20%',
+          height: '100%',
+          textAlign: 'center',
+        }}
+      >
+        <PlayersInSquare
+          currentPlayerId={currentPlayer.id}
+          players={playersInSquare.filter((p) => !p.isInJail)}
+        />
+      </div>
     </div>
   );
 };
