@@ -1,4 +1,5 @@
 export * from './buy-property';
+export * from './cards';
 export * from './dice-roll';
 export * from './end-turn';
 export * from './houses';

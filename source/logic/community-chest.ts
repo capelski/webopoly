@@ -9,7 +9,6 @@ import {
   triggerReceivePayout,
 } from '../triggers';
 import { Card } from '../types';
-import { shuffleArray } from './array';
 import { squaresMap } from './minification/squares-map';
 
 const communityChestSource: Omit<Card, 'id'>[] = [
@@ -107,21 +106,11 @@ const communityChestSource: Omit<Card, 'id'>[] = [
   },
 ];
 
-const communityChestCards: Card[] = communityChestSource.map((card, index) => ({
+export const communityChestCards: Card[] = communityChestSource.map((card, index) => ({
   ...card,
   id: index + 1,
 }));
 
-let availableIds: number[] = [];
-
 export const getCommunityChestCardById = (id: number): Card => {
   return communityChestCards.find((card) => card.id === id)!;
-};
-
-export const getNextCommunityChestCardId = (): number => {
-  if (availableIds.length === 0) {
-    availableIds = shuffleArray(communityChestCards.map((card) => card.id));
-  }
-  const nextId = availableIds.shift()!;
-  return nextId;
 };

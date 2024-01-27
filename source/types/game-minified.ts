@@ -14,6 +14,10 @@ export type GameMinified = {
   d: Dice;
   /** mustStartTurn */
   m: boolean;
+  /** nextChanceCardIds */
+  nh: Id[];
+  /** nextCommunityCardIds */
+  no: Id[];
   /** notifications */
   n: NotificationMinified[];
   /** pastNotifications */

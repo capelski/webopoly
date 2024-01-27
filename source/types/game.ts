@@ -10,6 +10,8 @@ export type Game = {
   currentPlayerId: Id;
   dice: Dice;
   mustStartTurn: boolean;
+  nextChanceCardIds: Id[];
+  nextCommunityCardIds: Id[];
   notifications: Notification[];
   pastNotifications: Notification[];
   players: Player[];

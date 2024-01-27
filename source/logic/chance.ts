@@ -10,7 +10,6 @@ import {
   triggerReceivePayout,
 } from '../triggers';
 import { Card } from '../types';
-import { shuffleArray } from './array';
 import { getNextPropertyOfTypeId, getNextSquareId } from './game';
 import { squaresMap } from './minification/squares-map';
 
@@ -113,21 +112,11 @@ const chanceSource: Omit<Card, 'id'>[] = [
   },
 ];
 
-const chanceCards: Card[] = chanceSource.map((card, index) => ({
+export const chanceCards: Card[] = chanceSource.map((card, index) => ({
   ...card,
   id: index + 1,
 }));
 
-let availableIds: number[] = [];
-
 export const getChanceCardById = (id: number): Card => {
   return chanceCards.find((card) => card.id === id)!;
-};
-
-export const getNextChanceCardId = (): number => {
-  if (availableIds.length === 0) {
-    availableIds = shuffleArray(chanceCards.map((card) => card.id));
-  }
-  const nextId = availableIds.shift()!;
-  return nextId;
 };

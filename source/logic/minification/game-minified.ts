@@ -22,6 +22,8 @@ export const minifyGame = (game: Game): GameMinified => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
     }),
+    nh: game.nextChanceCardIds,
+    no: game.nextCommunityCardIds,
     pa: game.pastNotifications.map<NotificationMinified>((notification) => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
@@ -89,6 +91,8 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
     currentPlayerId: g.ci,
     dice: g.d,
     mustStartTurn: g.m,
+    nextChanceCardIds: g.nh,
+    nextCommunityCardIds: g.no,
     notifications: g.n.map<Notification>((n) => {
       const restore: Restorer = notificationsMap[n.t].restore;
       return restore(n);

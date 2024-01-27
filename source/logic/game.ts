@@ -26,6 +26,8 @@ export const createGame = (nPlayers: number): GameMinified => {
     cp: 0,
     ci: currentPlayerId,
     d: [],
+    nh: [],
+    no: [],
     n: [],
     m: true,
     pa: [],

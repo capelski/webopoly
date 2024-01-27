@@ -1,14 +1,8 @@
 import { CardType, NotificationType, PromptType, SquareType, TaxType } from '../enums';
-import {
-  doesPayRent,
-  getCurrentPlayer,
-  getNextChanceCardId,
-  getNextCommunityChestCardId,
-  getRentAmount,
-  passesGo,
-} from '../logic';
+import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, Id } from '../types';
+import { triggerCardPrompt } from './cards';
 import { triggerPayRent, triggerPayTax } from './payments';
 
 export type MovePlayerOptions = {
@@ -56,17 +50,9 @@ export const triggerMovePlayer = (
       nextGame = applyFreeParking(nextGame);
       currentPlayer = getCurrentPlayer(nextGame);
     } else if (landsInChance) {
-      nextGame.prompt = {
-        cardId: getNextChanceCardId(),
-        cardType: CardType.chance,
-        type: PromptType.card,
-      };
+      nextGame = triggerCardPrompt(nextGame, CardType.chance);
     } else if (landsInCommunityChest) {
-      nextGame.prompt = {
-        cardId: getNextCommunityChestCardId(),
-        cardType: CardType.communityChest,
-        type: PromptType.card,
-      };
+      nextGame = triggerCardPrompt(nextGame, CardType.communityChest);
     }
   }
 
