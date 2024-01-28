@@ -5,9 +5,9 @@ import {
   triggerGetOutOfJailCard,
   triggerGoToJail,
   triggerMovePlayer,
-  triggerPayStreetRepairs,
   triggerReceiveFromAllPlayers,
   triggerReceivePayout,
+  triggerRepairsExpense,
 } from '../triggers';
 import { Card } from '../types';
 import { squaresMap } from './minification/squares-map';
@@ -126,10 +126,16 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerPayStreetRepairs(game, 40);
+      return triggerRepairsExpense(game, 40, {
+        cardId: 14,
+        playerId: game.currentPlayerId,
+        source: NotificationSource.communityCard,
+        type: NotificationType.expense,
+      });
     },
     id: 14,
-    text: `You are assessed for street repairs: ${currencySymbol}40 per house`,
+    skipNotification: true,
+    text: `You are assessed for street repairs. ${currencySymbol}40 per house`,
   },
   {
     action: (game) => {

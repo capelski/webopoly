@@ -27,18 +27,21 @@ export type CardNotification = NotificationBase & {
   type: NotificationType.card;
 };
 
-export type ExpenseNotification = NotificationBase & {
+type ExpenseNotificationBase = NotificationBase & {
   amount: number;
   type: NotificationType.expense;
-} & (
-    | {
-        cardId: Id;
-        source: NotificationSource.chanceCard | NotificationSource.communityCard;
-      }
-    | {
-        source: NotificationSource.taxSquare;
-      }
-  );
+};
+
+export type ExpenseCardNotification = ExpenseNotificationBase & {
+  cardId: Id;
+  source: NotificationSource.chanceCard | NotificationSource.communityCard;
+};
+
+export type ExpenseTaxNotification = ExpenseNotificationBase & {
+  source: NotificationSource.taxSquare;
+};
+
+export type ExpenseNotification = ExpenseCardNotification | ExpenseTaxNotification;
 
 export type FreeParkingNotification = NotificationBase & {
   pot: number;

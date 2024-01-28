@@ -1,6 +1,6 @@
 import { NotificationType, PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, getOtherPlayers, hasEnoughMoney } from '../logic';
-import { ExpenseNotification, Game, Id, StreetSquare } from '../types';
+import { ExpenseCardNotification, ExpenseNotification, Game, Id, StreetSquare } from '../types';
 
 export const triggerExpense = (game: Game, notification: ExpenseNotification): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -25,18 +25,6 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
   return nextGame;
 };
 
-// TODO Remove
-const triggerPayFee = (game: Game, fee: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  return {
-    ...game,
-    centerPot: game.centerPot + fee,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, money: p.money - fee } : p;
-    }),
-  };
-};
-
 export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game => {
   return {
     ...game,
@@ -57,18 +45,6 @@ export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game =
         : p;
     }),
   };
-};
-
-export const triggerPayStreetRepairs = (game: Game, housePrice: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const playerStreets = game.squares.filter(
-    (s) =>
-      s.type === SquareType.property &&
-      s.propertyType === PropertyType.street &&
-      s.ownerId === currentPlayer.id,
-  ) as StreetSquare[];
-  const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
-  return triggerPayFee(game, houses * housePrice);
 };
 
 export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
@@ -98,4 +74,25 @@ export const triggerReceivePayout = (game: Game, payout: number): Game => {
       return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
     }),
   };
+};
+
+export const triggerRepairsExpense = (
+  game: Game,
+  housePrice: number,
+  partialNotification: Omit<ExpenseCardNotification, 'amount'>,
+): Game => {
+  const currentPlayer = getCurrentPlayer(game);
+  const playerStreets = game.squares.filter(
+    (s) =>
+      s.type === SquareType.property &&
+      s.propertyType === PropertyType.street &&
+      s.ownerId === currentPlayer.id,
+  ) as StreetSquare[];
+  const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
+  const notification: ExpenseCardNotification = {
+    ...partialNotification,
+    amount: houses * housePrice,
+  };
+
+  return triggerExpense(game, notification);
 };

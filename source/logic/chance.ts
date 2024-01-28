@@ -5,9 +5,9 @@ import {
   triggerGetOutOfJailCard,
   triggerGoToJail,
   triggerMovePlayer,
-  triggerPayStreetRepairs,
   triggerPayToAllPlayers,
   triggerReceivePayout,
+  triggerRepairsExpense,
 } from '../triggers';
 import { Card } from '../types';
 import { getNextPropertyOfTypeId, getNextSquareId } from './game';
@@ -96,10 +96,16 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerPayStreetRepairs(game, 25);
+      return triggerRepairsExpense(game, 25, {
+        cardId: 12,
+        source: NotificationSource.chanceCard,
+        playerId: game.currentPlayerId,
+        type: NotificationType.expense,
+      });
     },
     id: 12,
-    text: `Make general repairs on all your property: pay ${currencySymbol}25 for each house`,
+    skipNotification: true,
+    text: `Make general repairs on all your property. ${currencySymbol}25 per house`,
   },
   {
     action: (game) => {
