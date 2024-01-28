@@ -91,10 +91,21 @@ const renderersMap: {
       icon: '❎',
     };
   },
-  [NotificationType.expense]: (player, notification) => ({
-    description: `${player.name} pays ${currencySymbol}${notification.amount} in taxes`,
-    icon: taxSymbol,
-  }),
+  [NotificationType.expense]: (player, notification) =>
+    notification.source === NotificationSource.chanceCard
+      ? {
+          description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
+          icon: chanceSymbol,
+        }
+      : notification.source === NotificationSource.communityCard
+      ? {
+          description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
+          icon: communityChestSymbol,
+        }
+      : {
+          description: `${player.name} pays ${currencySymbol}${notification.amount} in taxes`,
+          icon: taxSymbol,
+        },
   [NotificationType.freeParking]: (player, notification) => ({
     description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
     icon: parkingSymbol,

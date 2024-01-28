@@ -1,4 +1,11 @@
-import { CardType, NotificationType, PromptType, SquareType, TaxType } from '../enums';
+import {
+  CardType,
+  NotificationSource,
+  NotificationType,
+  PromptType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { ExpenseNotification, Game, Id } from '../types';
@@ -45,8 +52,9 @@ export const triggerMovePlayer = (
           ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
           : 100;
       const taxNotification: ExpenseNotification = {
-        playerId: game.currentPlayerId,
         amount: tax,
+        playerId: game.currentPlayerId,
+        source: NotificationSource.taxSquare,
         type: NotificationType.expense,
       };
       nextGame = triggerExpense(nextGame, taxNotification);

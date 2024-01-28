@@ -8,6 +8,7 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
     ? {
         ...game,
         centerPot: game.centerPot + notification.amount,
+        notifications: [...game.notifications, notification],
         players: game.players.map((p) => {
           return p.id === currentPlayer.id ? { ...p, money: p.money - notification.amount } : p;
         }),
@@ -24,7 +25,8 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
   return nextGame;
 };
 
-export const triggerPayFee = (game: Game, fee: number): Game => {
+// TODO Remove
+const triggerPayFee = (game: Game, fee: number): Game => {
   const currentPlayer = getCurrentPlayer(game);
   return {
     ...game,

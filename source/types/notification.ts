@@ -29,9 +29,16 @@ export type CardNotification = NotificationBase & {
 
 export type ExpenseNotification = NotificationBase & {
   amount: number;
-  // TODO source
   type: NotificationType.expense;
-};
+} & (
+    | {
+        cardId: Id;
+        source: NotificationSource.chanceCard | NotificationSource.communityCard;
+      }
+    | {
+        source: NotificationSource.taxSquare;
+      }
+  );
 
 export type FreeParkingNotification = NotificationBase & {
   pot: number;

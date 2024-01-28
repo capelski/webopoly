@@ -1,4 +1,4 @@
-import { NotificationType } from '../../enums';
+import { NotificationSource, NotificationType } from '../../enums';
 import {
   GenericNotificationType,
   Id,
@@ -83,8 +83,21 @@ export const notificationsMap: {
   },
   [NotificationType.clearMortgage]: <Mapper<NotificationType.clearMortgage>>propertyMappers,
   [NotificationType.expense]: {
-    minify: (notification) => ({ ...baseMinifier(notification), a: notification.amount }),
-    restore: (n) => ({ ...baseRestorer(n), amount: n.a }),
+    minify: (notification) => ({
+      ...baseMinifier(notification),
+      a: notification.amount,
+      ...(notification.source === NotificationSource.chanceCard ||
+      notification.source === NotificationSource.communityCard
+        ? { s: notification.source, ci: notification.cardId }
+        : { s: notification.source }),
+    }),
+    restore: (n) => ({
+      ...baseRestorer(n),
+      amount: n.a,
+      ...(n.s === NotificationSource.chanceCard || n.s === NotificationSource.communityCard
+        ? { source: n.s, cardId: n.ci }
+        : { source: n.s }),
+    }),
   },
   [NotificationType.freeParking]: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),

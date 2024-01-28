@@ -43,7 +43,18 @@ export type ExpenseNotificationMinified = BaseNotificationMinified & {
   a: number;
   /** type */
   t: NotificationType.expense;
-};
+} & (
+    | {
+        /** cardId */
+        ci: Id;
+        /** source */
+        s: NotificationSource.chanceCard | NotificationSource.communityCard;
+      }
+    | {
+        /** source */
+        s: NotificationSource.taxSquare;
+      }
+  );
 
 export type FreeParkingNotificationMinified = BaseNotificationMinified & {
   /** pot */
