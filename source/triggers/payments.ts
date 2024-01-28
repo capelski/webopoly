@@ -1,6 +1,13 @@
 import { NotificationType, PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, getOtherPlayers, hasEnoughMoney } from '../logic';
-import { ExpenseCardNotification, ExpenseNotification, Game, Id, StreetSquare } from '../types';
+import {
+  ExpenseCardNotification,
+  ExpenseNotification,
+  Game,
+  Id,
+  Notification,
+  StreetSquare,
+} from '../types';
 
 export const triggerExpense = (game: Game, notification: ExpenseNotification): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -26,35 +33,48 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
 };
 
 export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game => {
-  return {
-    ...game,
-    notifications: [
-      ...game.notifications,
-      {
-        landlordId,
-        playerId: game.currentPlayerId,
-        rent,
-        type: NotificationType.payRent,
-      },
-    ],
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
-        ? { ...p, money: p.money - rent }
-        : p.id === landlordId
-        ? { ...p, money: p.money + rent }
-        : p;
-    }),
+  const notification: Notification = {
+    landlordId,
+    playerId: game.currentPlayerId,
+    rent,
+    type: NotificationType.payRent,
   };
+
+  const currentPlayer = getCurrentPlayer(game);
+  const nextGame: Game = hasEnoughMoney(currentPlayer, rent)
+    ? {
+        ...game,
+        notifications: [...game.notifications, notification],
+        players: game.players.map((p) => {
+          return p.id === game.currentPlayerId
+            ? { ...p, money: p.money - rent }
+            : p.id === landlordId
+            ? { ...p, money: p.money + rent }
+            : p;
+        }),
+      }
+    : {
+        ...game,
+        prompt: {
+          notification,
+          playerId: game.currentPlayerId,
+          type: PromptType.cannotPay,
+        },
+      };
+
+  return nextGame;
 };
 
 export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
+
   return {
     ...game,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id
-        ? { ...p, money: p.money - otherPlayersId.length * amount }
+        ? // TODO Assess player money
+          { ...p, money: p.money - otherPlayersId.length * amount }
         : otherPlayersId.includes(p.id)
         ? { ...p, money: p.money + amount }
         : p;
@@ -63,7 +83,20 @@ export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
 };
 
 export const triggerReceiveFromAllPlayers = (game: Game, amount: number): Game => {
-  return triggerPayToAllPlayers(game, -amount);
+  const currentPlayer = getCurrentPlayer(game);
+  const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
+
+  return {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === currentPlayer.id
+        ? { ...p, money: p.money + otherPlayersId.length * amount }
+        : otherPlayersId.includes(p.id)
+        ? // TODO Assess each other player money
+          { ...p, money: p.money - amount }
+        : p;
+    }),
+  };
 };
 
 export const triggerRepairsExpense = (

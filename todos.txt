@@ -19,7 +19,12 @@
   }
 - Player bankruptcy should be a prompt
 - Allow mortgaging properties / selling houses when player goes bankrupt
+- Last turn in jail might generate a cannot pay prompt
 
+
+- Merge cards into "surprise"
+- Turn game.prompt into an array and only process first prompt?
+- Utility to push notifications / replace prompt safely
 - Trading properties with other players
 - Roll doubles => Extra turn
 - Make parameters.ts modifiable on createGame

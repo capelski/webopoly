@@ -3,7 +3,7 @@ import { Id } from './id';
 import { Notification } from './notification';
 
 export type CannotPayPrompt = {
-  notification: Notification & { type: NotificationType.expense };
+  notification: Notification & { type: NotificationType.expense | NotificationType.payRent };
   playerId: Id;
   type: PromptType.cannotPay;
 };
