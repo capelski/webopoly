@@ -1,5 +1,5 @@
-export enum JailSource {
+export enum NotificationSource {
   chanceCard = 'chanceCard',
   communityCard = 'communityCard',
-  square = 'square',
+  jailSquare = 'jailSquare',
 }

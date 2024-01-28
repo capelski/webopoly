@@ -1,4 +1,4 @@
-import { JailMedium, JailSource, NotificationType, SquareType } from '../enums';
+import { JailMedium, NotificationSource, NotificationType, SquareType } from '../enums';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, Notification } from '../types';
 import { applyDiceRoll } from './dice-roll';
@@ -54,7 +54,7 @@ export const triggerGetOutOfJailCard = (game: Game) => {
   };
 };
 
-export const triggerGoToJail = (game: Game, source: JailSource): Game => {
+export const triggerGoToJail = (game: Game, source: NotificationSource): Game => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
 
   return {

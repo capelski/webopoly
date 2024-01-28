@@ -2,7 +2,7 @@ import {
   AnswerType,
   CardType,
   JailMedium,
-  JailSource,
+  NotificationSource,
   NotificationType,
   OfferType,
 } from '../enums';
@@ -66,7 +66,7 @@ export type GetOutOfJailNotificationMinified = BaseNotificationMinified & {
 
 export type GoToJailNotificationMinified = BaseNotificationMinified & {
   /** source */
-  s: JailSource;
+  s: NotificationSource;
   /** type */
   t: NotificationType.goToJail;
 };

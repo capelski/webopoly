@@ -1,4 +1,4 @@
-import { JailSource, PropertyType } from '../enums';
+import { NotificationSource, PropertyType } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
 import {
   triggerGetOutOfJailCard,
@@ -78,7 +78,7 @@ const chanceSource: Omit<Card, 'id'>[] = [
   },
   {
     action: (game) => {
-      return triggerGoToJail(game, JailSource.chanceCard);
+      return triggerGoToJail(game, NotificationSource.chanceCard);
     },
     skipNotification: true,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,

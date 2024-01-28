@@ -3,7 +3,7 @@ import {
   AnswerType,
   CardType,
   JailMedium,
-  JailSource,
+  NotificationSource,
   NotificationType,
   OfferType,
 } from '../../enums';
@@ -114,9 +114,9 @@ const renderersMap: {
   [NotificationType.goToJail]: (player, notification) => ({
     description: `${player.name} goes to jail`,
     icon:
-      notification.source === JailSource.chanceCard
+      notification.source === NotificationSource.chanceCard
         ? chanceSymbol
-        : notification.source === JailSource.communityCard
+        : notification.source === NotificationSource.communityCard
         ? communityChestSymbol
         : goToJailSymbol,
   }),
