@@ -31,6 +31,13 @@ export type CardNotificationMinified = BaseNotificationMinified & {
   t: NotificationType.card;
 };
 
+export type ExpenseNotificationMinified = BaseNotificationMinified & {
+  /** amount */
+  a: number;
+  /** type */
+  t: NotificationType.expense;
+};
+
 export type FreeParkingNotificationMinified = BaseNotificationMinified & {
   /** pot */
   po: number;
@@ -59,13 +66,6 @@ export type PayRentNotificationMinified = BaseNotificationMinified & {
   t: NotificationType.payRent;
 };
 
-export type PayTaxNotificationMinified = BaseNotificationMinified & {
-  /** tax */
-  ta: number;
-  /** type */
-  t: NotificationType.payTax;
-};
-
 export type PropertyNotificationMinified = BaseNotificationMinified & {
   /** propertyId */
   pi: Id;
@@ -83,10 +83,10 @@ export type TurnInJailNotificationMinified = BaseNotificationMinified & {
 export type NotificationMinified =
   | AnswerOfferNotificationMinified
   | CardNotificationMinified
+  | ExpenseNotificationMinified
   | FreeParkingNotificationMinified
   | GenericNotificationMinified
   | GetOutOfJailNotificationMinified
   | PayRentNotificationMinified
-  | PayTaxNotificationMinified
   | PropertyNotificationMinified
   | TurnInJailNotificationMinified;

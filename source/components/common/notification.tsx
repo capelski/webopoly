@@ -84,6 +84,10 @@ const renderersMap: {
       icon: '❎',
     };
   },
+  [NotificationType.expense]: (player, notification) => ({
+    description: `${player.name} pays ${currencySymbol}${notification.amount} in taxes`,
+    icon: taxSymbol,
+  }),
   [NotificationType.freeParking]: (player, notification) => ({
     description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
     icon: parkingSymbol,
@@ -122,10 +126,6 @@ const renderersMap: {
       icon: '🚀',
     };
   },
-  [NotificationType.payTax]: (player, notification) => ({
-    description: `${player.name} pays ${currencySymbol}${notification.tax} in taxes`,
-    icon: taxSymbol,
-  }),
   [NotificationType.sellHouse]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {

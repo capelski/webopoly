@@ -82,6 +82,10 @@ export const notificationsMap: {
     }),
   },
   [NotificationType.clearMortgage]: <Mapper<NotificationType.clearMortgage>>propertyMappers,
+  [NotificationType.expense]: {
+    minify: (notification) => ({ ...baseMinifier(notification), a: notification.amount }),
+    restore: (n) => ({ ...baseRestorer(n), amount: n.a }),
+  },
   [NotificationType.freeParking]: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),
     restore: (n) => ({ ...baseRestorer(n), pot: n.po }),
@@ -100,10 +104,6 @@ export const notificationsMap: {
       r: notification.rent,
     }),
     restore: (n) => ({ ...baseRestorer(n), landlordId: n.l, rent: n.r }),
-  },
-  [NotificationType.payTax]: {
-    minify: (notification) => ({ ...baseMinifier(notification), ta: notification.tax }),
-    restore: (n) => ({ ...baseRestorer(n), tax: n.ta }),
   },
   [NotificationType.sellHouse]: <Mapper<NotificationType.sellHouse>>propertyMappers,
   [NotificationType.turnInJail]: {

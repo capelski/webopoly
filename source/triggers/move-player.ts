@@ -1,9 +1,9 @@
 import { CardType, NotificationType, PromptType, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
-import { Game, Id } from '../types';
+import { ExpenseNotification, Game, Id } from '../types';
 import { triggerCardPrompt } from './cards';
-import { triggerPayRent, triggerPayTax } from './payments';
+import { triggerExpense, triggerPayRent } from './payments';
 
 export type MovePlayerOptions = {
   preventPassGo?: boolean;
@@ -44,7 +44,12 @@ export const triggerMovePlayer = (
         nextSquare.taxType === TaxType.income
           ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
           : 100;
-      nextGame = triggerPayTax(nextGame, tax);
+      const taxNotification: ExpenseNotification = {
+        playerId: game.currentPlayerId,
+        amount: tax,
+        type: NotificationType.expense,
+      };
+      nextGame = triggerExpense(nextGame, taxNotification);
       currentPlayer = getCurrentPlayer(nextGame);
     } else if (collectsFreeParking) {
       nextGame = applyFreeParking(nextGame);

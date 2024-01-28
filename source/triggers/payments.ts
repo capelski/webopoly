@@ -1,6 +1,28 @@
-import { NotificationType, PlayerStatus, PropertyType, SquareType } from '../enums';
-import { getCurrentPlayer } from '../logic';
-import { Game, Id, StreetSquare } from '../types';
+import { NotificationType, PromptType, PropertyType, SquareType } from '../enums';
+import { getCurrentPlayer, getOtherPlayers, hasEnoughMoney } from '../logic';
+import { ExpenseNotification, Game, Id, StreetSquare } from '../types';
+
+export const triggerExpense = (game: Game, notification: ExpenseNotification): Game => {
+  const currentPlayer = getCurrentPlayer(game);
+  const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
+    ? {
+        ...game,
+        centerPot: game.centerPot + notification.amount,
+        players: game.players.map((p) => {
+          return p.id === currentPlayer.id ? { ...p, money: p.money - notification.amount } : p;
+        }),
+      }
+    : {
+        ...game,
+        prompt: {
+          notification,
+          playerId: game.currentPlayerId,
+          type: PromptType.cannotPay,
+        },
+      };
+
+  return nextGame;
+};
 
 export const triggerPayFee = (game: Game, fee: number): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -47,36 +69,15 @@ export const triggerPayStreetRepairs = (game: Game, housePrice: number): Game =>
   return triggerPayFee(game, houses * housePrice);
 };
 
-export const triggerPayTax = (game: Game, tax: number): Game => {
-  return {
-    ...game,
-    centerPot: game.centerPot + tax,
-    notifications: [
-      ...game.notifications,
-      {
-        playerId: game.currentPlayerId,
-        tax,
-        type: NotificationType.payTax,
-      },
-    ],
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, money: p.money - tax } : p;
-    }),
-  };
-};
-
 export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const activePlayersId = game.players
-    .filter((p) => p.status !== PlayerStatus.bankrupt && p.id !== currentPlayer.id)
-    .map((p) => p.id);
-
+  const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
   return {
     ...game,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id
-        ? { ...p, money: p.money - activePlayersId.length * amount }
-        : activePlayersId.includes(p.id)
+        ? { ...p, money: p.money - otherPlayersId.length * amount }
+        : otherPlayersId.includes(p.id)
         ? { ...p, money: p.money + amount }
         : p;
     }),

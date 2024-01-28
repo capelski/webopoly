@@ -14,6 +14,17 @@ export const promptsMap: {
   [TKey in PromptType]: PromptInterface<TKey>;
 } = {
   [PromptType.answerOffer]: AnswerOfferPrompt,
+  [PromptType.cannotPay]: () => {
+    return (
+      <OkPrompt
+        okHandler={() => {
+          // TODO Allow the player to sell houses, mortgage properties, sell properties, etc.
+        }}
+      >
+        <div>That's the end of it for this player</div>
+      </OkPrompt>
+    );
+  },
   [PromptType.card]: CardPrompt,
   [PromptType.goToJail]: (props) => {
     return (

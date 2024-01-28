@@ -10,6 +10,10 @@ export const doesPayRent = (player: Player, square: Square): boolean => {
   );
 };
 
+export const hasEnoughMoney = (player: Player, amount: number) => {
+  return player.money >= amount;
+};
+
 export const passesGo = (game: Game, currentSquareId: number, nextSquareId: number): boolean => {
   const currentIndex = game.squares.findIndex((s) => s.id === currentSquareId);
   const nextIndex = game.squares.findIndex((s) => s.id === nextSquareId);

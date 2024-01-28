@@ -20,6 +20,11 @@ export type CardNotification = NotificationBase & {
   type: NotificationType.card;
 };
 
+export type ExpenseNotification = NotificationBase & {
+  amount: number;
+  type: NotificationType.expense;
+};
+
 export type FreeParkingNotification = NotificationBase & {
   pot: number;
   type: NotificationType.freeParking;
@@ -45,11 +50,6 @@ export type PayRentNotification = NotificationBase & {
   type: NotificationType.payRent;
 };
 
-export type PayTaxNotification = NotificationBase & {
-  tax: number;
-  type: NotificationType.payTax;
-};
-
 export type PropertyNotificationType =
   | NotificationType.buildHouse
   | NotificationType.buyProperty
@@ -70,10 +70,10 @@ export type TurnInJailNotification = NotificationBase & {
 export type Notification =
   | AnswerOfferNotification
   | CardNotification
+  | ExpenseNotification
   | FreeParkingNotification
   | GenericNotification
   | GetOutOfJailNotification
   | PayRentNotification
-  | PayTaxNotification
   | PropertyNotification
   | TurnInJailNotification;
