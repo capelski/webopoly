@@ -66,16 +66,6 @@ export const triggerReceiveFromAllPlayers = (game: Game, amount: number): Game =
   return triggerPayToAllPlayers(game, -amount);
 };
 
-export const triggerReceivePayout = (game: Game, payout: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
-    }),
-  };
-};
-
 export const triggerRepairsExpense = (
   game: Game,
   housePrice: number,
@@ -95,4 +85,14 @@ export const triggerRepairsExpense = (
   };
 
   return triggerExpense(game, notification);
+};
+
+export const triggerWindfall = (game: Game, payout: number): Game => {
+  const currentPlayer = getCurrentPlayer(game);
+  return {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
+    }),
+  };
 };

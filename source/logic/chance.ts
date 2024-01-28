@@ -6,8 +6,8 @@ import {
   triggerGoToJail,
   triggerMovePlayer,
   triggerPayToAllPlayers,
-  triggerReceivePayout,
   triggerRepairsExpense,
+  triggerWindfall,
 } from '../triggers';
 import { Card } from '../types';
 import { getNextPropertyOfTypeId, getNextSquareId } from './game';
@@ -68,7 +68,7 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 50);
+      return triggerWindfall(game, 50);
     },
     id: 8,
     text: `Bank pays you dividend of ${currencySymbol}50`,
@@ -137,7 +137,7 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 150);
+      return triggerWindfall(game, 150);
     },
     id: 16,
     text: `Your building loan matures. Collect ${currencySymbol}150`,

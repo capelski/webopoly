@@ -6,8 +6,8 @@ import {
   triggerGoToJail,
   triggerMovePlayer,
   triggerReceiveFromAllPlayers,
-  triggerReceivePayout,
   triggerRepairsExpense,
+  triggerWindfall,
 } from '../triggers';
 import { Card } from '../types';
 import { squaresMap } from './minification/squares-map';
@@ -22,7 +22,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 200);
+      return triggerWindfall(game, 200);
     },
     id: 2,
     text: `Bank error in your favour. Collect ${currencySymbol}200`,
@@ -43,7 +43,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 50);
+      return triggerWindfall(game, 50);
     },
     id: 4,
     text: `From sale of stock you get ${currencySymbol}50`,
@@ -63,14 +63,14 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 100);
+      return triggerWindfall(game, 100);
     },
     id: 7,
     text: `Holiday fund matures. Receive ${currencySymbol}100`,
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 20);
+      return triggerWindfall(game, 20);
     },
     id: 8,
     text: `Income tax refund. Collect ${currencySymbol}20`,
@@ -84,7 +84,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 100);
+      return triggerWindfall(game, 100);
     },
     id: 10,
     text: `Life insurance matures. Collect ${currencySymbol}100`,
@@ -119,7 +119,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 25);
+      return triggerWindfall(game, 25);
     },
     id: 13,
     text: `Receive ${currencySymbol}25 consultancy fee`,
@@ -139,14 +139,14 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 10);
+      return triggerWindfall(game, 10);
     },
     id: 15,
     text: `You have won second prize in a beauty contest. Collect ${currencySymbol}10`,
   },
   {
     action: (game) => {
-      return triggerReceivePayout(game, 100);
+      return triggerWindfall(game, 100);
     },
     id: 16,
     text: `You inherit ${currencySymbol}100`,
