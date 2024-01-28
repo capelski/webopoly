@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotificationType, PromptType } from '../../enums';
+import { JailSource, NotificationType, PromptType } from '../../enums';
 import { getPlayerById } from '../../logic';
 import { triggerGoToJail } from '../../triggers';
 import { NotificationComponent } from '../common/notification';
@@ -30,13 +30,14 @@ export const promptsMap: {
     return (
       <OkPrompt
         okHandler={() => {
-          props.updateGame(triggerGoToJail(props.game));
+          props.updateGame(triggerGoToJail(props.game, JailSource.square));
         }}
       >
         <NotificationComponent
           game={props.game}
           notification={{
             playerId: props.game.currentPlayerId,
+            source: JailSource.square,
             type: NotificationType.goToJail,
           }}
         />

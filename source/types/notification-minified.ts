@@ -1,4 +1,11 @@
-import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../enums';
+import {
+  AnswerType,
+  CardType,
+  JailMedium,
+  JailSource,
+  NotificationType,
+  OfferType,
+} from '../enums';
 import { Id } from './id';
 import { GenericNotificationType, PropertyNotificationType } from './notification';
 
@@ -57,6 +64,13 @@ export type GetOutOfJailNotificationMinified = BaseNotificationMinified & {
   t: NotificationType.getOutOfJail;
 };
 
+export type GoToJailNotificationMinified = BaseNotificationMinified & {
+  /** source */
+  s: JailSource;
+  /** type */
+  t: NotificationType.goToJail;
+};
+
 export type PayRentNotificationMinified = BaseNotificationMinified & {
   /** landlordId */
   l: Id;
@@ -87,6 +101,7 @@ export type NotificationMinified =
   | FreeParkingNotificationMinified
   | GenericNotificationMinified
   | GetOutOfJailNotificationMinified
+  | GoToJailNotificationMinified
   | PayRentNotificationMinified
   | PropertyNotificationMinified
   | TurnInJailNotificationMinified;

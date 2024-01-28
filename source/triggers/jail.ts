@@ -1,4 +1,4 @@
-import { JailMedium, NotificationType, SquareType } from '../enums';
+import { JailMedium, JailSource, NotificationType, SquareType } from '../enums';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, Notification } from '../types';
 import { applyDiceRoll } from './dice-roll';
@@ -54,29 +54,19 @@ export const triggerGetOutOfJailCard = (game: Game) => {
   };
 };
 
-export const triggerGoToJail = (
-  game: Game,
-  {
-    skipPastNotification,
-  }: {
-    /** This trigger can be activated from Cards as well, which already generate a notification  */
-    skipPastNotification?: boolean;
-  } = {},
-): Game => {
+export const triggerGoToJail = (game: Game, source: JailSource): Game => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
-  const pastNotifications: Notification[] = skipPastNotification
-    ? game.pastNotifications
-    : [
-        {
-          playerId: game.currentPlayerId,
-          type: NotificationType.goToJail,
-        },
-        ...game.pastNotifications,
-      ];
 
   return {
     ...game,
-    pastNotifications,
+    pastNotifications: [
+      {
+        playerId: game.currentPlayerId,
+        source,
+        type: NotificationType.goToJail,
+      },
+      ...game.pastNotifications,
+    ],
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),

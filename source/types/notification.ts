@@ -1,4 +1,11 @@
-import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../enums';
+import {
+  AnswerType,
+  CardType,
+  JailMedium,
+  JailSource,
+  NotificationType,
+  OfferType,
+} from '../enums';
 import { Id } from './id';
 
 type NotificationBase = {
@@ -22,6 +29,7 @@ export type CardNotification = NotificationBase & {
 
 export type ExpenseNotification = NotificationBase & {
   amount: number;
+  // TODO source
   type: NotificationType.expense;
 };
 
@@ -30,10 +38,7 @@ export type FreeParkingNotification = NotificationBase & {
   type: NotificationType.freeParking;
 };
 
-export type GenericNotificationType =
-  | NotificationType.bankruptcy
-  | NotificationType.goToJail
-  | NotificationType.passGo;
+export type GenericNotificationType = NotificationType.bankruptcy | NotificationType.passGo;
 
 export type GenericNotification = NotificationBase & {
   type: GenericNotificationType;
@@ -42,6 +47,11 @@ export type GenericNotification = NotificationBase & {
 export type GetOutOfJailNotification = NotificationBase & {
   medium: JailMedium;
   type: NotificationType.getOutOfJail;
+};
+
+export type GoToJailNotification = NotificationBase & {
+  source: JailSource;
+  type: NotificationType.goToJail;
 };
 
 export type PayRentNotification = NotificationBase & {
@@ -74,6 +84,7 @@ export type Notification =
   | FreeParkingNotification
   | GenericNotification
   | GetOutOfJailNotification
+  | GoToJailNotification
   | PayRentNotification
   | PropertyNotification
   | TurnInJailNotification;

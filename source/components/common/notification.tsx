@@ -1,5 +1,12 @@
 import React from 'react';
-import { AnswerType, CardType, JailMedium, NotificationType, OfferType } from '../../enums';
+import {
+  AnswerType,
+  CardType,
+  JailMedium,
+  JailSource,
+  NotificationType,
+  OfferType,
+} from '../../enums';
 import {
   diceToString,
   getChanceCardById,
@@ -104,9 +111,14 @@ const renderersMap: {
       icon: getOutJailSymbol,
     };
   },
-  [NotificationType.goToJail]: (player) => ({
+  [NotificationType.goToJail]: (player, notification) => ({
     description: `${player.name} goes to jail`,
-    icon: goToJailSymbol,
+    icon:
+      notification.source === JailSource.chanceCard
+        ? chanceSymbol
+        : notification.source === JailSource.communityCard
+        ? communityChestSymbol
+        : goToJailSymbol,
   }),
   [NotificationType.mortgage]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);

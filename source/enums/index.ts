@@ -2,6 +2,7 @@ export * from './answer-type';
 export * from './card-type';
 export * from './game-view';
 export * from './jail-medium';
+export * from './jail-source';
 export * from './neighborhood';
 export * from './notification-type';
 export * from './offer-type';

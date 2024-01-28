@@ -1,3 +1,4 @@
+import { JailSource } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
 import {
   triggerGetOutOfJailCard,
@@ -42,8 +43,9 @@ const communityChestSource: Omit<Card, 'id'>[] = [
   },
   {
     action: (game) => {
-      return triggerGoToJail(game, { skipPastNotification: true });
+      return triggerGoToJail(game, JailSource.communityCard);
     },
+    skipNotification: true,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {

@@ -9,23 +9,25 @@ import {
 import { CardPrompt, Game } from '../types';
 
 export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
-  const nextGame: Game = {
-    ...game,
-    pastNotifications: [
-      {
-        cardId: prompt.cardId,
-        cardType: prompt.cardType,
-        playerId: game.currentPlayerId,
-        type: NotificationType.card,
-      },
-      ...game.pastNotifications,
-    ],
-  };
-
   const card =
     prompt.cardType === CardType.chance
       ? getChanceCardById(prompt.cardId)
       : getCommunityChestCardById(prompt.cardId);
+
+  const nextGame: Game = {
+    ...game,
+    pastNotifications: card.skipNotification
+      ? game.pastNotifications
+      : [
+          {
+            cardId: prompt.cardId,
+            cardType: prompt.cardType,
+            playerId: game.currentPlayerId,
+            type: NotificationType.card,
+          },
+          ...game.pastNotifications,
+        ],
+  };
 
   return card.action(nextGame);
 };
