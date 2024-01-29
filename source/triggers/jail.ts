@@ -1,4 +1,5 @@
-import { JailMedium, NotificationSource, NotificationType, SquareType } from '../enums';
+import { JailMedium, NotificationSource, NotificationType, PromptType, SquareType } from '../enums';
+import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, Notification } from '../types';
 import { applyDiceRoll } from './dice-roll';
@@ -17,29 +18,45 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
         ]
       : game.notifications;
 
-  let nextGame: Game = {
-    ...game,
-    notifications,
-    players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
-        ? {
-            ...p,
-            getOutOfJail: medium === JailMedium.card ? p.getOutOfJail - 1 : p.getOutOfJail,
-            isInJail: false,
-            money:
-              medium === JailMedium.fine || medium === JailMedium.lastTurn
-                ? p.money - jailFine
-                : p.money,
-            turnsInJail: 0,
-          }
-        : p;
-    }),
-  };
+  const currentPlayer = getCurrentPlayer(game);
+  const paysFine = medium === JailMedium.fine || medium === JailMedium.lastTurn;
 
-  if (medium === JailMedium.fine) {
-    nextGame = triggerEndTurn(nextGame);
-  } else if (medium === JailMedium.dice || medium === JailMedium.lastTurn) {
-    nextGame = applyDiceRoll(nextGame);
+  let nextGame: Game;
+  if (paysFine && !hasEnoughMoney(currentPlayer, jailFine)) {
+    nextGame = {
+      ...game,
+      prompt: {
+        notification: {
+          medium,
+          playerId: game.currentPlayerId,
+          type: NotificationType.getOutOfJail,
+        },
+        playerId: game.currentPlayerId,
+        type: PromptType.cannotPay,
+      },
+    };
+  } else {
+    nextGame = {
+      ...game,
+      notifications,
+      players: game.players.map((p) => {
+        return p.id === game.currentPlayerId
+          ? {
+              ...p,
+              getOutOfJail: medium === JailMedium.card ? p.getOutOfJail - 1 : p.getOutOfJail,
+              isInJail: false,
+              money: paysFine ? p.money - jailFine : p.money,
+              turnsInJail: 0,
+            }
+          : p;
+      }),
+    };
+
+    if (medium === JailMedium.fine) {
+      nextGame = triggerEndTurn(nextGame);
+    } else if (medium === JailMedium.dice || medium === JailMedium.lastTurn) {
+      nextGame = applyDiceRoll(nextGame);
+    }
   }
 
   return nextGame;
