@@ -27,7 +27,7 @@ export const triggerMovePlayer = (
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
   if (goesToJail) {
-    nextGame.prompt = {
+    nextGame.status = {
       type: PromptType.goToJail,
     };
   } else {

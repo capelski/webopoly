@@ -1,3 +1,4 @@
+import { GamePhase } from '../enums';
 import { Dice } from './dice';
 import { Id } from './id';
 import {
@@ -14,7 +15,6 @@ export type Game = {
   centerPot: number;
   currentPlayerId: Id;
   dice: Dice;
-  mustStartTurn: boolean;
   nextChanceCardIds: Id[];
   nextCommunityCardIds: Id[];
   notifications: Notification[];
@@ -25,6 +25,6 @@ export type Game = {
     | PayRentNotification
     | undefined;
   players: Player[];
-  prompt: Prompt | undefined;
   squares: Square[];
+  status: GamePhase | Prompt;
 };

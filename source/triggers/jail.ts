@@ -30,7 +30,7 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
         playerId: game.currentPlayerId,
         type: NotificationType.getOutOfJail,
       },
-      prompt: {
+      status: {
         playerId: game.currentPlayerId,
         type: PromptType.cannotPay,
       },

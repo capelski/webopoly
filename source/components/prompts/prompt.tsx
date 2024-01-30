@@ -1,4 +1,5 @@
 import React from 'react';
+import { GamePhase } from '../../enums';
 import { Game, Prompt } from '../../types';
 import { Modal } from '../common/modal';
 import { PromptInterface } from './prompt-interface';
@@ -12,9 +13,7 @@ interface PromptComponentProps {
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
   const renderer: PromptInterface = promptsMap[props.prompt.type];
-  /* Unsetting the current prompt here, as the next trigger could set another prompt
-   * (e.g. rollDice -> chanceCard) */
-  const nextGame: Game = { ...props.game, prompt: undefined };
+  const nextGame: Game = { ...props.game, status: GamePhase.play };
 
   return (
     <Modal inset="25% 20px">

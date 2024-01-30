@@ -1,4 +1,4 @@
-import { PromptType } from '../enums';
+import { GamePhase, PromptType } from '../enums';
 import { getNextPlayerId, getPlayerById } from '../logic';
 import { Game } from '../types';
 
@@ -9,11 +9,10 @@ export const triggerEndTurn = (game: Game): Game => {
   return {
     ...game,
     currentPlayerId: nextPlayerId,
-    mustStartTurn: true,
-    prompt: nextPlayer.isInJail
+    status: nextPlayer.isInJail
       ? {
           type: PromptType.jailOptions,
         }
-      : undefined,
+      : GamePhase.rollDice,
   };
 };

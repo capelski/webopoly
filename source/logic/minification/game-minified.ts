@@ -17,7 +17,6 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    m: game.mustStartTurn,
     n: game.notifications.map<NotificationMinified>((notification) => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
@@ -29,7 +28,7 @@ export const minifyGame = (game: Game): GameMinified => {
       return minify(notification);
     }),
     pn: game.pendingNotification,
-    p: game.players.map<PlayerMinified>((player) => ({
+    pl: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       g: player.getOutOfJail,
       i: player.id,
@@ -41,8 +40,7 @@ export const minifyGame = (game: Game): GameMinified => {
       si: player.squareId,
       t: player.turnsInJail,
     })),
-    pr: game.prompt,
-    s: game.squares.map<SquareMinified>((square) => {
+    sq: game.squares.map<SquareMinified>((square) => {
       return square.type === SquareType.chance ||
         square.type === SquareType.communityChest ||
         square.type === SquareType.go ||
@@ -83,6 +81,7 @@ export const minifyGame = (game: Game): GameMinified => {
             t: square.type,
           };
     }),
+    st: game.status,
   };
 };
 
@@ -91,7 +90,6 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
     centerPot: g.cp,
     currentPlayerId: g.ci,
     dice: g.d,
-    mustStartTurn: g.m,
     nextChanceCardIds: g.nh,
     nextCommunityCardIds: g.no,
     notifications: g.n.map<Notification>((n) => {
@@ -103,7 +101,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       return restore(n);
     }),
     pendingNotification: g.pn,
-    players: g.p.map<Player>((p) => ({
+    players: g.pl.map<Player>((p) => ({
       color: p.c,
       getOutOfJail: p.g,
       id: p.i,
@@ -115,8 +113,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       squareId: p.si,
       turnsInJail: p.t,
     })),
-    prompt: g.pr,
-    squares: g.s.map<Square>((s) => {
+    squares: g.sq.map<Square>((s) => {
       const square = squaresMap[s.i];
 
       if (square.type === SquareType.property && s.t === SquareType.property) {
@@ -130,5 +127,6 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
 
       return square;
     }),
+    status: g.st,
   };
 };

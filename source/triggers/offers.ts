@@ -51,7 +51,7 @@ export const triggerBuyingOffer = (game: Game, property: PropertySquare, amount:
 
   return {
     ...game,
-    prompt: {
+    status: {
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
@@ -88,7 +88,7 @@ export const triggerSellingOffer = (
 ): Game => {
   return {
     ...game,
-    prompt: {
+    status: {
       amount,
       offerType: OfferType.sell,
       playerId: game.currentPlayerId,

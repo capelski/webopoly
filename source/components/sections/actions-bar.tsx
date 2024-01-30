@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SquareType } from '../../enums';
+import { GamePhase, SquareType } from '../../enums';
 import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../../logic';
 import { diceSymbol, parkingSymbol } from '../../parameters';
 import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../../triggers';
@@ -41,7 +41,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
 
       <div>
         <Button
-          disabled={!props.game.mustStartTurn || (props.game.mustStartTurn && !!props.game.prompt)}
+          disabled={props.game.status !== GamePhase.rollDice}
           onClick={() => {
             props.updateGame(triggerDiceRoll(props.game));
           }}
@@ -62,7 +62,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         </Button>
 
         <Button
-          disabled={props.game.mustStartTurn || !!props.game.prompt}
+          disabled={props.game.status !== GamePhase.play}
           onClick={() => {
             props.updateGame(triggerEndTurn(props.game));
           }}

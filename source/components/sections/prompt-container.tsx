@@ -11,17 +11,17 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
   const [displayPrompt, setDisplayPrompt] = useState(false);
 
   useEffect(() => {
-    if (props.game.prompt && !displayPrompt) {
+    if (!displayPrompt && typeof props.game.status === 'object') {
       setTimeout(() => {
         setDisplayPrompt(true);
       }, 800);
     }
-  }, [props.game.prompt]);
+  }, [props.game.status]);
 
-  return displayPrompt && props.game.prompt ? (
+  return displayPrompt && typeof props.game.status === 'object' ? (
     <PromptComponent
       game={props.game}
-      prompt={props.game.prompt}
+      prompt={props.game.status}
       updateGame={(game) => {
         setDisplayPrompt(false);
         return props.updateGame(game);

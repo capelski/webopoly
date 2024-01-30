@@ -49,7 +49,7 @@ export const triggerCardPrompt = (game: Game, cardType: CardType): Game => {
   return {
     ...game,
     ...nextCardIs,
-    prompt: {
+    status: {
       cardId,
       cardType,
       type: PromptType.card,
