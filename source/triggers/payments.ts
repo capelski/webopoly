@@ -31,24 +31,24 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
   return nextGame;
 };
 
-export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game => {
+export const triggerPayRent = (game: Game, landlordId: Id, amount: number): Game => {
   const notification: Notification = {
     landlordId,
     playerId: game.currentPlayerId,
-    rent,
+    amount,
     type: NotificationType.payRent,
   };
 
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, rent)
+  const nextGame: Game = hasEnoughMoney(currentPlayer, amount)
     ? {
         ...game,
         notifications: [...game.notifications, notification],
         players: game.players.map((p) => {
           return p.id === game.currentPlayerId
-            ? { ...p, money: p.money - rent }
+            ? { ...p, money: p.money - amount }
             : p.id === landlordId
-            ? { ...p, money: p.money + rent }
+            ? { ...p, money: p.money + amount }
             : p;
         }),
       }

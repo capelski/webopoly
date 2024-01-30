@@ -116,10 +116,10 @@ export const notificationsMap: {
   [NotificationType.payRent]: {
     minify: (notification) => ({
       ...baseMinifier(notification),
+      a: notification.amount,
       l: notification.landlordId,
-      r: notification.rent,
     }),
-    restore: (n) => ({ ...baseRestorer(n), landlordId: n.l, rent: n.r }),
+    restore: (n) => ({ ...baseRestorer(n), amount: n.a, landlordId: n.l }),
   },
   [NotificationType.sellHouse]: <Mapper<NotificationType.sellHouse>>propertyMappers,
   [NotificationType.turnInJail]: {

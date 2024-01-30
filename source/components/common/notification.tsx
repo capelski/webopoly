@@ -145,7 +145,7 @@ const renderersMap: {
   [NotificationType.payRent]: (player, notification, game) => {
     const landlord = getPlayerById(game, notification.landlordId)!;
     return {
-      description: `${player.name} pays ${currencySymbol}${notification.rent} rent to ${landlord.name}`,
+      description: `${player.name} pays ${currencySymbol}${notification.amount} rent to ${landlord.name}`,
       icon: '🚀',
     };
   },

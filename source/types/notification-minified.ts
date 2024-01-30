@@ -88,10 +88,10 @@ export type GoToJailNotificationMinified = BaseNotificationMinified & {
 };
 
 export type PayRentNotificationMinified = BaseNotificationMinified & {
+  /** amount */
+  a: number;
   /** landlordId */
   l: Id;
-  /** rent */
-  r: number;
   /** type */
   t: NotificationType.payRent;
 };

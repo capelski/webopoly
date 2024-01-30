@@ -65,8 +65,8 @@ export type GoToJailNotification = NotificationBase & {
 };
 
 export type PayRentNotification = NotificationBase & {
+  amount: number;
   landlordId: Id;
-  rent: number;
   type: NotificationType.payRent;
 };
 
