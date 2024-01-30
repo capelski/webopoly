@@ -11,7 +11,6 @@ export type AnswerOfferPrompt = {
 };
 
 export type CannotPayPrompt = {
-  playerId: Id;
   type: PromptType.cannotPay;
 };
 
