@@ -1,31 +1,13 @@
-- Paying actions should only be applied if the player has enough money
-- Up on every action triggered, evaluate the current player status
-  if (currentPlayer.money < 0) {
-    changeHistory.unshift({
-      playerId: currentPlayer.id,
-      type: PromptType.bankruptcy,
-    });
-    currentPlayer.status = PlayerStatus.bankrupt;
+- Allow mortgaging properties / selling houses when player cannot pay
+- Allow surrendering when player cannot pay
+    - Generate a bankruptcy notification
 
-    const remainingPlayers = nextGame.players.filter((p) => p.status === PlayerStatus.playing);
-    if (remainingPlayers.length === 1) {
-      newUiUpdates.push({
-        playerId: remainingPlayers[0].id,
-        promptType: PromptType.playerWin,
-        type: PromptType.playerWin,
-        uiUpdateType: UiUpdateType.prompt,
-      });
-    }
-  }
-- Player bankruptcy should be a prompt
-- Allow mortgaging properties / selling houses when player goes bankrupt
-- Last turn in jail might generate a cannot pay prompt
-
-
+- Turn Notification type into CEvent
 - Merge cards into "surprise"
 - Turn game.prompt into an array and only process first prompt?
 - Utility to push notifications / replace prompt safely
 - Trading properties with other players
 - Roll doubles => Extra turn
 - Make parameters.ts modifiable on createGame
+- Progress bar to automatically trigger next action
 - Display error toast on disabled buttons?
