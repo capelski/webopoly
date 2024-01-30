@@ -89,6 +89,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
           disabled={
             props.game.mustStartTurn ||
             !!props.game.prompt ||
+            !props.square.ownerId ||
             (props.square.propertyType === PropertyType.street && props.square.houses > 0)
           }
           onClick={() => {
