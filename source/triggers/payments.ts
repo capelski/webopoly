@@ -82,22 +82,24 @@ export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
   };
 };
 
-export const triggerReceiveFromAllPlayers = (game: Game, amount: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
+// This function can cause a player to go bankrupt outside of its turn; significant changes
+// are required to switch the currentPlayerId in the middle of a player turn
+// export const triggerReceiveFromAllPlayers = (game: Game, amount: number): Game => {
+//   const currentPlayer = getCurrentPlayer(game);
+//   const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
 
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id
-        ? { ...p, money: p.money + otherPlayersId.length * amount }
-        : otherPlayersId.includes(p.id)
-        ? // TODO Assess each other player money
-          { ...p, money: p.money - amount }
-        : p;
-    }),
-  };
-};
+//   return {
+//     ...game,
+//     players: game.players.map((p) => {
+//       return p.id === currentPlayer.id
+//         ? { ...p, money: p.money + otherPlayersId.length * amount }
+//         : otherPlayersId.includes(p.id)
+//         ? // PENDING Assess each other player money
+//           { ...p, money: p.money - amount }
+//         : p;
+//     }),
+//   };
+// };
 
 export const triggerRepairsExpense = (
   game: Game,

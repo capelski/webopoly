@@ -8,6 +8,7 @@
 - Utility to push notifications / replace prompt safely
 - Trading properties with other players
 - Roll doubles => Extra turn
+- triggerReceiveFromAllPlayers for community chest card
 - Make parameters.ts modifiable on createGame
 - Progress bar to automatically trigger next action
 - Display error toast on disabled buttons?

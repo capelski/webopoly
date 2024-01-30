@@ -5,7 +5,6 @@ import {
   triggerGetOutOfJailCard,
   triggerGoToJail,
   triggerMovePlayer,
-  triggerReceiveFromAllPlayers,
   triggerRepairsExpense,
   triggerWindfall,
 } from '../triggers';
@@ -75,13 +74,13 @@ export const communityChestCards: Card[] = [
     id: 8,
     text: `Income tax refund. Collect ${currencySymbol}20`,
   },
-  {
-    action: (game) => {
-      return triggerReceiveFromAllPlayers(game, 10);
-    },
-    id: 9,
-    text: `It is your birthday. Collect ${currencySymbol}10 from every player`,
-  },
+  // {
+  //   action: (game) => {
+  //     return triggerReceiveFromAllPlayers(game, 10);
+  //   },
+  //   id: 9,
+  //   text: `It is your birthday. Collect ${currencySymbol}10 from every player`,
+  // },
   {
     action: (game) => {
       return triggerWindfall(game, 100);
