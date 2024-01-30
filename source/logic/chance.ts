@@ -5,7 +5,6 @@ import {
   triggerGetOutOfJailCard,
   triggerGoToJail,
   triggerMovePlayer,
-  triggerPayToAllPlayers,
   triggerRepairsExpense,
   triggerWindfall,
 } from '../triggers';
@@ -128,13 +127,13 @@ export const chanceCards: Card[] = [
     id: 14,
     text: `Take a trip to ${squaresMap[6].name}`,
   },
-  {
-    action: (game) => {
-      return triggerPayToAllPlayers(game, 50);
-    },
-    id: 15,
-    text: `You have been elected Chairman of the Board. Pay each player ${currencySymbol}50`,
-  },
+  // {
+  //   action: (game) => {
+  //     return triggerPayToAllPlayers(game, 50);
+  //   },
+  //   id: 15,
+  //   text: `You have been elected Chairman of the Board. Pay each player ${currencySymbol}50`,
+  // },
   {
     action: (game) => {
       return triggerWindfall(game, 150);

@@ -1,5 +1,5 @@
 import { NotificationType, PromptType, PropertyType, SquareType } from '../enums';
-import { getCurrentPlayer, getOtherPlayers, hasEnoughMoney } from '../logic';
+import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   ExpenseCardNotification,
   ExpenseNotification,
@@ -63,22 +63,24 @@ export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game =
   return nextGame;
 };
 
-export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
-  const currentPlayer = getCurrentPlayer(game);
-  const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
+// This function requires a new type of notification (e.g. ExpenseBroadcastNotification);
+// not wildly complicated but a lot of effort for little gain
+// export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
+//   const currentPlayer = getCurrentPlayer(game);
+//   const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
 
-  return {
-    ...game,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id
-        ? // TODO Assess player money
-          { ...p, money: p.money - otherPlayersId.length * amount }
-        : otherPlayersId.includes(p.id)
-        ? { ...p, money: p.money + amount }
-        : p;
-    }),
-  };
-};
+//   return {
+//     ...game,
+//     players: game.players.map((p) => {
+//       return p.id === currentPlayer.id
+//         ? // PENDING Assess player money
+//           { ...p, money: p.money - otherPlayersId.length * amount }
+//         : otherPlayersId.includes(p.id)
+//         ? { ...p, money: p.money + amount }
+//         : p;
+//     }),
+//   };
+// };
 
 // This function can cause a player to go bankrupt outside of its turn; significant changes
 // are required to switch the currentPlayerId in the middle of a player turn
