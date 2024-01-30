@@ -1,11 +1,10 @@
-import { NotificationType, PromptType, PropertyType, SquareType } from '../enums';
+import { PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   ExpenseCardNotification,
   ExpenseNotification,
   Game,
-  Id,
-  Notification,
+  PayRentNotification,
   StreetSquare,
 } from '../types';
 
@@ -31,24 +30,17 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
   return nextGame;
 };
 
-export const triggerPayRent = (game: Game, landlordId: Id, amount: number): Game => {
-  const notification: Notification = {
-    landlordId,
-    playerId: game.currentPlayerId,
-    amount,
-    type: NotificationType.payRent,
-  };
-
+export const triggerPayRent = (game: Game, notification: PayRentNotification): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, amount)
+  const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
     ? {
         ...game,
         notifications: [...game.notifications, notification],
         players: game.players.map((p) => {
           return p.id === game.currentPlayerId
-            ? { ...p, money: p.money - amount }
-            : p.id === landlordId
-            ? { ...p, money: p.money + amount }
+            ? { ...p, money: p.money - notification.amount }
+            : p.id === notification.landlordId
+            ? { ...p, money: p.money + notification.amount }
             : p;
         }),
       }

@@ -43,8 +43,12 @@ export const triggerMovePlayer = (
     }
 
     if (paysRent && nextSquare.type === SquareType.property) {
-      const rent = getRentAmount(nextGame, nextSquare);
-      nextGame = triggerPayRent(nextGame, nextSquare.ownerId!, rent);
+      nextGame = triggerPayRent(nextGame, {
+        landlordId: nextSquare.ownerId!,
+        playerId: game.currentPlayerId,
+        amount: getRentAmount(nextGame, nextSquare),
+        type: NotificationType.payRent,
+      });
       currentPlayer = getCurrentPlayer(nextGame);
     } else if (payTaxes) {
       const tax =

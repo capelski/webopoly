@@ -1,7 +1,8 @@
 import React from 'react';
-import { NotificationSource, NotificationType, PromptType } from '../../enums';
+import { GamePhase, NotificationSource, NotificationType, PromptType } from '../../enums';
 import { getPlayerById } from '../../logic';
 import { triggerGoToJail } from '../../triggers';
+import { Button } from '../common/button';
 import { NotificationComponent } from '../common/notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
@@ -14,15 +15,28 @@ export const promptsMap: {
   [TKey in PromptType]: PromptInterface<TKey>;
 } = {
   [PromptType.answerOffer]: AnswerOfferPrompt,
-  [PromptType.cannotPay]: () => {
+  [PromptType.cannotPay]: (props) => {
     return (
-      <OkPrompt
-        okHandler={() => {
-          // TODO Allow the player to sell houses, mortgage properties, sell properties, etc.
-        }}
-      >
-        <div>That's the end of it for this player</div>
-      </OkPrompt>
+      <div style={{ textAlign: 'center' }}>
+        <h3>Not enough money</h3>
+        <div style={{ marginBottom: 16 }}></div>
+        <div>
+          <Button
+            onClick={() => {
+              props.updateGame({ ...props.game, status: GamePhase.cannotPay });
+            }}
+          >
+            Sell/Mortgage properties
+          </Button>
+          <Button
+            onClick={() => {
+              // TODO triggerBankruptcy
+            }}
+          >
+            Go bankrupt
+          </Button>
+        </div>
+      </div>
     );
   },
   [PromptType.card]: CardPrompt,

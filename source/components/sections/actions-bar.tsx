@@ -1,8 +1,21 @@
 import React, { useState } from 'react';
-import { GamePhase, SquareType } from '../../enums';
-import { canBuyProperty, diceToString, getCurrentPlayer, getCurrentSquare } from '../../logic';
-import { diceSymbol, parkingSymbol } from '../../parameters';
-import { triggerBuyProperty, triggerDiceRoll, triggerEndTurn } from '../../triggers';
+import { GamePhase, NotificationType, PromptType, SquareType } from '../../enums';
+import {
+  canBuyProperty,
+  diceToString,
+  getCurrentPlayer,
+  getCurrentSquare,
+  hasEnoughMoney,
+} from '../../logic';
+import { diceSymbol, jailFine, parkingSymbol } from '../../parameters';
+import {
+  triggerBuyProperty,
+  triggerDiceRoll,
+  triggerEndTurn,
+  triggerExpense,
+  triggerGetOutOfJail,
+  triggerPayRent,
+} from '../../triggers';
 import { Game } from '../../types';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
@@ -69,6 +82,46 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         >
           End turn
         </Button>
+
+        {props.game.status === GamePhase.cannotPay && (
+          <Button
+            onClick={() => {
+              const notification = props.game.pendingNotification!;
+              const amount =
+                notification.type === NotificationType.getOutOfJail
+                  ? jailFine
+                  : notification.amount;
+              const player = getCurrentPlayer(props.game);
+
+              if (hasEnoughMoney(player, amount)) {
+                let nextGame: Game = {
+                  ...props.game,
+                  pendingNotification: undefined,
+                  status: GamePhase.play,
+                };
+
+                if (notification.type === NotificationType.expense) {
+                  nextGame = triggerExpense(nextGame, notification);
+                } else if (notification.type === NotificationType.getOutOfJail) {
+                  nextGame = triggerGetOutOfJail(nextGame, notification.medium);
+                } else if (notification.type === NotificationType.payRent) {
+                  nextGame = triggerPayRent(nextGame, notification);
+                }
+
+                props.updateGame(nextGame);
+              } else {
+                props.updateGame({
+                  ...props.game,
+                  status: {
+                    type: PromptType.cannotPay,
+                  },
+                });
+              }
+            }}
+          >
+            Resume
+          </Button>
+        )}
 
         <div style={{ marginTop: 8 }}>
           <Button
