@@ -1,5 +1,6 @@
 import { Dice } from './dice';
 import { Id } from './id';
+import { ExpenseNotification, GetOutOfJailNotification, PayRentNotification } from './notification';
 import { NotificationMinified } from './notification-minified';
 import { PlayerMinified } from './player-minified';
 import { Prompt } from './prompt';
@@ -22,6 +23,8 @@ export type GameMinified = {
   n: NotificationMinified[];
   /** pastNotifications */
   pa: NotificationMinified[];
+  /** pendingNotification */
+  pn: ExpenseNotification | GetOutOfJailNotification | PayRentNotification | undefined;
   /** players */
   p: PlayerMinified[];
   /** prompt */

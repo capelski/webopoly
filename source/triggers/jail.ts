@@ -25,12 +25,12 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
   if (paysFine && !hasEnoughMoney(currentPlayer, jailFine)) {
     nextGame = {
       ...game,
+      pendingNotification: {
+        medium,
+        playerId: game.currentPlayerId,
+        type: NotificationType.getOutOfJail,
+      },
       prompt: {
-        notification: {
-          medium,
-          playerId: game.currentPlayerId,
-          type: NotificationType.getOutOfJail,
-        },
         playerId: game.currentPlayerId,
         type: PromptType.cannotPay,
       },

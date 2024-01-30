@@ -31,6 +31,7 @@ export const createGame = (nPlayers: number): GameMinified => {
     n: [],
     m: true,
     pa: [],
+    pn: undefined,
     p: minifiedPlayers,
     pr: undefined,
     s: minifiedSquares,

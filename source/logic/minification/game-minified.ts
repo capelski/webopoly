@@ -28,6 +28,7 @@ export const minifyGame = (game: Game): GameMinified => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
     }),
+    pn: game.pendingNotification,
     p: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       g: player.getOutOfJail,
@@ -101,6 +102,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       const restore: Restorer = notificationsMap[n.t].restore;
       return restore(n);
     }),
+    pendingNotification: g.pn,
     players: g.p.map<Player>((p) => ({
       color: p.c,
       getOutOfJail: p.g,

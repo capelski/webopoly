@@ -1,6 +1,5 @@
-import { CardType, NotificationType, OfferType, PromptType } from '../enums';
+import { CardType, OfferType, PromptType } from '../enums';
 import { Id } from './id';
-import { Notification } from './notification';
 
 export type AnswerOfferPrompt = {
   amount: number;
@@ -12,9 +11,6 @@ export type AnswerOfferPrompt = {
 };
 
 export type CannotPayPrompt = {
-  notification: Notification & {
-    type: NotificationType.expense | NotificationType.getOutOfJail | NotificationType.payRent;
-  };
   playerId: Id;
   type: PromptType.cannotPay;
 };

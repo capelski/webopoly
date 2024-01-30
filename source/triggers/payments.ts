@@ -22,8 +22,8 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
       }
     : {
         ...game,
+        pendingNotification: notification,
         prompt: {
-          notification,
           playerId: game.currentPlayerId,
           type: PromptType.cannotPay,
         },
@@ -55,8 +55,8 @@ export const triggerPayRent = (game: Game, landlordId: Id, rent: number): Game =
       }
     : {
         ...game,
+        pendingNotification: notification,
         prompt: {
-          notification,
           playerId: game.currentPlayerId,
           type: PromptType.cannotPay,
         },
