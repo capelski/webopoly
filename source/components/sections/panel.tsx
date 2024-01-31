@@ -1,6 +1,6 @@
 import React from 'react';
 import { Game } from '../../types';
-import { NotificationComponent } from '../common/notification';
+import { NotificationComponent } from '../common/event';
 import { Players } from '../player/players';
 
 interface PanelProps {

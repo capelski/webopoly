@@ -1,8 +1,8 @@
 import { GamePhase } from '../enums';
 import { Dice } from './dice';
+import { ExpenseNotification, GetOutOfJailNotification, PayRentNotification } from './event';
+import { NotificationMinified } from './event-minified';
 import { Id } from './id';
-import { ExpenseNotification, GetOutOfJailNotification, PayRentNotification } from './notification';
-import { NotificationMinified } from './notification-minified';
 import { PlayerMinified } from './player-minified';
 import { Prompt } from './prompt';
 import { SquareMinified } from './square-minified';

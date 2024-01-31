@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { NotificationSource, NotificationType } from '../../enums';
 import { Game } from '../../types';
-import { NotificationComponent } from '../common/notification';
+import { NotificationComponent } from '../common/event';
 
 interface NotificationsProps {
   game: Game;

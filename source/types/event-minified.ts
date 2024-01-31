@@ -6,8 +6,8 @@ import {
   NotificationType,
   OfferType,
 } from '../enums';
+import { PropertyNotificationType } from './event';
 import { Id } from './id';
-import { PropertyNotificationType } from './notification';
 
 type NotificationBaseMinified = {
   /** playerId */

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NotificationSource, NotificationType, PromptType } from '../../enums';
 import { triggerGoToJail } from '../../triggers';
-import { NotificationComponent } from '../common/notification';
+import { NotificationComponent } from '../common/event';
 import { OkPrompt } from './ok-prompt';
 import { PromptInterface } from './prompt-interface';
 

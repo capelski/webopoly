@@ -1,12 +1,12 @@
 import { GamePhase } from '../enums';
 import { Dice } from './dice';
-import { Id } from './id';
 import {
   ExpenseNotification,
   GetOutOfJailNotification,
   Notification,
   PayRentNotification,
-} from './notification';
+} from './event';
+import { Id } from './id';
 import { Player } from './player';
 import { Prompt } from './prompt';
 import { Square } from './square';

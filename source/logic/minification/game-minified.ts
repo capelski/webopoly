@@ -9,7 +9,7 @@ import {
   Square,
   SquareMinified,
 } from '../../types';
-import { Minifier, notificationsMap, Restorer } from './notifications-map';
+import { Minifier, notificationsMap, Restorer } from './events-map';
 import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
