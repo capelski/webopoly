@@ -1,5 +1,3 @@
-- Extract prompts (Jail, Player win, etc.) into components
-- Player wins => Ok button with new phase
 - Turn Notification type into CEvent
 - Merge cards into "surprise"
 - Suggest sales/mortgages when player cannot pay
