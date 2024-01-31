@@ -1,4 +1,4 @@
-import { EventSource, EventType, JailMedium, PromptType, SquareType } from '../enums';
+import { EventSource, EventType, GamePhase, JailMedium, PromptType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, GEvent } from '../types';
@@ -55,6 +55,8 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
       nextGame = triggerEndTurn(nextGame);
     } else if (medium === JailMedium.dice || medium === JailMedium.lastTurn) {
       nextGame = applyDiceRoll(nextGame);
+    } else if (medium === JailMedium.card) {
+      nextGame.status = GamePhase.rollDice;
     }
   }
 
