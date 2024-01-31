@@ -1,12 +1,11 @@
 import React from 'react';
-import { GamePhase, NotificationSource, NotificationType, PromptType } from '../../enums';
-import { triggerBankruptcy, triggerGoToJail } from '../../triggers';
+import { GamePhase, PromptType } from '../../enums';
+import { triggerBankruptcy } from '../../triggers';
 import { Button } from '../common/button';
-import { NotificationComponent } from '../common/notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
+import { GoToJailPrompt } from './go-to-jail-prompt';
 import { JailOptionsPrompt } from './jail-options-prompt';
-import { OkPrompt } from './ok-prompt';
 import { PlayerWinsPrompt } from './player-wins-prompt';
 import { PromptInterface } from './prompt-interface';
 
@@ -39,24 +38,7 @@ export const promptsMap: {
     );
   },
   [PromptType.card]: CardPrompt,
-  [PromptType.goToJail]: (props) => {
-    return (
-      <OkPrompt
-        okHandler={() => {
-          props.updateGame(triggerGoToJail(props.game, NotificationSource.jailSquare));
-        }}
-      >
-        <NotificationComponent
-          game={props.game}
-          notification={{
-            playerId: props.game.currentPlayerId,
-            source: NotificationSource.jailSquare,
-            type: NotificationType.goToJail,
-          }}
-        />
-      </OkPrompt>
-    );
-  },
+  [PromptType.goToJail]: GoToJailPrompt,
   [PromptType.jailOptions]: JailOptionsPrompt,
   [PromptType.playerWins]: PlayerWinsPrompt,
 };
