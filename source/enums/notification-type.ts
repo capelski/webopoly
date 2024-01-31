@@ -1,6 +1,6 @@
 export enum NotificationType {
   answerOffer = 'answerOffer',
-  bankruptcy = 'bankruptcy', // TODO
+  bankruptcy = 'bankruptcy',
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',
   card = 'card',

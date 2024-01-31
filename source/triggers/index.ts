@@ -1,3 +1,4 @@
+export * from './bankruptcy';
 export * from './buy-property';
 export * from './cards';
 export * from './dice-roll';

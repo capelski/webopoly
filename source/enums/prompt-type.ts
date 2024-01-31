@@ -4,5 +4,5 @@ export enum PromptType {
   card = 'card',
   goToJail = 'goToJail',
   jailOptions = 'jailOptions',
-  playerWin = 'playerWin', // TODO
+  playerWins = 'playerWins',
 }

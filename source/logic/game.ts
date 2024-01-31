@@ -37,6 +37,10 @@ export const createGame = (nPlayers: number): GameMinified => {
   };
 };
 
+export const getActivePlayers = (game: Game): Player[] => {
+  return game.players.filter((p) => p.status === PlayerStatus.playing);
+};
+
 export const getCurrentPlayer = (game: Game): Player => {
   return game.players.find((p) => p.id === game.currentPlayerId)!;
 };

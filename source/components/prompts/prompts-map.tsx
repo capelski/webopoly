@@ -1,7 +1,7 @@
 import React from 'react';
 import { GamePhase, NotificationSource, NotificationType, PromptType } from '../../enums';
 import { getPlayerById } from '../../logic';
-import { triggerGoToJail } from '../../triggers';
+import { triggerBankruptcy, triggerGoToJail } from '../../triggers';
 import { Button } from '../common/button';
 import { NotificationComponent } from '../common/notification';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
@@ -30,10 +30,10 @@ export const promptsMap: {
           </Button>
           <Button
             onClick={() => {
-              // TODO triggerBankruptcy
+              props.updateGame(triggerBankruptcy(props.game, props.game.currentPlayerId));
             }}
           >
-            Go bankrupt
+            Declare bankruptcy
           </Button>
         </div>
       </div>
@@ -59,7 +59,7 @@ export const promptsMap: {
     );
   },
   [PromptType.jailOptions]: JailOptionsPrompt,
-  [PromptType.playerWin]: (props) => {
+  [PromptType.playerWins]: (props) => {
     const winningPlayer = getPlayerById(props.game, props.prompt.playerId);
     return (
       <PlayerWinPrompt

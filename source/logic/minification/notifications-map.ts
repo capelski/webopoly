@@ -1,11 +1,5 @@
 import { NotificationSource, NotificationType } from '../../enums';
-import {
-  GenericNotificationType,
-  Id,
-  Notification,
-  NotificationMinified,
-  PropertyNotificationType,
-} from '../../types';
+import { Id, Notification, NotificationMinified, PropertyNotificationType } from '../../types';
 
 export type Minifier<T extends NotificationType = NotificationType> = (
   notification: Notification & { type: T },
@@ -28,11 +22,6 @@ const baseRestorer = <T extends NotificationType>(n: {
   p: Id;
   t: T;
 }): { playerId: Id; type: T } => ({ playerId: n.p, type: n.t });
-
-const genericMappers: Mapper<GenericNotificationType> = {
-  minify: baseMinifier,
-  restore: baseRestorer,
-};
 
 const propertyMappers: Mapper<PropertyNotificationType> = {
   minify: (notification) => ({
@@ -66,7 +55,10 @@ export const notificationsMap: {
       targetPlayerId: n.tp,
     }),
   },
-  [NotificationType.bankruptcy]: <Mapper<NotificationType.bankruptcy>>genericMappers,
+  [NotificationType.bankruptcy]: {
+    minify: (notification) => ({ ...baseMinifier(notification), ci: notification.creditorId }),
+    restore: (n) => ({ ...baseRestorer(n), creditorId: n.ci }),
+  },
   [NotificationType.buyProperty]: <Mapper<NotificationType.buyProperty>>propertyMappers,
   [NotificationType.buildHouse]: <Mapper<NotificationType.buildHouse>>propertyMappers,
   [NotificationType.card]: {
@@ -112,7 +104,7 @@ export const notificationsMap: {
     restore: (n) => ({ ...baseRestorer(n), source: n.s }),
   },
   [NotificationType.mortgage]: <Mapper<NotificationType.mortgage>>propertyMappers,
-  [NotificationType.passGo]: <Mapper<NotificationType.passGo>>genericMappers,
+  [NotificationType.passGo]: { minify: baseMinifier, restore: baseRestorer },
   [NotificationType.payRent]: {
     minify: (notification) => ({
       ...baseMinifier(notification),

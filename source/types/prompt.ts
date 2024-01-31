@@ -26,7 +26,7 @@ export type GenericPrompt = {
 
 export type PlayerWinPrompt = {
   playerId: Id;
-  type: PromptType.playerWin;
+  type: PromptType.playerWins;
 };
 
 export type Prompt =

@@ -56,8 +56,10 @@ const renderersMap: {
       icon: notification.answer === AnswerType.accept ? '👍' : '👎',
     };
   },
-  [NotificationType.bankruptcy]: (player) => ({
-    description: `${player.name} goes bankrupt`,
+  [NotificationType.bankruptcy]: (player, notification, game) => ({
+    description: `${player.name} goes bankrupt and turns over its money and properties to ${
+      notification.creditorId ? getPlayerById(game, notification.creditorId).name : 'the bank'
+    }`,
     icon: '🧨',
   }),
   [NotificationType.buildHouse]: (player, notification, game) => {

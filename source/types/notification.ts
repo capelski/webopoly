@@ -21,6 +21,11 @@ export type AnswerOfferNotification = NotificationBase & {
   type: NotificationType.answerOffer;
 };
 
+export type BankruptcyNotification = NotificationBase & {
+  creditorId: Id | undefined;
+  type: NotificationType.bankruptcy;
+};
+
 export type CardNotification = NotificationBase & {
   cardId: Id;
   cardType: CardType;
@@ -48,10 +53,8 @@ export type FreeParkingNotification = NotificationBase & {
   type: NotificationType.freeParking;
 };
 
-export type GenericNotificationType = NotificationType.bankruptcy | NotificationType.passGo;
-
 export type GenericNotification = NotificationBase & {
-  type: GenericNotificationType;
+  type: NotificationType.passGo;
 };
 
 export type GetOutOfJailNotification = NotificationBase & {
@@ -89,6 +92,7 @@ export type TurnInJailNotification = NotificationBase & {
 
 export type Notification =
   | AnswerOfferNotification
+  | BankruptcyNotification
   | CardNotification
   | ExpenseNotification
   | FreeParkingNotification
