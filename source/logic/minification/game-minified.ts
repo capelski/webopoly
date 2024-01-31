@@ -1,9 +1,9 @@
 import { PropertyType, SquareType } from '../../enums';
 import {
+  EventMinified,
   Game,
   GameMinified,
   Notification,
-  NotificationMinified,
   Player,
   PlayerMinified,
   Square,
@@ -17,13 +17,13 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    n: game.notifications.map<NotificationMinified>((notification) => {
+    n: game.notifications.map<EventMinified>((notification) => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
     }),
     nh: game.nextChanceCardIds,
     no: game.nextCommunityCardIds,
-    pa: game.pastNotifications.map<NotificationMinified>((notification) => {
+    pa: game.pastNotifications.map<EventMinified>((notification) => {
       const minify: Minifier = notificationsMap[notification.type].minify;
       return minify(notification);
     }),

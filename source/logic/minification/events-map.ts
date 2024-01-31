@@ -1,12 +1,12 @@
 import { EventSource, EventType } from '../../enums';
-import { Id, Notification, NotificationMinified, PropertyEventType } from '../../types';
+import { EventMinified, Id, Notification, PropertyEventType } from '../../types';
 
 export type Minifier<T extends EventType = EventType> = (
   notification: Notification & { type: T },
-) => NotificationMinified & { t: T };
+) => EventMinified & { t: T };
 
 export type Restorer<T extends EventType = EventType> = (
-  n: NotificationMinified & { t: T },
+  e: EventMinified & { t: T },
 ) => Notification & { type: T };
 
 type Mapper<T extends EventType = EventType> = {
@@ -18,9 +18,9 @@ const baseMinifier = <T extends EventType>(
   notification: Notification & { type: T },
 ): { p: Id; t: T } => ({ p: notification.playerId, t: notification.type });
 
-const baseRestorer = <T extends EventType>(n: { p: Id; t: T }): { playerId: Id; type: T } => ({
-  playerId: n.p,
-  type: n.t,
+const baseRestorer = <T extends EventType>(e: { p: Id; t: T }): { playerId: Id; type: T } => ({
+  playerId: e.p,
+  type: e.t,
 });
 
 const propertyMappers: Mapper<PropertyEventType> = {
@@ -28,9 +28,9 @@ const propertyMappers: Mapper<PropertyEventType> = {
     ...baseMinifier(notification),
     pi: notification.propertyId,
   }),
-  restore: (n) => ({
-    ...baseRestorer(n),
-    propertyId: n.pi,
+  restore: (e) => ({
+    ...baseRestorer(e),
+    propertyId: e.pi,
   }),
 };
 
@@ -46,18 +46,18 @@ export const notificationsMap: {
       pi: notification.propertyId,
       tp: notification.targetPlayerId,
     }),
-    restore: (n) => ({
-      ...baseRestorer(n),
-      answer: n.an,
-      amount: n.a,
-      offerType: n.o,
-      propertyId: n.pi,
-      targetPlayerId: n.tp,
+    restore: (e) => ({
+      ...baseRestorer(e),
+      answer: e.an,
+      amount: e.a,
+      offerType: e.o,
+      propertyId: e.pi,
+      targetPlayerId: e.tp,
     }),
   },
   [EventType.bankruptcy]: {
     minify: (notification) => ({ ...baseMinifier(notification), ci: notification.creditorId }),
-    restore: (n) => ({ ...baseRestorer(n), creditorId: n.ci }),
+    restore: (e) => ({ ...baseRestorer(e), creditorId: e.ci }),
   },
   [EventType.buyProperty]: <Mapper<EventType.buyProperty>>propertyMappers,
   [EventType.buildHouse]: <Mapper<EventType.buildHouse>>propertyMappers,
@@ -67,10 +67,10 @@ export const notificationsMap: {
       ci: notification.cardId,
       ct: notification.cardType,
     }),
-    restore: (n) => ({
-      ...baseRestorer(n),
-      cardId: n.ci,
-      cardType: n.ct,
+    restore: (e) => ({
+      ...baseRestorer(e),
+      cardId: e.ci,
+      cardType: e.ct,
     }),
   },
   [EventType.clearMortgage]: <Mapper<EventType.clearMortgage>>propertyMappers,
@@ -83,25 +83,25 @@ export const notificationsMap: {
         ? { s: notification.source, ci: notification.cardId }
         : { s: notification.source }),
     }),
-    restore: (n) => ({
-      ...baseRestorer(n),
-      amount: n.a,
-      ...(n.s === EventSource.chanceCard || n.s === EventSource.communityChestCard
-        ? { source: n.s, cardId: n.ci }
-        : { source: n.s }),
+    restore: (e) => ({
+      ...baseRestorer(e),
+      amount: e.a,
+      ...(e.s === EventSource.chanceCard || e.s === EventSource.communityChestCard
+        ? { source: e.s, cardId: e.ci }
+        : { source: e.s }),
     }),
   },
   [EventType.freeParking]: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),
-    restore: (n) => ({ ...baseRestorer(n), pot: n.po }),
+    restore: (e) => ({ ...baseRestorer(e), pot: e.po }),
   },
   [EventType.getOutOfJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), m: notification.medium }),
-    restore: (n) => ({ ...baseRestorer(n), medium: n.m }),
+    restore: (e) => ({ ...baseRestorer(e), medium: e.m }),
   },
   [EventType.goToJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), s: notification.source }),
-    restore: (n) => ({ ...baseRestorer(n), source: n.s }),
+    restore: (e) => ({ ...baseRestorer(e), source: e.s }),
   },
   [EventType.mortgage]: <Mapper<EventType.mortgage>>propertyMappers,
   [EventType.passGo]: { minify: baseMinifier, restore: baseRestorer },
@@ -111,11 +111,11 @@ export const notificationsMap: {
       a: notification.amount,
       l: notification.landlordId,
     }),
-    restore: (n) => ({ ...baseRestorer(n), amount: n.a, landlordId: n.l }),
+    restore: (e) => ({ ...baseRestorer(e), amount: e.a, landlordId: e.l }),
   },
   [EventType.sellHouse]: <Mapper<EventType.sellHouse>>propertyMappers,
   [EventType.turnInJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), tj: notification.turnsInJail }),
-    restore: (n) => ({ ...baseRestorer(n), turnsInJail: n.tj }),
+    restore: (e) => ({ ...baseRestorer(e), turnsInJail: e.tj }),
   },
 };

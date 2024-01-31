@@ -108,7 +108,7 @@ export type TurnInJailEventMinified = EventBaseMinified & {
   t: EventType.turnInJail;
 };
 
-export type NotificationMinified =
+export type EventMinified =
   | AnswerOfferEventMinified
   | BankruptcyEventMinified
   | CardEventMinified

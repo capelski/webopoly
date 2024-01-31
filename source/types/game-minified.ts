@@ -1,7 +1,7 @@
 import { GamePhase } from '../enums';
 import { Dice } from './dice';
 import { ExpenseEvent, GetOutOfJailEvent, PayRentEvent } from './event';
-import { NotificationMinified } from './event-minified';
+import { EventMinified } from './event-minified';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
 import { Prompt } from './prompt';
@@ -19,9 +19,9 @@ export type GameMinified = {
   /** nextCommunityCardIds */
   no: Id[];
   /** notifications */
-  n: NotificationMinified[];
+  n: EventMinified[];
   /** pastNotifications */
-  pa: NotificationMinified[];
+  pa: EventMinified[];
   /** pendingNotification */
   pn: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
   /** players */
