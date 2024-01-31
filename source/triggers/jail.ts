@@ -1,4 +1,4 @@
-import { JailMedium, NotificationSource, NotificationType, PromptType, SquareType } from '../enums';
+import { EventSource, EventType, JailMedium, PromptType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, Notification } from '../types';
@@ -13,7 +13,7 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
           {
             medium,
             playerId: game.currentPlayerId,
-            type: NotificationType.getOutOfJail,
+            type: EventType.getOutOfJail,
           },
         ]
       : game.notifications;
@@ -28,7 +28,7 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
       pendingNotification: {
         medium,
         playerId: game.currentPlayerId,
-        type: NotificationType.getOutOfJail,
+        type: EventType.getOutOfJail,
       },
       status: {
         type: PromptType.cannotPay,
@@ -70,7 +70,7 @@ export const triggerGetOutOfJailCard = (game: Game) => {
   };
 };
 
-export const triggerGoToJail = (game: Game, source: NotificationSource): Game => {
+export const triggerGoToJail = (game: Game, source: EventSource): Game => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
 
   return {
@@ -79,7 +79,7 @@ export const triggerGoToJail = (game: Game, source: NotificationSource): Game =>
       {
         playerId: game.currentPlayerId,
         source,
-        type: NotificationType.goToJail,
+        type: EventType.goToJail,
       },
       ...game.pastNotifications,
     ],
@@ -103,7 +103,7 @@ export const triggerTurnInJail = (game: Game): Game => {
       {
         playerId: game.currentPlayerId,
         turnsInJail: count,
-        type: NotificationType.turnInJail,
+        type: EventType.turnInJail,
       },
     ],
     players: nextPlayers,

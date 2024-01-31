@@ -1,4 +1,4 @@
-import { NotificationSource, NotificationType, PropertyType } from '../enums';
+import { EventSource, EventType, PropertyType } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
 import {
   triggerExpense,
@@ -87,7 +87,7 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerGoToJail(game, NotificationSource.chanceCard);
+      return triggerGoToJail(game, EventSource.chanceCard);
     },
     id: 11,
     skipNotification: true,
@@ -97,9 +97,9 @@ export const chanceCards: Card[] = [
     action: (game) => {
       return triggerRepairsExpense(game, 25, {
         cardId: 12,
-        source: NotificationSource.chanceCard,
+        source: EventSource.chanceCard,
         playerId: game.currentPlayerId,
-        type: NotificationType.expense,
+        type: EventType.expense,
       });
     },
     id: 12,
@@ -112,8 +112,8 @@ export const chanceCards: Card[] = [
         amount: 15,
         cardId: 13,
         playerId: game.currentPlayerId,
-        source: NotificationSource.chanceCard,
-        type: NotificationType.expense,
+        source: EventSource.chanceCard,
+        type: EventType.expense,
       });
     },
     id: 13,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { NotificationSource, NotificationType } from '../../enums';
+import { EventSource, EventType } from '../../enums';
 import { Game } from '../../types';
 import { NotificationComponent } from '../common/event';
 
@@ -10,9 +10,9 @@ interface NotificationsProps {
 }
 
 const omitSources = [
-  NotificationSource.chanceCard,
-  NotificationSource.communityChestCard,
-  NotificationSource.jailSquare,
+  EventSource.chanceCard,
+  EventSource.communityChestCard,
+  EventSource.jailSquare,
 ];
 
 export const Notifications: React.FC<NotificationsProps> = (props) => {
@@ -20,7 +20,7 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
     if (props.game.notifications.length > 0) {
       const applicableNotifications = props.game.notifications.filter(
         (n) =>
-          (n.type !== NotificationType.expense && n.type !== NotificationType.goToJail) ||
+          (n.type !== EventType.expense && n.type !== EventType.goToJail) ||
           !omitSources.includes(n.source),
       );
 

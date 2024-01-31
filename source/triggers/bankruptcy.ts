@@ -1,4 +1,4 @@
-import { NotificationType, PlayerStatus, PropertyType, SquareType } from '../enums';
+import { EventType, PlayerStatus, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
 import { Game, Id, Notification, Player, Square } from '../types';
 import { triggerEndTurn } from './end-turn';
@@ -7,11 +7,9 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
   const pendingNotification = game.pendingNotification!;
   const bankruptcyNotification: Notification = {
     creditorId:
-      pendingNotification.type === NotificationType.payRent
-        ? pendingNotification.landlordId
-        : undefined,
+      pendingNotification.type === EventType.payRent ? pendingNotification.landlordId : undefined,
     playerId,
-    type: NotificationType.bankruptcy,
+    type: EventType.bankruptcy,
   };
   const targetPlayer = getPlayerById(game, playerId);
   const bankruptPlayer: Player = {
@@ -34,7 +32,7 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
   }, 0);
 
   let nextGame: Game =
-    pendingNotification.type === NotificationType.payRent
+    pendingNotification.type === EventType.payRent
       ? {
           ...game,
           players: game.players.map<Player>((p) => {

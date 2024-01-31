@@ -1,4 +1,4 @@
-import { CardType, NotificationType, PromptType } from '../enums';
+import { CardType, EventType, PromptType } from '../enums';
 import {
   chanceCards,
   communityChestCards,
@@ -23,7 +23,7 @@ export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
             cardId: prompt.cardId,
             cardType: prompt.cardType,
             playerId: game.currentPlayerId,
-            type: NotificationType.card,
+            type: EventType.card,
           },
           ...game.pastNotifications,
         ],

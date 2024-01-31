@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  AnswerType,
-  CardType,
-  JailMedium,
-  NotificationSource,
-  NotificationType,
-  OfferType,
-} from '../../enums';
+import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../../enums';
 import {
   diceToString,
   getChanceCardById,
@@ -32,7 +25,7 @@ import {
 } from '../../parameters';
 import { Game, Notification, Player } from '../../types';
 
-type Renderer<T = NotificationType> = (
+type Renderer<T = EventType> = (
   player: Player,
   notification: Notification & { type: T },
   game: Game,
@@ -42,9 +35,9 @@ type Renderer<T = NotificationType> = (
 };
 
 const renderersMap: {
-  [TKey in NotificationType]: false | Renderer<TKey>;
+  [TKey in EventType]: false | Renderer<TKey>;
 } = {
-  [NotificationType.answerOffer]: (player, notification, game) => {
+  [EventType.answerOffer]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     const owner = getPlayerById(game, notification.targetPlayerId);
     const acceptsOffer = notification.answer === AnswerType.accept;
@@ -56,27 +49,27 @@ const renderersMap: {
       icon: notification.answer === AnswerType.accept ? '👍' : '👎',
     };
   },
-  [NotificationType.bankruptcy]: (player, notification, game) => ({
+  [EventType.bankruptcy]: (player, notification, game) => ({
     description: `${player.name} goes bankrupt and turns over its money and properties to ${
       notification.creditorId ? getPlayerById(game, notification.creditorId).name : 'the bank'
     }`,
     icon: '🧨',
   }),
-  [NotificationType.buildHouse]: (player, notification, game) => {
+  [EventType.buildHouse]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
       description: `${player.name} builds a house in ${square.name}`,
       icon: houseSymbol,
     };
   },
-  [NotificationType.buyProperty]: (player, notification, game) => {
+  [EventType.buyProperty]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
       description: `${player.name} buys ${square.name}`,
       icon: '💵',
     };
   },
-  [NotificationType.card]: (player, notification) =>
+  [EventType.card]: (player, notification) =>
     notification.cardType === CardType.chance
       ? {
           description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
@@ -86,20 +79,20 @@ const renderersMap: {
           description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
           icon: communityChestSymbol,
         },
-  [NotificationType.clearMortgage]: (player, notification, game) => {
+  [EventType.clearMortgage]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
       description: `${player.name} clears the mortgage on ${square.name}`,
       icon: '❎',
     };
   },
-  [NotificationType.expense]: (player, notification) =>
-    notification.source === NotificationSource.chanceCard
+  [EventType.expense]: (player, notification) =>
+    notification.source === EventSource.chanceCard
       ? {
           description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
           icon: chanceSymbol,
         }
-      : notification.source === NotificationSource.communityChestCard
+      : notification.source === EventSource.communityChestCard
       ? {
           description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
           icon: communityChestSymbol,
@@ -108,11 +101,11 @@ const renderersMap: {
           description: `${player.name} pays ${currencySymbol}${notification.amount} in taxes`,
           icon: taxSymbol,
         },
-  [NotificationType.freeParking]: (player, notification) => ({
+  [EventType.freeParking]: (player, notification) => ({
     description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
     icon: parkingSymbol,
   }),
-  [NotificationType.getOutOfJail]: (player, notification, game) => {
+  [EventType.getOutOfJail]: (player, notification, game) => {
     const reason =
       notification.medium === JailMedium.card
         ? 'uses Get Out of Jail Free card'
@@ -124,41 +117,41 @@ const renderersMap: {
       icon: getOutJailSymbol,
     };
   },
-  [NotificationType.goToJail]: (player, notification) => ({
+  [EventType.goToJail]: (player, notification) => ({
     description: `${player.name} goes to jail`,
     icon:
-      notification.source === NotificationSource.chanceCard
+      notification.source === EventSource.chanceCard
         ? chanceSymbol
-        : notification.source === NotificationSource.communityChestCard
+        : notification.source === EventSource.communityChestCard
         ? communityChestSymbol
         : goToJailSymbol,
   }),
-  [NotificationType.mortgage]: (player, notification, game) => {
+  [EventType.mortgage]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
       description: `${player.name} mortgages ${square.name}`,
       icon: mortgageSymbol,
     };
   },
-  [NotificationType.passGo]: (player) => ({
+  [EventType.passGo]: (player) => ({
     description: `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
     icon: goSymbol,
   }),
-  [NotificationType.payRent]: (player, notification, game) => {
+  [EventType.payRent]: (player, notification, game) => {
     const landlord = getPlayerById(game, notification.landlordId)!;
     return {
       description: `${player.name} pays ${currencySymbol}${notification.amount} rent to ${landlord.name}`,
       icon: '🚀',
     };
   },
-  [NotificationType.sellHouse]: (player, notification, game) => {
+  [EventType.sellHouse]: (player, notification, game) => {
     const square = getSquareById(game, notification.propertyId);
     return {
       description: `${player.name} sells a house in ${square.name}`,
       icon: '🏚️',
     };
   },
-  [NotificationType.turnInJail]: (player, notification) => ({
+  [EventType.turnInJail]: (player, notification) => ({
     description: `${player.name} doesn't roll doubles; ${
       notification.turnsInJail < maxTurnsInJail
         ? `${notification.turnsInJail} turn(s) in jail`

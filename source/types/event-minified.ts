@@ -1,11 +1,4 @@
-import {
-  AnswerType,
-  CardType,
-  JailMedium,
-  NotificationSource,
-  NotificationType,
-  OfferType,
-} from '../enums';
+import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
 import { PropertyNotificationType } from './event';
 import { Id } from './id';
 
@@ -24,7 +17,7 @@ export type AnswerOfferNotificationMinified = NotificationBaseMinified & {
   /** propertyId */
   pi: Id;
   /** type */
-  t: NotificationType.answerOffer;
+  t: EventType.answerOffer;
   /** targetPlayerId */
   tp: Id;
 };
@@ -33,7 +26,7 @@ export type BankruptcyNotificationMinified = NotificationBaseMinified & {
   /** creditor */
   ci: Id | undefined;
   /** type */
-  t: NotificationType.bankruptcy;
+  t: EventType.bankruptcy;
 };
 
 export type CardNotificationMinified = NotificationBaseMinified & {
@@ -42,26 +35,26 @@ export type CardNotificationMinified = NotificationBaseMinified & {
   /** cardType */
   ct: CardType;
   /** type */
-  t: NotificationType.card;
+  t: EventType.card;
 };
 
 type ExpenseNotificationBaseMinified = NotificationBaseMinified & {
   /** amount */
   a: number;
   /** type */
-  t: NotificationType.expense;
+  t: EventType.expense;
 };
 
 export type ExpenseCardNotificationMinified = ExpenseNotificationBaseMinified & {
   /** cardId */
   ci: Id;
   /** source */
-  s: NotificationSource.chanceCard | NotificationSource.communityChestCard;
+  s: EventSource.chanceCard | EventSource.communityChestCard;
 };
 
 export type ExpenseTaxNotificationMinified = ExpenseNotificationBaseMinified & {
   /** source */
-  s: NotificationSource.taxSquare;
+  s: EventSource.taxSquare;
 };
 
 export type ExpenseNotificationMinified =
@@ -72,26 +65,26 @@ export type FreeParkingNotificationMinified = NotificationBaseMinified & {
   /** pot */
   po: number;
   /** type */
-  t: NotificationType.freeParking;
+  t: EventType.freeParking;
 };
 
 export type GenericNotificationMinified = NotificationBaseMinified & {
   /** type */
-  t: NotificationType.passGo;
+  t: EventType.passGo;
 };
 
 export type GetOutOfJailNotificationMinified = NotificationBaseMinified & {
   /** medium */
   m: JailMedium;
   /** type*/
-  t: NotificationType.getOutOfJail;
+  t: EventType.getOutOfJail;
 };
 
 export type GoToJailNotificationMinified = NotificationBaseMinified & {
   /** source */
-  s: NotificationSource;
+  s: EventSource;
   /** type */
-  t: NotificationType.goToJail;
+  t: EventType.goToJail;
 };
 
 export type PayRentNotificationMinified = NotificationBaseMinified & {
@@ -100,7 +93,7 @@ export type PayRentNotificationMinified = NotificationBaseMinified & {
   /** landlordId */
   l: Id;
   /** type */
-  t: NotificationType.payRent;
+  t: EventType.payRent;
 };
 
 export type PropertyNotificationMinified = NotificationBaseMinified & {
@@ -114,7 +107,7 @@ export type TurnInJailNotificationMinified = NotificationBaseMinified & {
   /** turnsInJail */
   tj: number;
   /** type */
-  t: NotificationType.turnInJail;
+  t: EventType.turnInJail;
 };
 
 export type NotificationMinified =

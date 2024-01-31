@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GamePhase, NotificationType, PromptType, SquareType } from '../../enums';
+import { EventType, GamePhase, PromptType, SquareType } from '../../enums';
 import {
   canBuyProperty,
   diceToString,
@@ -88,9 +88,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             onClick={() => {
               const notification = props.game.pendingNotification!;
               const amount =
-                notification.type === NotificationType.getOutOfJail
-                  ? jailFine
-                  : notification.amount;
+                notification.type === EventType.getOutOfJail ? jailFine : notification.amount;
               const player = getCurrentPlayer(props.game);
 
               if (hasEnoughMoney(player, amount)) {
@@ -100,11 +98,11 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
                   status: GamePhase.play,
                 };
 
-                if (notification.type === NotificationType.expense) {
+                if (notification.type === EventType.expense) {
                   nextGame = triggerExpense(nextGame, notification);
-                } else if (notification.type === NotificationType.getOutOfJail) {
+                } else if (notification.type === EventType.getOutOfJail) {
                   nextGame = triggerGetOutOfJail(nextGame, notification.medium);
-                } else if (notification.type === NotificationType.payRent) {
+                } else if (notification.type === EventType.payRent) {
                   nextGame = triggerPayRent(nextGame, notification);
                 }
 

@@ -1,11 +1,4 @@
-import {
-  CardType,
-  NotificationSource,
-  NotificationType,
-  PromptType,
-  SquareType,
-  TaxType,
-} from '../enums';
+import { CardType, EventSource, EventType, PromptType, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { ExpenseNotification, Game, Id } from '../types';
@@ -47,7 +40,7 @@ export const triggerMovePlayer = (
         landlordId: nextSquare.ownerId!,
         playerId: game.currentPlayerId,
         amount: getRentAmount(nextGame, nextSquare),
-        type: NotificationType.payRent,
+        type: EventType.payRent,
       });
       currentPlayer = getCurrentPlayer(nextGame);
     } else if (payTaxes) {
@@ -58,8 +51,8 @@ export const triggerMovePlayer = (
       const taxNotification: ExpenseNotification = {
         amount: tax,
         playerId: game.currentPlayerId,
-        source: NotificationSource.taxSquare,
-        type: NotificationType.expense,
+        source: EventSource.taxSquare,
+        type: EventType.expense,
       };
       nextGame = triggerExpense(nextGame, taxNotification);
       currentPlayer = getCurrentPlayer(nextGame);
@@ -92,7 +85,7 @@ const applyFreeParking = (game: Game): Game => {
       {
         playerId: game.currentPlayerId,
         pot: game.centerPot,
-        type: NotificationType.freeParking,
+        type: EventType.freeParking,
       },
     ],
     players: game.players.map((p) => {
@@ -108,7 +101,7 @@ const applyPassGo = (game: Game): Game => {
       ...game.notifications,
       {
         playerId: game.currentPlayerId,
-        type: NotificationType.passGo,
+        type: EventType.passGo,
       },
     ],
     players: game.players.map((p) => {

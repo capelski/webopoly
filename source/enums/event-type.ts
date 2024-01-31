@@ -1,4 +1,4 @@
-export enum NotificationType {
+export enum EventType {
   answerOffer = 'answerOffer',
   bankruptcy = 'bankruptcy',
   buildHouse = 'buildHouse',

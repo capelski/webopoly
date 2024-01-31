@@ -1,4 +1,4 @@
-export enum NotificationSource {
+export enum EventSource {
   chanceCard = 'chanceCard',
   communityChestCard = 'communityChestCard',
   jailSquare = 'jailSquare',

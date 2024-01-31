@@ -1,4 +1,4 @@
-import { NotificationSource, NotificationType } from '../enums';
+import { EventSource, EventType } from '../enums';
 import { currencySymbol, passGoMoney } from '../parameters';
 import {
   triggerExpense,
@@ -32,8 +32,8 @@ export const communityChestCards: Card[] = [
         amount: 50,
         cardId: 3,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityChestCard,
-        type: NotificationType.expense,
+        source: EventSource.communityChestCard,
+        type: EventType.expense,
       });
     },
     id: 3,
@@ -54,7 +54,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerGoToJail(game, NotificationSource.communityChestCard);
+      return triggerGoToJail(game, EventSource.communityChestCard);
     },
     id: 6,
     skipNotification: true,
@@ -94,8 +94,8 @@ export const communityChestCards: Card[] = [
         amount: 100,
         cardId: 11,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityChestCard,
-        type: NotificationType.expense,
+        source: EventSource.communityChestCard,
+        type: EventType.expense,
       });
     },
     id: 11,
@@ -108,8 +108,8 @@ export const communityChestCards: Card[] = [
         amount: 50,
         cardId: 12,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityChestCard,
-        type: NotificationType.expense,
+        source: EventSource.communityChestCard,
+        type: EventType.expense,
       });
     },
     id: 12,
@@ -128,8 +128,8 @@ export const communityChestCards: Card[] = [
       return triggerRepairsExpense(game, 40, {
         cardId: 14,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityChestCard,
-        type: NotificationType.expense,
+        source: EventSource.communityChestCard,
+        type: EventType.expense,
       });
     },
     id: 14,

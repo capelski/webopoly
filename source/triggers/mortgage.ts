@@ -1,4 +1,4 @@
-import { NotificationType, PropertyStatus, SquareType } from '../enums';
+import { EventType, PropertyStatus, SquareType } from '../enums';
 import {
   canClearMortgage,
   canMortgage,
@@ -27,7 +27,7 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
       {
         playerId: square.ownerId,
         propertyId: squareId,
-        type: NotificationType.clearMortgage,
+        type: EventType.clearMortgage,
       },
     ],
     players: game.players.map((p) => {
@@ -67,7 +67,7 @@ export const triggerMortgage = (game: Game, squareId: Id): Game => {
       {
         playerId: square.ownerId,
         propertyId: squareId,
-        type: NotificationType.mortgage,
+        type: EventType.mortgage,
       },
     ],
     players: game.players.map((p) => {

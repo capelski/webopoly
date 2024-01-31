@@ -1,27 +1,27 @@
-import { NotificationSource, NotificationType } from '../../enums';
+import { EventSource, EventType } from '../../enums';
 import { Id, Notification, NotificationMinified, PropertyNotificationType } from '../../types';
 
-export type Minifier<T extends NotificationType = NotificationType> = (
+export type Minifier<T extends EventType = EventType> = (
   notification: Notification & { type: T },
 ) => NotificationMinified & { t: T };
 
-export type Restorer<T extends NotificationType = NotificationType> = (
+export type Restorer<T extends EventType = EventType> = (
   n: NotificationMinified & { t: T },
 ) => Notification & { type: T };
 
-type Mapper<T extends NotificationType = NotificationType> = {
+type Mapper<T extends EventType = EventType> = {
   minify: Minifier<T>;
   restore: Restorer<T>;
 };
 
-const baseMinifier = <T extends NotificationType>(
+const baseMinifier = <T extends EventType>(
   notification: Notification & { type: T },
 ): { p: Id; t: T } => ({ p: notification.playerId, t: notification.type });
 
-const baseRestorer = <T extends NotificationType>(n: {
-  p: Id;
-  t: T;
-}): { playerId: Id; type: T } => ({ playerId: n.p, type: n.t });
+const baseRestorer = <T extends EventType>(n: { p: Id; t: T }): { playerId: Id; type: T } => ({
+  playerId: n.p,
+  type: n.t,
+});
 
 const propertyMappers: Mapper<PropertyNotificationType> = {
   minify: (notification) => ({
@@ -35,9 +35,9 @@ const propertyMappers: Mapper<PropertyNotificationType> = {
 };
 
 export const notificationsMap: {
-  [TKey in NotificationType]: Mapper<TKey>;
+  [TKey in EventType]: Mapper<TKey>;
 } = {
-  [NotificationType.answerOffer]: {
+  [EventType.answerOffer]: {
     minify: (notification) => ({
       ...baseMinifier(notification),
       a: notification.amount,
@@ -55,13 +55,13 @@ export const notificationsMap: {
       targetPlayerId: n.tp,
     }),
   },
-  [NotificationType.bankruptcy]: {
+  [EventType.bankruptcy]: {
     minify: (notification) => ({ ...baseMinifier(notification), ci: notification.creditorId }),
     restore: (n) => ({ ...baseRestorer(n), creditorId: n.ci }),
   },
-  [NotificationType.buyProperty]: <Mapper<NotificationType.buyProperty>>propertyMappers,
-  [NotificationType.buildHouse]: <Mapper<NotificationType.buildHouse>>propertyMappers,
-  [NotificationType.card]: {
+  [EventType.buyProperty]: <Mapper<EventType.buyProperty>>propertyMappers,
+  [EventType.buildHouse]: <Mapper<EventType.buildHouse>>propertyMappers,
+  [EventType.card]: {
     minify: (notification) => ({
       ...baseMinifier(notification),
       ci: notification.cardId,
@@ -73,39 +73,39 @@ export const notificationsMap: {
       cardType: n.ct,
     }),
   },
-  [NotificationType.clearMortgage]: <Mapper<NotificationType.clearMortgage>>propertyMappers,
-  [NotificationType.expense]: {
+  [EventType.clearMortgage]: <Mapper<EventType.clearMortgage>>propertyMappers,
+  [EventType.expense]: {
     minify: (notification) => ({
       ...baseMinifier(notification),
       a: notification.amount,
-      ...(notification.source === NotificationSource.chanceCard ||
-      notification.source === NotificationSource.communityChestCard
+      ...(notification.source === EventSource.chanceCard ||
+      notification.source === EventSource.communityChestCard
         ? { s: notification.source, ci: notification.cardId }
         : { s: notification.source }),
     }),
     restore: (n) => ({
       ...baseRestorer(n),
       amount: n.a,
-      ...(n.s === NotificationSource.chanceCard || n.s === NotificationSource.communityChestCard
+      ...(n.s === EventSource.chanceCard || n.s === EventSource.communityChestCard
         ? { source: n.s, cardId: n.ci }
         : { source: n.s }),
     }),
   },
-  [NotificationType.freeParking]: {
+  [EventType.freeParking]: {
     minify: (notification) => ({ ...baseMinifier(notification), po: notification.pot }),
     restore: (n) => ({ ...baseRestorer(n), pot: n.po }),
   },
-  [NotificationType.getOutOfJail]: {
+  [EventType.getOutOfJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), m: notification.medium }),
     restore: (n) => ({ ...baseRestorer(n), medium: n.m }),
   },
-  [NotificationType.goToJail]: {
+  [EventType.goToJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), s: notification.source }),
     restore: (n) => ({ ...baseRestorer(n), source: n.s }),
   },
-  [NotificationType.mortgage]: <Mapper<NotificationType.mortgage>>propertyMappers,
-  [NotificationType.passGo]: { minify: baseMinifier, restore: baseRestorer },
-  [NotificationType.payRent]: {
+  [EventType.mortgage]: <Mapper<EventType.mortgage>>propertyMappers,
+  [EventType.passGo]: { minify: baseMinifier, restore: baseRestorer },
+  [EventType.payRent]: {
     minify: (notification) => ({
       ...baseMinifier(notification),
       a: notification.amount,
@@ -113,8 +113,8 @@ export const notificationsMap: {
     }),
     restore: (n) => ({ ...baseRestorer(n), amount: n.a, landlordId: n.l }),
   },
-  [NotificationType.sellHouse]: <Mapper<NotificationType.sellHouse>>propertyMappers,
-  [NotificationType.turnInJail]: {
+  [EventType.sellHouse]: <Mapper<EventType.sellHouse>>propertyMappers,
+  [EventType.turnInJail]: {
     minify: (notification) => ({ ...baseMinifier(notification), tj: notification.turnsInJail }),
     restore: (n) => ({ ...baseRestorer(n), turnsInJail: n.tj }),
   },

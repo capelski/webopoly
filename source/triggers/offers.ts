@@ -1,4 +1,4 @@
-import { AnswerType, NotificationType, OfferType, PromptType } from '../enums';
+import { AnswerType, EventType, OfferType, PromptType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import { AnswerOfferPrompt, Game, Id, PropertySquare } from '../types';
 
@@ -19,7 +19,7 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
         playerId: prompt.targetPlayerId,
         propertyId: prompt.propertyId,
         targetPlayerId: prompt.playerId,
-        type: NotificationType.answerOffer,
+        type: EventType.answerOffer,
       },
     ],
     squares: game.squares.map((s) => {
@@ -74,7 +74,7 @@ export const triggerDeclineOffer = (game: Game, prompt: AnswerOfferPrompt): Game
         playerId: prompt.targetPlayerId,
         propertyId: prompt.propertyId,
         targetPlayerId: prompt.playerId,
-        type: NotificationType.answerOffer,
+        type: EventType.answerOffer,
       },
     ],
   };
