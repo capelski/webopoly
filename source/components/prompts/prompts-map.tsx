@@ -1,6 +1,5 @@
 import React from 'react';
 import { GamePhase, NotificationSource, NotificationType, PromptType } from '../../enums';
-import { getPlayerById } from '../../logic';
 import { triggerBankruptcy, triggerGoToJail } from '../../triggers';
 import { Button } from '../common/button';
 import { NotificationComponent } from '../common/notification';
@@ -8,7 +7,7 @@ import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CardPrompt } from './card-prompt';
 import { JailOptionsPrompt } from './jail-options-prompt';
 import { OkPrompt } from './ok-prompt';
-import { PlayerWinPrompt } from './player-win-prompt';
+import { PlayerWinsPrompt } from './player-wins-prompt';
 import { PromptInterface } from './prompt-interface';
 
 export const promptsMap: {
@@ -59,13 +58,5 @@ export const promptsMap: {
     );
   },
   [PromptType.jailOptions]: JailOptionsPrompt,
-  [PromptType.playerWins]: (props) => {
-    const winningPlayer = getPlayerById(props.game, props.prompt.playerId);
-    return (
-      <PlayerWinPrompt
-        clearGameHandler={() => props.updateGame(undefined)}
-        winningPlayer={winningPlayer}
-      />
-    );
-  },
+  [PromptType.playerWins]: PlayerWinsPrompt,
 };
