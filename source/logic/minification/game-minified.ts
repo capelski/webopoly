@@ -3,13 +3,13 @@ import {
   EventMinified,
   Game,
   GameMinified,
-  Notification,
+  GEvent,
   Player,
   PlayerMinified,
   Square,
   SquareMinified,
 } from '../../types';
-import { Minifier, notificationsMap, Restorer } from './events-map';
+import { eventsMap, Minifier, Restorer } from './events-map';
 import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
@@ -17,17 +17,17 @@ export const minifyGame = (game: Game): GameMinified => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
-    n: game.notifications.map<EventMinified>((notification) => {
-      const minify: Minifier = notificationsMap[notification.type].minify;
-      return minify(notification);
+    eh: game.eventHistory.map<EventMinified>((event) => {
+      const minify: Minifier = eventsMap[event.type].minify;
+      return minify(event);
+    }),
+    n: game.notifications.map<EventMinified>((event) => {
+      const minify: Minifier = eventsMap[event.type].minify;
+      return minify(event);
     }),
     nh: game.nextChanceCardIds,
     no: game.nextCommunityCardIds,
-    pa: game.pastNotifications.map<EventMinified>((notification) => {
-      const minify: Minifier = notificationsMap[notification.type].minify;
-      return minify(notification);
-    }),
-    pn: game.pendingNotification,
+    pe: game.pendingEvent,
     pl: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       g: player.getOutOfJail,
@@ -90,17 +90,17 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
     centerPot: g.cp,
     currentPlayerId: g.ci,
     dice: g.d,
+    eventHistory: g.eh.map<GEvent>((e) => {
+      const restore: Restorer = eventsMap[e.t].restore;
+      return restore(e);
+    }),
     nextChanceCardIds: g.nh,
     nextCommunityCardIds: g.no,
-    notifications: g.n.map<Notification>((n) => {
-      const restore: Restorer = notificationsMap[n.t].restore;
-      return restore(n);
+    notifications: g.n.map<GEvent>((e) => {
+      const restore: Restorer = eventsMap[e.t].restore;
+      return restore(e);
     }),
-    pastNotifications: g.pa.map<Notification>((n) => {
-      const restore: Restorer = notificationsMap[n.t].restore;
-      return restore(n);
-    }),
-    pendingNotification: g.pn,
+    pendingEvent: g.pe,
     players: g.pl.map<Player>((p) => ({
       color: p.c,
       getOutOfJail: p.g,

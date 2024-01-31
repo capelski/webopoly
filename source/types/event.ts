@@ -83,7 +83,8 @@ export type TurnInJailEvent = EventBase & {
   type: EventType.turnInJail;
 };
 
-export type Notification =
+/** The Event type already exists in Typescript. Using GEvent instead (i.e. GameEvent) */
+export type GEvent =
   | AnswerOfferEvent
   | BankruptcyEvent
   | CardEvent

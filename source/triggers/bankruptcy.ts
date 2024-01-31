@@ -1,13 +1,12 @@
 import { EventType, PlayerStatus, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
-import { Game, Id, Notification, Player, Square } from '../types';
+import { Game, GEvent, Id, Player, Square } from '../types';
 import { triggerEndTurn } from './end-turn';
 
 export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
-  const pendingNotification = game.pendingNotification!;
-  const bankruptcyNotification: Notification = {
-    creditorId:
-      pendingNotification.type === EventType.payRent ? pendingNotification.landlordId : undefined,
+  const pendingEvent = game.pendingEvent!;
+  const bankruptcyEvent: GEvent = {
+    creditorId: pendingEvent.type === EventType.payRent ? pendingEvent.landlordId : undefined,
     playerId,
     type: EventType.bankruptcy,
   };
@@ -32,13 +31,13 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
   }, 0);
 
   let nextGame: Game =
-    pendingNotification.type === EventType.payRent
+    pendingEvent.type === EventType.payRent
       ? {
           ...game,
           players: game.players.map<Player>((p) => {
             return p.id === playerId
               ? bankruptPlayer
-              : p.id === pendingNotification.landlordId
+              : p.id === pendingEvent.landlordId
               ? {
                   ...p,
                   getOutOfJail: p.getOutOfJail + targetPlayer.getOutOfJail,
@@ -49,7 +48,7 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
           }),
           squares: game.squares.map<Square>((s) => {
             return s.type === SquareType.property && s.ownerId === playerId
-              ? { ...s, houses: 0, ownerId: pendingNotification.landlordId }
+              ? { ...s, houses: 0, ownerId: pendingEvent.landlordId }
               : s;
           }),
         }
@@ -65,8 +64,8 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
           }),
         };
 
-  nextGame.notifications = [...nextGame.notifications, bankruptcyNotification];
-  nextGame.pendingNotification = undefined;
+  nextGame.notifications = [...nextGame.notifications, bankruptcyEvent];
+  nextGame.pendingEvent = undefined;
 
   nextGame = triggerEndTurn(nextGame);
 

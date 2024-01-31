@@ -37,7 +37,7 @@ export const communityChestCards: Card[] = [
       });
     },
     id: 3,
-    skipNotification: true,
+    skipEvent: true,
     text: `Doctor's fee. Pay ${currencySymbol}50`,
   },
   {
@@ -57,7 +57,7 @@ export const communityChestCards: Card[] = [
       return triggerGoToJail(game, EventSource.communityChestCard);
     },
     id: 6,
-    skipNotification: true,
+    skipEvent: true,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {
@@ -99,7 +99,7 @@ export const communityChestCards: Card[] = [
       });
     },
     id: 11,
-    skipNotification: true,
+    skipEvent: true,
     text: `Pay hospital fees of ${currencySymbol}100`,
   },
   {
@@ -113,7 +113,7 @@ export const communityChestCards: Card[] = [
       });
     },
     id: 12,
-    skipNotification: true,
+    skipEvent: true,
     text: `Pay school fees of ${currencySymbol}50`,
   },
   {
@@ -133,7 +133,7 @@ export const communityChestCards: Card[] = [
       });
     },
     id: 14,
-    skipNotification: true,
+    skipEvent: true,
     text: `You are assessed for street repairs. ${currencySymbol}40 per house`,
   },
   {

@@ -1,9 +1,6 @@
-- Turn Notification type into CEvent
-- Suggest sales/mortgages when player cannot pay
-- Turn game.prompt into an array and only process first prompt?
-- Utility to push notifications / replace prompt safely
 - Trading properties with other players
 - Roll doubles => Extra turn
+- Suggest sales/mortgages when player cannot pay
 - triggerPayToAllPlayers for chance card
 - triggerReceiveFromAllPlayers for community chest card
 - Make parameters.ts modifiable on createGame

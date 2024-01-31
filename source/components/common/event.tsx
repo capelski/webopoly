@@ -23,11 +23,11 @@ import {
   passGoMoney,
   taxSymbol,
 } from '../../parameters';
-import { Game, Notification, Player } from '../../types';
+import { Game, GEvent, Player } from '../../types';
 
 type Renderer<T = EventType> = (
   player: Player,
-  notification: Notification & { type: T },
+  event: GEvent & { type: T },
   game: Game,
 ) => {
   description: string;
@@ -37,79 +37,79 @@ type Renderer<T = EventType> = (
 const renderersMap: {
   [TKey in EventType]: false | Renderer<TKey>;
 } = {
-  [EventType.answerOffer]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
-    const owner = getPlayerById(game, notification.targetPlayerId);
-    const acceptsOffer = notification.answer === AnswerType.accept;
-    const isBuyingOffer = notification.offerType === OfferType.buy;
+  [EventType.answerOffer]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
+    const owner = getPlayerById(game, event.targetPlayerId);
+    const acceptsOffer = event.answer === AnswerType.accept;
+    const isBuyingOffer = event.offerType === OfferType.buy;
     return {
       description: `${player.name} ${acceptsOffer ? 'accepts' : 'declines'} ${currencySymbol}${
-        notification.amount
+        event.amount
       } ${isBuyingOffer ? 'BUY' : 'SELL'} offer for ${square.name} from ${owner.name}`,
-      icon: notification.answer === AnswerType.accept ? '👍' : '👎',
+      icon: event.answer === AnswerType.accept ? '👍' : '👎',
     };
   },
-  [EventType.bankruptcy]: (player, notification, game) => ({
+  [EventType.bankruptcy]: (player, event, game) => ({
     description: `${player.name} goes bankrupt and turns over its money and properties to ${
-      notification.creditorId ? getPlayerById(game, notification.creditorId).name : 'the bank'
+      event.creditorId ? getPlayerById(game, event.creditorId).name : 'the bank'
     }`,
     icon: '🧨',
   }),
-  [EventType.buildHouse]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
+  [EventType.buildHouse]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} builds a house in ${square.name}`,
       icon: houseSymbol,
     };
   },
-  [EventType.buyProperty]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
+  [EventType.buyProperty]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} buys ${square.name}`,
       icon: '💵',
     };
   },
-  [EventType.card]: (player, notification) =>
-    notification.cardType === CardType.chance
+  [EventType.card]: (player, event) =>
+    event.cardType === CardType.chance
       ? {
-          description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
+          description: `${player.name}: ${getChanceCardById(event.cardId).text}`,
           icon: chanceSymbol,
         }
       : {
-          description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
+          description: `${player.name}: ${getCommunityChestCardById(event.cardId).text}`,
           icon: communityChestSymbol,
         },
-  [EventType.clearMortgage]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
+  [EventType.clearMortgage]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} clears the mortgage on ${square.name}`,
       icon: '❎',
     };
   },
-  [EventType.expense]: (player, notification) =>
-    notification.source === EventSource.chanceCard
+  [EventType.expense]: (player, event) =>
+    event.source === EventSource.chanceCard
       ? {
-          description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
+          description: `${player.name}: ${getChanceCardById(event.cardId).text}`,
           icon: chanceSymbol,
         }
-      : notification.source === EventSource.communityChestCard
+      : event.source === EventSource.communityChestCard
       ? {
-          description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
+          description: `${player.name}: ${getCommunityChestCardById(event.cardId).text}`,
           icon: communityChestSymbol,
         }
       : {
-          description: `${player.name} pays ${currencySymbol}${notification.amount} in taxes`,
+          description: `${player.name} pays ${currencySymbol}${event.amount} in taxes`,
           icon: taxSymbol,
         },
-  [EventType.freeParking]: (player, notification) => ({
-    description: `${player.name} collects ${currencySymbol}${notification.pot} from Free Parking`,
+  [EventType.freeParking]: (player, event) => ({
+    description: `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
     icon: parkingSymbol,
   }),
-  [EventType.getOutOfJail]: (player, notification, game) => {
+  [EventType.getOutOfJail]: (player, event, game) => {
     const reason =
-      notification.medium === JailMedium.card
+      event.medium === JailMedium.card
         ? 'uses Get Out of Jail Free card'
-        : notification.medium === JailMedium.dice
+        : event.medium === JailMedium.dice
         ? `rolls ${diceToString(game.dice)} and gets out of jail`
         : `pays ${currencySymbol}${jailFine} fine to get out of jail`;
     return {
@@ -117,17 +117,17 @@ const renderersMap: {
       icon: getOutJailSymbol,
     };
   },
-  [EventType.goToJail]: (player, notification) => ({
+  [EventType.goToJail]: (player, event) => ({
     description: `${player.name} goes to jail`,
     icon:
-      notification.source === EventSource.chanceCard
+      event.source === EventSource.chanceCard
         ? chanceSymbol
-        : notification.source === EventSource.communityChestCard
+        : event.source === EventSource.communityChestCard
         ? communityChestSymbol
         : goToJailSymbol,
   }),
-  [EventType.mortgage]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
+  [EventType.mortgage]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} mortgages ${square.name}`,
       icon: mortgageSymbol,
@@ -137,44 +137,44 @@ const renderersMap: {
     description: `${player.name} passes GO and gets ${currencySymbol}${passGoMoney}`,
     icon: goSymbol,
   }),
-  [EventType.payRent]: (player, notification, game) => {
-    const landlord = getPlayerById(game, notification.landlordId)!;
+  [EventType.payRent]: (player, event, game) => {
+    const landlord = getPlayerById(game, event.landlordId)!;
     return {
-      description: `${player.name} pays ${currencySymbol}${notification.amount} rent to ${landlord.name}`,
+      description: `${player.name} pays ${currencySymbol}${event.amount} rent to ${landlord.name}`,
       icon: '🚀',
     };
   },
-  [EventType.sellHouse]: (player, notification, game) => {
-    const square = getSquareById(game, notification.propertyId);
+  [EventType.sellHouse]: (player, event, game) => {
+    const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} sells a house in ${square.name}`,
       icon: '🏚️',
     };
   },
-  [EventType.turnInJail]: (player, notification) => ({
+  [EventType.turnInJail]: (player, event) => ({
     description: `${player.name} doesn't roll doubles; ${
-      notification.turnsInJail < maxTurnsInJail
-        ? `${notification.turnsInJail} turn(s) in jail`
+      event.turnsInJail < maxTurnsInJail
+        ? `${event.turnsInJail} turn(s) in jail`
         : `pays ${currencySymbol}${jailFine} fine and gets out`
     }`,
     icon: jailSymbol,
   }),
 };
 
-interface NotificationComponentProps {
-  notification: Notification;
+interface EventComponentProps {
+  event: GEvent;
   game: Game;
 }
 
-export const NotificationComponent: React.FC<NotificationComponentProps> = (props) => {
-  const renderer = renderersMap[props.notification.type] as Renderer;
+export const EventComponent: React.FC<EventComponentProps> = (props) => {
+  const renderer = renderersMap[props.event.type] as Renderer;
 
   if (!renderer) {
     return undefined;
   }
 
-  const player = getPlayerById(props.game, props.notification.playerId);
-  const { description, icon } = renderer(player, props.notification, props.game);
+  const player = getPlayerById(props.game, props.event.playerId);
+  const { description, icon } = renderer(player, props.event, props.game);
 
   return (
     <div>

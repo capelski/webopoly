@@ -86,24 +86,24 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         {props.game.status === GamePhase.cannotPay && (
           <Button
             onClick={() => {
-              const notification = props.game.pendingNotification!;
+              const pendingEvent = props.game.pendingEvent!;
               const amount =
-                notification.type === EventType.getOutOfJail ? jailFine : notification.amount;
+                pendingEvent.type === EventType.getOutOfJail ? jailFine : pendingEvent.amount;
               const player = getCurrentPlayer(props.game);
 
               if (hasEnoughMoney(player, amount)) {
                 let nextGame: Game = {
                   ...props.game,
-                  pendingNotification: undefined,
+                  pendingEvent: undefined,
                   status: GamePhase.play,
                 };
 
-                if (notification.type === EventType.expense) {
-                  nextGame = triggerExpense(nextGame, notification);
-                } else if (notification.type === EventType.getOutOfJail) {
-                  nextGame = triggerGetOutOfJail(nextGame, notification.medium);
-                } else if (notification.type === EventType.payRent) {
-                  nextGame = triggerPayRent(nextGame, notification);
+                if (pendingEvent.type === EventType.expense) {
+                  nextGame = triggerExpense(nextGame, pendingEvent);
+                } else if (pendingEvent.type === EventType.getOutOfJail) {
+                  nextGame = triggerGetOutOfJail(nextGame, pendingEvent.medium);
+                } else if (pendingEvent.type === EventType.payRent) {
+                  nextGame = triggerPayRent(nextGame, pendingEvent);
                 }
 
                 props.updateGame(nextGame);

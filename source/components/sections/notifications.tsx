@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { EventSource, EventType } from '../../enums';
 import { Game } from '../../types';
-import { NotificationComponent } from '../common/event';
+import { EventComponent } from '../common/event';
 
 interface NotificationsProps {
   game: Game;
@@ -19,13 +19,13 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
   useEffect(() => {
     if (props.game.notifications.length > 0) {
       const applicableNotifications = props.game.notifications.filter(
-        (n) =>
-          (n.type !== EventType.expense && n.type !== EventType.goToJail) ||
-          !omitSources.includes(n.source),
+        (e) =>
+          (e.type !== EventType.expense && e.type !== EventType.goToJail) ||
+          !omitSources.includes(e.source),
       );
 
-      applicableNotifications.forEach((notification) => {
-        toast(<NotificationComponent notification={notification} game={props.game} />, {
+      applicableNotifications.forEach((event) => {
+        toast(<EventComponent event={event} game={props.game} />, {
           autoClose: 3000,
         });
       });
@@ -33,7 +33,7 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
       props.updateGame({
         ...props.game,
         notifications: [],
-        pastNotifications: [...props.game.notifications.reverse(), ...props.game.pastNotifications],
+        eventHistory: [...props.game.notifications.reverse(), ...props.game.eventHistory],
       });
     }
   }, [props.game.notifications]);

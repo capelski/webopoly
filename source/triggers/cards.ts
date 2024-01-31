@@ -16,8 +16,8 @@ export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
 
   const nextGame: Game = {
     ...game,
-    pastNotifications: card.skipNotification
-      ? game.pastNotifications
+    eventHistory: card.skipEvent
+      ? game.eventHistory
       : [
           {
             cardId: prompt.cardId,
@@ -25,7 +25,7 @@ export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
             playerId: game.currentPlayerId,
             type: EventType.card,
           },
-          ...game.pastNotifications,
+          ...game.eventHistory,
         ],
   };
 

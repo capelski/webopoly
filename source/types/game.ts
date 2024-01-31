@@ -1,6 +1,6 @@
 import { GamePhase } from '../enums';
 import { Dice } from './dice';
-import { ExpenseEvent, GetOutOfJailEvent, Notification, PayRentEvent } from './event';
+import { ExpenseEvent, GetOutOfJailEvent, GEvent, PayRentEvent } from './event';
 import { Id } from './id';
 import { Player } from './player';
 import { Prompt } from './prompt';
@@ -10,11 +10,11 @@ export type Game = {
   centerPot: number;
   currentPlayerId: Id;
   dice: Dice;
+  eventHistory: GEvent[];
   nextChanceCardIds: Id[];
   nextCommunityCardIds: Id[];
-  notifications: Notification[];
-  pastNotifications: Notification[];
-  pendingNotification: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
+  notifications: GEvent[];
+  pendingEvent: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
   players: Player[];
   squares: Square[];
   status: GamePhase | Prompt;

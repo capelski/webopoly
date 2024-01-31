@@ -1,6 +1,6 @@
 import React from 'react';
 import { Game } from '../../types';
-import { NotificationComponent } from '../common/event';
+import { EventComponent } from '../common/event';
 import { Players } from '../player/players';
 
 interface PanelProps {
@@ -25,8 +25,8 @@ export const Panel: React.FC<PanelProps> = (props) => {
 
       <div style={{ padding: 8 }}>
         <div style={{ display: 'flex', flexDirection: 'column', fontSize: 18 }}>
-          {props.game.pastNotifications.map((notification, index) => (
-            <NotificationComponent notification={notification} game={props.game} key={index} />
+          {props.game.eventHistory.map((event, index) => (
+            <EventComponent event={event} game={props.game} key={index} />
           ))}
         </div>
       </div>

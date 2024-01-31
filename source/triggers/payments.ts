@@ -2,20 +2,20 @@ import { PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { ExpenseCardEvent, ExpenseEvent, Game, PayRentEvent, StreetSquare } from '../types';
 
-export const triggerExpense = (game: Game, notification: ExpenseEvent): Game => {
+export const triggerExpense = (game: Game, event: ExpenseEvent): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
+  const nextGame: Game = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
-        centerPot: game.centerPot + notification.amount,
-        notifications: [...game.notifications, notification],
+        centerPot: game.centerPot + event.amount,
+        notifications: [...game.notifications, event],
         players: game.players.map((p) => {
-          return p.id === currentPlayer.id ? { ...p, money: p.money - notification.amount } : p;
+          return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
         }),
       }
     : {
         ...game,
-        pendingNotification: notification,
+        pendingEvent: event,
         status: {
           type: PromptType.cannotPay,
         },
@@ -24,23 +24,23 @@ export const triggerExpense = (game: Game, notification: ExpenseEvent): Game => 
   return nextGame;
 };
 
-export const triggerPayRent = (game: Game, notification: PayRentEvent): Game => {
+export const triggerPayRent = (game: Game, event: PayRentEvent): Game => {
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
+  const nextGame: Game = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
-        notifications: [...game.notifications, notification],
+        notifications: [...game.notifications, event],
         players: game.players.map((p) => {
           return p.id === game.currentPlayerId
-            ? { ...p, money: p.money - notification.amount }
-            : p.id === notification.landlordId
-            ? { ...p, money: p.money + notification.amount }
+            ? { ...p, money: p.money - event.amount }
+            : p.id === event.landlordId
+            ? { ...p, money: p.money + event.amount }
             : p;
         }),
       }
     : {
         ...game,
-        pendingNotification: notification,
+        pendingEvent: event,
         status: {
           type: PromptType.cannotPay,
         },
@@ -49,7 +49,7 @@ export const triggerPayRent = (game: Game, notification: PayRentEvent): Game => 
   return nextGame;
 };
 
-// This function requires a new type of notification (e.g. ExpenseBroadcastNotification);
+// This function requires a new type of event (e.g. ExpenseBroadcastEvent);
 // not wildly complicated but a lot of effort for little gain
 // export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
 //   const currentPlayer = getCurrentPlayer(game);
@@ -90,7 +90,7 @@ export const triggerPayRent = (game: Game, notification: PayRentEvent): Game => 
 export const triggerRepairsExpense = (
   game: Game,
   housePrice: number,
-  partialNotification: Omit<ExpenseCardEvent, 'amount'>,
+  partialEvent: Omit<ExpenseCardEvent, 'amount'>,
 ): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const playerStreets = game.squares.filter(
@@ -100,12 +100,11 @@ export const triggerRepairsExpense = (
       s.ownerId === currentPlayer.id,
   ) as StreetSquare[];
   const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
-  const notification: ExpenseCardEvent = {
-    ...partialNotification,
-    amount: houses * housePrice,
-  };
 
-  return triggerExpense(game, notification);
+  return triggerExpense(game, {
+    ...partialEvent,
+    amount: houses * housePrice,
+  });
 };
 
 export const triggerWindfall = (game: Game, payout: number): Game => {

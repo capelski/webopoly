@@ -90,7 +90,7 @@ export const chanceCards: Card[] = [
       return triggerGoToJail(game, EventSource.chanceCard);
     },
     id: 11,
-    skipNotification: true,
+    skipEvent: true,
     text: `Go to Jail. If you pass Go, do not collect ${currencySymbol}${passGoMoney}`,
   },
   {
@@ -103,7 +103,7 @@ export const chanceCards: Card[] = [
       });
     },
     id: 12,
-    skipNotification: true,
+    skipEvent: true,
     text: `Make general repairs on all your property. ${currencySymbol}25 per house`,
   },
   {
@@ -117,7 +117,7 @@ export const chanceCards: Card[] = [
       });
     },
     id: 13,
-    skipNotification: true,
+    skipEvent: true,
     text: `Speeding fine ${currencySymbol}15`,
   },
   {

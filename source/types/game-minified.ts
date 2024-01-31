@@ -14,16 +14,16 @@ export type GameMinified = {
   ci: Id;
   /** dice */
   d: Dice;
+  /** eventHistory */
+  eh: EventMinified[];
   /** nextChanceCardIds */
   nh: Id[];
   /** nextCommunityCardIds */
   no: Id[];
   /** notifications */
   n: EventMinified[];
-  /** pastNotifications */
-  pa: EventMinified[];
-  /** pendingNotification */
-  pn: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
+  /** pendingEvent */
+  pe: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
   /** players */
   pl: PlayerMinified[];
   /** squares */
