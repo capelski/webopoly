@@ -1,11 +1,11 @@
 import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
 import { Id } from './id';
 
-type NotificationBase = {
+type EventBase = {
   playerId: Id;
 };
 
-export type AnswerOfferNotification = NotificationBase & {
+export type AnswerOfferEvent = EventBase & {
   amount: number;
   answer: AnswerType;
   offerType: OfferType;
@@ -14,84 +14,84 @@ export type AnswerOfferNotification = NotificationBase & {
   type: EventType.answerOffer;
 };
 
-export type BankruptcyNotification = NotificationBase & {
+export type BankruptcyEvent = EventBase & {
   creditorId: Id | undefined;
   type: EventType.bankruptcy;
 };
 
-export type CardNotification = NotificationBase & {
+export type CardEvent = EventBase & {
   cardId: Id;
   cardType: CardType;
   type: EventType.card;
 };
 
-type ExpenseNotificationBase = NotificationBase & {
+type ExpenseEventBase = EventBase & {
   amount: number;
   type: EventType.expense;
 };
 
-export type ExpenseCardNotification = ExpenseNotificationBase & {
+export type ExpenseCardEvent = ExpenseEventBase & {
   cardId: Id;
   source: EventSource.chanceCard | EventSource.communityChestCard;
 };
 
-export type ExpenseTaxNotification = ExpenseNotificationBase & {
+export type ExpenseTaxEvent = ExpenseEventBase & {
   source: EventSource.taxSquare;
 };
 
-export type ExpenseNotification = ExpenseCardNotification | ExpenseTaxNotification;
+export type ExpenseEvent = ExpenseCardEvent | ExpenseTaxEvent;
 
-export type FreeParkingNotification = NotificationBase & {
+export type FreeParkingEvent = EventBase & {
   pot: number;
   type: EventType.freeParking;
 };
 
-export type GenericNotification = NotificationBase & {
+export type GenericEvent = EventBase & {
   type: EventType.passGo;
 };
 
-export type GetOutOfJailNotification = NotificationBase & {
+export type GetOutOfJailEvent = EventBase & {
   medium: JailMedium;
   type: EventType.getOutOfJail;
 };
 
-export type GoToJailNotification = NotificationBase & {
+export type GoToJailEvent = EventBase & {
   source: EventSource;
   type: EventType.goToJail;
 };
 
-export type PayRentNotification = NotificationBase & {
+export type PayRentEvent = EventBase & {
   amount: number;
   landlordId: Id;
   type: EventType.payRent;
 };
 
-export type PropertyNotificationType =
+export type PropertyEventType =
   | EventType.buildHouse
   | EventType.buyProperty
   | EventType.clearMortgage
   | EventType.mortgage
   | EventType.sellHouse;
 
-export type PropertyNotification = NotificationBase & {
+export type PropertyEvent = EventBase & {
   propertyId: Id;
-  type: PropertyNotificationType;
+  type: PropertyEventType;
 };
 
-export type TurnInJailNotification = NotificationBase & {
+export type TurnInJailEvent = EventBase & {
   turnsInJail: number;
   type: EventType.turnInJail;
 };
 
 export type Notification =
-  | AnswerOfferNotification
-  | BankruptcyNotification
-  | CardNotification
-  | ExpenseNotification
-  | FreeParkingNotification
-  | GenericNotification
-  | GetOutOfJailNotification
-  | GoToJailNotification
-  | PayRentNotification
-  | PropertyNotification
-  | TurnInJailNotification;
+  | AnswerOfferEvent
+  | BankruptcyEvent
+  | CardEvent
+  | ExpenseEvent
+  | FreeParkingEvent
+  | GenericEvent
+  | GetOutOfJailEvent
+  | GoToJailEvent
+  | PayRentEvent
+  | PropertyEvent
+  | TurnInJailEvent;

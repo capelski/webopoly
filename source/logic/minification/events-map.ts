@@ -1,5 +1,5 @@
 import { EventSource, EventType } from '../../enums';
-import { Id, Notification, NotificationMinified, PropertyNotificationType } from '../../types';
+import { Id, Notification, NotificationMinified, PropertyEventType } from '../../types';
 
 export type Minifier<T extends EventType = EventType> = (
   notification: Notification & { type: T },
@@ -23,7 +23,7 @@ const baseRestorer = <T extends EventType>(n: { p: Id; t: T }): { playerId: Id; 
   type: n.t,
 });
 
-const propertyMappers: Mapper<PropertyNotificationType> = {
+const propertyMappers: Mapper<PropertyEventType> = {
   minify: (notification) => ({
     ...baseMinifier(notification),
     pi: notification.propertyId,

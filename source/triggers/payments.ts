@@ -1,14 +1,8 @@
 import { PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
-import {
-  ExpenseCardNotification,
-  ExpenseNotification,
-  Game,
-  PayRentNotification,
-  StreetSquare,
-} from '../types';
+import { ExpenseCardEvent, ExpenseEvent, Game, PayRentEvent, StreetSquare } from '../types';
 
-export const triggerExpense = (game: Game, notification: ExpenseNotification): Game => {
+export const triggerExpense = (game: Game, notification: ExpenseEvent): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
     ? {
@@ -30,7 +24,7 @@ export const triggerExpense = (game: Game, notification: ExpenseNotification): G
   return nextGame;
 };
 
-export const triggerPayRent = (game: Game, notification: PayRentNotification): Game => {
+export const triggerPayRent = (game: Game, notification: PayRentEvent): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const nextGame: Game = hasEnoughMoney(currentPlayer, notification.amount)
     ? {
@@ -96,7 +90,7 @@ export const triggerPayRent = (game: Game, notification: PayRentNotification): G
 export const triggerRepairsExpense = (
   game: Game,
   housePrice: number,
-  partialNotification: Omit<ExpenseCardNotification, 'amount'>,
+  partialNotification: Omit<ExpenseCardEvent, 'amount'>,
 ): Game => {
   const currentPlayer = getCurrentPlayer(game);
   const playerStreets = game.squares.filter(
@@ -106,7 +100,7 @@ export const triggerRepairsExpense = (
       s.ownerId === currentPlayer.id,
   ) as StreetSquare[];
   const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
-  const notification: ExpenseCardNotification = {
+  const notification: ExpenseCardEvent = {
     ...partialNotification,
     amount: houses * housePrice,
   };
