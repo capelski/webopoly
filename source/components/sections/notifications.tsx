@@ -11,7 +11,7 @@ interface NotificationsProps {
 
 const omitSources = [
   NotificationSource.chanceCard,
-  NotificationSource.communityCard,
+  NotificationSource.communityChestCard,
   NotificationSource.jailSquare,
 ];
 

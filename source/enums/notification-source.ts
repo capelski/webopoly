@@ -1,6 +1,6 @@
 export enum NotificationSource {
   chanceCard = 'chanceCard',
-  communityCard = 'communityCard',
+  communityChestCard = 'communityChestCard',
   jailSquare = 'jailSquare',
   taxSquare = 'taxSquare',
 }

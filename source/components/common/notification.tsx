@@ -99,7 +99,7 @@ const renderersMap: {
           description: `${player.name}: ${getChanceCardById(notification.cardId).text}`,
           icon: chanceSymbol,
         }
-      : notification.source === NotificationSource.communityCard
+      : notification.source === NotificationSource.communityChestCard
       ? {
           description: `${player.name}: ${getCommunityChestCardById(notification.cardId).text}`,
           icon: communityChestSymbol,
@@ -129,7 +129,7 @@ const renderersMap: {
     icon:
       notification.source === NotificationSource.chanceCard
         ? chanceSymbol
-        : notification.source === NotificationSource.communityCard
+        : notification.source === NotificationSource.communityChestCard
         ? communityChestSymbol
         : goToJailSymbol,
   }),

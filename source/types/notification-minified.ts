@@ -56,7 +56,7 @@ export type ExpenseCardNotificationMinified = ExpenseNotificationBaseMinified & 
   /** cardId */
   ci: Id;
   /** source */
-  s: NotificationSource.chanceCard | NotificationSource.communityCard;
+  s: NotificationSource.chanceCard | NotificationSource.communityChestCard;
 };
 
 export type ExpenseTaxNotificationMinified = ExpenseNotificationBaseMinified & {

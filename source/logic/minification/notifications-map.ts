@@ -79,14 +79,14 @@ export const notificationsMap: {
       ...baseMinifier(notification),
       a: notification.amount,
       ...(notification.source === NotificationSource.chanceCard ||
-      notification.source === NotificationSource.communityCard
+      notification.source === NotificationSource.communityChestCard
         ? { s: notification.source, ci: notification.cardId }
         : { s: notification.source }),
     }),
     restore: (n) => ({
       ...baseRestorer(n),
       amount: n.a,
-      ...(n.s === NotificationSource.chanceCard || n.s === NotificationSource.communityCard
+      ...(n.s === NotificationSource.chanceCard || n.s === NotificationSource.communityChestCard
         ? { source: n.s, cardId: n.ci }
         : { source: n.s }),
     }),

@@ -32,7 +32,7 @@ export const communityChestCards: Card[] = [
         amount: 50,
         cardId: 3,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityCard,
+        source: NotificationSource.communityChestCard,
         type: NotificationType.expense,
       });
     },
@@ -54,7 +54,7 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
-      return triggerGoToJail(game, NotificationSource.communityCard);
+      return triggerGoToJail(game, NotificationSource.communityChestCard);
     },
     id: 6,
     skipNotification: true,
@@ -94,7 +94,7 @@ export const communityChestCards: Card[] = [
         amount: 100,
         cardId: 11,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityCard,
+        source: NotificationSource.communityChestCard,
         type: NotificationType.expense,
       });
     },
@@ -108,7 +108,7 @@ export const communityChestCards: Card[] = [
         amount: 50,
         cardId: 12,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityCard,
+        source: NotificationSource.communityChestCard,
         type: NotificationType.expense,
       });
     },
@@ -128,7 +128,7 @@ export const communityChestCards: Card[] = [
       return triggerRepairsExpense(game, 40, {
         cardId: 14,
         playerId: game.currentPlayerId,
-        source: NotificationSource.communityCard,
+        source: NotificationSource.communityChestCard,
         type: NotificationType.expense,
       });
     },

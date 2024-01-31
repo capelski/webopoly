@@ -1,5 +1,4 @@
 - Turn Notification type into CEvent
-- Merge cards into "surprise"
 - Suggest sales/mortgages when player cannot pay
 - Turn game.prompt into an array and only process first prompt?
 - Utility to push notifications / replace prompt safely

@@ -39,7 +39,7 @@ type ExpenseNotificationBase = NotificationBase & {
 
 export type ExpenseCardNotification = ExpenseNotificationBase & {
   cardId: Id;
-  source: NotificationSource.chanceCard | NotificationSource.communityCard;
+  source: NotificationSource.chanceCard | NotificationSource.communityChestCard;
 };
 
 export type ExpenseTaxNotification = ExpenseNotificationBase & {
