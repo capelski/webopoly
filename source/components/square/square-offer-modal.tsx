@@ -31,7 +31,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
     : currentPlayer.money;
 
   return (
-    <Modal>
+    <Modal inset="25% 20px">
       {isSellingOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (
