@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventType, GamePhase, PromptType, SquareType } from '../../enums';
+import { EventType, GamePhase, SquareType } from '../../enums';
 import {
   canBuyProperty,
   diceToString,
@@ -10,6 +10,7 @@ import {
 import { diceSymbol, jailFine, parkingSymbol } from '../../parameters';
 import {
   triggerBuyProperty,
+  triggerCannotPay,
   triggerDiceRoll,
   triggerEndTurn,
   triggerExpense,
@@ -108,12 +109,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
 
                 props.updateGame(nextGame);
               } else {
-                props.updateGame({
-                  ...props.game,
-                  status: {
-                    type: PromptType.cannotPay,
-                  },
-                });
+                props.updateGame(triggerCannotPay(props.game, pendingEvent));
               }
             }}
           >

@@ -1,9 +1,10 @@
-import { EventSource, EventType, GamePhase, JailMedium, PromptType, SquareType } from '../enums';
+import { EventSource, EventType, GamePhase, JailMedium, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import { Game, GEvent } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { triggerEndTurn } from './end-turn';
+import { triggerCannotPay } from './payments';
 
 export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
   const notifications: GEvent[] =
@@ -23,17 +24,11 @@ export const triggerGetOutOfJail = (game: Game, medium: JailMedium): Game => {
 
   let nextGame: Game;
   if (paysFine && !hasEnoughMoney(currentPlayer, jailFine)) {
-    nextGame = {
-      ...game,
-      pendingEvent: {
-        medium,
-        playerId: game.currentPlayerId,
-        type: EventType.getOutOfJail,
-      },
-      status: {
-        type: PromptType.cannotPay,
-      },
-    };
+    nextGame = triggerCannotPay(game, {
+      medium,
+      playerId: game.currentPlayerId,
+      type: EventType.getOutOfJail,
+    });
   } else {
     nextGame = {
       ...game,

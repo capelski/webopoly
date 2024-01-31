@@ -1,6 +1,26 @@
 import { PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
-import { ExpenseCardEvent, ExpenseEvent, Game, PayRentEvent, StreetSquare } from '../types';
+import {
+  ExpenseCardEvent,
+  ExpenseEvent,
+  Game,
+  GetOutOfJailEvent,
+  PayRentEvent,
+  StreetSquare,
+} from '../types';
+
+export const triggerCannotPay = (
+  game: Game,
+  event: ExpenseEvent | GetOutOfJailEvent | PayRentEvent,
+): Game => {
+  return {
+    ...game,
+    pendingEvent: event,
+    status: {
+      type: PromptType.cannotPay,
+    },
+  };
+};
 
 export const triggerExpense = (game: Game, event: ExpenseEvent): Game => {
   const currentPlayer = getCurrentPlayer(game);
@@ -13,13 +33,7 @@ export const triggerExpense = (game: Game, event: ExpenseEvent): Game => {
           return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
         }),
       }
-    : {
-        ...game,
-        pendingEvent: event,
-        status: {
-          type: PromptType.cannotPay,
-        },
-      };
+    : triggerCannotPay(game, event);
 
   return nextGame;
 };
@@ -38,13 +52,7 @@ export const triggerPayRent = (game: Game, event: PayRentEvent): Game => {
             : p;
         }),
       }
-    : {
-        ...game,
-        pendingEvent: event,
-        status: {
-          type: PromptType.cannotPay,
-        },
-      };
+    : triggerCannotPay(game, event);
 
   return nextGame;
 };
