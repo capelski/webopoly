@@ -1,5 +1,5 @@
 import React from 'react';
-import { GamePhase, PromptType } from '../../enums';
+import { PromptType } from '../../enums';
 import { Game, Prompt } from '../../types';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
@@ -29,15 +29,5 @@ interface PromptComponentProps {
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
   const renderer: PromptInterface = promptsMap[props.prompt.type];
-  const nextGame: Game = { ...props.game, status: GamePhase.play };
-
-  return (
-    <Modal inset="25% 20px">
-      {renderer({
-        game: nextGame,
-        prompt: props.prompt,
-        updateGame: props.updateGame,
-      })}
-    </Modal>
-  );
+  return <Modal inset="25% 20px">{renderer(props)}</Modal>;
 };

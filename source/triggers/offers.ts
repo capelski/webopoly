@@ -22,9 +22,6 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
         type: EventType.answerOffer,
       },
     ],
-    squares: game.squares.map((s) => {
-      return s.id === prompt.propertyId ? { ...s, ownerId: buyerId } : s;
-    }),
     players: game.players.map((p) => {
       return p.id === buyerId
         ? {
@@ -40,6 +37,10 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
           }
         : p;
     }),
+    squares: game.squares.map((s) => {
+      return s.id === prompt.propertyId ? { ...s, ownerId: buyerId } : s;
+    }),
+    status: prompt.previousStatus,
   };
 };
 
@@ -55,6 +56,7 @@ export const triggerBuyingOffer = (game: Game, property: PropertySquare, amount:
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
+      previousStatus: game.status,
       propertyId: property.id,
       targetPlayerId: property.ownerId,
       type: PromptType.answerOffer,
@@ -77,6 +79,7 @@ export const triggerDeclineOffer = (game: Game, prompt: AnswerOfferPrompt): Game
         type: EventType.answerOffer,
       },
     ],
+    status: prompt.previousStatus,
   };
 };
 
@@ -92,6 +95,7 @@ export const triggerSellingOffer = (
       amount,
       offerType: OfferType.sell,
       playerId: game.currentPlayerId,
+      previousStatus: game.status,
       propertyId: property.id,
       targetPlayerId,
       type: PromptType.answerOffer,

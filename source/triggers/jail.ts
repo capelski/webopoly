@@ -83,6 +83,7 @@ export const triggerGoToJail = (game: Game, source: EventSource): Game => {
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),
+    status: GamePhase.play,
   };
 };
 

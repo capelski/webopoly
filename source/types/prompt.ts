@@ -1,10 +1,11 @@
-import { CardType, OfferType, PromptType } from '../enums';
+import { CardType, GamePhase, OfferType, PromptType } from '../enums';
 import { Id } from './id';
 
 export type AnswerOfferPrompt = {
   amount: number;
   offerType: OfferType;
   playerId: Id;
+  previousStatus: Prompt | GamePhase;
   propertyId: Id;
   targetPlayerId: Id;
   type: PromptType.answerOffer;
