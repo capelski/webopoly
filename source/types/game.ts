@@ -1,9 +1,8 @@
-import { GamePhase } from '../enums';
 import { Dice } from './dice';
-import { ExpenseEvent, GetOutOfJailEvent, GEvent, PayRentEvent } from './event';
+import { GEvent, PendingEvent } from './event';
+import { GamePhase } from './game-phase';
 import { Id } from './id';
 import { Player } from './player';
-import { Prompt } from './prompt';
 import { Square } from './square';
 
 export type Game = {
@@ -14,8 +13,8 @@ export type Game = {
   nextChanceCardIds: Id[];
   nextCommunityCardIds: Id[];
   notifications: GEvent[];
-  pendingEvent: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
+  phase: GamePhase;
+  pendingEvent: PendingEvent | undefined;
   players: Player[];
   squares: Square[];
-  status: GamePhase | Prompt;
 };

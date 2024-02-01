@@ -1,4 +1,4 @@
-import { CardType, EventType, GamePhase, PromptType } from '../enums';
+import { CardType, EventType, GamePhaseName, PromptType } from '../enums';
 import {
   chanceCards,
   communityChestCards,
@@ -27,7 +27,7 @@ export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
           },
           ...game.eventHistory,
         ],
-    status: GamePhase.play,
+    phase: { name: GamePhaseName.play },
   };
 
   return card.action(nextGame);
@@ -50,10 +50,13 @@ export const triggerCardPrompt = (game: Game, cardType: CardType): Game => {
   return {
     ...game,
     ...nextCardIs,
-    status: {
-      cardId,
-      cardType,
-      type: PromptType.card,
+    phase: {
+      name: GamePhaseName.prompt,
+      prompt: {
+        cardId,
+        cardType,
+        type: PromptType.card,
+      },
     },
   };
 };

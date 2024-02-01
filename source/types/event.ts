@@ -83,16 +83,16 @@ export type TurnInJailEvent = EventBase & {
   type: EventType.turnInJail;
 };
 
+export type PendingEvent = ExpenseEvent | GetOutOfJailEvent | PayRentEvent;
+
 /** The Event type already exists in Typescript. Using GEvent instead (i.e. GameEvent) */
 export type GEvent =
   | AnswerOfferEvent
   | BankruptcyEvent
   | CardEvent
-  | ExpenseEvent
   | FreeParkingEvent
   | GenericEvent
-  | GetOutOfJailEvent
   | GoToJailEvent
-  | PayRentEvent
+  | PendingEvent
   | PropertyEvent
   | TurnInJailEvent;

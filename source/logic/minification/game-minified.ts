@@ -28,6 +28,7 @@ export const minifyGame = (game: Game): GameMinified => {
     nh: game.nextChanceCardIds,
     no: game.nextCommunityCardIds,
     pe: game.pendingEvent,
+    ph: game.phase,
     pl: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       g: player.getOutOfJail,
@@ -81,7 +82,6 @@ export const minifyGame = (game: Game): GameMinified => {
             t: square.type,
           };
     }),
-    st: game.status,
   };
 };
 
@@ -101,6 +101,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       return restore(e);
     }),
     pendingEvent: g.pe,
+    phase: g.ph,
     players: g.pl.map<Player>((p) => ({
       color: p.c,
       getOutOfJail: p.g,
@@ -127,6 +128,5 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
 
       return square;
     }),
-    status: g.st,
   };
 };

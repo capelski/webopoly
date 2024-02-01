@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventType, GamePhase, SquareType } from '../../enums';
+import { EventType, GamePhaseName, SquareType } from '../../enums';
 import {
   canBuyProperty,
   diceToString,
@@ -55,7 +55,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
 
       <div>
         <Button
-          disabled={props.game.status !== GamePhase.rollDice}
+          disabled={props.game.phase.name !== GamePhaseName.rollDice}
           onClick={() => {
             props.updateGame(triggerDiceRoll(props.game));
           }}
@@ -76,7 +76,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         </Button>
 
         <Button
-          disabled={props.game.status !== GamePhase.play}
+          disabled={props.game.phase.name !== GamePhaseName.play}
           onClick={() => {
             props.updateGame(triggerEndTurn(props.game));
           }}
@@ -84,7 +84,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
           End turn
         </Button>
 
-        {props.game.status === GamePhase.cannotPay && (
+        {props.game.phase.name === GamePhaseName.cannotPay && (
           <Button
             onClick={() => {
               const pendingEvent = props.game.pendingEvent!;
@@ -95,8 +95,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
               if (hasEnoughMoney(player, amount)) {
                 let nextGame: Game = {
                   ...props.game,
-                  pendingEvent: undefined,
-                  status: GamePhase.play,
+                  phase: { name: GamePhaseName.play },
                 };
 
                 if (pendingEvent.type === EventType.expense) {

@@ -1,4 +1,12 @@
-import { CardType, EventSource, EventType, PromptType, SquareType, TaxType } from '../enums';
+import {
+  CardType,
+  EventSource,
+  EventType,
+  GamePhaseName,
+  PromptType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { Game, Id } from '../types';
@@ -20,8 +28,11 @@ export const triggerMovePlayer = (
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
   if (goesToJail) {
-    nextGame.status = {
-      type: PromptType.goToJail,
+    nextGame.phase = {
+      name: GamePhaseName.prompt,
+      prompt: {
+        type: PromptType.goToJail,
+      },
     };
   } else {
     const paysRent = doesPayRent(currentPlayer, nextSquare);

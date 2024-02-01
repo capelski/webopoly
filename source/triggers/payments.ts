@@ -1,23 +1,23 @@
-import { PromptType, PropertyType, SquareType } from '../enums';
+import { GamePhaseName, PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   ExpenseCardEvent,
   ExpenseEvent,
   Game,
-  GetOutOfJailEvent,
   PayRentEvent,
+  PendingEvent,
   StreetSquare,
 } from '../types';
 
-export const triggerCannotPay = (
-  game: Game,
-  event: ExpenseEvent | GetOutOfJailEvent | PayRentEvent,
-): Game => {
+export const triggerCannotPay = (game: Game, event: PendingEvent): Game => {
   return {
     ...game,
     pendingEvent: event,
-    status: {
-      type: PromptType.cannotPay,
+    phase: {
+      name: GamePhaseName.prompt,
+      prompt: {
+        type: PromptType.cannotPay,
+      },
     },
   };
 };

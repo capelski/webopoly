@@ -1,10 +1,9 @@
-import { GamePhase } from '../enums';
 import { Dice } from './dice';
-import { ExpenseEvent, GetOutOfJailEvent, PayRentEvent } from './event';
+import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
+import { GamePhase } from './game-phase';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
-import { Prompt } from './prompt';
 import { SquareMinified } from './square-minified';
 
 export type GameMinified = {
@@ -23,11 +22,11 @@ export type GameMinified = {
   /** notifications */
   n: EventMinified[];
   /** pendingEvent */
-  pe: ExpenseEvent | GetOutOfJailEvent | PayRentEvent | undefined;
+  pe: PendingEvent | undefined;
+  /** phase */
+  ph: GamePhase;
   /** players */
   pl: PlayerMinified[];
   /** squares */
   sq: SquareMinified[];
-  /** status */
-  st: GamePhase | Prompt;
 };

@@ -1,4 +1,4 @@
-import { GamePhase, JailMedium } from '../enums';
+import { GamePhaseName, JailMedium } from '../enums';
 import { getDiceRoll, getNextSquareId, isDoublesRoll } from '../logic';
 import { Game } from '../types';
 import { triggerGetOutOfJail, triggerTurnInJail } from './jail';
@@ -11,7 +11,11 @@ export const applyDiceRoll = (game: Game): Game => {
 };
 
 export const triggerDiceRoll = (game: Game, isInJail = false): Game => {
-  let nextGame: Game = { ...game, dice: getDiceRoll(), status: GamePhase.play };
+  let nextGame: Game = {
+    ...game,
+    dice: getDiceRoll(),
+    phase: { name: GamePhaseName.play },
+  };
 
   if (isInJail) {
     const isDoubles = isDoublesRoll(nextGame.dice);

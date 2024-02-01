@@ -1,4 +1,4 @@
-import { AnswerType, EventType, OfferType, PromptType } from '../enums';
+import { AnswerType, EventType, GamePhaseName, OfferType, PromptType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import { AnswerOfferPrompt, Game, Id, PropertySquare } from '../types';
 
@@ -22,6 +22,7 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
         type: EventType.answerOffer,
       },
     ],
+    phase: prompt.previousPhase,
     players: game.players.map((p) => {
       return p.id === buyerId
         ? {
@@ -40,7 +41,6 @@ export const triggerAcceptOffer = (game: Game, prompt: AnswerOfferPrompt): Game 
     squares: game.squares.map((s) => {
       return s.id === prompt.propertyId ? { ...s, ownerId: buyerId } : s;
     }),
-    status: prompt.previousStatus,
   };
 };
 
@@ -52,14 +52,17 @@ export const triggerBuyingOffer = (game: Game, property: PropertySquare, amount:
 
   return {
     ...game,
-    status: {
-      amount,
-      offerType: OfferType.buy,
-      playerId: currentPlayer.id,
-      previousStatus: game.status,
-      propertyId: property.id,
-      targetPlayerId: property.ownerId,
-      type: PromptType.answerOffer,
+    phase: {
+      name: GamePhaseName.prompt,
+      prompt: {
+        amount,
+        offerType: OfferType.buy,
+        playerId: currentPlayer.id,
+        previousPhase: game.phase,
+        propertyId: property.id,
+        targetPlayerId: property.ownerId,
+        type: PromptType.answerOffer,
+      },
     },
   };
 };
@@ -79,7 +82,7 @@ export const triggerDeclineOffer = (game: Game, prompt: AnswerOfferPrompt): Game
         type: EventType.answerOffer,
       },
     ],
-    status: prompt.previousStatus,
+    phase: prompt.previousPhase,
   };
 };
 
@@ -91,14 +94,17 @@ export const triggerSellingOffer = (
 ): Game => {
   return {
     ...game,
-    status: {
-      amount,
-      offerType: OfferType.sell,
-      playerId: game.currentPlayerId,
-      previousStatus: game.status,
-      propertyId: property.id,
-      targetPlayerId,
-      type: PromptType.answerOffer,
+    phase: {
+      name: GamePhaseName.prompt,
+      prompt: {
+        amount,
+        offerType: OfferType.sell,
+        playerId: game.currentPlayerId,
+        previousPhase: game.phase,
+        propertyId: property.id,
+        targetPlayerId,
+        type: PromptType.answerOffer,
+      },
     },
   };
 };
