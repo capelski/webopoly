@@ -1,11 +1,11 @@
 import { PropertyStatus, SquareType } from '../enums';
-import { Game, Player, Square } from '../types';
+import { Game, Id, Player, Square } from '../types';
 
-export const doesPayRent = (player: Player, square: Square): boolean => {
+export const doesPayRent = (playerId: Id, square: Square): boolean => {
   return (
     square.type === SquareType.property &&
     square.ownerId !== undefined &&
-    square.ownerId !== player.id &&
+    square.ownerId !== playerId &&
     square.status !== PropertyStatus.mortgaged
   );
 };

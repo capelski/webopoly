@@ -2,91 +2,26 @@ import {
   CardType,
   EventSource,
   EventType,
-  GamePhaseName,
+  GamePhase,
   PromptType,
   SquareType,
   TaxType,
 } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
-import { Game, Id } from '../types';
+import { GamePlayPhase, GamePromptPhase, Id } from '../types';
 import { triggerCardPrompt } from './cards';
 import { triggerExpense, triggerPayRent } from './payments';
 
-export type MovePlayerOptions = {
-  preventPassGo?: boolean;
-};
+export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.card>;
 
-export const triggerMovePlayer = (
-  game: Game,
-  nextSquareId: Id,
-  options: MovePlayerOptions = {},
-): Game => {
-  let nextGame: Game = { ...game };
-  let currentPlayer = getCurrentPlayer(nextGame);
-  const nextSquare = nextGame.squares.find((s) => s.id === nextSquareId)!;
+export type MovePlayerOutputPhases =
+  | GamePlayPhase
+  | GamePromptPhase<PromptType.card>
+  | GamePromptPhase<PromptType.goToJail>
+  | GamePromptPhase<PromptType.cannotPay>;
 
-  const goesToJail = nextSquare.type === SquareType.goToJail;
-  if (goesToJail) {
-    nextGame.phase = {
-      name: GamePhaseName.prompt,
-      prompt: {
-        type: PromptType.goToJail,
-      },
-    };
-  } else {
-    const paysRent = doesPayRent(currentPlayer, nextSquare);
-    const payTaxes = nextSquare.type === SquareType.tax;
-    const collectsFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
-    const landsInChance = nextSquare.type === SquareType.chance;
-    const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
-
-    if (!options.preventPassGo && passesGo(nextGame, currentPlayer.squareId, nextSquareId)) {
-      nextGame = applyPassGo(nextGame);
-      currentPlayer = getCurrentPlayer(nextGame);
-    }
-
-    if (paysRent && nextSquare.type === SquareType.property) {
-      nextGame = triggerPayRent(nextGame, {
-        landlordId: nextSquare.ownerId!,
-        playerId: game.currentPlayerId,
-        amount: getRentAmount(nextGame, nextSquare),
-        type: EventType.payRent,
-      });
-      currentPlayer = getCurrentPlayer(nextGame);
-    } else if (payTaxes) {
-      const tax =
-        nextSquare.taxType === TaxType.income
-          ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
-          : 100;
-      nextGame = triggerExpense(nextGame, {
-        amount: tax,
-        playerId: game.currentPlayerId,
-        source: EventSource.taxSquare,
-        type: EventType.expense,
-      });
-      currentPlayer = getCurrentPlayer(nextGame);
-    } else if (collectsFreeParking) {
-      nextGame = applyFreeParking(nextGame);
-      currentPlayer = getCurrentPlayer(nextGame);
-    } else if (landsInChance) {
-      nextGame = triggerCardPrompt(nextGame, CardType.chance);
-    } else if (landsInCommunityChest) {
-      nextGame = triggerCardPrompt(nextGame, CardType.communityChest);
-    }
-  }
-
-  nextGame = {
-    ...nextGame,
-    players: nextGame.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, squareId: nextSquareId } : p;
-    }),
-  };
-
-  return nextGame;
-};
-
-const applyFreeParking = (game: Game): Game => {
+const applyFreeParking = (game: MovePlayerInputPhases): GamePlayPhase => {
   return {
     ...game,
     centerPot: 0,
@@ -98,13 +33,14 @@ const applyFreeParking = (game: Game): Game => {
         type: EventType.freeParking,
       },
     ],
+    phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
     }),
   };
 };
 
-const applyPassGo = (game: Game): Game => {
+const applyPassGo = (game: MovePlayerInputPhases): MovePlayerInputPhases => {
   return {
     ...game,
     notifications: [
@@ -118,4 +54,83 @@ const applyPassGo = (game: Game): Game => {
       return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
     }),
   };
+};
+
+export type MovePlayerOptions = {
+  preventPassGo?: boolean;
+};
+
+export const triggerMovePlayer = (
+  game: MovePlayerInputPhases,
+  nextSquareId: Id,
+  options: MovePlayerOptions = {},
+): MovePlayerOutputPhases => {
+  const currentSquareId = getCurrentPlayer(game).squareId;
+  const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
+
+  let updatedGame: MovePlayerInputPhases = {
+    ...game,
+    players: game.players.map((p) => {
+      return p.id === game.currentPlayerId ? { ...p, squareId: nextSquareId } : p;
+    }),
+  };
+
+  const goesToJail = nextSquare.type === SquareType.goToJail;
+  if (goesToJail) {
+    const nextGame: GamePromptPhase<PromptType.goToJail> = {
+      ...updatedGame,
+      phase: GamePhase.prompt,
+      prompt: {
+        type: PromptType.goToJail,
+      },
+    };
+    return nextGame;
+  }
+
+  if (!options.preventPassGo && passesGo(updatedGame, currentSquareId, nextSquareId)) {
+    updatedGame = applyPassGo(updatedGame);
+  }
+
+  const paysRent = doesPayRent(game.currentPlayerId, nextSquare);
+  if (paysRent && nextSquare.type === SquareType.property) {
+    return triggerPayRent(updatedGame, {
+      landlordId: nextSquare.ownerId!,
+      playerId: game.currentPlayerId,
+      amount: getRentAmount(updatedGame, nextSquare),
+      type: EventType.payRent,
+    });
+  }
+
+  const payTaxes = nextSquare.type === SquareType.tax;
+  if (payTaxes) {
+    const currentPlayer = getCurrentPlayer(updatedGame);
+    const tax =
+      nextSquare.taxType === TaxType.income
+        ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
+        : 100;
+    return triggerExpense(updatedGame, {
+      amount: tax,
+      playerId: game.currentPlayerId,
+      source: EventSource.taxSquare,
+      type: EventType.expense,
+    });
+  }
+
+  const collectsFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
+  if (collectsFreeParking) {
+    return applyFreeParking(updatedGame);
+  }
+
+  const landsInChance = nextSquare.type === SquareType.chance;
+  if (landsInChance) {
+    return triggerCardPrompt(updatedGame, CardType.chance);
+  }
+
+  const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
+  if (landsInCommunityChest) {
+    return triggerCardPrompt(updatedGame, CardType.communityChest);
+  }
+
+  const nextGame: GamePlayPhase = { ...updatedGame, phase: GamePhase.play };
+  return nextGame;
 };

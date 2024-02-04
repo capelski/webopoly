@@ -1,49 +1,74 @@
-import { GamePhaseName, PromptType, PropertyType, SquareType } from '../enums';
+import { GamePhase, PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   ExpenseCardEvent,
   ExpenseEvent,
-  Game,
+  GameCannotPayPhase,
+  GamePlayPhase,
+  GamePromptPhase,
   PayRentEvent,
   PendingEvent,
   StreetSquare,
 } from '../types';
 
-export const triggerCannotPay = (game: Game, event: PendingEvent): Game => {
+export type CannotPayPromptInputPhases =
+  | GamePlayPhase
+  | GamePromptPhase<PromptType.jailOptions> // Is player's last turn in jail and they don't have enough money to pay the fine
+  | GamePromptPhase<PromptType.card>
+  | GameCannotPayPhase; // Player resumes a pending payment but they still don't have enough money
+
+export type ExpenseInputPhases =
+  | GamePlayPhase
+  | GamePromptPhase<PromptType.card>
+  | GameCannotPayPhase; // Player resumes a pending payment and has enough money
+
+export type ExpenseOutputPhases = GamePlayPhase | GamePromptPhase<PromptType.cannotPay>;
+
+export const triggerCannotPayPrompt = (
+  game: CannotPayPromptInputPhases,
+  event: PendingEvent,
+): GamePromptPhase<PromptType.cannotPay> => {
   return {
     ...game,
-    pendingEvent: event,
-    phase: {
-      name: GamePhaseName.prompt,
-      prompt: {
-        type: PromptType.cannotPay,
-      },
+    phase: GamePhase.prompt,
+    prompt: {
+      pendingEvent: event,
+      type: PromptType.cannotPay,
     },
   };
 };
 
-export const triggerExpense = (game: Game, event: ExpenseEvent): Game => {
+export const triggerExpense = (
+  game: ExpenseInputPhases,
+  event: ExpenseEvent,
+): ExpenseOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, event.amount)
+  const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
         centerPot: game.centerPot + event.amount,
         notifications: [...game.notifications, event],
+        phase: GamePhase.play,
         players: game.players.map((p) => {
           return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
         }),
       }
-    : triggerCannotPay(game, event);
+    : triggerCannotPayPrompt(game, event);
 
   return nextGame;
 };
 
-export const triggerPayRent = (game: Game, event: PayRentEvent): Game => {
+export const triggerPayRent = (
+  game: ExpenseInputPhases,
+  event: PayRentEvent,
+): ExpenseOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
-  const nextGame: Game = hasEnoughMoney(currentPlayer, event.amount)
+
+  const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
         notifications: [...game.notifications, event],
+        phase: GamePhase.play,
         players: game.players.map((p) => {
           return p.id === game.currentPlayerId
             ? { ...p, money: p.money - event.amount }
@@ -52,7 +77,7 @@ export const triggerPayRent = (game: Game, event: PayRentEvent): Game => {
             : p;
         }),
       }
-    : triggerCannotPay(game, event);
+    : triggerCannotPayPrompt(game, event);
 
   return nextGame;
 };
@@ -96,10 +121,10 @@ export const triggerPayRent = (game: Game, event: PayRentEvent): Game => {
 // };
 
 export const triggerRepairsExpense = (
-  game: Game,
+  game: GamePromptPhase<PromptType.card>,
   housePrice: number,
   partialEvent: Omit<ExpenseCardEvent, 'amount'>,
-): Game => {
+): ExpenseOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
   const playerStreets = game.squares.filter(
     (s) =>
@@ -115,10 +140,14 @@ export const triggerRepairsExpense = (
   });
 };
 
-export const triggerWindfall = (game: Game, payout: number): Game => {
+export const triggerWindfall = (
+  game: GamePromptPhase<PromptType.card>,
+  payout: number,
+): GamePlayPhase => {
   const currentPlayer = getCurrentPlayer(game);
   return {
     ...game,
+    phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
     }),

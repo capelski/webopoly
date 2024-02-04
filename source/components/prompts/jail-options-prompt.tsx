@@ -1,8 +1,8 @@
 import React from 'react';
-import { JailMedium, PromptType } from '../../enums';
+import { PromptType } from '../../enums';
 import { getCurrentPlayer } from '../../logic';
 import { currencySymbol, jailFine, jailSymbol } from '../../parameters';
-import { triggerDiceRoll, triggerGetOutOfJail } from '../../triggers';
+import { triggerDiceRollInJail, triggerPayJailFine, triggerUseJailCard } from '../../triggers';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
@@ -18,7 +18,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
       <div>
         <Button
           onClick={() => {
-            props.updateGame(triggerDiceRoll(props.game, true));
+            props.updateGame(triggerDiceRollInJail(props.game));
           }}
         >
           Roll dice
@@ -27,7 +27,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
         <Button
           disabled={player.money < jailFine || player.turnsInJail === 2}
           onClick={() => {
-            props.updateGame(triggerGetOutOfJail(props.game, JailMedium.fine));
+            props.updateGame(triggerPayJailFine(props.game));
           }}
         >
           Pay {currencySymbol}
@@ -37,7 +37,7 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
         <Button
           disabled={!player.getOutOfJail}
           onClick={() => {
-            props.updateGame(triggerGetOutOfJail(props.game, JailMedium.card));
+            props.updateGame(triggerUseJailCard(props.game));
           }}
         >
           Use Get out of Jail card

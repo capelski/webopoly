@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyType, SquareModalType } from '../../enums';
+import { GamePhase, PropertyType, SquareModalType } from '../../enums';
 import {
   canBuildHouse,
   canClearMortgage,
@@ -87,6 +87,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
       <div style={{ marginBottom: 16 }}>
         <Button
           disabled={
+            props.game.phase === GamePhase.prompt ||
             !props.square.ownerId ||
             (props.square.propertyType === PropertyType.street && props.square.houses > 0)
           }

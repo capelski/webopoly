@@ -1,8 +1,7 @@
+- Jail triggers game types could be further refined by the medium
 - Display the pending money total in cannot pay prompt
 - DIsplay street repair total amount in notification
-- Introduce GamePhase object, to have a phase with payload without it being a prompt
-    - Include the pendingEvent in status...
-- Status transition object to describe how status can change?
+- Street repairs expense must be recomputed after cannot pay, as houses might have been sold
 - Extract logic to disable buttons
     E.g. function to determine whether diceRoll can be triggered. Use it both in
     the component to disable the button, in the logic function to return the same game

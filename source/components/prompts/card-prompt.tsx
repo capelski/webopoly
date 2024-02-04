@@ -8,17 +8,17 @@ import { PromptInterface } from './prompt-interface';
 
 export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
   const [hasDrawn, setHasDrawn] = useState(false);
-  const isChanceCard = props.prompt.cardType === CardType.chance;
+  const isChanceCard = props.game.prompt.cardType === CardType.chance;
   const card = isChanceCard
-    ? getChanceCardById(props.prompt.cardId)
-    : getCommunityChestCardById(props.prompt.cardId);
+    ? getChanceCardById(props.game.prompt.cardId)
+    : getCommunityChestCardById(props.game.prompt.cardId);
 
   return (
     <React.Fragment>
       {hasDrawn ? (
         <OkPrompt
           okHandler={() => {
-            props.updateGame(triggerCardAction(props.game, props.prompt));
+            props.updateGame(triggerCardAction(props.game, props.game.prompt));
           }}
         >
           <p>{card.text}</p>

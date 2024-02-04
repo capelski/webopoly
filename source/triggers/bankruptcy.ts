@@ -1,10 +1,13 @@
-import { EventType, PlayerStatus, PropertyType, SquareType } from '../enums';
+import { EventType, PlayerStatus, PromptType, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
-import { Game, GEvent, Id, Player, Square } from '../types';
-import { triggerEndTurn } from './end-turn';
+import { GamePromptPhase, GEvent, Id, Player, Square } from '../types';
+import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 
-export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
-  const pendingEvent = game.pendingEvent!;
+export const triggerBankruptcy = (
+  game: GamePromptPhase<PromptType.cannotPay>,
+  playerId: Id,
+): EndTurnOutputPhases => {
+  const { pendingEvent } = game.prompt;
   const bankruptcyEvent: GEvent = {
     creditorId: pendingEvent.type === EventType.payRent ? pendingEvent.landlordId : undefined,
     playerId,
@@ -30,44 +33,31 @@ export const triggerBankruptcy = (game: Game, playerId: Id): Game => {
     );
   }, 0);
 
-  let nextGame: Game =
-    pendingEvent.type === EventType.payRent
-      ? {
-          ...game,
-          players: game.players.map<Player>((p) => {
-            return p.id === playerId
-              ? bankruptPlayer
-              : p.id === pendingEvent.landlordId
-              ? {
-                  ...p,
-                  getOutOfJail: p.getOutOfJail + targetPlayer.getOutOfJail,
-                  money: p.money + targetPlayer.money + housesMoney,
-                  properties: [...p.properties, ...targetPlayer.properties],
-                }
-              : p;
-          }),
-          squares: game.squares.map<Square>((s) => {
-            return s.type === SquareType.property && s.ownerId === playerId
-              ? { ...s, houses: 0, ownerId: pendingEvent.landlordId }
-              : s;
-          }),
-        }
-      : {
-          ...game,
-          players: game.players.map<Player>((p) => {
-            return p.id === playerId ? bankruptPlayer : p;
-          }),
-          squares: game.squares.map<Square>((s) => {
-            return s.type === SquareType.property && s.ownerId === playerId
-              ? { ...s, houses: 0, ownerId: undefined, status: undefined }
-              : s;
-          }),
-        };
+  const updatedGame: GamePromptPhase<PromptType.cannotPay> = {
+    ...game,
+    players: game.players.map<Player>((p) => {
+      return p.id === playerId
+        ? bankruptPlayer
+        : pendingEvent.type === EventType.payRent && p.id === pendingEvent.landlordId
+        ? {
+            ...p,
+            getOutOfJail: p.getOutOfJail + targetPlayer.getOutOfJail,
+            money: p.money + targetPlayer.money + housesMoney,
+            properties: [...p.properties, ...targetPlayer.properties],
+          }
+        : p;
+    }),
+    squares: game.squares.map<Square>((s) => {
+      return s.type === SquareType.property && s.ownerId === playerId
+        ? pendingEvent.type === EventType.payRent
+          ? { ...s, houses: 0, ownerId: pendingEvent.landlordId }
+          : { ...s, houses: 0, ownerId: undefined, status: undefined }
+        : s;
+    }),
+  };
 
-  nextGame.notifications = [...nextGame.notifications, bankruptcyEvent];
-  nextGame.pendingEvent = undefined;
-
-  nextGame = triggerEndTurn(nextGame);
+  updatedGame.notifications = [...updatedGame.notifications, bankruptcyEvent];
+  const nextGame = triggerEndTurn(updatedGame);
 
   return nextGame;
 };

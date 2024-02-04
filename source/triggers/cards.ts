@@ -1,4 +1,4 @@
-import { CardType, EventType, GamePhaseName, PromptType } from '../enums';
+import { CardType, EventType, GamePhase, PromptType } from '../enums';
 import {
   chanceCards,
   communityChestCards,
@@ -6,15 +6,19 @@ import {
   getCommunityChestCardById,
   shuffleArray,
 } from '../logic';
-import { CardPrompt, Game } from '../types';
+import { CardPrompt, GamePlayPhase, GamePromptPhase } from '../types';
+import { MovePlayerOutputPhases } from './move-player';
 
-export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
+export const triggerCardAction = (
+  game: GamePromptPhase<PromptType.card>,
+  prompt: CardPrompt,
+): MovePlayerOutputPhases => {
   const card =
     prompt.cardType === CardType.chance
       ? getChanceCardById(prompt.cardId)
       : getCommunityChestCardById(prompt.cardId);
 
-  const nextGame: Game = {
+  const nextGame: GamePromptPhase<PromptType.card> = {
     ...game,
     eventHistory: card.skipEvent
       ? game.eventHistory
@@ -27,13 +31,15 @@ export const triggerCardAction = (game: Game, prompt: CardPrompt): Game => {
           },
           ...game.eventHistory,
         ],
-    phase: { name: GamePhaseName.play },
   };
 
   return card.action(nextGame);
 };
 
-export const triggerCardPrompt = (game: Game, cardType: CardType): Game => {
+export const triggerCardPrompt = (
+  game: GamePlayPhase | GamePromptPhase<PromptType.card>,
+  cardType: CardType,
+): GamePromptPhase<PromptType.card> => {
   const nextCardIs = {
     nextChanceCardIds: game.nextChanceCardIds,
     nextCommunityCardIds: game.nextCommunityCardIds,
@@ -50,13 +56,11 @@ export const triggerCardPrompt = (game: Game, cardType: CardType): Game => {
   return {
     ...game,
     ...nextCardIs,
-    phase: {
-      name: GamePhaseName.prompt,
-      prompt: {
-        cardId,
-        cardType,
-        type: PromptType.card,
-      },
+    phase: GamePhase.prompt,
+    prompt: {
+      cardId,
+      cardType,
+      type: PromptType.card,
     },
   };
 };

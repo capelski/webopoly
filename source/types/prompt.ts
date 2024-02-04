@@ -1,18 +1,20 @@
 import { CardType, OfferType, PromptType } from '../enums';
-import { GamePhase } from './game-phase';
+import { PendingEvent } from './event';
+import { NonPromptPhasePayload } from './game-phase-payload';
 import { Id } from './id';
 
 export type AnswerOfferPrompt = {
   amount: number;
   offerType: OfferType;
   playerId: Id;
-  previousPhase: GamePhase;
+  previous: NonPromptPhasePayload;
   propertyId: Id;
   targetPlayerId: Id;
   type: PromptType.answerOffer;
 };
 
 export type CannotPayPrompt = {
+  pendingEvent: PendingEvent;
   type: PromptType.cannotPay;
 };
 
@@ -31,9 +33,10 @@ export type PlayerWinPrompt = {
   type: PromptType.playerWins;
 };
 
-export type Prompt =
+export type Prompt<T extends PromptType> = (
   | AnswerOfferPrompt
   | CannotPayPrompt
   | CardPrompt
   | GenericPrompt
-  | PlayerWinPrompt;
+  | PlayerWinPrompt
+) & { type: T };

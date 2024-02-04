@@ -1,4 +1,4 @@
-export enum GamePhaseName {
+export enum GamePhase {
   cannotPay = 'cannotPay',
   play = 'play',
   prompt = 'prompt',

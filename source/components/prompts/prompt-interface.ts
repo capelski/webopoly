@@ -1,9 +1,8 @@
 import React from 'react';
 import { PromptType } from '../../enums';
-import { Game, Prompt } from '../../types';
+import { Game, GamePromptPhase } from '../../types';
 
-export type PromptInterface<T extends PromptType = PromptType> = React.FC<{
-  prompt: Prompt & { type: T };
-  game: Game;
+export type PromptInterface<TPrompt extends PromptType> = React.FC<{
+  game: GamePromptPhase<TPrompt>;
   updateGame: (game: Game | undefined) => void;
 }>;

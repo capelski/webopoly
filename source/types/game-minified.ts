@@ -1,12 +1,13 @@
+import { GamePhase, PromptType } from '../enums';
 import { Dice } from './dice';
 import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
-import { GamePhase } from './game-phase';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
+import { Prompt } from './prompt';
 import { SquareMinified } from './square-minified';
 
-export type GameMinified = {
+type GameBaseMinified = {
   /** centerPot */
   cp: number;
   /** currentPlayerId */
@@ -21,12 +22,38 @@ export type GameMinified = {
   no: Id[];
   /** notifications */
   n: EventMinified[];
-  /** pendingEvent */
-  pe: PendingEvent | undefined;
-  /** phase */
-  ph: GamePhase;
   /** players */
   pl: PlayerMinified[];
   /** squares */
   sq: SquareMinified[];
 };
+
+export type GameCannotPayPhaseMinified = GameBaseMinified & {
+  /** pendingEvent */
+  pe: PendingEvent;
+  /** phase */
+  ph: GamePhase.cannotPay;
+};
+
+export type GamePlayPhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePhase.play;
+};
+
+export type GamePromptPhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePhase.prompt;
+  /** prompt */
+  pr: Prompt<PromptType>;
+};
+
+export type GameRollDicePhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePhase.rollDice;
+};
+
+export type GameMinified =
+  | GameCannotPayPhaseMinified
+  | GamePlayPhaseMinified
+  | GamePromptPhaseMinified
+  | GameRollDicePhaseMinified;

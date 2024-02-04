@@ -1,11 +1,18 @@
+import { PromptType } from '../enums';
 import { Dice } from './dice';
-import { GEvent, PendingEvent } from './event';
-import { GamePhase } from './game-phase';
+import { GEvent } from './event';
+import {
+  CannotPayPhasePayload,
+  PhasePayloadBase,
+  PlayPhasePayload,
+  PromptPhasePayload,
+  RollDicePhasePayload,
+} from './game-phase-payload';
 import { Id } from './id';
 import { Player } from './player';
 import { Square } from './square';
 
-export type Game = {
+type GameBase<T extends PhasePayloadBase<any>> = {
   centerPot: number;
   currentPlayerId: Id;
   dice: Dice;
@@ -13,8 +20,18 @@ export type Game = {
   nextChanceCardIds: Id[];
   nextCommunityCardIds: Id[];
   notifications: GEvent[];
-  phase: GamePhase;
-  pendingEvent: PendingEvent | undefined;
   players: Player[];
   squares: Square[];
-};
+} & T;
+
+export type GameCannotPayPhase = GameBase<CannotPayPhasePayload>;
+
+export type GamePlayPhase = GameBase<PlayPhasePayload>;
+
+export type GamePromptPhase<TPrompt extends PromptType> = GameBase<PromptPhasePayload<TPrompt>>;
+
+export type GameRollDicePhase = GameBase<RollDicePhasePayload>;
+
+export type GameNonPromptPhase = GameCannotPayPhase | GamePlayPhase | GameRollDicePhase;
+
+export type Game = GameNonPromptPhase | GamePromptPhase<PromptType>;

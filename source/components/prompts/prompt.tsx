@@ -1,6 +1,6 @@
 import React from 'react';
 import { PromptType } from '../../enums';
-import { Game, Prompt } from '../../types';
+import { Game, GamePromptPhase } from '../../types';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { CannotPayPrompt } from './cannot-pay-prompt';
@@ -22,12 +22,11 @@ const promptsMap: {
 };
 
 interface PromptComponentProps {
-  game: Game;
-  prompt: Prompt;
+  game: GamePromptPhase<PromptType>;
   updateGame: (game: Game | undefined) => void;
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
-  const renderer: PromptInterface = promptsMap[props.prompt.type];
+  const renderer: PromptInterface<PromptType> = promptsMap[props.game.prompt.type];
   return <Modal inset="25% 20px">{renderer(props)}</Modal>;
 };

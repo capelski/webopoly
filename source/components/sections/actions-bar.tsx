@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventType, GamePhaseName, SquareType } from '../../enums';
+import { EventType, GamePhase, SquareType } from '../../enums';
 import {
   canBuyProperty,
   diceToString,
@@ -10,11 +10,11 @@ import {
 import { diceSymbol, jailFine, parkingSymbol } from '../../parameters';
 import {
   triggerBuyProperty,
-  triggerCannotPay,
+  triggerCannotPayPrompt,
   triggerDiceRoll,
   triggerEndTurn,
   triggerExpense,
-  triggerGetOutOfJail,
+  triggerLastTurnInJail,
   triggerPayRent,
 } from '../../triggers';
 import { Game } from '../../types';
@@ -55,9 +55,11 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
 
       <div>
         <Button
-          disabled={props.game.phase.name !== GamePhaseName.rollDice}
+          disabled={props.game.phase !== GamePhase.rollDice}
           onClick={() => {
-            props.updateGame(triggerDiceRoll(props.game));
+            if (props.game.phase === GamePhase.rollDice) {
+              props.updateGame(triggerDiceRoll(props.game));
+            }
           }}
         >
           Roll dice
@@ -76,39 +78,42 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         </Button>
 
         <Button
-          disabled={props.game.phase.name !== GamePhaseName.play}
+          disabled={props.game.phase !== GamePhase.play}
           onClick={() => {
-            props.updateGame(triggerEndTurn(props.game));
+            if (props.game.phase === GamePhase.play) {
+              props.updateGame(triggerEndTurn(props.game));
+            }
           }}
         >
           End turn
         </Button>
 
-        {props.game.phase.name === GamePhaseName.cannotPay && (
+        {props.game.phase === GamePhase.cannotPay && (
           <Button
             onClick={() => {
-              const pendingEvent = props.game.pendingEvent!;
+              if (props.game.phase !== GamePhase.cannotPay) {
+                return;
+              }
+
+              const pendingEvent = props.game.pendingEvent;
               const amount =
-                pendingEvent.type === EventType.getOutOfJail ? jailFine : pendingEvent.amount;
+                pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
               const player = getCurrentPlayer(props.game);
 
               if (hasEnoughMoney(player, amount)) {
-                let nextGame: Game = {
-                  ...props.game,
-                  phase: { name: GamePhaseName.play },
-                };
+                let nextGame: Game;
 
                 if (pendingEvent.type === EventType.expense) {
-                  nextGame = triggerExpense(nextGame, pendingEvent);
-                } else if (pendingEvent.type === EventType.getOutOfJail) {
-                  nextGame = triggerGetOutOfJail(nextGame, pendingEvent.medium);
-                } else if (pendingEvent.type === EventType.payRent) {
-                  nextGame = triggerPayRent(nextGame, pendingEvent);
+                  nextGame = triggerExpense(props.game, pendingEvent);
+                } else if (pendingEvent.type === EventType.turnInJail) {
+                  nextGame = triggerLastTurnInJail(props.game);
+                } else {
+                  nextGame = triggerPayRent(props.game, pendingEvent);
                 }
 
                 props.updateGame(nextGame);
               } else {
-                props.updateGame(triggerCannotPay(props.game, pendingEvent));
+                props.updateGame(triggerCannotPayPrompt(props.game, pendingEvent));
               }
             }}
           >

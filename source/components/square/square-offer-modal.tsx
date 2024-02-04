@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SquareModalType } from '../../enums';
+import { GamePhase, SquareModalType } from '../../enums';
 import { getCurrentPlayer, getOtherPlayers, getPlayerById } from '../../logic';
 import { currencySymbol } from '../../parameters';
 import { triggerBuyingOffer, triggerSellingOffer } from '../../triggers';
@@ -70,12 +70,14 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
         <Button
           disabled={offer <= 0 || (isSellingOffer && !targetPlayerId)}
           onClick={() => {
-            props.setSquareModalType(undefined);
-            props.updateGame(
-              isSellingOffer
-                ? triggerSellingOffer(props.game, props.square, offer, targetPlayerId!)
-                : triggerBuyingOffer(props.game, props.square, offer),
-            );
+            if (props.game.phase !== GamePhase.prompt) {
+              props.setSquareModalType(undefined);
+              props.updateGame(
+                isSellingOffer
+                  ? triggerSellingOffer(props.game, props.square, offer, targetPlayerId!)
+                  : triggerBuyingOffer(props.game, props.square, offer),
+              );
+            }
           }}
         >
           Send offer
