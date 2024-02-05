@@ -33,7 +33,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
   const currentSquare = getCurrentSquare(props.game);
 
   return (
-    <div style={{ background: '#efefef', position: 'sticky', bottom: 0, padding: 8 }}>
+    <div style={{ background: '#efefef', padding: 8 }}>
       {clearGameModal && (
         <Modal>
           <div>Are you sure you want to clear the game?</div>

@@ -34,6 +34,7 @@ export const SquareMenuModal: React.FC<SquareMenuModalProps> = (props) => {
 
   return (
     <Modal>
+      <h3>{props.square.name}</h3>
       <div style={{ marginBottom: 16 }}>
         <Button
           disabled={!canMortgage(props.square, currentPlayer.id)}

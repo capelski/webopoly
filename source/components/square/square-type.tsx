@@ -27,11 +27,11 @@ const squareTypeMap: { [key in SquareType]: React.ReactNode } = {
 };
 
 export const SquareTypeComponent: React.FC<SquareTypeComponentProps> = (props) => {
-  return props.square.type !== SquareType.property ? (
-    <span>{squareTypeMap[props.square.type]}&nbsp;</span>
-  ) : props.square.propertyType === PropertyType.station ? (
-    <span>🚂&nbsp;</span>
-  ) : props.square.propertyType === PropertyType.utility ? (
-    <span>{props.square.icon}&nbsp;</span>
-  ) : undefined;
+  return props.square.type !== SquareType.property
+    ? squareTypeMap[props.square.type]
+    : props.square.propertyType === PropertyType.station
+    ? '🚂'
+    : props.square.propertyType === PropertyType.utility
+    ? props.square.icon
+    : undefined;
 };

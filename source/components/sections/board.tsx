@@ -5,7 +5,6 @@ import { SquareComponent } from '../square/square';
 
 interface BoardProps {
   game: Game;
-  isDesktop: boolean;
   updateGame: (game: Game | undefined) => void;
 }
 
@@ -29,11 +28,14 @@ export const Board: React.FC<BoardProps> = (props) => {
   return (
     <div
       style={{
+        borderBottom: '2px solid black',
         display: 'flex',
-        flexDirection: 'column',
-        padding: props.isDesktop ? 8 : undefined,
-        overflow: 'scroll',
-        width: props.isDesktop ? '50%' : '100%',
+        flexBasis: 250, // Sets the height, as parent has display: flex
+        flexDirection: 'row',
+        flexShrink: 0, // Sets the height, as parent has display: flex
+        flexWrap: 'nowrap',
+        overflowX: 'scroll',
+        overflowY: 'hidden',
       }}
     >
       {props.game.squares.map((square) => (

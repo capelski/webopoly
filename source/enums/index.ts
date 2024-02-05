@@ -3,7 +3,6 @@ export * from './card-type';
 export * from './event-source';
 export * from './event-type';
 export * from './game-phase';
-export * from './game-view';
 export * from './jail-medium';
 export * from './neighborhood';
 export * from './offer-type';

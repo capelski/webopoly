@@ -1,6 +1,6 @@
 import React from 'react';
 import { Player } from '../../types';
-import { PlayerComponent } from './player';
+import { PlayerComponent } from '../player/player';
 
 interface PlayersProps {
   currentPlayerId: number;
@@ -9,7 +9,7 @@ interface PlayersProps {
 
 export const Players: React.FC<PlayersProps> = (props) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', fontSize: 24 }}>
+    <div style={{ fontSize: 24, padding: 8 }}>
       {props.players.map((player) => (
         <PlayerComponent
           isActive={player.id === props.currentPlayerId}

@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
-import { GameView } from '../enums';
+import React from 'react';
 import { Game } from '../types';
 import { ActionsBar } from './sections/actions-bar';
 import { Board } from './sections/board';
-import { MobileBar } from './sections/mobile-bar';
+import { EventHistory } from './sections/event-history';
 import { Notifications } from './sections/notifications';
-import { Panel } from './sections/panel';
+import { Players } from './sections/players';
 import { PromptContainer } from './sections/prompt-container';
 
 interface GameComponentProps {
@@ -15,33 +13,17 @@ interface GameComponentProps {
 }
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
-  const isDesktop = useMediaQuery({ minWidth: 768 });
-  const [gameView, setGameView] = useState(GameView.board);
-
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <Notifications game={props.game} updateGame={props.updateGame} />
 
       <PromptContainer game={props.game} updateGame={props.updateGame} />
 
-      {!isDesktop && <MobileBar gameView={gameView} setGameView={setGameView} />}
+      <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
 
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexGrow: 1,
-          overflow: 'hidden',
-        }}
-      >
-        {(isDesktop || gameView === GameView.board) && (
-          <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} />
-        )}
+      <Board game={props.game} updateGame={props.updateGame} />
 
-        {(isDesktop || gameView === GameView.panel) && (
-          <Panel game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} />
-        )}
-      </div>
+      <EventHistory game={props.game} updateGame={props.updateGame} />
 
       <ActionsBar game={props.game} updateGame={props.updateGame} />
     </div>

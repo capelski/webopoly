@@ -1,4 +1,4 @@
-export const chanceSymbol = '⭐️';
+export const chanceSymbol = '❓';
 export const communityChestSymbol = '🗃️';
 export const currencySymbol = '￡';
 export const diceSymbol = '🎲';

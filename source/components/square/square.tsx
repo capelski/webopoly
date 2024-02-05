@@ -42,17 +42,17 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
     props.square.type === SquareType.property && props.square.ownerId !== undefined
       ? getPlayerById(props.game, props.square.ownerId)
       : undefined;
-  const playersInSquare = props.game.players.filter((p) => p.squareId === props.square.id);
+  const playersInSquare = props.game.players.filter(
+    (p) => p.squareId === props.square.id && !p.isInJail,
+  );
+  const playersInJail = props.game.players.filter(
+    (p) => p.squareId === props.square.id && p.isInJail,
+  );
 
   const { backgroundColor, color } =
     props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
       ? streetsColorMap[props.square.neighborhood]
       : { backgroundColor: undefined, color: undefined };
-
-  const fontStyle =
-    props.square.type === SquareType.property && props.square.status === PropertyStatus.mortgaged
-      ? 'italic'
-      : undefined;
 
   return (
     <div
@@ -65,10 +65,13 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
           : undefined
       }
       style={{
-        alignItems: 'center',
+        borderLeft: props.square.id === 1 ? '2px solid black' : undefined,
+        borderRight: '2px solid black',
         display: 'flex',
-        flexDirection: 'row',
-        borderTop: '1px solid #ccc',
+        flexBasis: 180, // Sets the width, as parent has display: flex
+        flexDirection: 'column',
+        flexShrink: 0, // Sets the width, as parent has display: flex
+        fontSize: 24,
       }}
     >
       {props.square.type === SquareType.property && squareModalType === SquareModalType.menu && (
@@ -93,104 +96,110 @@ export const SquareComponent: React.FC<SquareComponentProps> = (props) => {
 
       <div
         style={{
-          display: 'flex',
           alignItems: 'center',
           backgroundColor,
+          borderBottom: '1px solid black',
+          borderTop: '2px solid black',
           color,
-          fontStyle,
-          fontSize: 24,
-          width: props.square.type === SquareType.property ? '50%' : '80%',
-          height: '100%',
-          paddingLeft: 4,
+          display: 'flex',
+          height: 50,
+          justifyContent: 'center',
         }}
       >
-        <SquareTypeComponent square={props.square} />
         {props.square.name}
+      </div>
+
+      <div
+        style={{
+          flexGrow: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {playersInSquare.length > 0 ? (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 50 }}>
+              <PlayersInSquare
+                currentPlayerId={currentPlayer.id}
+                players={playersInSquare.filter((p) => !p.isInJail)}
+              />
+            </div>
+            <div style={{ fontSize: 25 }}>
+              <SquareTypeComponent square={props.square} />
+            </div>
+          </div>
+        ) : (
+          <span style={{ fontSize: 72 }}>
+            <SquareTypeComponent square={props.square} />
+          </span>
+        )}
+      </div>
+
+      <div
+        style={{
+          alignItems: 'center',
+          backgroundColor: props.square.type === SquareType.jail ? '#ccc' : undefined,
+          borderTop: props.square.type === SquareType.jail ? '1px solid black' : undefined,
+          display: 'flex',
+          fontSize: 20,
+          justifyContent: 'center',
+          height: 40,
+          padding: '0 8px',
+          textAlign: 'center',
+        }}
+      >
         {props.square.type === SquareType.go ? (
-          <div
-            style={{
-              fontSize: 18,
-              flexGrow: 1,
-              textAlign: 'right',
-              paddingRight: 4,
-            }}
-          >
+          <div>
             Collect {currencySymbol}
             {passGoMoney}
           </div>
-        ) : props.square.type === SquareType.tax ? (
-          <div
-            style={{
-              fontSize: 18,
-              flexGrow: 1,
-              textAlign: 'right',
-              paddingRight: 4,
-            }}
-          >
+        ) : undefined}
+
+        {props.square.type === SquareType.tax ? (
+          <div>
+            Pay{' '}
             {props.square.taxType === TaxType.income
               ? `10% or ${currencySymbol}200`
               : `${currencySymbol}100`}
           </div>
-        ) : props.square.type === SquareType.jail ? (
-          <div
-            style={{
-              paddingLeft: 8,
-            }}
-          >
-            <PlayersInSquare
-              currentPlayerId={currentPlayer.id}
-              players={playersInSquare.filter((p) => p.isInJail)}
-            />
+        ) : undefined}
+
+        {props.square.type === SquareType.jail ? (
+          <div style={{ fontSize: 32 }}>
+            <PlayersInSquare currentPlayerId={currentPlayer.id} players={playersInJail} />
           </div>
         ) : undefined}
-      </div>
 
-      {props.square.type === SquareType.property && (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            fontStyle,
-            justifyContent: 'flex-end',
-            backgroundColor,
-            color,
-            fontSize: 18,
-            width: '30%',
-            height: '100%',
-            paddingRight: 4,
-          }}
-        >
-          {props.square.status === PropertyStatus.mortgaged ? (
-            mortgageSymbol
-          ) : (
-            <React.Fragment>
-              {owner && <PlayerAvatar player={owner} />}
-              {props.square.propertyType === PropertyType.street && (
-                <span>
-                  {houseSymbol}&nbsp;{props.square.houses}&nbsp;
-                </span>
-              )}
-              {currencySymbol}
-              {props.square.price}
-            </React.Fragment>
-          )}
-        </div>
-      )}
-
-      <div
-        style={{
-          borderLeft: '1px solid #ccc',
-          fontSize: 22,
-          width: '20%',
-          height: '100%',
-          textAlign: 'center',
-        }}
-      >
-        <PlayersInSquare
-          currentPlayerId={currentPlayer.id}
-          players={playersInSquare.filter((p) => !p.isInJail)}
-        />
+        {props.square.type === SquareType.property && (
+          <div style={{ flexGrow: 1 }}>
+            {props.square.ownerId ? (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>
+                  {currencySymbol}
+                  {props.square.price}
+                </div>
+                <div>
+                  <span style={{ paddingRight: 8 }}>
+                    {owner && <PlayerAvatar player={owner} />}
+                  </span>
+                  {props.square.status === PropertyStatus.mortgaged ? (
+                    <span>{mortgageSymbol}</span>
+                  ) : props.square.propertyType === PropertyType.street ? (
+                    <span>
+                      {houseSymbol}&nbsp;{props.square.houses}
+                    </span>
+                  ) : undefined}
+                </div>
+              </div>
+            ) : (
+              <React.Fragment>
+                {currencySymbol}
+                {props.square.price}
+              </React.Fragment>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

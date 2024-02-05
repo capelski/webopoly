@@ -4,7 +4,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
-    "react-responsive": "^9.0.2",
     "react-toastify": "^9.1.3"
   },
   "description": "Web adaptation of the monopoly board game",
