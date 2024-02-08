@@ -8,7 +8,8 @@ export const goToJailSymbol = '🚔';
 export const goSymbol = '⏩';
 export const jailSymbol = '⚖️';
 export const mortgageSymbol = '🏦';
-export const parkingSymbol = '🅿️';
+export const parkingSymbol = '🚘';
+export const stationSymbol = '🚂';
 export const taxSymbol = '💰';
 
 export const jailFine = 50;

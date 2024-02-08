@@ -7,6 +7,7 @@ import {
   goToJailSymbol,
   jailSymbol,
   parkingSymbol,
+  stationSymbol,
   taxSymbol,
 } from '../../parameters';
 import { Square } from '../../types';
@@ -30,7 +31,7 @@ export const SquareTypeComponent: React.FC<SquareTypeComponentProps> = (props) =
   return props.square.type !== SquareType.property
     ? squareTypeMap[props.square.type]
     : props.square.propertyType === PropertyType.station
-    ? '🚂'
+    ? stationSymbol
     : props.square.propertyType === PropertyType.utility
     ? props.square.icon
     : undefined;
