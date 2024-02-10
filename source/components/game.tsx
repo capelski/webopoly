@@ -1,10 +1,11 @@
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { Game } from '../types';
+import { Board } from './board/board';
+import { Players } from './player/players';
 import { ActionsBar } from './sections/actions-bar';
-import { Board } from './sections/board';
 import { EventHistory } from './sections/event-history';
 import { Notifications } from './sections/notifications';
-import { Players } from './sections/players';
 import { PromptContainer } from './sections/prompt-container';
 
 interface GameComponentProps {
@@ -13,19 +14,31 @@ interface GameComponentProps {
 }
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <Notifications game={props.game} updateGame={props.updateGame} />
+  const isDesktop = useMediaQuery({ minWidth: 728 });
 
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <PromptContainer game={props.game} updateGame={props.updateGame} />
 
-      <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: isDesktop ? 'row' : 'column',
+          height: isDesktop ? '100vh' : undefined,
+          overflow: 'hidden',
+        }}
+      >
+        <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} />
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <ActionsBar game={props.game} updateGame={props.updateGame} />
 
-      <Board game={props.game} updateGame={props.updateGame} />
+          <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
 
-      <EventHistory game={props.game} updateGame={props.updateGame} />
+          <EventHistory game={props.game} updateGame={props.updateGame} />
+        </div>
+      </div>
 
-      <ActionsBar game={props.game} updateGame={props.updateGame} />
+      <Notifications game={props.game} updateGame={props.updateGame} />
     </div>
   );
 };

@@ -1,5 +1,6 @@
-- Split square.tsx into sub components
-- Click on player should focus the corresponding square
+- Add state representation to the property squares
+- Change property modal look and feel to resemble the old square component
+
 - Jail triggers game types could be further refined by the medium
 - Display the pending money total in cannot pay prompt
 - DIsplay street repair total amount in notification

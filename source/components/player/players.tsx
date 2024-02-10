@@ -1,6 +1,6 @@
 import React from 'react';
 import { Player } from '../../types';
-import { PlayerComponent } from '../player/player';
+import { PlayerComponent } from './player';
 
 interface PlayersProps {
   currentPlayerId: number;
