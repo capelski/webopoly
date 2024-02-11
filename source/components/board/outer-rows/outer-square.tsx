@@ -1,5 +1,13 @@
 import React, { CSSProperties, useState } from 'react';
-import { Neighborhood, PropertyType, SquareModalType, SquareType } from '../../../enums';
+import {
+  Neighborhood,
+  PropertyStatus,
+  PropertyType,
+  SquareModalType,
+  SquareType,
+} from '../../../enums';
+import { getPlayerById } from '../../../logic';
+import { houseSymbol } from '../../../parameters';
 import { Game, Square } from '../../../types';
 import { SquareMenuModal } from '../../square/square-menu-modal';
 import { SquareOfferModal } from '../../square/square-offer-modal';
@@ -29,9 +37,26 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
   const [squareModalType, setSquareModalType] = useState<SquareModalType | undefined>();
 
   const backgroundColor =
-    props.square.type === SquareType.property && props.square.propertyType === PropertyType.street
-      ? streetsColorMap[props.square.neighborhood]
+    props.square.type === SquareType.property
+      ? props.square.status === PropertyStatus.mortgaged
+        ? 'lightgrey'
+        : props.square.propertyType === PropertyType.street
+        ? streetsColorMap[props.square.neighborhood]
+        : undefined
       : undefined;
+
+  const owner =
+    props.square.type === SquareType.property && props.square.ownerId !== undefined
+      ? getPlayerById(props.game, props.square.ownerId)
+      : undefined;
+
+  const ownedPropertyBorders: CSSProperties = {
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
+  };
 
   return (
     <div
@@ -59,27 +84,65 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         ...props.style,
       }}
     >
-      {props.square.type === SquareType.property && squareModalType === SquareModalType.menu && (
-        <SquareMenuModal
-          game={props.game}
-          setSquareModalType={setSquareModalType}
-          square={props.square}
-          updateGame={props.updateGame}
-        />
+      {props.square.type === SquareType.property && (
+        <React.Fragment>
+          {squareModalType === SquareModalType.menu && (
+            <SquareMenuModal
+              game={props.game}
+              setSquareModalType={setSquareModalType}
+              square={props.square}
+              updateGame={props.updateGame}
+            />
+          )}
+
+          {squareModalType === SquareModalType.placeOffer && (
+            <SquareOfferModal
+              game={props.game}
+              setSquareModalType={setSquareModalType}
+              square={props.square}
+              squareModalType={squareModalType}
+              updateGame={props.updateGame}
+            />
+          )}
+
+          {props.square.ownerId !== undefined && (
+            <div
+              style={{
+                border: `3px solid ${owner!.color}`,
+                ...ownedPropertyBorders,
+              }}
+            >
+              <div
+                style={{
+                  alignItems: 'center',
+                  border: `1px solid white`,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  ...ownedPropertyBorders,
+                }}
+              >
+                {props.square.propertyType === PropertyType.street && props.square.houses > 0 ? (
+                  <span>{houseSymbol}</span>
+                ) : undefined}
+              </div>
+            </div>
+          )}
+        </React.Fragment>
       )}
 
-      {props.square.type === SquareType.property &&
-        squareModalType === SquareModalType.placeOffer && (
-          <SquareOfferModal
-            game={props.game}
-            setSquareModalType={setSquareModalType}
-            square={props.square}
-            squareModalType={squareModalType}
-            updateGame={props.updateGame}
-          />
-        )}
-
-      <SquareTypeComponent square={props.square} />
+      <span
+        style={
+          props.square.type === SquareType.property &&
+          props.square.status === PropertyStatus.mortgaged
+            ? {
+                color: 'transparent',
+                textShadow: 'white 0 0 0',
+              }
+            : undefined
+        }
+      >
+        <SquareTypeComponent square={props.square} />
+      </span>
 
       {props.square.type === SquareType.jail
         ? props.game.players
