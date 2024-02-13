@@ -18,6 +18,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <Notifications game={props.game} updateGame={props.updateGame} />
+
       <PromptContainer game={props.game} updateGame={props.updateGame} />
 
       <div
@@ -37,8 +39,6 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           <EventHistory game={props.game} updateGame={props.updateGame} />
         </div>
       </div>
-
-      <Notifications game={props.game} updateGame={props.updateGame} />
     </div>
   );
 };

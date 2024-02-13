@@ -38,5 +38,5 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
     }
   }, [props.game.notifications]);
 
-  return <ToastContainer position="bottom-right" />;
+  return <ToastContainer position="top-left" />;
 };
