@@ -19,7 +19,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
         isOpen={true}
         onRequestClose={props.closeHandler}
         style={{
-          content: { display: 'flex', flexDirection: 'column', inset: props.inset || 20 },
+          content: { display: 'flex', flexDirection: 'column', inset: props.inset || '25% 20px' },
           overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
         }}
       >

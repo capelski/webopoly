@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { GamePhase, SquareModalType } from '../../enums';
-import { getCurrentPlayer, getOtherPlayers, getPlayerById } from '../../logic';
-import { currencySymbol } from '../../parameters';
-import { triggerBuyingOffer, triggerSellingOffer } from '../../triggers';
-import { Game, Id, PropertySquare } from '../../types';
-import { Button } from '../common/button';
-import { Modal } from '../common/modal';
+import { GamePhase, SquareModalType } from '../../../enums';
+import { getCurrentPlayer, getOtherPlayers, getPlayerById } from '../../../logic';
+import { currencySymbol } from '../../../parameters';
+import { triggerBuyingOffer, triggerSellingOffer } from '../../../triggers';
+import { Game, Id, PropertySquare } from '../../../types';
+import { Button } from '../../common/button';
+import { Modal } from '../../common/modal';
 
 interface SquareOfferModalProps {
   game: Game;
@@ -31,7 +31,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
     : currentPlayer.money;
 
   return (
-    <Modal inset="25% 20px">
+    <Modal>
       {isSellingOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (

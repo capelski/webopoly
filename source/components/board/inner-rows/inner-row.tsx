@@ -1,11 +1,11 @@
 import React, { CSSProperties } from 'react';
 import { Game } from '../../../types';
 import { InnerSquare } from './inner-square';
-import { InnerSquaresFrame } from './inner-squares';
+import { InnerSquareMapping } from './inner-squares-map';
 
 export type InnerRowProps = {
   game: Game;
-  innerSquares: InnerSquaresFrame[];
+  innerSquares: InnerSquareMapping[];
   isDesktop: boolean;
   style?: CSSProperties;
 };
@@ -13,12 +13,12 @@ export type InnerRowProps = {
 export const InnerRow: React.FC<InnerRowProps> = (props) => {
   return (
     <div style={props.style}>
-      {props.innerSquares.map((innerSquareFrames, rowIndex) => {
+      {props.innerSquares.map((innerSquareMapping, rowIndex) => {
         return (
           <InnerSquare
-            frames={innerSquareFrames}
             isDesktop={props.isDesktop}
             key={rowIndex}
+            outerSquareIds={innerSquareMapping}
             players={props.game.players}
           />
         );

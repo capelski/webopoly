@@ -9,6 +9,7 @@ import {
 } from '../../logic';
 import {
   chanceSymbol,
+  clearMortgageSymbol,
   communityChestSymbol,
   currencySymbol,
   getOutJailSymbol,
@@ -21,6 +22,7 @@ import {
   mortgageSymbol,
   parkingSymbol,
   passGoMoney,
+  sellHouseSymbol,
   taxSymbol,
 } from '../../parameters';
 import { Game, GEvent, Player } from '../../types';
@@ -83,7 +85,7 @@ const renderersMap: {
     const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} clears the mortgage on ${square.name}`,
-      icon: '❎',
+      icon: clearMortgageSymbol,
     };
   },
   [EventType.expense]: (player, event) =>
@@ -148,7 +150,7 @@ const renderersMap: {
     const square = getSquareById(game, event.propertyId);
     return {
       description: `${player.name} sells a house in ${square.name}`,
-      icon: '🏚️',
+      icon: sellHouseSymbol,
     };
   },
   [EventType.turnInJail]: (player, event) => ({

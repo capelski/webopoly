@@ -1,4 +1,5 @@
 export const chanceSymbol = '❓';
+export const clearMortgageSymbol = '❎';
 export const communityChestSymbol = '🗃️';
 export const currencySymbol = '￡';
 export const diceSymbol = '🎲';
@@ -9,6 +10,7 @@ export const goSymbol = '⏩';
 export const jailSymbol = '⚖️';
 export const mortgageSymbol = '🏦';
 export const parkingSymbol = '🚘';
+export const sellHouseSymbol = '🏚️';
 export const stationSymbol = '🚂';
 export const taxSymbol = '💰';
 
@@ -19,7 +21,12 @@ export const playerInitialMoney = 1500;
 export const rentPercentage = 0.05;
 export const mortgagePercentage = 0.5;
 export const clearMortgageRate = 1.1;
-export const stationRent = 25;
+export const stationRents: { [stationsNumber: number]: number } = {
+  1: 25,
+  2: 50,
+  3: 100,
+  4: 200,
+};
 export const housesMax = 5;
 export const houseBuildPercentage = 0.6;
 export const houseSellPercentage = 0.3;

@@ -1,13 +1,13 @@
 import React from 'react';
 import { RowComponentDefinition } from '../row-component-definition';
 import { InnerRow } from './inner-row';
-import { innerSquares } from './inner-squares';
+import { innerSquaresMap } from './inner-squares-map';
 
 export const InnerRightRow: RowComponentDefinition = (props) => {
   return (
     <InnerRow
       {...props}
-      innerSquares={innerSquares.right}
+      innerSquares={innerSquaresMap.right}
       style={{
         display: 'flex',
         flexDirection: 'column',

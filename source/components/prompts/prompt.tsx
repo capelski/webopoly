@@ -28,5 +28,5 @@ interface PromptComponentProps {
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
   const renderer: PromptInterface<PromptType> = promptsMap[props.game.prompt.type];
-  return <Modal inset="25% 20px">{renderer(props)}</Modal>;
+  return <Modal>{renderer(props)}</Modal>;
 };

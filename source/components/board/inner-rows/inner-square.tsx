@@ -1,20 +1,20 @@
 import React from 'react';
 import { Player } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
-import { InnerSquaresFrame } from './inner-squares';
+import { squaresRotation } from '../squares-rotation';
+import { InnerSquareMapping } from './inner-squares-map';
 
 export type InnerSquareProps = {
-  frames: InnerSquaresFrame;
   isDesktop: boolean;
+  outerSquareIds: InnerSquareMapping;
   players: Player[];
 };
 
 export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
-  const frames = Object.keys(props.frames)
+  const frames = props.outerSquareIds
     .map((outerSquareId) => {
-      const squareId = parseInt(outerSquareId);
-      const players = props.players.filter((p) => p.squareId === squareId && !p.isInJail);
-      return { players, rotate: props.frames[squareId] };
+      const players = props.players.filter((p) => p.squareId === outerSquareId && !p.isInJail);
+      return { players, rotate: squaresRotation[outerSquareId] };
     })
     .filter((frame) => frame.players.length > 0);
 

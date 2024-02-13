@@ -7,7 +7,7 @@ import {
   housesMax,
   mortgagePercentage,
   rentPercentage,
-  stationRent,
+  stationRents,
 } from '../parameters';
 import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
 import { getPlayerById } from './game';
@@ -94,7 +94,7 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
     const stations = properties.filter(
       (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
     );
-    rent = stationRent * stations.length;
+    rent = stationRents[stations.length];
   } else if (property.propertyType === PropertyType.street) {
     if (property.houses > 0) {
       rent = houseRents[property.houses] * property.price;

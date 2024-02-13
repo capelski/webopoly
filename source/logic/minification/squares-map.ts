@@ -6,7 +6,7 @@ export const squaresMap: { [key: Id]: Square } = {
   2: {
     houses: 0,
     id: 2,
-    name: 'Old Kent Rd.',
+    name: 'Old Kent Road',
     neighborhood: Neighborhood.brown,
     ownerId: undefined,
     price: 60,
@@ -18,7 +18,7 @@ export const squaresMap: { [key: Id]: Square } = {
   4: {
     houses: 0,
     id: 4,
-    name: 'Whitechapel Rd.',
+    name: 'Whitechapel Road',
     neighborhood: Neighborhood.brown,
     ownerId: undefined,
     price: 60,
@@ -34,7 +34,7 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   6: {
     id: 6,
-    name: 'Kings Cross',
+    name: "King's Cross Station",
     ownerId: undefined,
     price: 200,
     propertyType: PropertyType.station,
@@ -44,7 +44,7 @@ export const squaresMap: { [key: Id]: Square } = {
   7: {
     houses: 0,
     id: 7,
-    name: 'Angel Islington',
+    name: 'The Angel Islington',
     neighborhood: Neighborhood.lightblue,
     ownerId: undefined,
     price: 100,
@@ -56,7 +56,7 @@ export const squaresMap: { [key: Id]: Square } = {
   9: {
     houses: 0,
     id: 9,
-    name: 'Euston Rd.',
+    name: 'Euston Road',
     neighborhood: Neighborhood.lightblue,
     ownerId: undefined,
     price: 100,
@@ -67,7 +67,7 @@ export const squaresMap: { [key: Id]: Square } = {
   10: {
     houses: 0,
     id: 10,
-    name: 'Pentonville Rd.',
+    name: 'Pentonville Road',
     neighborhood: Neighborhood.lightblue,
     ownerId: undefined,
     price: 120,
@@ -90,7 +90,7 @@ export const squaresMap: { [key: Id]: Square } = {
   13: {
     icon: '🔌',
     id: 13,
-    name: 'Electric Co.',
+    name: 'Electric Company',
     ownerId: undefined,
     price: 150,
     propertyType: PropertyType.utility,
@@ -111,7 +111,7 @@ export const squaresMap: { [key: Id]: Square } = {
   15: {
     houses: 0,
     id: 15,
-    name: 'Northumberland',
+    name: 'Northumberland Av.',
     neighborhood: Neighborhood.pink,
     ownerId: undefined,
     price: 160,
@@ -121,7 +121,7 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   16: {
     id: 16,
-    name: 'Marylebone',
+    name: 'Marylebone Station',
     ownerId: undefined,
     price: 200,
     propertyType: PropertyType.station,
@@ -131,7 +131,7 @@ export const squaresMap: { [key: Id]: Square } = {
   17: {
     houses: 0,
     id: 17,
-    name: 'Bow St.',
+    name: 'Bow Street',
     neighborhood: Neighborhood.orange,
     ownerId: undefined,
     price: 180,
@@ -143,7 +143,7 @@ export const squaresMap: { [key: Id]: Square } = {
   19: {
     houses: 0,
     id: 19,
-    name: 'Marlborough St.',
+    name: 'Marlborough Street',
     neighborhood: Neighborhood.orange,
     ownerId: undefined,
     price: 180,
@@ -154,7 +154,7 @@ export const squaresMap: { [key: Id]: Square } = {
   20: {
     houses: 0,
     id: 20,
-    name: 'Vine St.',
+    name: 'Vine Street',
     neighborhood: Neighborhood.orange,
     ownerId: undefined,
     price: 200,
@@ -178,7 +178,7 @@ export const squaresMap: { [key: Id]: Square } = {
   24: {
     houses: 0,
     id: 24,
-    name: 'Fleet St.',
+    name: 'Fleet Street',
     neighborhood: Neighborhood.red,
     ownerId: undefined,
     price: 220,
@@ -199,7 +199,7 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   26: {
     id: 26,
-    name: 'Fenchurch St.',
+    name: 'Fenchurch St. Station',
     ownerId: undefined,
     price: 200,
     propertyType: PropertyType.station,
@@ -220,7 +220,7 @@ export const squaresMap: { [key: Id]: Square } = {
   28: {
     houses: 0,
     id: 28,
-    name: 'Coventry St.',
+    name: 'Coventry Street',
     neighborhood: Neighborhood.yellow,
     ownerId: undefined,
     price: 260,
@@ -253,7 +253,7 @@ export const squaresMap: { [key: Id]: Square } = {
   32: {
     houses: 0,
     id: 32,
-    name: 'Regent St.',
+    name: 'Regent Street',
     neighborhood: Neighborhood.green,
     ownerId: undefined,
     price: 300,
@@ -264,7 +264,7 @@ export const squaresMap: { [key: Id]: Square } = {
   33: {
     houses: 0,
     id: 33,
-    name: 'Oxford St.',
+    name: 'Oxford Street',
     neighborhood: Neighborhood.green,
     ownerId: undefined,
     price: 300,
@@ -276,7 +276,7 @@ export const squaresMap: { [key: Id]: Square } = {
   35: {
     houses: 0,
     id: 35,
-    name: 'Bond St.',
+    name: 'Bond Street',
     neighborhood: Neighborhood.green,
     ownerId: undefined,
     price: 320,
@@ -286,7 +286,7 @@ export const squaresMap: { [key: Id]: Square } = {
   },
   36: {
     id: 36,
-    name: 'Liverpool St.',
+    name: 'Liverpool St. Station',
     ownerId: undefined,
     price: 200,
     propertyType: PropertyType.station,

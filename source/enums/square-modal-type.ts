@@ -1,4 +1,4 @@
 export enum SquareModalType {
   placeOffer = 'place-offer',
-  menu = 'menu',
+  details = 'details',
 }
