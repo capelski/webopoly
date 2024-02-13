@@ -7,7 +7,7 @@ import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
 export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props) => {
-  const player = getSquareById(props.game, props.game.prompt.playerId);
+  const player = getPlayerById(props.game, props.game.prompt.playerId);
   const square = getSquareById(props.game, props.game.prompt.propertyId);
   const owner = getPlayerById(props.game, props.game.prompt.targetPlayerId);
   const isBuyingOffer = props.game.prompt.offerType === OfferType.buy;
