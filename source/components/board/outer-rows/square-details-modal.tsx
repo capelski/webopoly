@@ -72,7 +72,7 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
           border: `2px solid #aaa`,
           display: 'flex',
           flexDirection: 'column',
-          height: 300,
+          minHeight: 300,
           width: 250,
         }}
       >
@@ -99,6 +99,7 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
 
         <div
           style={{
+            alignItems: 'center',
             display: 'flex',
             justifyContent: 'space-around',
             fontSize: 20,
@@ -148,9 +149,9 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
                   {2 * rentPercentage * props.square.price}
                 </span>
               </div>
-              {Object.keys(houseRents).map((houseNumber) => {
+              {Object.keys(houseRents).map((houseNumber, index) => {
                 return (
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>
                       Rent with {houseNumber} {houseSymbol}
                     </span>
@@ -164,9 +165,9 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
             </React.Fragment>
           ) : props.square.propertyType === PropertyType.station ? (
             <React.Fragment>
-              {Object.keys(stationRents).map((stationsNumber) => {
+              {Object.keys(stationRents).map((stationsNumber, index) => {
                 return (
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>
                       Rent with {stationsNumber} {stationSymbol}
                     </span>
