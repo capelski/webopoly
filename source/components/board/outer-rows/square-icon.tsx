@@ -12,8 +12,10 @@ import {
   taxSymbol,
 } from '../../../parameters';
 import { Square } from '../../../types';
+import { squaresRotation } from '../squares-rotation';
 
 interface SquareIconProps {
+  rotate?: boolean;
   square: Square;
 }
 
@@ -31,15 +33,17 @@ const squareIconMap: { [key in SquareType]: React.ReactNode } = {
 export const SquareIcon: React.FC<SquareIconProps> = (props) => {
   return (
     <span
-      style={
-        props.square.type === SquareType.property &&
+      style={{
+        display: 'inline-block',
+        transform: props.rotate ? `rotate(${squaresRotation[props.square.id]}deg)` : undefined,
+        ...(props.square.type === SquareType.property &&
         props.square.status === PropertyStatus.mortgaged
           ? {
               color: 'transparent',
               textShadow: 'white 0 0 0',
             }
-          : undefined
-      }
+          : undefined),
+      }}
     >
       {props.square.type !== SquareType.property
         ? squareIconMap[props.square.type]

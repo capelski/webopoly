@@ -3,7 +3,6 @@ import { PropertyStatus, PropertyType, SquareModalType, SquareType } from '../..
 import { getPlayerById } from '../../../logic';
 import { Game, Square } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
-import { squaresRotation } from '../squares-rotation';
 import { SquareDetailsModal } from './square-details-modal';
 import { SquareIcon } from './square-icon';
 import { SquareOfferModal } from './square-offer-modal';
@@ -56,11 +55,14 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         flexBasis: 1,
         flexGrow: 1,
         /* Styling */
+        alignItems: 'center',
         backgroundColor,
         borderBottom: '1px solid #aaa',
         borderRight: '1px solid #aaa',
         boxSizing: 'border-box',
+        display: 'flex',
         fontSize: props.isDesktop ? 32 : 18,
+        justifyContent: 'center',
         position: 'relative',
         ...props.style,
       }}
@@ -107,28 +109,15 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         </React.Fragment>
       )}
 
-      <div
-        style={{
-          /* Sizing */
-          height: '100%',
-          width: '100%',
-          /* Styling */
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'center',
-          transform: `rotate(${squaresRotation[props.square.id]}deg)`,
-        }}
-      >
-        <SquareIcon square={props.square} />
+      <SquareIcon rotate={true} square={props.square} />
 
-        {props.square.type === SquareType.jail
-          ? props.game.players
-              .filter((player) => player.isInJail)
-              .map((player, index) => (
-                <PlayerInSquare key={index} offset={index} player={player} rotate={0} />
-              ))
-          : undefined}
-      </div>
+      {props.square.type === SquareType.jail
+        ? props.game.players
+            .filter((player) => player.isInJail)
+            .map((player, index) => (
+              <PlayerInSquare key={index} offset={index} player={player} rotate={225} />
+            ))
+        : undefined}
     </div>
   );
 };
