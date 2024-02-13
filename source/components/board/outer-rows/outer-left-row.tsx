@@ -1,12 +1,13 @@
 import React from 'react';
 import { RowComponentDefinition } from '../row-component-definition';
 import { OuterRow } from './outer-row';
+import { outerSquaresMap } from './outer-squares-map';
 
 export const OuterLeftRow: RowComponentDefinition = (props) => {
   return (
     <OuterRow
       {...props}
-      idFilter={(squareId) => squareId >= 32}
+      outerSquareIds={outerSquaresMap.left}
       style={{
         display: 'flex',
         flexDirection: 'column-reverse',

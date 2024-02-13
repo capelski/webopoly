@@ -3,6 +3,7 @@ import { PropertyStatus, PropertyType, SquareModalType, SquareType } from '../..
 import { getPlayerById } from '../../../logic';
 import { Game, Square } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
+import { squaresRotation } from '../squares-rotation';
 import { SquareDetailsModal } from './square-details-modal';
 import { SquareIcon } from './square-icon';
 import { SquareOfferModal } from './square-offer-modal';
@@ -115,7 +116,12 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         ? props.game.players
             .filter((player) => player.isInJail)
             .map((player, index) => (
-              <PlayerInSquare key={index} offset={index} player={player} rotate={225} />
+              <PlayerInSquare
+                key={index}
+                offset={index}
+                player={player}
+                rotate={squaresRotation[11]}
+              />
             ))
         : undefined}
     </div>

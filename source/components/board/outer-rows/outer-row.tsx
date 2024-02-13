@@ -4,7 +4,7 @@ import { RowComponentDefinitionProps } from '../row-component-definition';
 import { OuterSquare } from './outer-square';
 
 export type OuterRowProps = RowComponentDefinitionProps & {
-  idFilter: (squareId: Id) => boolean;
+  outerSquareIds: Id[];
   style?: CSSProperties;
 };
 
@@ -12,11 +12,11 @@ export const OuterRow: React.FC<OuterRowProps> = (props) => {
   return (
     <div style={props.style}>
       {props.game.squares
-        .filter((square) => props.idFilter(square.id))
+        .filter((square) => props.outerSquareIds.includes(square.id))
         .map((square) => {
           const style: CSSProperties = {};
 
-          if (square.id === 20 || square.id === 32) {
+          if (square.id === 12 || square.id === 40) {
             style.borderBottom = undefined;
           }
 

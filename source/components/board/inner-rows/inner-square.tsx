@@ -2,16 +2,16 @@ import React from 'react';
 import { Player } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
-import { InnerSquareMapping } from './inner-squares-map';
+import { InnerSquareData } from './inner-squares-map';
 
 export type InnerSquareProps = {
+  innerSquare: InnerSquareData;
   isDesktop: boolean;
-  outerSquareIds: InnerSquareMapping;
   players: Player[];
 };
 
 export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
-  const frames = props.outerSquareIds
+  const frames = props.innerSquare.outerSquareIds
     .map((outerSquareId) => {
       const players = props.players.filter((p) => p.squareId === outerSquareId && !p.isInJail);
       return { players, rotate: squaresRotation[outerSquareId] };
