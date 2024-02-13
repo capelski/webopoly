@@ -85,9 +85,12 @@ export const getMortgageAmount = (property: PropertySquare) => {
 
 export const getRentAmount = (game: Game, property: PropertySquare) => {
   const landlord = getPlayerById(game, property.ownerId!);
-  const properties = landlord.properties.map(
-    (propertyId) => game.squares.find((s) => s.id === propertyId)!,
-  );
+  const properties = (
+    landlord.properties.map(
+      (propertyId) => game.squares.find((s) => s.id === propertyId)!,
+    ) as PropertySquare[]
+  ).filter((p) => p.status !== PropertyStatus.mortgaged);
+
   let rent = 0;
 
   if (property.propertyType === PropertyType.station) {
@@ -100,7 +103,9 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
       rent = houseRents[property.houses] * property.price;
     } else {
       const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
-      const ownedStreets = neighborhoodStreets.filter((p) => p.ownerId === landlord.id);
+      const ownedStreets = neighborhoodStreets.filter(
+        (p) => p.ownerId === landlord.id && p.status !== PropertyStatus.mortgaged,
+      );
 
       rent =
         property.price *
