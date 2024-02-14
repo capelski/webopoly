@@ -117,6 +117,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             .filter((player) => player.isInJail)
             .map((player, index) => (
               <PlayerInSquare
+                isActive={player.id === props.game.currentPlayerId}
                 key={index}
                 offset={index}
                 player={player}

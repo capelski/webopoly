@@ -1,10 +1,11 @@
 import React from 'react';
-import { Player } from '../../../types';
+import { Game, Player } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
 import { InnerSquareData } from './inner-squares-map';
 
 export type InnerSquareProps = {
+  game: Game;
   innerSquare: InnerSquareData;
   isDesktop: boolean;
   players: Player[];
@@ -36,6 +37,7 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
         return frame.players.map((player, playerIndex) => {
           return (
             <PlayerInSquare
+              isActive={player.id === props.game.currentPlayerId}
               key={`${frameIndex}-${playerIndex}`}
               offset={playerIndex}
               player={player}

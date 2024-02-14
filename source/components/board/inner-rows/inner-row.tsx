@@ -16,6 +16,7 @@ export const InnerRow: React.FC<InnerRowProps> = (props) => {
       {props.innerSquares.map((innerSquare) => {
         return (
           <InnerSquare
+            game={props.game}
             innerSquare={innerSquare}
             isDesktop={props.isDesktop}
             key={innerSquare.innerSquareId}
