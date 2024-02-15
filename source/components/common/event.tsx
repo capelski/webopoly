@@ -47,7 +47,7 @@ const renderersMap: {
     return {
       description: `${player.name} ${acceptsOffer ? 'accepts' : 'declines'} ${currencySymbol}${
         event.amount
-      } ${isBuyingOffer ? 'BUY' : 'SELL'} offer for ${square.name} from ${owner.name}`,
+      } ${isBuyingOffer ? 'buy' : 'sell'} offer for ${square.name} from ${owner.name}`,
       icon: event.answer === AnswerType.accept ? '👍' : '👎',
     };
   },

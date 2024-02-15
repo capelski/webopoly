@@ -19,6 +19,7 @@ import {
   getSellHouseAmount,
 } from '../../../logic';
 import {
+  buyOfferSymbol,
   clearMortgageSymbol,
   currencySymbol,
   houseRents,
@@ -26,6 +27,7 @@ import {
   mortgageSymbol,
   rentPercentage,
   sellHouseSymbol,
+  sellOfferSymbol,
   stationRents,
   stationSymbol,
 } from '../../../parameters';
@@ -270,13 +272,28 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
             disabled={
               props.game.phase === GamePhase.prompt ||
               !props.square.ownerId ||
-              (props.square.propertyType === PropertyType.street && props.square.houses > 0)
+              (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
+              props.game.currentPlayerId === props.square.ownerId
             }
             onClick={() => {
               props.setSquareModalType(SquareModalType.placeOffer);
             }}
           >
-            {props.game.currentPlayerId === props.square.ownerId ? 'Selling offer' : 'Buying offer'}
+            {buyOfferSymbol} Buy offer
+          </Button>
+
+          <Button
+            disabled={
+              props.game.phase === GamePhase.prompt ||
+              !props.square.ownerId ||
+              (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
+              props.game.currentPlayerId !== props.square.ownerId
+            }
+            onClick={() => {
+              props.setSquareModalType(SquareModalType.placeOffer);
+            }}
+          >
+            {sellOfferSymbol} Sell offer
           </Button>
         </div>
       </div>

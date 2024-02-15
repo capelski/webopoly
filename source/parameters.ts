@@ -1,3 +1,4 @@
+export const buyOfferSymbol = '🛒';
 export const chanceSymbol = '❓';
 export const clearMortgageSymbol = '❎';
 export const communityChestSymbol = '🗃️';
@@ -11,6 +12,7 @@ export const jailSymbol = '⚖️';
 export const mortgageSymbol = '🏦';
 export const parkingSymbol = '🚘';
 export const sellHouseSymbol = '🏚️';
+export const sellOfferSymbol = '📦';
 export const stationSymbol = '🚂';
 export const taxSymbol = '💰';
 

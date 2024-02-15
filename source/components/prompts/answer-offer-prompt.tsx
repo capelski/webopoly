@@ -1,25 +1,26 @@
 import React from 'react';
 import { OfferType, PromptType } from '../../enums';
 import { getPlayerById, getSquareById } from '../../logic';
-import { currencySymbol } from '../../parameters';
+import { buyOfferSymbol, currencySymbol, sellOfferSymbol } from '../../parameters';
 import { triggerAcceptOffer, triggerDeclineOffer } from '../../triggers';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
 export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props) => {
-  const player = getPlayerById(props.game, props.game.prompt.playerId);
+  const initiatorPlayer = getPlayerById(props.game, props.game.prompt.playerId);
   const square = getSquareById(props.game, props.game.prompt.propertyId);
-  const owner = getPlayerById(props.game, props.game.prompt.targetPlayerId);
+  const targetPlayer = getPlayerById(props.game, props.game.prompt.targetPlayerId);
   const isBuyingOffer = props.game.prompt.offerType === OfferType.buy;
 
   return (
     <div>
-      <div>
-        <span>{isBuyingOffer ? '⬅️' : '➡️'}</span>
-        <span style={{ paddingLeft: 8 }}>{`${player.name} places ${currencySymbol}${
-          props.game.prompt.amount
-        } ${isBuyingOffer ? 'BUY' : 'SELL'} offer for ${square.name} to ${owner.name}`}</span>
-      </div>
+      <h4>{targetPlayer.name}</h4>
+      <p>
+        <span>{isBuyingOffer ? buyOfferSymbol : sellOfferSymbol}</span>
+        <span style={{ paddingLeft: 8 }}>{`${initiatorPlayer.name} offers ${
+          isBuyingOffer ? 'buying' : 'selling'
+        } ${square.name} for ${currencySymbol}${props.game.prompt.amount}`}</span>
+      </p>
       <div>
         <Button
           onClick={() => {
