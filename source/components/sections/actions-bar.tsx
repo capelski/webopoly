@@ -26,14 +26,16 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
   const currentSquare = getCurrentSquare(props.game);
 
+  const clearGameCloseHandler = () => setClearGameModal(false);
+
   return (
     <div style={{ paddingLeft: 8 }}>
       {clearGameModal && (
-        <Modal>
+        <Modal closeHandler={clearGameCloseHandler}>
           <div>Are you sure you want to clear the game?</div>
           <div>
             <Button onClick={() => props.updateGame(undefined)}>Yes</Button>
-            <Button onClick={() => setClearGameModal(false)}>No</Button>
+            <Button onClick={clearGameCloseHandler}>No</Button>
           </div>
         </Modal>
       )}

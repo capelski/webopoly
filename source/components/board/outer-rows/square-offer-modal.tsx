@@ -31,7 +31,11 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
     : currentPlayer.money;
 
   return (
-    <Modal>
+    <Modal
+      closeHandler={() => {
+        props.setSquareModalType(undefined);
+      }}
+    >
       {isSellingOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (
@@ -83,13 +87,6 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
           Send offer
         </Button>
       </div>
-      <Button
-        onClick={() => {
-          props.setSquareModalType(undefined);
-        }}
-      >
-        Cancel
-      </Button>
     </Modal>
   );
 };

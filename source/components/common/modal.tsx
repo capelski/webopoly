@@ -13,27 +13,48 @@ export const Modal: React.FC<ModalProps> = (props) => {
     <div
       onClick={(event) => {
         event.stopPropagation();
+        if (props.closeHandler) {
+          props.closeHandler();
+        }
       }}
     >
       <ReactModal
         isOpen={true}
-        onRequestClose={props.closeHandler}
         style={{
-          content: { display: 'flex', flexDirection: 'column', inset: props.inset || '25% 20px' },
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            inset: props.inset || '25% 20px',
+            padding: 0,
+          },
           overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
         }}
       >
         <div
-          style={{
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-            flexGrow: 1,
-            justifyContent: 'center',
-            ...props.style,
+          onClick={(event) => {
+            event.stopPropagation();
           }}
+          style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, padding: 20 }}
         >
-          {props.children}
+          {props.closeHandler && (
+            <div style={{ textAlign: 'right' }}>
+              <span onClick={props.closeHandler} style={{ cursor: 'pointer' }}>
+                ❌
+              </span>
+            </div>
+          )}
+          <div
+            style={{
+              alignItems: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              flexGrow: 1,
+              justifyContent: 'center',
+              ...props.style,
+            }}
+          >
+            {props.children}
+          </div>
         </div>
       </ReactModal>
     </div>

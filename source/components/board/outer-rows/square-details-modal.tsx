@@ -66,7 +66,12 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
   const owner = props.square.ownerId && getPlayerById(props.game, props.square.ownerId);
 
   return (
-    <Modal inset="10% 20px">
+    <Modal
+      closeHandler={() => {
+        props.setSquareModalType(undefined);
+      }}
+      inset="10% 20px"
+    >
       <div
         style={{
           border: `2px solid #aaa`,
@@ -274,14 +279,6 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
             {props.game.currentPlayerId === props.square.ownerId ? 'Selling offer' : 'Buying offer'}
           </Button>
         </div>
-
-        <Button
-          onClick={() => {
-            props.setSquareModalType(undefined);
-          }}
-        >
-          Cancel
-        </Button>
       </div>
     </Modal>
   );
