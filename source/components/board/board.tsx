@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { GamePhase, TransitionType } from '../../enums';
 import { diceToString } from '../../logic';
-import { currencySymbol, diceSymbol, parkingSymbol } from '../../parameters';
-import { Game } from '../../types';
+import {
+  currencySymbol,
+  diceSymbol,
+  diceTransitionDuration,
+  parkingSymbol,
+  playerTransitionDuration,
+} from '../../parameters';
+import { triggerDiceTransition, triggerPlayerTransition } from '../../triggers';
+import { Game, GameUiTransitionPhase } from '../../types';
 import { Grid } from './grid';
 import { InnerBottomRow } from './inner-rows/inner-bottom-row';
 import { InnerLeftRow } from './inner-rows/inner-left-row';
@@ -19,6 +27,30 @@ interface BoardProps {
 }
 
 export const Board: React.FC<BoardProps> = (props) => {
+  const [animateDice, setAnimateDice] = useState(false);
+
+  useEffect(() => {
+    if (props.game.phase === GamePhase.uiTransition) {
+      if (props.game.transitionType === TransitionType.dice) {
+        setAnimateDice(true);
+        setTimeout(() => {
+          setAnimateDice(false);
+          setTimeout(() => {
+            props.updateGame(
+              triggerDiceTransition(props.game as GameUiTransitionPhase<TransitionType.dice>),
+            );
+          }, diceTransitionDuration * 1000);
+        }, diceTransitionDuration * 1000);
+      } else if (props.game.transitionType === TransitionType.player) {
+        setTimeout(() => {
+          props.updateGame(
+            triggerPlayerTransition(props.game as GameUiTransitionPhase<TransitionType.player>),
+          );
+        }, playerTransitionDuration * 1000);
+      }
+    }
+  }, [props.game]);
+
   return (
     <div
       style={{
@@ -56,7 +88,13 @@ export const Board: React.FC<BoardProps> = (props) => {
               fontSize: 24,
             }}
           >
-            <div style={{ marginBottom: 16 }}>
+            <div
+              style={{
+                fontSize: animateDice ? 48 : undefined,
+                marginBottom: 16,
+                transition: `font-size ${diceTransitionDuration}s`,
+              }}
+            >
               {diceSymbol} {diceToString(props.game.dice)}
             </div>
             <div>

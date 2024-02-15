@@ -1,7 +1,8 @@
-import { GamePhase, PromptType } from '../enums';
+import { GamePhase, PromptType, TransitionType } from '../enums';
 import { Dice } from './dice';
 import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
+import { GameUiTransitionPhase } from './game';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
 import { Prompt } from './prompt';
@@ -52,8 +53,25 @@ export type GameRollDicePhaseMinified = GameBaseMinified & {
   ph: GamePhase.rollDice;
 };
 
+export type GameUiTransitionPhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePhase.uiTransition;
+} & (
+    | {
+        /** transitionType */
+        tt: TransitionType.dice;
+      }
+    | {
+        /** Not minifying, as it will not be persisted in the event history */
+        td: GameUiTransitionPhase<TransitionType.player>['transitionData'];
+        /** transitionType */
+        tt: TransitionType.player;
+      }
+  );
+
 export type GameMinified =
   | GameCannotPayPhaseMinified
   | GamePlayPhaseMinified
   | GamePromptPhaseMinified
-  | GameRollDicePhaseMinified;
+  | GameRollDicePhaseMinified
+  | GameUiTransitionPhaseMinified;

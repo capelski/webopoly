@@ -1,5 +1,6 @@
-import { GamePhase, PromptType } from '../enums';
+import { GamePhase, PromptType, TransitionType } from '../enums';
 import { PendingEvent } from './event';
+import { Id } from './id';
 import { Prompt } from './prompt';
 
 export type PhasePayloadBase<T extends GamePhase> = {
@@ -19,4 +20,25 @@ export type PromptPhasePayload<TPrompt extends PromptType = PromptType> =
 
 export type RollDicePhasePayload = PhasePayloadBase<GamePhase.rollDice>;
 
-export type NonPromptPhasePayload = CannotPayPhasePayload | PlayPhasePayload | RollDicePhasePayload;
+export type UiTransitionPhasePayload<TTransition extends TransitionType = TransitionType> =
+  PhasePayloadBase<GamePhase.uiTransition> & {
+    transitionType: TTransition;
+  } & (
+      | {
+          transitionType: TransitionType.dice;
+        }
+      | {
+          transitionData: {
+            currentSquareId: Id;
+            pendingMoves: number;
+            playerId: Id;
+          };
+          transitionType: TransitionType.player;
+        }
+    );
+
+export type NonPromptPhasePayload =
+  | CannotPayPhasePayload
+  | PlayPhasePayload
+  | RollDicePhasePayload
+  | UiTransitionPhasePayload;

@@ -20,7 +20,6 @@ export const InnerRow: React.FC<InnerRowProps> = (props) => {
             innerSquare={innerSquare}
             isDesktop={props.isDesktop}
             key={innerSquare.innerSquareId}
-            players={props.game.players}
           />
         );
       })}

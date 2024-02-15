@@ -37,3 +37,6 @@ export const houseRents: { [housesNumber: number]: number } = {
   4: 4,
   5: 5,
 };
+
+export const diceTransitionDuration = 1; // In seconds
+export const playerTransitionDuration = 0.4; // In seconds

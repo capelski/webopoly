@@ -10,6 +10,7 @@ import {
   stationRents,
 } from '../parameters';
 import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
+import { getDiceMovement } from './dice';
 import { getPlayerById } from './game';
 
 export const canBuildHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
@@ -116,7 +117,7 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
     const utilityProperties = properties.filter(
       (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
     );
-    const movement = game.dice.reduce((x, y) => x + y, 0);
+    const movement = getDiceMovement(game.dice);
     rent = movement * (utilityProperties.length === 2 ? 10 : 4);
   }
 

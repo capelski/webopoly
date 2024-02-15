@@ -13,3 +13,4 @@ export * from './property-type';
 export * from './square-modal-type';
 export * from './square-type';
 export * from './tax-type';
+export * from './transition-type';

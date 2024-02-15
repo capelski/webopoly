@@ -1,24 +1,31 @@
-import { GamePhase, PromptType } from '../enums';
-import { getCurrentPlayer, getDiceRoll, getNextSquareId, isDoublesRoll } from '../logic';
+import { GamePhase, PromptType, TransitionType } from '../enums';
+import {
+  getCurrentPlayer,
+  getDiceMovement,
+  getDiceRoll,
+  getNextSquareId,
+  isDoublesRoll,
+} from '../logic';
 import { maxTurnsInJail } from '../parameters';
-import { GamePlayPhase, GamePromptPhase, GameRollDicePhase } from '../types';
+import { GamePlayPhase, GamePromptPhase, GameRollDicePhase, GameUiTransitionPhase } from '../types';
 import { triggerLastTurnInJail, triggerRemainInJail, triggerRollDoublesInJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 
 export const applyDiceRoll = (game: GamePlayPhase): MovePlayerOutputPhases => {
-  const movement = game.dice.reduce((x, y) => x + y, 0);
+  const movement = getDiceMovement(game.dice);
   const nextSquareId = getNextSquareId(game, movement);
   return triggerMovePlayer(game, nextSquareId);
 };
 
-export const triggerDiceRoll = (game: GameRollDicePhase): MovePlayerOutputPhases => {
-  const nextGame: GamePlayPhase = {
+export const triggerDiceRoll = (
+  game: GameRollDicePhase,
+): GameUiTransitionPhase<TransitionType.dice> => {
+  return {
     ...game,
     dice: getDiceRoll(),
-    phase: GamePhase.play,
+    phase: GamePhase.uiTransition,
+    transitionType: TransitionType.dice,
   };
-
-  return applyDiceRoll(nextGame);
 };
 
 export const triggerDiceRollInJail = (

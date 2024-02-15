@@ -1,4 +1,4 @@
-import { GamePhase, PropertyType, SquareType } from '../../enums';
+import { GamePhase, PropertyType, SquareType, TransitionType } from '../../enums';
 import {
   EventMinified,
   Game,
@@ -84,6 +84,14 @@ export const minifyGame = (game: Game): GameMinified => {
       ? { ph: game.phase, pe: game.pendingEvent }
       : game.phase === GamePhase.prompt
       ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.uiTransition
+      ? game.transitionType === TransitionType.dice
+        ? { ph: game.phase, tt: game.transitionType }
+        : {
+            ph: game.phase,
+            tt: game.transitionType,
+            td: game.transitionData,
+          }
       : { ph: game.phase }),
   };
 };
@@ -133,6 +141,14 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       ? { phase: g.ph, pendingEvent: g.pe }
       : g.ph === GamePhase.prompt
       ? { phase: g.ph, prompt: g.pr }
+      : g.ph === GamePhase.uiTransition
+      ? g.tt === TransitionType.dice
+        ? { phase: g.ph, transitionType: g.tt }
+        : {
+            phase: g.ph,
+            transitionType: g.tt,
+            transitionData: g.td,
+          }
       : { phase: g.ph }),
   };
 };

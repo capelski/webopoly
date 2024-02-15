@@ -1,6 +1,26 @@
-import { AnswerType, EventType, GamePhase, OfferType, PromptType } from '../enums';
+import { AnswerType, EventType, GamePhase, OfferType, PromptType, TransitionType } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { GameNonPromptPhase, GamePromptPhase, Id, PropertySquare } from '../types';
+import {
+  GameNonPromptPhase,
+  GamePromptPhase,
+  Id,
+  NonPromptPhasePayload,
+  PropertySquare,
+} from '../types';
+
+const getPreviousPayload = (game: GameNonPromptPhase): NonPromptPhasePayload => {
+  return game.phase === GamePhase.cannotPay
+    ? { pendingEvent: game.pendingEvent, phase: game.phase }
+    : game.phase === GamePhase.uiTransition
+    ? game.transitionType === TransitionType.dice
+      ? { phase: game.phase, transitionType: game.transitionType }
+      : {
+          phase: game.phase,
+          transitionType: game.transitionType,
+          transitionData: game.transitionData,
+        }
+    : { phase: game.phase };
+};
 
 export const triggerAcceptOffer = (
   game: GamePromptPhase<PromptType.answerOffer>,
@@ -63,10 +83,7 @@ export const triggerBuyingOffer = (
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
-      previous:
-        game.phase === GamePhase.cannotPay
-          ? { pendingEvent: game.pendingEvent, phase: game.phase }
-          : { phase: game.phase },
+      previous: getPreviousPayload(game),
       propertyId: property.id,
       targetPlayerId: property.ownerId,
       type: PromptType.answerOffer,
@@ -108,10 +125,7 @@ export const triggerSellingOffer = (
       amount,
       offerType: OfferType.sell,
       playerId: game.currentPlayerId,
-      previous:
-        game.phase === GamePhase.cannotPay
-          ? { pendingEvent: game.pendingEvent, phase: game.phase }
-          : { phase: game.phase },
+      previous: getPreviousPayload(game),
       propertyId: property.id,
       targetPlayerId,
       type: PromptType.answerOffer,

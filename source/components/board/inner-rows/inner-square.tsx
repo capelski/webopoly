@@ -1,5 +1,6 @@
 import React from 'react';
-import { Game, Player } from '../../../types';
+import { GamePhase, TransitionType } from '../../../enums';
+import { Game } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
 import { InnerSquareData } from './inner-squares-map';
@@ -8,13 +9,23 @@ export type InnerSquareProps = {
   game: Game;
   innerSquare: InnerSquareData;
   isDesktop: boolean;
-  players: Player[];
 };
 
 export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
   const frames = props.innerSquare.outerSquareIds
     .map((outerSquareId) => {
-      const players = props.players.filter((p) => p.squareId === outerSquareId && !p.isInJail);
+      const players = props.game.players.filter((p) => {
+        const transitionData =
+          props.game.phase === GamePhase.uiTransition &&
+          props.game.transitionType === TransitionType.player &&
+          props.game.transitionData;
+
+        const isPlayerTransitioning = transitionData && p.id === transitionData.playerId;
+
+        return isPlayerTransitioning
+          ? transitionData.currentSquareId === outerSquareId
+          : p.squareId === outerSquareId && !p.isInJail;
+      });
       return { players, rotate: squaresRotation[outerSquareId] };
     })
     .filter((frame) => frame.players.length > 0);
