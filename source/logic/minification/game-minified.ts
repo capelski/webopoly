@@ -80,8 +80,8 @@ export const minifyGame = (game: Game): GameMinified => {
             t: square.type,
           };
     }),
-    ...(game.phase === GamePhase.cannotPay
-      ? { ph: game.phase, pe: game.pendingEvent }
+    ...(game.phase === GamePhase.liquidation
+      ? { ph: game.phase, t: game.reason, pe: game.pendingEvent }
       : game.phase === GamePhase.prompt
       ? { ph: game.phase, pr: game.prompt }
       : game.phase === GamePhase.uiTransition
@@ -137,8 +137,8 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
 
       return square;
     }),
-    ...(g.ph === GamePhase.cannotPay
-      ? { phase: g.ph, pendingEvent: g.pe }
+    ...(g.ph === GamePhase.liquidation
+      ? { phase: g.ph, reason: g.t, pendingEvent: g.pe }
       : g.ph === GamePhase.prompt
       ? { phase: g.ph, prompt: g.pr }
       : g.ph === GamePhase.uiTransition

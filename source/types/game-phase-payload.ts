@@ -1,4 +1,4 @@
-import { GamePhase, PromptType, TransitionType } from '../enums';
+import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { PendingEvent } from './event';
 import { Id } from './id';
 import { Prompt } from './prompt';
@@ -7,9 +7,11 @@ export type PhasePayloadBase<T extends GamePhase> = {
   phase: T;
 };
 
-export type CannotPayPhasePayload = PhasePayloadBase<GamePhase.cannotPay> & {
-  pendingEvent: PendingEvent;
-};
+export type LiquidationPhasePayload<TReason extends LiquidationReason = LiquidationReason> =
+  PhasePayloadBase<GamePhase.liquidation> & { reason: TReason } & {
+      pendingEvent: PendingEvent;
+      reason: LiquidationReason.pendingPayment;
+    };
 
 export type PlayPhasePayload = PhasePayloadBase<GamePhase.play>;
 
@@ -38,7 +40,7 @@ export type UiTransitionPhasePayload<TTransition extends TransitionType = Transi
     );
 
 export type NonPromptPhasePayload =
-  | CannotPayPhasePayload
+  | LiquidationPhasePayload
   | PlayPhasePayload
   | RollDicePhasePayload
   | UiTransitionPhasePayload;

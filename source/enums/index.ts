@@ -4,6 +4,7 @@ export * from './event-source';
 export * from './event-type';
 export * from './game-phase';
 export * from './jail-medium';
+export * from './liquidation-reason';
 export * from './neighborhood';
 export * from './offer-type';
 export * from './player-status';

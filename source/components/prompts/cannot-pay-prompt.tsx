@@ -1,5 +1,5 @@
 import React from 'react';
-import { GamePhase, PromptType } from '../../enums';
+import { GamePhase, LiquidationReason, PromptType } from '../../enums';
 import { triggerBankruptcy } from '../../triggers';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
@@ -15,7 +15,8 @@ export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) =>
             props.updateGame({
               ...props.game,
               pendingEvent: props.game.prompt.pendingEvent,
-              phase: GamePhase.cannotPay,
+              phase: GamePhase.liquidation,
+              reason: LiquidationReason.pendingPayment,
             });
           }}
         >

@@ -1,4 +1,4 @@
-import { GamePhase, PromptType, TransitionType } from '../enums';
+import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { Dice } from './dice';
 import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
@@ -29,11 +29,13 @@ type GameBaseMinified = {
   sq: SquareMinified[];
 };
 
-export type GameCannotPayPhaseMinified = GameBaseMinified & {
+export type GameLiquidationPhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePhase.liquidation;
   /** pendingEvent */
   pe: PendingEvent;
-  /** phase */
-  ph: GamePhase.cannotPay;
+  /** trigger */
+  t: LiquidationReason.pendingPayment;
 };
 
 export type GamePlayPhaseMinified = GameBaseMinified & {
@@ -70,7 +72,7 @@ export type GameUiTransitionPhaseMinified = GameBaseMinified & {
   );
 
 export type GameMinified =
-  | GameCannotPayPhaseMinified
+  | GameLiquidationPhaseMinified
   | GamePlayPhaseMinified
   | GamePromptPhaseMinified
   | GameRollDicePhaseMinified

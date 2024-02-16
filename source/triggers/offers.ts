@@ -9,8 +9,8 @@ import {
 } from '../types';
 
 const getPreviousPayload = (game: GameNonPromptPhase): NonPromptPhasePayload => {
-  return game.phase === GamePhase.cannotPay
-    ? { pendingEvent: game.pendingEvent, phase: game.phase }
+  return game.phase === GamePhase.liquidation
+    ? { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
     : game.phase === GamePhase.uiTransition
     ? game.transitionType === TransitionType.dice
       ? { phase: game.phase, transitionType: game.transitionType }

@@ -1,9 +1,9 @@
-import { GamePhase, PromptType, PropertyType, SquareType } from '../enums';
+import { GamePhase, LiquidationReason, PromptType, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   ExpenseCardEvent,
   ExpenseEvent,
-  GameCannotPayPhase,
+  GameLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   PayRentEvent,
@@ -15,12 +15,12 @@ export type CannotPayPromptInputPhases =
   | GamePlayPhase
   | GamePromptPhase<PromptType.jailOptions> // Is player's last turn in jail and they don't have enough money to pay the fine
   | GamePromptPhase<PromptType.card>
-  | GameCannotPayPhase; // Player resumes a pending payment but they still don't have enough money
+  | GameLiquidationPhase<LiquidationReason.pendingPayment>; // Player resumes a pending payment but they still don't have enough money
 
 export type ExpenseInputPhases =
   | GamePlayPhase
   | GamePromptPhase<PromptType.card>
-  | GameCannotPayPhase; // Player resumes a pending payment and has enough money
+  | GameLiquidationPhase<LiquidationReason.pendingPayment>; // Player resumes a pending payment and has enough money
 
 export type ExpenseOutputPhases = GamePlayPhase | GamePromptPhase<PromptType.cannotPay>;
 

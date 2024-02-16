@@ -1,5 +1,5 @@
 export enum GamePhase {
-  cannotPay = 'cannotPay',
+  liquidation = 'liquidation',
   play = 'play',
   prompt = 'prompt',
   rollDice = 'rollDice',

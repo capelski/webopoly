@@ -1,8 +1,8 @@
-import { PromptType, TransitionType } from '../enums';
+import { LiquidationReason, PromptType, TransitionType } from '../enums';
 import { Dice } from './dice';
 import { GEvent } from './event';
 import {
-  CannotPayPhasePayload,
+  LiquidationPhasePayload,
   PhasePayloadBase,
   PlayPhasePayload,
   PromptPhasePayload,
@@ -25,7 +25,9 @@ type GameBase<T extends PhasePayloadBase<any>> = {
   squares: Square[];
 } & T;
 
-export type GameCannotPayPhase = GameBase<CannotPayPhasePayload>;
+export type GameLiquidationPhase<TReason extends LiquidationReason> = GameBase<
+  LiquidationPhasePayload<TReason>
+>;
 
 export type GamePlayPhase = GameBase<PlayPhasePayload>;
 
@@ -38,7 +40,7 @@ export type GameUiTransitionPhase<TTransition extends TransitionType> = GameBase
 >;
 
 export type GameNonPromptPhase =
-  | GameCannotPayPhase
+  | GameLiquidationPhase<LiquidationReason>
   | GamePlayPhase
   | GameRollDicePhase
   | GameUiTransitionPhase<TransitionType>;

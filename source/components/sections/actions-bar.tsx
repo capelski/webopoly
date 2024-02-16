@@ -61,9 +61,9 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
       </Button>
 
       <Button
-        disabled={props.game.phase !== GamePhase.cannotPay}
+        disabled={props.game.phase !== GamePhase.liquidation}
         onClick={() => {
-          if (props.game.phase !== GamePhase.cannotPay) {
+          if (props.game.phase !== GamePhase.liquidation) {
             return;
           }
 

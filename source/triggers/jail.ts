@@ -1,8 +1,16 @@
-import { EventSource, EventType, GamePhase, JailMedium, PromptType, SquareType } from '../enums';
+import {
+  EventSource,
+  EventType,
+  GamePhase,
+  JailMedium,
+  LiquidationReason,
+  PromptType,
+  SquareType,
+} from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { jailFine, maxTurnsInJail } from '../parameters';
 import {
-  GameCannotPayPhase,
+  GameLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   GameRollDicePhase,
@@ -47,7 +55,9 @@ export const triggerGoToJail = (
 };
 
 export const triggerLastTurnInJail = (
-  game: GamePromptPhase<PromptType.jailOptions> | GameCannotPayPhase,
+  game:
+    | GamePromptPhase<PromptType.jailOptions>
+    | GameLiquidationPhase<LiquidationReason.pendingPayment>,
 ): MovePlayerOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
 
@@ -115,7 +125,9 @@ export const triggerUseJailCard = (
 };
 
 const updatePlayerOutOfJail = (
-  game: GamePromptPhase<PromptType.jailOptions> | GameCannotPayPhase,
+  game:
+    | GamePromptPhase<PromptType.jailOptions>
+    | GameLiquidationPhase<LiquidationReason.pendingPayment>,
   medium: JailMedium,
 ): GamePlayPhase => {
   const notification: GEvent =
