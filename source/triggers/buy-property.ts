@@ -1,39 +1,56 @@
-import { EventType, SquareType } from '../enums';
-import { canBuyProperty, getCurrentPlayer, getCurrentSquare } from '../logic';
-import { Game } from '../types';
+import { EventType, GamePhase, PromptType } from '../enums';
+import { GamePlayPhase, GamePromptPhase, Id, PropertySquare } from '../types';
 
-export const triggerBuyProperty = (game: Game): Game => {
-  const currentSquare = getCurrentSquare(game);
-  if (currentSquare.type !== SquareType.property) {
-    return game;
-  }
-
-  const currentPlayer = getCurrentPlayer(game);
-  if (!canBuyProperty(currentSquare, currentPlayer)) {
-    return game;
-  }
-
+export const triggerBuyProperty = (
+  game: GamePromptPhase<PromptType.buyProperty>,
+  propertySquare: PropertySquare,
+  buyerId: Id,
+): GamePlayPhase => {
   return {
     ...game,
     notifications: [
       ...game.notifications,
       {
-        playerId: currentPlayer.id,
-        propertyId: currentSquare.id,
+        playerId: buyerId,
+        propertyId: propertySquare.id,
         type: EventType.buyProperty,
       },
     ],
+    phase: GamePhase.play,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
+      return p.id === buyerId
         ? {
             ...p,
-            properties: p.properties.concat([currentSquare.id]),
-            money: p.money - currentSquare.price,
+            properties: p.properties.concat([propertySquare.id]),
+            money: p.money - propertySquare.price,
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === currentSquare.id ? { ...s, ownerId: game.currentPlayerId } : s;
+      return s.id === propertySquare.id ? { ...s, ownerId: buyerId } : s;
     }),
+  };
+};
+
+export const triggerRejectProperty = (
+  game: GamePromptPhase<PromptType.buyProperty>,
+): GamePromptPhase<PromptType.buyProperty> | GamePlayPhase => {
+  const { potentialBuyersId } = game.prompt;
+
+  if (potentialBuyersId.length === 0) {
+    return { ...game, phase: GamePhase.play };
+  }
+
+  const nextPotentialBuyersId = [...potentialBuyersId];
+  const nextCurrentBuyerId = nextPotentialBuyersId.shift()!;
+
+  return {
+    ...game,
+    phase: GamePhase.prompt,
+    prompt: {
+      currentBuyerId: nextCurrentBuyerId,
+      potentialBuyersId: nextPotentialBuyersId,
+      type: PromptType.buyProperty,
+    },
   };
 };

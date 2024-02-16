@@ -32,10 +32,6 @@ export const canBuildHouse = (game: Game, property: StreetSquare, player: Player
   );
 };
 
-export const canBuyProperty = (property: PropertySquare, player: Player): boolean => {
-  return property.ownerId === undefined && player.money >= property.price;
-};
-
 export const canClearMortgage = (property: PropertySquare, player: Player): boolean => {
   return (
     property.ownerId === player.id &&

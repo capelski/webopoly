@@ -1,4 +1,5 @@
-- Buy => Make a prompt, with option to buy for all players
+- Player transition when coming out of the jail
+- Highlight actual rent in property details
 - Display details of non property squares
 - Jail triggers game types could be further refined by the medium
 - Display the pending money total in cannot pay prompt

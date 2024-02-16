@@ -3,6 +3,7 @@ import {
   EventSource,
   EventType,
   GamePhase,
+  PlayerStatus,
   PromptType,
   SquareType,
   TaxType,
@@ -17,6 +18,7 @@ export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.c
 
 export type MovePlayerOutputPhases =
   | GamePlayPhase
+  | GamePromptPhase<PromptType.buyProperty>
   | GamePromptPhase<PromptType.card>
   | GamePromptPhase<PromptType.goToJail>
   | GamePromptPhase<PromptType.cannotPay>;
@@ -129,6 +131,31 @@ export const triggerMovePlayer = (
   const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
   if (landsInCommunityChest) {
     return triggerCardPrompt(updatedGame, CardType.communityChest);
+  }
+
+  if (nextSquare.type === SquareType.property && !nextSquare.ownerId) {
+    const currentPlayerIndex = updatedGame.players.findIndex(
+      (p) => p.id === updatedGame.currentPlayerId,
+    );
+
+    const potentialBuyersId = updatedGame.players
+      .slice(currentPlayerIndex)
+      .concat(updatedGame.players.slice(0, currentPlayerIndex))
+      .filter((p) => p.status === PlayerStatus.playing)
+      .map((p) => p.id);
+    const currentBuyerId = potentialBuyersId.shift();
+
+    if (currentBuyerId) {
+      return {
+        ...updatedGame,
+        phase: GamePhase.prompt,
+        prompt: {
+          currentBuyerId,
+          potentialBuyersId,
+          type: PromptType.buyProperty,
+        },
+      };
+    }
   }
 
   const nextGame: GamePlayPhase = { ...updatedGame, phase: GamePhase.play };

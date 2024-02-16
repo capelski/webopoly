@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { EventType, GamePhase, SquareType } from '../../enums';
-import { canBuyProperty, getCurrentPlayer, getCurrentSquare, hasEnoughMoney } from '../../logic';
+import { EventType, GamePhase } from '../../enums';
+import { getCurrentPlayer, hasEnoughMoney } from '../../logic';
 import { jailFine } from '../../parameters';
 import {
-  triggerBuyProperty,
   triggerCannotPayPrompt,
   triggerDiceRoll,
   triggerEndTurn,
@@ -22,9 +21,6 @@ interface ActionsBarProps {
 
 export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
   const [clearGameModal, setClearGameModal] = useState(false);
-
-  const currentPlayer = getCurrentPlayer(props.game);
-  const currentSquare = getCurrentSquare(props.game);
 
   const clearGameCloseHandler = () => setClearGameModal(false);
 
@@ -50,19 +46,6 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         style={{ marginTop: 8 }}
       >
         Roll dice
-      </Button>
-
-      <Button
-        onClick={() => {
-          props.updateGame(triggerBuyProperty(props.game));
-        }}
-        disabled={
-          currentSquare.type !== SquareType.property ||
-          !canBuyProperty(currentSquare, currentPlayer!)
-        }
-        style={{ marginTop: 8 }}
-      >
-        Buy
       </Button>
 
       <Button

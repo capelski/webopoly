@@ -13,6 +13,12 @@ export type AnswerOfferPrompt = {
   type: PromptType.answerOffer;
 };
 
+export type BuyPropertyPrompt = {
+  currentBuyerId: Id;
+  potentialBuyersId: Id[];
+  type: PromptType.buyProperty;
+};
+
 export type CannotPayPrompt = {
   pendingEvent: PendingEvent;
   type: PromptType.cannotPay;
@@ -35,6 +41,7 @@ export type PlayerWinPrompt = {
 
 export type Prompt<T extends PromptType> = (
   | AnswerOfferPrompt
+  | BuyPropertyPrompt
   | CannotPayPrompt
   | CardPrompt
   | GenericPrompt

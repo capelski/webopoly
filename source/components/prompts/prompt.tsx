@@ -3,6 +3,7 @@ import { PromptType } from '../../enums';
 import { Game, GamePromptPhase } from '../../types';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
+import { BuyPropertyPrompt } from './buy-property-prompt';
 import { CannotPayPrompt } from './cannot-pay-prompt';
 import { CardPrompt } from './card-prompt';
 import { GoToJailPrompt } from './go-to-jail-prompt';
@@ -11,14 +12,15 @@ import { PlayerWinsPrompt } from './player-wins-prompt';
 import { PromptInterface } from './prompt-interface';
 
 const promptsMap: {
-  [TKey in PromptType]: PromptInterface<TKey>;
+  [TKey in PromptType]: { inset?: string; renderer: PromptInterface<TKey> };
 } = {
-  [PromptType.answerOffer]: AnswerOfferPrompt,
-  [PromptType.cannotPay]: CannotPayPrompt,
-  [PromptType.card]: CardPrompt,
-  [PromptType.goToJail]: GoToJailPrompt,
-  [PromptType.jailOptions]: JailOptionsPrompt,
-  [PromptType.playerWins]: PlayerWinsPrompt,
+  [PromptType.answerOffer]: { renderer: AnswerOfferPrompt },
+  [PromptType.buyProperty]: { inset: '15% 20px', renderer: BuyPropertyPrompt },
+  [PromptType.cannotPay]: { renderer: CannotPayPrompt },
+  [PromptType.card]: { renderer: CardPrompt },
+  [PromptType.goToJail]: { renderer: GoToJailPrompt },
+  [PromptType.jailOptions]: { renderer: JailOptionsPrompt },
+  [PromptType.playerWins]: { renderer: PlayerWinsPrompt },
 };
 
 interface PromptComponentProps {
@@ -27,6 +29,7 @@ interface PromptComponentProps {
 }
 
 export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
-  const renderer: PromptInterface<PromptType> = promptsMap[props.game.prompt.type];
-  return <Modal>{renderer(props)}</Modal>;
+  const renderer: PromptInterface<PromptType> = promptsMap[props.game.prompt.type].renderer;
+  const { inset } = promptsMap[props.game.prompt.type];
+  return <Modal inset={inset}>{renderer(props)}</Modal>;
 };
