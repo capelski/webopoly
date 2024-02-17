@@ -18,6 +18,7 @@ export const PlayerInSquare: React.FC<PlayerInSquareProps> = (props) => {
         left: `${20 + props.offset * 10}%`,
         position: 'absolute',
         transform: `rotate(${props.rotate}deg)`,
+        zIndex: props.isActive ? 10 : undefined,
       }}
     >
       <PlayerAvatar player={props.player} />
