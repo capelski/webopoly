@@ -23,37 +23,37 @@ export type MovePlayerOutputPhases =
   | GamePromptPhase<PromptType.goToJail>
   | GamePromptPhase<PromptType.cannotPay>;
 
-const applyFreeParking = (game: MovePlayerInputPhases): GamePlayPhase => {
+const applyFreeParking = (game: MovePlayerInputPhases, currentPlayerId: Id): GamePlayPhase => {
   return {
     ...game,
     centerPot: 0,
     notifications: [
       ...game.notifications,
       {
-        playerId: game.currentPlayerId,
+        playerId: currentPlayerId,
         pot: game.centerPot,
         type: EventType.freeParking,
       },
     ],
     phase: GamePhase.play,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
+      return p.id === currentPlayerId ? { ...p, money: p.money + game.centerPot } : p;
     }),
   };
 };
 
-const applyPassGo = (game: MovePlayerInputPhases): MovePlayerInputPhases => {
+const applyPassGo = (game: MovePlayerInputPhases, currentPlayerId: Id): MovePlayerInputPhases => {
   return {
     ...game,
     notifications: [
       ...game.notifications,
       {
-        playerId: game.currentPlayerId,
+        playerId: currentPlayerId,
         type: EventType.passGo,
       },
     ],
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
+      return p.id === currentPlayerId ? { ...p, money: p.money + passGoMoney } : p;
     }),
   };
 };
@@ -67,13 +67,15 @@ export const triggerMovePlayer = (
   nextSquareId: Id,
   options: MovePlayerOptions = {},
 ): MovePlayerOutputPhases => {
-  const currentSquareId = getCurrentPlayer(game).squareId;
+  const currentPlayer = getCurrentPlayer(game);
+  const currentPlayerId = currentPlayer.id;
+  const currentSquareId = currentPlayer.squareId;
   const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
   let updatedGame: MovePlayerInputPhases = {
     ...game,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, squareId: nextSquareId } : p;
+      return p.id === currentPlayerId ? { ...p, squareId: nextSquareId } : p;
     }),
   };
 
@@ -90,14 +92,14 @@ export const triggerMovePlayer = (
   }
 
   if (!options.preventPassGo && passesGo(updatedGame, currentSquareId, nextSquareId)) {
-    updatedGame = applyPassGo(updatedGame);
+    updatedGame = applyPassGo(updatedGame, currentPlayerId);
   }
 
-  const paysRent = doesPayRent(game.currentPlayerId, nextSquare);
+  const paysRent = doesPayRent(currentPlayerId, nextSquare);
   if (paysRent && nextSquare.type === SquareType.property) {
     return triggerPayRent(updatedGame, {
       landlordId: nextSquare.ownerId!,
-      playerId: game.currentPlayerId,
+      playerId: currentPlayerId,
       amount: getRentAmount(updatedGame, nextSquare),
       type: EventType.payRent,
     });
@@ -112,7 +114,7 @@ export const triggerMovePlayer = (
         : 100;
     return triggerExpense(updatedGame, {
       amount: tax,
-      playerId: game.currentPlayerId,
+      playerId: currentPlayerId,
       source: EventSource.taxSquare,
       type: EventType.expense,
     });
@@ -120,7 +122,7 @@ export const triggerMovePlayer = (
 
   const collectsFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
   if (collectsFreeParking) {
-    return applyFreeParking(updatedGame);
+    return applyFreeParking(updatedGame, currentPlayerId);
   }
 
   const landsInChance = nextSquare.type === SquareType.chance;
@@ -134,9 +136,7 @@ export const triggerMovePlayer = (
   }
 
   if (nextSquare.type === SquareType.property && !nextSquare.ownerId) {
-    const currentPlayerIndex = updatedGame.players.findIndex(
-      (p) => p.id === updatedGame.currentPlayerId,
-    );
+    const currentPlayerIndex = updatedGame.players.findIndex((p) => p.id === currentPlayerId);
 
     const potentialBuyersId = updatedGame.players
       .slice(currentPlayerIndex)

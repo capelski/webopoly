@@ -1,4 +1,4 @@
-import { PropertyStatus, PropertyType, SquareType } from '../enums';
+import { LiquidationReason, PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   clearMortgageRate,
   houseBuildPercentage,
@@ -9,11 +9,25 @@ import {
   rentPercentage,
   stationRents,
 } from '../parameters';
-import { Game, Id, Player, PropertySquare, Square, StreetSquare } from '../types';
+import {
+  Game,
+  GameLiquidationPhase,
+  GamePlayPhase,
+  GameRollDicePhase,
+  Id,
+  Player,
+  PropertySquare,
+  Square,
+  StreetSquare,
+} from '../types';
 import { getDiceMovement } from './dice';
 import { getPlayerById } from './game';
 
-export const canBuildHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
+export const canBuildHouse = (
+  game: GamePlayPhase | GameRollDicePhase,
+  property: StreetSquare,
+  player: Player,
+): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
   const allOwned = neighborhoodStreets.every((p) => p.ownerId === player.id);
   const minHousesNumber = neighborhoodStreets.reduce(
@@ -48,7 +62,11 @@ export const canMortgage = (property: PropertySquare, playerId: Id): boolean => 
   );
 };
 
-export const canSellHouse = (game: Game, property: StreetSquare, player: Player): boolean => {
+export const canSellHouse = (
+  game: GamePlayPhase | GameRollDicePhase | GameLiquidationPhase<LiquidationReason>,
+  property: StreetSquare,
+  player: Player,
+): boolean => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
   const maxHousesNumber = neighborhoodStreets.reduce(
     (reduced, p) => Math.max(reduced, p.houses),

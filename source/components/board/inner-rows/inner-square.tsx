@@ -1,5 +1,6 @@
 import React from 'react';
 import { GamePhase, TransitionType } from '../../../enums';
+import { getCurrentPlayer } from '../../../logic';
 import { Game } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
@@ -29,6 +30,7 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
       return { players, rotate: squaresRotation[outerSquareId] };
     })
     .filter((frame) => frame.players.length > 0);
+  const currentPlayer = getCurrentPlayer(props.game);
 
   return (
     <div
@@ -48,7 +50,7 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
         return frame.players.map((player, playerIndex) => {
           return (
             <PlayerInSquare
-              isActive={player.id === props.game.currentPlayerId}
+              isActive={player.id === currentPlayer.id}
               key={`${frameIndex}-${playerIndex}`}
               offset={playerIndex}
               player={player}

@@ -1,5 +1,5 @@
 import { GamePhase, TransitionType } from '../enums';
-import { getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
+import { getCurrentPlayer, getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
 import { GameUiTransitionPhase } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
@@ -8,6 +8,7 @@ export const triggerDiceTransition = (
   game: GameUiTransitionPhase<TransitionType.dice>,
 ): GameUiTransitionPhase<TransitionType.player> | MovePlayerOutputPhases => {
   const pendingMoves = getDiceMovement(game.dice);
+  const currentPlayer = getCurrentPlayer(game);
 
   return triggerPlayerTransition({
     ...game,
@@ -16,7 +17,7 @@ export const triggerDiceTransition = (
     transitionData: {
       currentSquareId: getCurrentSquare(game).id,
       pendingMoves,
-      playerId: game.currentPlayerId,
+      playerId: currentPlayer.id,
     },
   });
 };

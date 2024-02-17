@@ -1,17 +1,23 @@
 import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { PendingEvent } from './event';
 import { Id } from './id';
-import { Prompt } from './prompt';
+import { BuyPropertyPrompt, Prompt } from './prompt';
 
 export type PhasePayloadBase<T extends GamePhase> = {
   phase: T;
 };
 
 export type LiquidationPhasePayload<TReason extends LiquidationReason = LiquidationReason> =
-  PhasePayloadBase<GamePhase.liquidation> & { reason: TReason } & {
-      pendingEvent: PendingEvent;
-      reason: LiquidationReason.pendingPayment;
-    };
+  PhasePayloadBase<GamePhase.liquidation> & { reason: TReason } & (
+      | {
+          pendingPrompt: BuyPropertyPrompt;
+          reason: LiquidationReason.buyProperty;
+        }
+      | {
+          pendingEvent: PendingEvent;
+          reason: LiquidationReason.pendingPayment;
+        }
+    );
 
 export type PlayPhasePayload = PhasePayloadBase<GamePhase.play>;
 

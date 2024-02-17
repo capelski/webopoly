@@ -70,7 +70,7 @@ export const triggerPayRent = (
         notifications: [...game.notifications, event],
         phase: GamePhase.play,
         players: game.players.map((p) => {
-          return p.id === game.currentPlayerId
+          return p.id === currentPlayer.id
             ? { ...p, money: p.money - event.amount }
             : p.id === event.landlordId
             ? { ...p, money: p.money + event.amount }

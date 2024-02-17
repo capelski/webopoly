@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { EventType, GamePhase } from '../../enums';
-import { getCurrentPlayer, hasEnoughMoney } from '../../logic';
-import { jailFine } from '../../parameters';
+import { GamePhase, LiquidationReason } from '../../enums';
 import {
-  triggerCannotPayPrompt,
+  resumeBuyProperty,
+  resumePendingPayment,
   triggerDiceRoll,
   triggerEndTurn,
-  triggerExpense,
-  triggerLastTurnInJail,
-  triggerPayRent,
 } from '../../triggers';
 import { Game } from '../../types';
 import { Button } from '../common/button';
@@ -67,25 +63,10 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             return;
           }
 
-          const pendingEvent = props.game.pendingEvent;
-          const amount =
-            pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
-          const player = getCurrentPlayer(props.game);
-
-          if (hasEnoughMoney(player, amount)) {
-            let nextGame: Game;
-
-            if (pendingEvent.type === EventType.expense) {
-              nextGame = triggerExpense(props.game, pendingEvent);
-            } else if (pendingEvent.type === EventType.turnInJail) {
-              nextGame = triggerLastTurnInJail(props.game);
-            } else {
-              nextGame = triggerPayRent(props.game, pendingEvent);
-            }
-
-            props.updateGame(nextGame);
+          if (props.game.reason === LiquidationReason.buyProperty) {
+            props.updateGame(resumeBuyProperty(props.game));
           } else {
-            props.updateGame(triggerCannotPayPrompt(props.game, pendingEvent));
+            props.updateGame(resumePendingPayment(props.game));
           }
         }}
         style={{ marginTop: 8 }}

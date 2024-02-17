@@ -22,11 +22,13 @@ import { MovePlayerOutputPhases } from './move-player';
 import { triggerCannotPayPrompt } from './payments';
 
 export const triggerGetOutOfJailCard = (game: GamePromptPhase<PromptType.card>): GamePlayPhase => {
+  const currentPlayer = getCurrentPlayer(game);
+
   return {
     ...game,
     phase: GamePhase.play,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
+      return p.id === currentPlayer.id ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
     }),
   };
 };
@@ -36,12 +38,13 @@ export const triggerGoToJail = (
   source: EventSource,
 ): GamePlayPhase => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
+  const currentPlayer = getCurrentPlayer(game);
 
   return {
     ...game,
     eventHistory: [
       {
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source,
         type: EventType.goToJail,
       },
@@ -49,7 +52,7 @@ export const triggerGoToJail = (
     ],
     phase: GamePhase.play,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
+      return p.id === currentPlayer.id ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),
   };
 };
@@ -63,7 +66,7 @@ export const triggerLastTurnInJail = (
 
   if (!hasEnoughMoney(currentPlayer, jailFine)) {
     return triggerCannotPayPrompt(game, {
-      playerId: game.currentPlayerId,
+      playerId: currentPlayer.id,
       turnsInJail: maxTurnsInJail,
       type: EventType.turnInJail,
     });
@@ -89,10 +92,11 @@ export const triggerPayJailFine = (
 export const triggerRemainInJail = (
   game: GamePromptPhase<PromptType.jailOptions>,
 ): GamePlayPhase => {
+  const currentPlayer = getCurrentPlayer(game);
   let count = 0;
 
   const nextPlayers = game.players.map((p) => {
-    return p.id === game.currentPlayerId ? { ...p, turnsInJail: (count = p.turnsInJail + 1) } : p;
+    return p.id === currentPlayer.id ? { ...p, turnsInJail: (count = p.turnsInJail + 1) } : p;
   });
 
   return {
@@ -100,7 +104,7 @@ export const triggerRemainInJail = (
     notifications: [
       ...game.notifications,
       {
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         turnsInJail: count,
         type: EventType.turnInJail,
       },
@@ -130,15 +134,16 @@ const updatePlayerOutOfJail = (
     | GameLiquidationPhase<LiquidationReason.pendingPayment>,
   medium: JailMedium,
 ): GamePlayPhase => {
+  const currentPlayer = getCurrentPlayer(game);
   const notification: GEvent =
     medium === JailMedium.card || medium === JailMedium.dice || medium === JailMedium.fine
       ? {
           medium,
-          playerId: game.currentPlayerId,
+          playerId: currentPlayer.id,
           type: EventType.getOutOfJail,
         }
       : {
-          playerId: game.currentPlayerId,
+          playerId: currentPlayer.id,
           turnsInJail: maxTurnsInJail,
           type: EventType.turnInJail,
         };
@@ -148,7 +153,7 @@ const updatePlayerOutOfJail = (
     notifications: [...game.notifications, notification],
     phase: GamePhase.play,
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
+      return p.id === currentPlayer.id
         ? {
             ...p,
             getOutOfJail: medium === JailMedium.card ? p.getOutOfJail - 1 : p.getOutOfJail,

@@ -4,6 +4,7 @@ import {
   communityChestCards,
   getChanceCardById,
   getCommunityChestCardById,
+  getCurrentPlayer,
   shuffleArray,
 } from '../logic';
 import { CardPrompt, GamePlayPhase, GamePromptPhase } from '../types';
@@ -17,6 +18,7 @@ export const triggerCardAction = (
     prompt.cardType === CardType.chance
       ? getChanceCardById(prompt.cardId)
       : getCommunityChestCardById(prompt.cardId);
+  const currentPlayer = getCurrentPlayer(game);
 
   const nextGame: GamePromptPhase<PromptType.card> = {
     ...game,
@@ -26,7 +28,7 @@ export const triggerCardAction = (
           {
             cardId: prompt.cardId,
             cardType: prompt.cardType,
-            playerId: game.currentPlayerId,
+            playerId: currentPlayer.id,
             type: EventType.card,
           },
           ...game.eventHistory,

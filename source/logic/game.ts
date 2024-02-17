@@ -1,4 +1,11 @@
-import { GamePhase, PlayerStatus, PropertyType, SquareType } from '../enums';
+import {
+  GamePhase,
+  LiquidationReason,
+  PlayerStatus,
+  PromptType,
+  PropertyType,
+  SquareType,
+} from '../enums';
 import { playerInitialMoney } from '../parameters';
 import { Game, GameMinified, Id, Player, PlayerMinified, Square, SquareMinified } from '../types';
 
@@ -40,8 +47,24 @@ export const getActivePlayers = (game: Game): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing);
 };
 
-export const getCurrentPlayer = (game: Game): Player => {
-  return game.players.find((p) => p.id === game.currentPlayerId)!;
+export const getCurrentPlayer = (
+  game: Game,
+  { omitBuyPhase }: { omitBuyPhase?: boolean } = {},
+): Player => {
+  return game.players.find((p) => {
+    return (
+      p.id ===
+      (game.phase === GamePhase.liquidation && game.reason === LiquidationReason.buyProperty
+        ? game.pendingPrompt.currentBuyerId
+        : !omitBuyPhase &&
+          game.phase === GamePhase.prompt &&
+          game.prompt.type === PromptType.buyProperty
+        ? game.prompt.currentBuyerId
+        : game.phase === GamePhase.prompt && game.prompt.type === PromptType.answerOffer
+        ? game.prompt.targetPlayerId
+        : game.currentPlayerId)
+    );
+  })!;
 };
 
 export const getCurrentSquare = (game: Game): Square => {

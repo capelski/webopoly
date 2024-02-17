@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { getCurrentPlayer } from '../logic';
 import { Game } from '../types';
 import { Board } from './board/board';
 import { Players } from './player/players';
@@ -15,6 +16,7 @@ interface GameComponentProps {
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const isDesktop = useMediaQuery({ minWidth: 728 });
+  const currentPlayer = getCurrentPlayer(props.game);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -34,7 +36,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <ActionsBar game={props.game} updateGame={props.updateGame} />
 
-          <Players currentPlayerId={props.game.currentPlayerId} players={props.game.players} />
+          <Players currentPlayerId={currentPlayer.id} players={props.game.players} />
 
           <EventHistory game={props.game} updateGame={props.updateGame} />
         </div>

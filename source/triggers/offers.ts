@@ -1,4 +1,12 @@
-import { AnswerType, EventType, GamePhase, OfferType, PromptType, TransitionType } from '../enums';
+import {
+  AnswerType,
+  EventType,
+  GamePhase,
+  LiquidationReason,
+  OfferType,
+  PromptType,
+  TransitionType,
+} from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
   GameNonPromptPhase,
@@ -10,7 +18,9 @@ import {
 
 const getPreviousPayload = (game: GameNonPromptPhase): NonPromptPhasePayload => {
   return game.phase === GamePhase.liquidation
-    ? { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
+    ? game.reason === LiquidationReason.buyProperty
+      ? { phase: game.phase, reason: game.reason, pendingPrompt: game.pendingPrompt }
+      : { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
     : game.phase === GamePhase.uiTransition
     ? game.transitionType === TransitionType.dice
       ? { phase: game.phase, transitionType: game.transitionType }
@@ -118,13 +128,15 @@ export const triggerSellingOffer = (
   amount: number,
   targetPlayerId: Id,
 ): GamePromptPhase<PromptType.answerOffer> => {
+  const currentPlayer = getCurrentPlayer(game);
+
   return {
     ...game,
     phase: GamePhase.prompt,
     prompt: {
       amount,
       offerType: OfferType.sell,
-      playerId: game.currentPlayerId,
+      playerId: currentPlayer.id,
       previous: getPreviousPayload(game),
       propertyId: property.id,
       targetPlayerId,

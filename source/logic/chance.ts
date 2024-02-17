@@ -9,7 +9,7 @@ import {
   triggerWindfall,
 } from '../triggers';
 import { Card } from '../types';
-import { getNextPropertyOfTypeId, getNextSquareId } from './game';
+import { getCurrentPlayer, getNextPropertyOfTypeId, getNextSquareId } from './game';
 import { squaresMap } from './minification/squares-map';
 
 export const chanceCards: Card[] = [
@@ -95,10 +95,12 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerRepairsExpense(game, 25, {
         cardId: 12,
         source: EventSource.chanceCard,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         type: EventType.expense,
       });
     },
@@ -108,10 +110,12 @@ export const chanceCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerExpense(game, {
         amount: 15,
         cardId: 13,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source: EventSource.chanceCard,
         type: EventType.expense,
       });

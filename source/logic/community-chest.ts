@@ -9,6 +9,7 @@ import {
   triggerWindfall,
 } from '../triggers';
 import { Card } from '../types';
+import { getCurrentPlayer } from './game';
 import { squaresMap } from './minification/squares-map';
 
 export const communityChestCards: Card[] = [
@@ -28,10 +29,12 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerExpense(game, {
         amount: 50,
         cardId: 3,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source: EventSource.communityChestCard,
         type: EventType.expense,
       });
@@ -90,10 +93,12 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerExpense(game, {
         amount: 100,
         cardId: 11,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source: EventSource.communityChestCard,
         type: EventType.expense,
       });
@@ -104,10 +109,12 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerExpense(game, {
         amount: 50,
         cardId: 12,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source: EventSource.communityChestCard,
         type: EventType.expense,
       });
@@ -125,9 +132,11 @@ export const communityChestCards: Card[] = [
   },
   {
     action: (game) => {
+      const currentPlayer = getCurrentPlayer(game);
+
       return triggerRepairsExpense(game, 40, {
         cardId: 14,
-        playerId: game.currentPlayerId,
+        playerId: currentPlayer.id,
         source: EventSource.communityChestCard,
         type: EventType.expense,
       });

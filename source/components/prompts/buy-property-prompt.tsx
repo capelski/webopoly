@@ -1,15 +1,20 @@
 import React from 'react';
 import { PromptType, SquareType } from '../../enums';
-import { getCurrentSquare, getPlayerById } from '../../logic';
-import { triggerBuyProperty, triggerRejectProperty } from '../../triggers';
+import { getCurrentPlayer, getPlayerById, getSquareById } from '../../logic';
+import {
+  triggerBuyProperty,
+  triggerBuyPropertyLiquidation,
+  triggerRejectProperty,
+} from '../../triggers';
 import { Button } from '../common/button';
 import { SquareDetails } from '../common/square-details';
 import { PromptInterface } from './prompt-interface';
 
 export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props) => {
-  const currentSquare = getCurrentSquare(props.game);
+  const originalPlayer = getCurrentPlayer(props.game, { omitBuyPhase: true });
+  const targetSquare = getSquareById(props.game, originalPlayer.squareId);
 
-  if (currentSquare.type !== SquareType.property) {
+  if (targetSquare.type !== SquareType.property) {
     return undefined;
   }
 
@@ -19,19 +24,29 @@ export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props
     <React.Fragment>
       <h4>{currentBuyer.name}</h4>
 
-      <SquareDetails game={props.game} square={currentSquare} />
+      <SquareDetails game={props.game} square={targetSquare} />
 
       <div>
         <Button
-          disabled={currentBuyer.money < currentSquare.price}
+          disabled={currentBuyer.money < targetSquare.price}
           onClick={() => {
             props.updateGame(
-              triggerBuyProperty(props.game, currentSquare, props.game.prompt.currentBuyerId),
+              triggerBuyProperty(props.game, targetSquare, props.game.prompt.currentBuyerId),
             );
           }}
           style={{ marginTop: 8 }}
         >
           Buy
+        </Button>
+
+        <Button
+          disabled={currentBuyer.money >= targetSquare.price}
+          onClick={() => {
+            props.updateGame(triggerBuyPropertyLiquidation(props.game));
+          }}
+          style={{ marginTop: 8 }}
+        >
+          Liquidate properties
         </Button>
 
         <Button

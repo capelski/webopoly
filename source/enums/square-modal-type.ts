@@ -1,4 +1,5 @@
 export enum SquareModalType {
-  placeOffer = 'place-offer',
+  buyOffer = 'buyOffer',
   details = 'details',
+  sellOffer = 'sellOffer',
 }

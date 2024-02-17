@@ -9,9 +9,9 @@ import { Modal } from '../../common/modal';
 
 interface SquareOfferModalProps {
   game: Game;
-  setSquareModalType: (squareModalType: SquareModalType | undefined) => void;
+  setSquareModalType: (squareModalType: undefined) => void;
   square: PropertySquare;
-  squareModalType: SquareModalType;
+  squareModalType: SquareModalType.buyOffer | SquareModalType.sellOffer;
   updateGame: (game: Game) => void;
 }
 
@@ -19,12 +19,12 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
   const [offer, setOffer] = useState(0);
   const [targetPlayerId, setTargetPlayerId] = useState<Id | undefined>(undefined);
 
-  const isSellingOffer = props.game.currentPlayerId === props.square.ownerId;
+  const isSellOffer = props.squareModalType === SquareModalType.sellOffer;
   const currentPlayer = getCurrentPlayer(props.game);
   const otherPlayers = getOtherPlayers(props.game, currentPlayer.id);
   const targetPlayer = !!targetPlayerId && getPlayerById(props.game, targetPlayerId);
 
-  const maxAmount = isSellingOffer
+  const maxAmount = isSellOffer
     ? targetPlayer
       ? targetPlayer.money
       : undefined
@@ -36,7 +36,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
         props.setSquareModalType(undefined);
       }}
     >
-      {isSellingOffer && (
+      {isSellOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (
             <div key={p.id}>
@@ -58,7 +58,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
       <div style={{ marginBottom: 16 }}>
         {currencySymbol}
         <input
-          disabled={isSellingOffer && !targetPlayerId}
+          disabled={isSellOffer && !targetPlayerId}
           onChange={(event) => {
             const parsedValue = Math.round(parseInt(event.target.value)) || 0;
             setOffer(Math.min(parsedValue, maxAmount!));
@@ -72,12 +72,12 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
 
       <div style={{ marginBottom: 16 }}>
         <Button
-          disabled={offer <= 0 || (isSellingOffer && !targetPlayerId)}
+          disabled={offer <= 0 || (isSellOffer && !targetPlayerId)}
           onClick={() => {
             if (props.game.phase !== GamePhase.prompt) {
               props.setSquareModalType(undefined);
               props.updateGame(
-                isSellingOffer
+                isSellOffer
                   ? triggerSellingOffer(props.game, props.square, offer, targetPlayerId!)
                   : triggerBuyingOffer(props.game, props.square, offer),
               );

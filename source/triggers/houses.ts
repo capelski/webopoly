@@ -1,4 +1,4 @@
-import { EventType, PropertyStatus, PropertyType, SquareType } from '../enums';
+import { EventType, LiquidationReason, PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   canBuildHouse,
   canSellHouse,
@@ -7,9 +7,9 @@ import {
   getSellHouseAmount,
   getSquareById,
 } from '../logic';
-import { Game, Id } from '../types';
+import { Game, GameLiquidationPhase, GamePlayPhase, GameRollDicePhase, Id } from '../types';
 
-export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
+export const triggerBuildHouse = (game: GamePlayPhase | GameRollDicePhase, squareId: Id): Game => {
   const square = getSquareById(game, squareId);
   if (
     square.type !== SquareType.property ||
@@ -36,7 +36,7 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
       },
     ],
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
+      return p.id === player.id
         ? {
             ...p,
             money: p.money - getBuildHouseAmount(square),
@@ -49,7 +49,10 @@ export const triggerBuildHouse = (game: Game, squareId: Id): Game => {
   };
 };
 
-export const triggerSellHouse = (game: Game, squareId: Id): Game => {
+export const triggerSellHouse = (
+  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
+  squareId: Id,
+): Game => {
   const square = getSquareById(game, squareId);
   if (
     square.type !== SquareType.property ||
@@ -75,7 +78,7 @@ export const triggerSellHouse = (game: Game, squareId: Id): Game => {
       },
     ],
     players: game.players.map((p) => {
-      return p.id === game.currentPlayerId
+      return p.id === player.id
         ? {
             ...p,
             money: p.money + getSellHouseAmount(square),

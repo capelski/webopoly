@@ -1,0 +1,64 @@
+import { EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
+import { getCurrentPlayer, hasEnoughMoney } from '../logic';
+import { jailFine } from '../parameters';
+import { GameLiquidationPhase, GamePromptPhase } from '../types';
+import { triggerLastTurnInJail } from './jail';
+import { MovePlayerOutputPhases } from './move-player';
+import {
+  ExpenseOutputPhases,
+  triggerCannotPayPrompt,
+  triggerExpense,
+  triggerPayRent,
+} from './payments';
+
+export const resumeBuyProperty = (
+  game: GameLiquidationPhase<LiquidationReason.buyProperty>,
+): GamePromptPhase<PromptType.buyProperty> => {
+  return {
+    ...game,
+    phase: GamePhase.prompt,
+    prompt: game.pendingPrompt,
+  };
+};
+
+export const resumePendingPayment = (
+  game: GameLiquidationPhase<LiquidationReason.pendingPayment>,
+): GamePromptPhase<PromptType.cannotPay> | ExpenseOutputPhases | MovePlayerOutputPhases => {
+  const pendingEvent = game.pendingEvent;
+  const amount = pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
+  const player = getCurrentPlayer(game);
+
+  if (hasEnoughMoney(player, amount)) {
+    if (pendingEvent.type === EventType.expense) {
+      return triggerExpense(game, pendingEvent);
+    } else if (pendingEvent.type === EventType.turnInJail) {
+      return triggerLastTurnInJail(game);
+    } else {
+      return triggerPayRent(game, pendingEvent);
+    }
+  } else {
+    return triggerCannotPayPrompt(game, pendingEvent);
+  }
+};
+
+export const triggerBuyPropertyLiquidation = (
+  game: GamePromptPhase<PromptType.buyProperty>,
+): GameLiquidationPhase<LiquidationReason.buyProperty> => {
+  return {
+    ...game,
+    pendingPrompt: game.prompt,
+    phase: GamePhase.liquidation,
+    reason: LiquidationReason.buyProperty,
+  };
+};
+
+export const triggerPendingPaymentLiquidation = (
+  game: GamePromptPhase<PromptType.cannotPay>,
+): GameLiquidationPhase<LiquidationReason.pendingPayment> => {
+  return {
+    ...game,
+    pendingEvent: game.prompt.pendingEvent,
+    phase: GamePhase.liquidation,
+    reason: LiquidationReason.pendingPayment,
+  };
+};

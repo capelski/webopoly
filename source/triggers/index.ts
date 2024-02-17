@@ -5,6 +5,7 @@ export * from './dice-roll';
 export * from './end-turn';
 export * from './houses';
 export * from './jail';
+export * from './liquidation';
 export * from './mortgage';
 export * from './move-player';
 export * from './offers';

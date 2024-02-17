@@ -5,7 +5,7 @@ import { EventMinified } from './event-minified';
 import { GameUiTransitionPhase } from './game';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
-import { Prompt } from './prompt';
+import { BuyPropertyPrompt, Prompt } from './prompt';
 import { SquareMinified } from './square-minified';
 
 type GameBaseMinified = {
@@ -32,11 +32,20 @@ type GameBaseMinified = {
 export type GameLiquidationPhaseMinified = GameBaseMinified & {
   /** phase */
   ph: GamePhase.liquidation;
-  /** pendingEvent */
-  pe: PendingEvent;
-  /** trigger */
-  t: LiquidationReason.pendingPayment;
-};
+} & (
+    | {
+        /** pendingPrompt */
+        pp: BuyPropertyPrompt;
+        /** trigger */
+        t: LiquidationReason.buyProperty;
+      }
+    | {
+        /** pendingEvent */
+        pe: PendingEvent;
+        /** trigger */
+        t: LiquidationReason.pendingPayment;
+      }
+  );
 
 export type GamePlayPhaseMinified = GameBaseMinified & {
   /** phase */

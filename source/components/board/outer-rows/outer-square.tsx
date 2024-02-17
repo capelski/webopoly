@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from 'react';
 import { PropertyStatus, PropertyType, SquareModalType, SquareType } from '../../../enums';
-import { getPlayerById } from '../../../logic';
+import { getCurrentPlayer, getPlayerById } from '../../../logic';
 import { Game, Square } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
@@ -42,6 +42,8 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
     top: 0,
   };
 
+  const currentPlayer = getCurrentPlayer(props.game);
+
   return (
     <div
       onClick={
@@ -79,7 +81,8 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             />
           )}
 
-          {squareModalType === SquareModalType.placeOffer && (
+          {(squareModalType === SquareModalType.buyOffer ||
+            squareModalType === SquareModalType.sellOffer) && (
             <SquareOfferModal
               game={props.game}
               setSquareModalType={setSquareModalType}
@@ -117,7 +120,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             .filter((player) => player.isInJail)
             .map((player, index) => (
               <PlayerInSquare
-                isActive={player.id === props.game.currentPlayerId}
+                isActive={player.id === currentPlayer.id}
                 key={index}
                 offset={index}
                 player={player}
