@@ -77,14 +77,15 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
               }
               onClick={() => {
                 if (
-                  props.game.phase !== GamePhase.play &&
-                  props.game.phase !== GamePhase.rollDice
+                  (props.game.phase !== GamePhase.play &&
+                    props.game.phase !== GamePhase.rollDice) ||
+                  props.square.propertyType !== PropertyType.street
                 ) {
                   return;
                 }
 
                 props.setSquareModalType(undefined);
-                props.updateGame(triggerBuildHouse(props.game, props.square.id));
+                props.updateGame(triggerBuildHouse(props.game, props.square));
               }}
             >
               {houseSymbol} Build house
@@ -99,15 +100,16 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
               }
               onClick={() => {
                 if (
-                  props.game.phase !== GamePhase.liquidation &&
-                  props.game.phase !== GamePhase.play &&
-                  props.game.phase !== GamePhase.rollDice
+                  (props.game.phase !== GamePhase.liquidation &&
+                    props.game.phase !== GamePhase.play &&
+                    props.game.phase !== GamePhase.rollDice) ||
+                  props.square.propertyType !== PropertyType.street
                 ) {
                   return;
                 }
 
                 props.setSquareModalType(undefined);
-                props.updateGame(triggerSellHouse(props.game, props.square.id));
+                props.updateGame(triggerSellHouse(props.game, props.square));
               }}
             >
               {sellHouseSymbol} Sell house

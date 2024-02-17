@@ -1,27 +1,29 @@
-import { EventType, LiquidationReason, PropertyStatus, PropertyType, SquareType } from '../enums';
+import { EventType, LiquidationReason, PropertyStatus } from '../enums';
 import {
   canBuildHouse,
   canSellHouse,
   getBuildHouseAmount,
   getPlayerById,
   getSellHouseAmount,
-  getSquareById,
 } from '../logic';
-import { Game, GameLiquidationPhase, GamePlayPhase, GameRollDicePhase, Id } from '../types';
+import {
+  Game,
+  GameLiquidationPhase,
+  GamePlayPhase,
+  GameRollDicePhase,
+  StreetSquare,
+} from '../types';
 
-export const triggerBuildHouse = (game: GamePlayPhase | GameRollDicePhase, squareId: Id): Game => {
-  const square = getSquareById(game, squareId);
-  if (
-    square.type !== SquareType.property ||
-    square.propertyType !== PropertyType.street ||
-    square.status === PropertyStatus.mortgaged ||
-    !square.ownerId
-  ) {
+export const triggerBuildHouse = (
+  game: GamePlayPhase | GameRollDicePhase,
+  street: StreetSquare,
+): Game => {
+  if (street.status === PropertyStatus.mortgaged || !street.ownerId) {
     return game;
   }
 
-  const player = getPlayerById(game, square.ownerId);
-  if (!canBuildHouse(game, square, player)) {
+  const player = getPlayerById(game, street.ownerId);
+  if (!canBuildHouse(game, street, player)) {
     return game;
   }
 
@@ -30,8 +32,8 @@ export const triggerBuildHouse = (game: GamePlayPhase | GameRollDicePhase, squar
     notifications: [
       ...game.notifications,
       {
-        playerId: square.ownerId,
-        propertyId: squareId,
+        playerId: street.ownerId,
+        propertyId: street.id,
         type: EventType.buildHouse,
       },
     ],
@@ -39,31 +41,26 @@ export const triggerBuildHouse = (game: GamePlayPhase | GameRollDicePhase, squar
       return p.id === player.id
         ? {
             ...p,
-            money: p.money - getBuildHouseAmount(square),
+            money: p.money - getBuildHouseAmount(street),
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === square.id ? { ...s, houses: square.houses + 1 } : s;
+      return s.id === street.id ? { ...s, houses: street.houses + 1 } : s;
     }),
   };
 };
 
 export const triggerSellHouse = (
   game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
-  squareId: Id,
+  street: StreetSquare,
 ): Game => {
-  const square = getSquareById(game, squareId);
-  if (
-    square.type !== SquareType.property ||
-    square.propertyType !== PropertyType.street ||
-    !square.ownerId
-  ) {
+  if (!street.ownerId) {
     return game;
   }
 
-  const player = getPlayerById(game, square.ownerId);
-  if (!canSellHouse(game, square, player)) {
+  const player = getPlayerById(game, street.ownerId);
+  if (!canSellHouse(game, street, player)) {
     return game;
   }
 
@@ -72,8 +69,8 @@ export const triggerSellHouse = (
     notifications: [
       ...game.notifications,
       {
-        playerId: square.ownerId,
-        propertyId: squareId,
+        playerId: street.ownerId,
+        propertyId: street.id,
         type: EventType.sellHouse,
       },
     ],
@@ -81,12 +78,12 @@ export const triggerSellHouse = (
       return p.id === player.id
         ? {
             ...p,
-            money: p.money + getSellHouseAmount(square),
+            money: p.money + getSellHouseAmount(street),
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === square.id ? { ...s, houses: square.houses - 1 } : s;
+      return s.id === street.id ? { ...s, houses: street.houses - 1 } : s;
     }),
   };
 };
