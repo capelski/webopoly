@@ -1,29 +1,19 @@
-import { EventType, LiquidationReason, PropertyStatus } from '../enums';
+import { EventType, LiquidationReason } from '../enums';
 import {
   canBuildHouse,
   canSellHouse,
   getBuildHouseAmount,
-  getPlayerById,
+  getCurrentPlayer,
   getSellHouseAmount,
 } from '../logic';
-import {
-  Game,
-  GameLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
-  StreetSquare,
-} from '../types';
+import { GameLiquidationPhase, GamePlayPhase, GameRollDicePhase, StreetSquare } from '../types';
 
 export const triggerBuildHouse = (
   game: GamePlayPhase | GameRollDicePhase,
   street: StreetSquare,
-): Game => {
-  if (street.status === PropertyStatus.mortgaged || !street.ownerId) {
-    return game;
-  }
-
-  const player = getPlayerById(game, street.ownerId);
-  if (!canBuildHouse(game, street, player)) {
+): GamePlayPhase | GameRollDicePhase => {
+  const currentPlayer = getCurrentPlayer(game);
+  if (!canBuildHouse(game, street, currentPlayer)) {
     return game;
   }
 
@@ -32,13 +22,13 @@ export const triggerBuildHouse = (
     notifications: [
       ...game.notifications,
       {
-        playerId: street.ownerId,
+        playerId: currentPlayer.id,
         propertyId: street.id,
         type: EventType.buildHouse,
       },
     ],
     players: game.players.map((p) => {
-      return p.id === player.id
+      return p.id === currentPlayer.id
         ? {
             ...p,
             money: p.money - getBuildHouseAmount(street),
@@ -54,13 +44,9 @@ export const triggerBuildHouse = (
 export const triggerSellHouse = (
   game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
   street: StreetSquare,
-): Game => {
-  if (!street.ownerId) {
-    return game;
-  }
-
-  const player = getPlayerById(game, street.ownerId);
-  if (!canSellHouse(game, street, player)) {
+): GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase => {
+  const currentPlayer = getCurrentPlayer(game);
+  if (!canSellHouse(game, street, currentPlayer)) {
     return game;
   }
 
@@ -69,13 +55,13 @@ export const triggerSellHouse = (
     notifications: [
       ...game.notifications,
       {
-        playerId: street.ownerId,
+        playerId: currentPlayer.id,
         propertyId: street.id,
         type: EventType.sellHouse,
       },
     ],
     players: game.players.map((p) => {
-      return p.id === player.id
+      return p.id === currentPlayer.id
         ? {
             ...p,
             money: p.money + getSellHouseAmount(street),

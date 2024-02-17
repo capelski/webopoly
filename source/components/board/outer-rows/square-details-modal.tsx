@@ -77,9 +77,10 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
               }
               onClick={() => {
                 if (
+                  props.square.propertyType !== PropertyType.street ||
                   (props.game.phase !== GamePhase.play &&
                     props.game.phase !== GamePhase.rollDice) ||
-                  props.square.propertyType !== PropertyType.street
+                  !canBuildHouse(props.game, props.square, currentPlayer)
                 ) {
                   return;
                 }
@@ -100,10 +101,11 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
               }
               onClick={() => {
                 if (
+                  props.square.propertyType !== PropertyType.street ||
                   (props.game.phase !== GamePhase.liquidation &&
                     props.game.phase !== GamePhase.play &&
                     props.game.phase !== GamePhase.rollDice) ||
-                  props.square.propertyType !== PropertyType.street
+                  !canSellHouse(props.game, props.square, currentPlayer)
                 ) {
                   return;
                 }
