@@ -1,16 +1,19 @@
-import { GamePhase, TransitionType } from '../enums';
+import { GamePhase, LiquidationReason, TransitionType } from '../enums';
 import { getCurrentPlayer, getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
-import { GameUiTransitionPhase } from '../types';
+import { GameLiquidationPhase, GameUiTransitionPhase } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
 
-export const triggerDiceTransition = (
-  game: GameUiTransitionPhase<TransitionType.dice>,
-): GameUiTransitionPhase<TransitionType.player> | MovePlayerOutputPhases => {
+export const triggerFirstPlayerTransition = (
+  game:
+    | GameUiTransitionPhase<TransitionType.dice>
+    | GameUiTransitionPhase<TransitionType.jailDiceRoll>
+    | GameLiquidationPhase<LiquidationReason.pendingPayment>,
+): GameUiTransitionPhase<TransitionType.player> => {
   const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
 
-  return triggerPlayerTransition({
+  return triggerNextPlayerTransition({
     ...game,
     phase: GamePhase.uiTransition,
     transitionType: TransitionType.player,
@@ -19,10 +22,10 @@ export const triggerDiceTransition = (
       pendingMoves,
       playerId: currentPlayer.id,
     },
-  });
+  }) as GameUiTransitionPhase<TransitionType.player>;
 };
 
-export const triggerPlayerTransition = (
+export const triggerNextPlayerTransition = (
   game: GameUiTransitionPhase<TransitionType.player>,
 ): GameUiTransitionPhase<TransitionType.player> | MovePlayerOutputPhases => {
   const { currentSquareId, pendingMoves, playerId } = game.transitionData;

@@ -1,4 +1,3 @@
-- Player transition when coming out of the jail
 - Display details of non property squares
 - Display street repair total amount in notification
 - Street repairs expense must be recomputed after cannot pay, as houses might have been sold

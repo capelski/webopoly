@@ -22,13 +22,13 @@ const getPreviousPayload = (game: GameNonPromptPhase): NonPromptPhasePayload => 
       ? { phase: game.phase, reason: game.reason, pendingPrompt: game.pendingPrompt }
       : { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
     : game.phase === GamePhase.uiTransition
-    ? game.transitionType === TransitionType.dice
-      ? { phase: game.phase, transitionType: game.transitionType }
-      : {
+    ? game.transitionType === TransitionType.player
+      ? {
           phase: game.phase,
           transitionType: game.transitionType,
           transitionData: game.transitionData,
         }
+      : { phase: game.phase, transitionType: game.transitionType }
     : { phase: game.phase };
 };
 

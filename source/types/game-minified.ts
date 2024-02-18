@@ -73,6 +73,10 @@ export type GameUiTransitionPhaseMinified = GameBaseMinified & {
         tt: TransitionType.dice;
       }
     | {
+        /** transitionType */
+        tt: TransitionType.jailDiceRoll;
+      }
+    | {
         /** Not minifying, as it will not be persisted in the event history */
         td: GameUiTransitionPhase<TransitionType.player>['transitionData'];
         /** transitionType */

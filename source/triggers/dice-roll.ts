@@ -1,14 +1,6 @@
 import { GamePhase, PromptType, TransitionType } from '../enums';
-import {
-  getCurrentPlayer,
-  getDiceMovement,
-  getDiceRoll,
-  getNextSquareId,
-  isDoublesRoll,
-} from '../logic';
-import { maxTurnsInJail } from '../parameters';
+import { getDiceMovement, getDiceRoll, getNextSquareId } from '../logic';
 import { GamePlayPhase, GamePromptPhase, GameRollDicePhase, GameUiTransitionPhase } from '../types';
-import { triggerLastTurnInJail, triggerRemainInJail, triggerRollDoublesInJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 
 export const applyDiceRoll = (game: GamePlayPhase): MovePlayerOutputPhases => {
@@ -30,21 +22,11 @@ export const triggerDiceRoll = (
 
 export const triggerDiceRollInJail = (
   game: GamePromptPhase<PromptType.jailOptions>,
-): GamePlayPhase | MovePlayerOutputPhases => {
-  const nextGame: GamePromptPhase<PromptType.jailOptions> = {
+): GameUiTransitionPhase<TransitionType.jailDiceRoll> => {
+  return {
     ...game,
     dice: getDiceRoll(),
+    phase: GamePhase.uiTransition,
+    transitionType: TransitionType.jailDiceRoll,
   };
-
-  const isDoubles = isDoublesRoll(nextGame.dice);
-  if (isDoubles) {
-    return triggerRollDoublesInJail(nextGame);
-  }
-
-  const currentPlayer = getCurrentPlayer(nextGame);
-  const { turnsInJail } = currentPlayer;
-
-  return turnsInJail === maxTurnsInJail - 1
-    ? triggerLastTurnInJail(nextGame)
-    : triggerRemainInJail(nextGame);
 };

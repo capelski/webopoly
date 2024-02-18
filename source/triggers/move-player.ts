@@ -67,14 +67,18 @@ export const triggerMovePlayer = (
   nextSquareId: Id,
   options: MovePlayerOptions = {},
 ): MovePlayerOutputPhases => {
-  const currentPlayer = getCurrentPlayer(game);
-  const currentPlayerId = currentPlayer.id;
-  const currentSquareId = currentPlayer.squareId;
+  const { id: currentPlayerId, squareId: currentSquareId } = getCurrentPlayer(game);
   const nextSquare = game.squares.find((s) => s.id === nextSquareId)!;
 
-  let updatedGame: MovePlayerInputPhases = {
-    ...game,
-    players: game.players.map((p) => {
+  let updatedGame: MovePlayerInputPhases = { ...game };
+
+  if (!options.preventPassGo && passesGo(updatedGame, currentSquareId, nextSquareId)) {
+    updatedGame = applyPassGo(updatedGame, currentPlayerId);
+  }
+
+  updatedGame = {
+    ...updatedGame,
+    players: updatedGame.players.map((p) => {
       return p.id === currentPlayerId ? { ...p, squareId: nextSquareId } : p;
     }),
   };
@@ -89,10 +93,6 @@ export const triggerMovePlayer = (
       },
     };
     return nextGame;
-  }
-
-  if (!options.preventPassGo && passesGo(updatedGame, currentSquareId, nextSquareId)) {
-    updatedGame = applyPassGo(updatedGame, currentPlayerId);
   }
 
   const paysRent = doesPayRent(currentPlayerId, nextSquare);
@@ -120,7 +120,7 @@ export const triggerMovePlayer = (
     });
   }
 
-  const collectsFreeParking = nextSquare.type === SquareType.parking && game.centerPot > 0;
+  const collectsFreeParking = nextSquare.type === SquareType.parking && updatedGame.centerPot > 0;
   if (collectsFreeParking) {
     return applyFreeParking(updatedGame, currentPlayerId);
   }
@@ -146,7 +146,7 @@ export const triggerMovePlayer = (
     const currentBuyerId = potentialBuyersId.shift();
 
     if (currentBuyerId) {
-      return {
+      const nextGame: GamePromptPhase<PromptType.buyProperty> = {
         ...updatedGame,
         phase: GamePhase.prompt,
         prompt: {
@@ -155,6 +155,7 @@ export const triggerMovePlayer = (
           type: PromptType.buyProperty,
         },
       };
+      return nextGame;
     }
   }
 

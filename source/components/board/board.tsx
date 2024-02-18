@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { GamePhase, TransitionType } from '../../enums';
-import { diceToString } from '../../logic';
+import { diceToString, getCurrentPlayer, isDoublesRoll } from '../../logic';
 import {
   currencySymbol,
   diceSymbol,
   diceTransitionDuration,
+  maxTurnsInJail,
   parkingSymbol,
   playerTransitionDuration,
 } from '../../parameters';
-import { triggerDiceTransition, triggerPlayerTransition } from '../../triggers';
-import { Game, GameUiTransitionPhase } from '../../types';
+import {
+  triggerFirstPlayerTransition,
+  triggerLastTurnInJail,
+  triggerNextPlayerTransition,
+  triggerRemainInJail,
+  triggerRollDoublesInJail,
+} from '../../triggers';
+import { Game } from '../../types';
 import { Grid } from './grid';
 import { InnerBottomRow } from './inner-rows/inner-bottom-row';
 import { InnerLeftRow } from './inner-rows/inner-left-row';
@@ -30,23 +37,44 @@ export const Board: React.FC<BoardProps> = (props) => {
   const [animateDice, setAnimateDice] = useState(false);
 
   useEffect(() => {
+    if (props.game.notifications.length) {
+      // Wait for the notifications to be processed before triggering animations
+      return;
+    }
+
     if (props.game.phase === GamePhase.uiTransition) {
-      if (props.game.transitionType === TransitionType.dice) {
+      const { game } = props;
+
+      if (game.transitionType === TransitionType.player) {
+        setTimeout(() => {
+          props.updateGame(triggerNextPlayerTransition(game));
+        }, playerTransitionDuration * 1000);
+      } else if (game.transitionType === TransitionType.dice) {
         setAnimateDice(true);
         setTimeout(() => {
           setAnimateDice(false);
           setTimeout(() => {
-            props.updateGame(
-              triggerDiceTransition(props.game as GameUiTransitionPhase<TransitionType.dice>),
-            );
+            props.updateGame(triggerFirstPlayerTransition(game));
           }, diceTransitionDuration * 1000);
         }, diceTransitionDuration * 1000);
-      } else if (props.game.transitionType === TransitionType.player) {
+      } else if (game.transitionType === TransitionType.jailDiceRoll) {
+        setAnimateDice(true);
         setTimeout(() => {
-          props.updateGame(
-            triggerPlayerTransition(props.game as GameUiTransitionPhase<TransitionType.player>),
-          );
-        }, playerTransitionDuration * 1000);
+          setAnimateDice(false);
+          setTimeout(() => {
+            const player = getCurrentPlayer(game);
+            const isDoubles = isDoublesRoll(game.dice);
+            const isLastTurnInJail = player.turnsInJail === maxTurnsInJail - 1;
+
+            const nextGame = isDoubles
+              ? triggerRollDoublesInJail(game)
+              : isLastTurnInJail
+              ? triggerLastTurnInJail(game)
+              : triggerRemainInJail(game);
+
+            props.updateGame(nextGame);
+          }, diceTransitionDuration * 1000);
+        }, diceTransitionDuration * 1000);
       }
     }
   }, [props.game]);

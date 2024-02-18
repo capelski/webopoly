@@ -4,6 +4,7 @@ import { GamePlayPhase, GamePromptPhase, GameRollDicePhase } from '../types';
 
 export type EndTurnInputPhases =
   | GamePlayPhase // A player finishes their turn
+  | GamePromptPhase<PromptType.jailOptions> // A player pays the jail fine to get out
   | GamePromptPhase<PromptType.cannotPay>; // A player declares bankruptcy
 
 export type EndTurnOutputPhases =

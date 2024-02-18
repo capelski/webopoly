@@ -1,8 +1,7 @@
-import { EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
+import { EventType, GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
-import { GameLiquidationPhase, GamePromptPhase } from '../types';
+import { GameLiquidationPhase, GamePromptPhase, GameUiTransitionPhase } from '../types';
 import { triggerLastTurnInJail } from './jail';
-import { MovePlayerOutputPhases } from './move-player';
 import {
   ExpenseOutputPhases,
   triggerCannotPayPrompt,
@@ -22,7 +21,10 @@ export const resumeBuyProperty = (
 
 export const resumePendingPayment = (
   game: GameLiquidationPhase<LiquidationReason.pendingPayment>,
-): GamePromptPhase<PromptType.cannotPay> | ExpenseOutputPhases | MovePlayerOutputPhases => {
+):
+  | GamePromptPhase<PromptType.cannotPay>
+  | ExpenseOutputPhases
+  | GameUiTransitionPhase<TransitionType.player> => {
   const pendingEvent = game.pendingEvent;
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);

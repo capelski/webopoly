@@ -8,7 +8,8 @@ export type PhasePayloadBase<T extends GamePhase> = {
 };
 
 export type LiquidationPhasePayload<TReason extends LiquidationReason = LiquidationReason> =
-  PhasePayloadBase<GamePhase.liquidation> & { reason: TReason } & (
+  PhasePayloadBase<GamePhase.liquidation> &
+    (
       | {
           pendingPrompt: BuyPropertyPrompt;
           reason: LiquidationReason.buyProperty;
@@ -17,7 +18,7 @@ export type LiquidationPhasePayload<TReason extends LiquidationReason = Liquidat
           pendingEvent: PendingEvent;
           reason: LiquidationReason.pendingPayment;
         }
-    );
+    ) & { reason: TReason };
 
 export type PlayPhasePayload = PhasePayloadBase<GamePhase.play>;
 
@@ -29,11 +30,13 @@ export type PromptPhasePayload<TPrompt extends PromptType = PromptType> =
 export type RollDicePhasePayload = PhasePayloadBase<GamePhase.rollDice>;
 
 export type UiTransitionPhasePayload<TTransition extends TransitionType = TransitionType> =
-  PhasePayloadBase<GamePhase.uiTransition> & {
-    transitionType: TTransition;
-  } & (
+  PhasePayloadBase<GamePhase.uiTransition> &
+    (
       | {
           transitionType: TransitionType.dice;
+        }
+      | {
+          transitionType: TransitionType.jailDiceRoll;
         }
       | {
           transitionData: {
@@ -43,7 +46,9 @@ export type UiTransitionPhasePayload<TTransition extends TransitionType = Transi
           };
           transitionType: TransitionType.player;
         }
-    );
+    ) & {
+      transitionType: TTransition;
+    };
 
 export type NonPromptPhasePayload =
   | LiquidationPhasePayload
