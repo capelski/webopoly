@@ -1,5 +1,4 @@
 - Player transition when coming out of the jail
-- Highlight actual rent in property details
 - Display details of non property squares
 - Display the pending money total in cannot pay prompt
 - Display street repair total amount in notification

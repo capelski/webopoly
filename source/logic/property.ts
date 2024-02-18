@@ -1,4 +1,4 @@
-import { LiquidationReason, PropertyStatus, PropertyType, SquareType } from '../enums';
+import { LiquidationReason, PropertyStatus, PropertyType } from '../enums';
 import {
   clearMortgageRate,
   houseBuildPercentage,
@@ -17,11 +17,16 @@ import {
   Id,
   Player,
   PropertySquare,
-  Square,
   StreetSquare,
 } from '../types';
 import { getDiceMovement } from './dice';
 import { getPlayerById } from './game';
+import {
+  getNeighborhoodStreets,
+  getPlayerActiveStations,
+  getPlayerActiveUtilities,
+  ownsNeighborhood,
+} from './player';
 
 export const canBuildHouse = (
   game: GamePlayPhase | GameRollDicePhase,
@@ -85,49 +90,26 @@ export const getClearMortgageAmount = (property: PropertySquare) => {
   return Math.round(mortgagePercentage * property.price * clearMortgageRate);
 };
 
-const getNeighborhoodStreets = (squares: Square[], property: StreetSquare): StreetSquare[] => {
-  return squares.filter(
-    (p) =>
-      p.type === SquareType.property &&
-      p.propertyType === PropertyType.street &&
-      p.neighborhood === property.neighborhood,
-  ) as StreetSquare[];
-};
-
 export const getMortgageAmount = (property: PropertySquare) => {
   return Math.round(mortgagePercentage * property.price);
 };
 
 export const getRentAmount = (game: Game, property: PropertySquare) => {
   const landlord = getPlayerById(game, property.ownerId!);
-  const properties = (
-    landlord.properties.map(
-      (propertyId) => game.squares.find((s) => s.id === propertyId)!,
-    ) as PropertySquare[]
-  ).filter((p) => p.status !== PropertyStatus.mortgaged);
 
   let rent = 0;
 
   if (property.propertyType === PropertyType.station) {
-    const stations = properties.filter(
-      (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
-    );
+    const stations = getPlayerActiveStations(game, landlord.id);
     rent = getStationRent(stations.length);
   } else if (property.propertyType === PropertyType.street) {
-    const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
-    const ownedStreets = neighborhoodStreets.filter(
-      (p) => p.ownerId === landlord.id && p.status !== PropertyStatus.mortgaged,
-    );
-
     rent = getStreetRent(property.price, {
-      colorSetOwned: ownedStreets.length === neighborhoodStreets.length,
+      ownsNeighborhood: ownsNeighborhood(game, property),
       housesNumber: property.houses,
     });
   } else {
-    const utilityProperties = properties.filter(
-      (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
-    );
-    const utilityRentMultiplier = getUtilityRentMultiplier(utilityProperties.length);
+    const utilities = getPlayerActiveUtilities(game, landlord.id);
+    const utilityRentMultiplier = getUtilityRentMultiplier(utilities.length);
     const movement = getDiceMovement(game.dice);
     rent = movement * utilityRentMultiplier;
   }
@@ -145,12 +127,12 @@ export const getStationRent = (stationsNumber: number) => {
 
 export const getStreetRent = (
   price: number,
-  { colorSetOwned, housesNumber }: { colorSetOwned?: boolean; housesNumber?: number } = {},
+  { ownsNeighborhood, housesNumber }: { ownsNeighborhood?: boolean; housesNumber?: number } = {},
 ) => {
   return Math.round(
     housesNumber
       ? houseRents[housesNumber] * price
-      : rentPercentage * price * (colorSetOwned ? 2 : 1),
+      : rentPercentage * price * (ownsNeighborhood ? 2 : 1),
   );
 };
 
