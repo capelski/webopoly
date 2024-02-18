@@ -1,4 +1,5 @@
 import React from 'react';
+import { zIndexes } from '../../parameters';
 import { Player } from '../../types';
 import { PlayerAvatar } from '../common/player-avatar';
 
@@ -18,7 +19,7 @@ export const PlayerInSquare: React.FC<PlayerInSquareProps> = (props) => {
         left: `${20 + props.offset * 10}%`,
         position: 'absolute',
         transform: `rotate(${props.rotate}deg)`,
-        zIndex: props.isActive ? 10 : undefined,
+        zIndex: props.isActive ? zIndexes.activePlayer : undefined,
       }}
     >
       <PlayerAvatar player={props.player} />

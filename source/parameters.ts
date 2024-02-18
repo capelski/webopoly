@@ -42,3 +42,8 @@ export const houseRents: { [housesNumber: number]: number } = {
 
 export const diceTransitionDuration = 1; // In seconds
 export const playerTransitionDuration = 0.4; // In seconds
+
+export const zIndexes = {
+  activePlayer: 10,
+  modal: 20,
+};

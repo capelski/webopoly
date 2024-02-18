@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 import ReactModal from 'react-modal';
+import { zIndexes } from '../../parameters';
 
 interface ModalProps {
   closeHandler?: () => void;
@@ -27,7 +28,10 @@ export const Modal: React.FC<ModalProps> = (props) => {
             inset: props.inset || '25% 20px',
             padding: 0,
           },
-          overlay: { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: zIndexes.modal,
+          },
         }}
       >
         <div
