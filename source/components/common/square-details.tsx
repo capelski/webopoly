@@ -6,6 +6,9 @@ import {
   getMortgageAmount,
   getPlayerById,
   getSellHouseAmount,
+  getStationRent,
+  getStreetRent,
+  getUtilityRentMultiplier,
 } from '../../logic';
 import {
   clearMortgageSymbol,
@@ -13,7 +16,6 @@ import {
   houseRents,
   houseSymbol,
   mortgageSymbol,
-  rentPercentage,
   sellHouseSymbol,
   stationRents,
   stationSymbol,
@@ -22,8 +24,6 @@ import { Game, PropertySquare } from '../../types';
 import { SquareIcon } from '../board/outer-rows/square-icon';
 import { streetsColorMap } from '../board/outer-rows/street-colors-map';
 import { PlayerAvatar } from './player-avatar';
-
-// TODO Extract multiplication and rounding for rent prices
 
 interface SquareDetailsProps {
   game: Game;
@@ -115,25 +115,25 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
               <span>Rent</span>
               <span>
                 {currencySymbol}
-                {rentPercentage * props.square.price}
+                {getStreetRent(props.square.price)}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span>Rent with color set</span>
               <span>
                 {currencySymbol}
-                {2 * rentPercentage * props.square.price}
+                {getStreetRent(props.square.price, { colorSetOwned: true })}
               </span>
             </div>
-            {Object.keys(houseRents).map((houseNumber, index) => {
+            {Object.keys(houseRents).map((housesNumber, index) => {
               return (
                 <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>
-                    Rent with {houseNumber} {houseSymbol}
+                    Rent with {housesNumber} {houseSymbol}
                   </span>
                   <span>
                     {currencySymbol}
-                    {houseRents[parseInt(houseNumber)] * props.square.price}
+                    {getStreetRent(props.square.price, { housesNumber: parseInt(housesNumber) })}
                   </span>
                 </div>
               );
@@ -149,7 +149,7 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
                   </span>
                   <span>
                     {currencySymbol}
-                    {stationRents[parseInt(stationsNumber)]}
+                    {getStationRent(parseInt(stationsNumber))}
                   </span>
                 </div>
               );
@@ -157,8 +157,14 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <p>If one Utility is owned, the rent is 4 times the last dice roll.</p>
-            <p>If both Utilities are owned, the rent is 10 times the last dice roll.</p>
+            <p>
+              If one Utility is owned, the rent is {getUtilityRentMultiplier(1)} times the last dice
+              roll.
+            </p>
+            <p>
+              If both Utilities are owned, the rent is {getUtilityRentMultiplier(2)} times the last
+              dice roll.
+            </p>
           </React.Fragment>
         )}
       </div>

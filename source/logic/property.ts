@@ -78,7 +78,7 @@ export const canSellHouse = (
 };
 
 export const getBuildHouseAmount = (property: StreetSquare) => {
-  return Math.round((property.price / 5) * houseBuildPercentage) * 5;
+  return Math.round(property.price * houseBuildPercentage);
 };
 
 export const getClearMortgageAmount = (property: PropertySquare) => {
@@ -112,32 +112,48 @@ export const getRentAmount = (game: Game, property: PropertySquare) => {
     const stations = properties.filter(
       (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
     );
-    rent = stationRents[stations.length];
+    rent = getStationRent(stations.length);
   } else if (property.propertyType === PropertyType.street) {
-    if (property.houses > 0) {
-      rent = houseRents[property.houses] * property.price;
-    } else {
-      const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
-      const ownedStreets = neighborhoodStreets.filter(
-        (p) => p.ownerId === landlord.id && p.status !== PropertyStatus.mortgaged,
-      );
+    const neighborhoodStreets = getNeighborhoodStreets(game.squares, property);
+    const ownedStreets = neighborhoodStreets.filter(
+      (p) => p.ownerId === landlord.id && p.status !== PropertyStatus.mortgaged,
+    );
 
-      rent =
-        property.price *
-        rentPercentage *
-        (ownedStreets.length === neighborhoodStreets.length ? 2 : 1);
-    }
+    rent = getStreetRent(property.price, {
+      colorSetOwned: ownedStreets.length === neighborhoodStreets.length,
+      housesNumber: property.houses,
+    });
   } else {
     const utilityProperties = properties.filter(
       (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
     );
+    const utilityRentMultiplier = getUtilityRentMultiplier(utilityProperties.length);
     const movement = getDiceMovement(game.dice);
-    rent = movement * (utilityProperties.length === 2 ? 10 : 4);
+    rent = movement * utilityRentMultiplier;
   }
 
-  return Math.round(rent);
+  return rent;
 };
 
 export const getSellHouseAmount = (property: StreetSquare) => {
-  return Math.round((property.price / 5) * houseSellPercentage) * 5;
+  return Math.round(property.price * houseSellPercentage);
+};
+
+export const getStationRent = (stationsNumber: number) => {
+  return stationRents[stationsNumber];
+};
+
+export const getStreetRent = (
+  price: number,
+  { colorSetOwned, housesNumber }: { colorSetOwned?: boolean; housesNumber?: number } = {},
+) => {
+  return Math.round(
+    housesNumber
+      ? houseRents[housesNumber] * price
+      : rentPercentage * price * (colorSetOwned ? 2 : 1),
+  );
+};
+
+export const getUtilityRentMultiplier = (utilitiesNumber: number) => {
+  return utilitiesNumber === 2 ? 10 : 4;
 };
