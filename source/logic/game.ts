@@ -1,4 +1,5 @@
 import {
+  EventType,
   GamePhase,
   LiquidationReason,
   PlayerStatus,
@@ -6,8 +7,18 @@ import {
   PropertyType,
   SquareType,
 } from '../enums';
-import { playerInitialMoney } from '../parameters';
-import { Game, GameMinified, Id, Player, PlayerMinified, Square, SquareMinified } from '../types';
+import { jailFine, playerInitialMoney } from '../parameters';
+import {
+  Game,
+  GameLiquidationPhase,
+  GameMinified,
+  GamePromptPhase,
+  Id,
+  Player,
+  PlayerMinified,
+  Square,
+  SquareMinified,
+} from '../types';
 
 export const createGame = (nPlayers: number): GameMinified => {
   const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
@@ -102,6 +113,16 @@ export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType):
     .concat(game.squares.slice(0, nextSquareIndex));
   return squaresPool.find((s) => s.type === SquareType.property && s.propertyType === propertyType)!
     .id;
+};
+
+export const getPendingAmount = (
+  game:
+    | GameLiquidationPhase<LiquidationReason.pendingPayment>
+    | GamePromptPhase<PromptType.cannotPay>,
+) => {
+  const { pendingEvent } = game.phase === GamePhase.liquidation ? game : game.prompt;
+  const amount = pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
+  return amount;
 };
 
 export const getPlayerById = (game: Game, playerId: Id): Player => {

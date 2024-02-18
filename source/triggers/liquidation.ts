@@ -1,6 +1,5 @@
 import { EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
-import { getCurrentPlayer, hasEnoughMoney } from '../logic';
-import { jailFine } from '../parameters';
+import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import { GameLiquidationPhase, GamePromptPhase } from '../types';
 import { triggerLastTurnInJail } from './jail';
 import { MovePlayerOutputPhases } from './move-player';
@@ -25,7 +24,7 @@ export const resumePendingPayment = (
   game: GameLiquidationPhase<LiquidationReason.pendingPayment>,
 ): GamePromptPhase<PromptType.cannotPay> | ExpenseOutputPhases | MovePlayerOutputPhases => {
   const pendingEvent = game.pendingEvent;
-  const amount = pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
+  const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
 
   if (hasEnoughMoney(player, amount)) {

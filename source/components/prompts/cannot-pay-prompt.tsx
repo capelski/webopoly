@@ -1,6 +1,7 @@
 import React from 'react';
 import { PromptType } from '../../enums';
-import { getCurrentPlayer } from '../../logic';
+import { getCurrentPlayer, getPendingAmount } from '../../logic';
+import { currencySymbol } from '../../parameters';
 import { triggerBankruptcy, triggerPendingPaymentLiquidation } from '../../triggers';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
@@ -11,6 +12,10 @@ export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) =>
   return (
     <div style={{ textAlign: 'center' }}>
       <h3>Not enough money</h3>
+      <p>
+        You owe {currencySymbol}
+        {getPendingAmount(props.game)}
+      </p>
       <div style={{ marginBottom: 16 }}></div>
       <div>
         <Button
