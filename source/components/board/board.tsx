@@ -75,6 +75,10 @@ export const Board: React.FC<BoardProps> = (props) => {
             props.updateGame(nextGame);
           }, diceTransitionDuration * 1000);
         }, diceTransitionDuration * 1000);
+      } else if (game.transitionType === TransitionType.getOutOfJail) {
+        setTimeout(() => {
+          props.updateGame(triggerFirstPlayerTransition(game));
+        }, playerTransitionDuration * 1000);
       }
     }
   }, [props.game]);

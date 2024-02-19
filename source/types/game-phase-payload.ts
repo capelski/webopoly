@@ -36,6 +36,9 @@ export type UiTransitionPhasePayload<TTransition extends TransitionType = Transi
           transitionType: TransitionType.dice;
         }
       | {
+          transitionType: TransitionType.getOutOfJail;
+        }
+      | {
           transitionType: TransitionType.jailDiceRoll;
         }
       | {

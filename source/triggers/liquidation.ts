@@ -24,7 +24,7 @@ export const resumePendingPayment = (
 ):
   | GamePromptPhase<PromptType.cannotPay>
   | ExpenseOutputPhases
-  | GameUiTransitionPhase<TransitionType.player> => {
+  | GameUiTransitionPhase<TransitionType.getOutOfJail> => {
   const pendingEvent = game.pendingEvent;
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);

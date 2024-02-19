@@ -20,7 +20,6 @@ import {
 } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 import { triggerCannotPayPrompt } from './payments';
-import { triggerFirstPlayerTransition } from './transitions';
 
 export type PlayerOutOfJailPhases =
   | GamePromptPhase<PromptType.jailOptions>
@@ -67,7 +66,7 @@ export const triggerLastTurnInJail = (
   game:
     | GameUiTransitionPhase<TransitionType.jailDiceRoll>
     | GameLiquidationPhase<LiquidationReason.pendingPayment>,
-): GameUiTransitionPhase<TransitionType.player> | GamePromptPhase<PromptType.cannotPay> => {
+): GameUiTransitionPhase<TransitionType.getOutOfJail> | GamePromptPhase<PromptType.cannotPay> => {
   const currentPlayer = getCurrentPlayer(game);
 
   if (!hasEnoughMoney(currentPlayer, jailFine)) {
@@ -79,7 +78,12 @@ export const triggerLastTurnInJail = (
   }
 
   const nextGame = updatePlayerOutOfJail(game, JailMedium.lastTurn);
-  return triggerFirstPlayerTransition(nextGame);
+
+  return {
+    ...nextGame,
+    phase: GamePhase.uiTransition,
+    transitionType: TransitionType.getOutOfJail,
+  };
 };
 
 export const triggerPayJailFine = (
@@ -122,9 +126,13 @@ export const triggerRemainInJail = (
 
 export const triggerRollDoublesInJail = (
   game: GameUiTransitionPhase<TransitionType.jailDiceRoll>,
-): GameUiTransitionPhase<TransitionType.player> => {
+): GameUiTransitionPhase<TransitionType.getOutOfJail> => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.dice);
-  return triggerFirstPlayerTransition(nextGame);
+  return {
+    ...nextGame,
+    phase: GamePhase.uiTransition,
+    transitionType: TransitionType.getOutOfJail,
+  };
 };
 
 export const triggerUseJailCard = (

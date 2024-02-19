@@ -74,6 +74,10 @@ export type GameUiTransitionPhaseMinified = GameBaseMinified & {
       }
     | {
         /** transitionType */
+        tt: TransitionType.getOutOfJail;
+      }
+    | {
+        /** transitionType */
         tt: TransitionType.jailDiceRoll;
       }
     | {

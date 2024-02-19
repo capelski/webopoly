@@ -7,7 +7,7 @@ import { MovePlayerOutputPhases } from './move-player';
 export const triggerFirstPlayerTransition = (
   game:
     | GameUiTransitionPhase<TransitionType.dice>
-    | GameUiTransitionPhase<TransitionType.jailDiceRoll>
+    | GameUiTransitionPhase<TransitionType.getOutOfJail>
     | GameLiquidationPhase<LiquidationReason.pendingPayment>,
 ): GameUiTransitionPhase<TransitionType.player> => {
   const pendingMoves = getDiceMovement(game.dice);
