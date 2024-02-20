@@ -17,10 +17,8 @@ type GameBaseMinified = {
   d: Dice;
   /** eventHistory */
   eh: EventMinified[];
-  /** nextChanceCardIds */
-  nh: Id[];
-  /** nextCommunityCardIds */
-  no: Id[];
+  /** nextCardIds */
+  nci: Id[];
   /** notifications */
   n: EventMinified[];
   /** players */

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { CardType, PromptType } from '../../enums';
-import { getChanceCardById, getCommunityChestCardById } from '../../logic';
+import { PromptType } from '../../enums';
+import { getSurpriseCardById } from '../../logic';
+import { surpriseSymbol } from '../../parameters';
 import { triggerCardAction } from '../../triggers';
 import { Button } from '../common/button';
 import { OkPrompt } from './ok-prompt';
@@ -8,13 +9,12 @@ import { PromptInterface } from './prompt-interface';
 
 export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
   const [hasDrawn, setHasDrawn] = useState(false);
-  const isChanceCard = props.game.prompt.cardType === CardType.chance;
-  const card = isChanceCard
-    ? getChanceCardById(props.game.prompt.cardId)
-    : getCommunityChestCardById(props.game.prompt.cardId);
+
+  const card = getSurpriseCardById(props.game.prompt.cardId);
 
   return (
-    <React.Fragment>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: 40 }}>{surpriseSymbol}</div>
       {hasDrawn ? (
         <OkPrompt
           okHandler={() => {
@@ -25,7 +25,7 @@ export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
         </OkPrompt>
       ) : (
         <div>
-          <h3>{isChanceCard ? 'Chance' : 'Community chest'} card</h3>
+          <h3>Surprise card</h3>
           <Button
             onClick={() => {
               setHasDrawn(true);
@@ -35,6 +35,6 @@ export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
           </Button>
         </div>
       )}
-    </React.Fragment>
+    </div>
   );
 };

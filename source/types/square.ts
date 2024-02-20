@@ -8,12 +8,11 @@ type SquareBase = {
 
 export type GenericSquare = SquareBase & {
   type:
-    | SquareType.chance
-    | SquareType.communityChest
     | SquareType.go
     | SquareType.goToJail
     | SquareType.jail
-    | SquareType.parking;
+    | SquareType.parking
+    | SquareType.surprise;
 };
 
 export type TaxSquare = SquareBase & {

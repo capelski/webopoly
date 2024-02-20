@@ -14,7 +14,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  3: { id: 3, name: 'Community chest', type: SquareType.communityChest },
+  3: { id: 3, name: 'Surprise', type: SquareType.surprise },
   4: {
     houses: 0,
     id: 4,
@@ -52,7 +52,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  8: { id: 8, name: 'Chance', type: SquareType.chance },
+  8: { id: 8, name: 'Surprise', type: SquareType.surprise },
   9: {
     houses: 0,
     id: 9,
@@ -139,7 +139,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  18: { id: 18, name: 'Community chest', type: SquareType.communityChest },
+  18: { id: 18, name: 'Surprise', type: SquareType.surprise },
   19: {
     houses: 0,
     id: 19,
@@ -174,7 +174,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  23: { id: 23, name: 'Chance', type: SquareType.chance },
+  23: { id: 23, name: 'Surprise', type: SquareType.surprise },
   24: {
     houses: 0,
     id: 24,
@@ -272,7 +272,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  34: { id: 34, name: 'Community chest', type: SquareType.communityChest },
+  34: { id: 34, name: 'Surprise', type: SquareType.surprise },
   35: {
     houses: 0,
     id: 35,
@@ -293,7 +293,7 @@ export const squaresMap: { [key: Id]: Square } = {
     status: undefined,
     type: SquareType.property,
   },
-  37: { id: 37, name: 'Chance', type: SquareType.chance },
+  37: { id: 37, name: 'Surprise', type: SquareType.surprise },
   38: {
     houses: 0,
     id: 38,

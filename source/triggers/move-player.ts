@@ -1,5 +1,4 @@
 import {
-  CardType,
   EventSource,
   EventType,
   GamePhase,
@@ -11,8 +10,8 @@ import {
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { GamePlayPhase, GamePromptPhase, Id } from '../types';
-import { triggerCardPrompt } from './cards';
 import { triggerExpense, triggerPayRent } from './payments';
+import { triggerCardPrompt } from './surprise-cards';
 
 export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.card>;
 
@@ -125,14 +124,9 @@ export const triggerMovePlayer = (
     return applyFreeParking(updatedGame, currentPlayerId);
   }
 
-  const landsInChance = nextSquare.type === SquareType.chance;
-  if (landsInChance) {
-    return triggerCardPrompt(updatedGame, CardType.chance);
-  }
-
-  const landsInCommunityChest = nextSquare.type === SquareType.communityChest;
-  if (landsInCommunityChest) {
-    return triggerCardPrompt(updatedGame, CardType.communityChest);
+  const landsInSurprise = nextSquare.type === SquareType.surprise;
+  if (landsInSurprise) {
+    return triggerCardPrompt(updatedGame);
   }
 
   if (nextSquare.type === SquareType.property && !nextSquare.ownerId) {

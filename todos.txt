@@ -5,11 +5,10 @@
     E.g. function to determine whether diceRoll can be triggered. Use it both in
     the component to disable the button, in the logic function to return the same game
 
+- Create the game in full swing, not minified
 - Trading properties with other players
 - Roll doubles => Extra turn
 - Suggest sales/mortgages when player cannot pay
-- triggerPayToAllPlayers for chance card
-- triggerReceiveFromAllPlayers for community chest card
 - Make parameters.ts modifiable on createGame
 - Progress bar to automatically trigger next action
 - Display error toast on disabled buttons?

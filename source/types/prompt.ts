@@ -1,4 +1,4 @@
-import { CardType, OfferType, PromptType } from '../enums';
+import { OfferType, PromptType } from '../enums';
 import { PendingEvent } from './event';
 import { NonPromptPhasePayload } from './game-phase-payload';
 import { Id } from './id';
@@ -26,7 +26,6 @@ export type CannotPayPrompt = {
 
 export type CardPrompt = {
   cardId: Id;
-  cardType: CardType;
   type: PromptType.card;
 };
 

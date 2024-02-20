@@ -18,8 +18,7 @@ type GameBase<T extends PhasePayloadBase<any>> = {
   currentPlayerId: Id;
   dice: Dice;
   eventHistory: GEvent[];
-  nextChanceCardIds: Id[];
-  nextCommunityCardIds: Id[];
+  nextCardIds: Id[];
   notifications: GEvent[];
   players: Player[];
   squares: Square[];

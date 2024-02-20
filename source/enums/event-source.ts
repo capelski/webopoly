@@ -1,6 +1,5 @@
 export enum EventSource {
-  chanceCard = 'chanceCard',
-  communityChestCard = 'communityChestCard',
   jailSquare = 'jailSquare',
+  surpriseCard = 'surpriseCard',
   taxSquare = 'taxSquare',
 }

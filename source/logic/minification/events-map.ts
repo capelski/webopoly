@@ -66,12 +66,10 @@ export const eventsMap: {
     minify: (event) => ({
       ...baseMinifier(event),
       ci: event.cardId,
-      ct: event.cardType,
     }),
     restore: (e) => ({
       ...baseRestorer(e),
       cardId: e.ci,
-      cardType: e.ct,
     }),
   },
   [EventType.clearMortgage]: <Mapper<EventType.clearMortgage>>propertyMappers,
@@ -79,16 +77,14 @@ export const eventsMap: {
     minify: (event) => ({
       ...baseMinifier(event),
       a: event.amount,
-      ...(event.source === EventSource.chanceCard || event.source === EventSource.communityChestCard
+      ...(event.source === EventSource.surpriseCard
         ? { s: event.source, ci: event.cardId }
         : { s: event.source }),
     }),
     restore: (e) => ({
       ...baseRestorer(e),
       amount: e.a,
-      ...(e.s === EventSource.chanceCard || e.s === EventSource.communityChestCard
-        ? { source: e.s, cardId: e.ci }
-        : { source: e.s }),
+      ...(e.s === EventSource.surpriseCard ? { source: e.s, cardId: e.ci } : { source: e.s }),
     }),
   },
   [EventType.freeParking]: {

@@ -1,16 +1,8 @@
 import React from 'react';
-import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../../enums';
+import { AnswerType, EventSource, EventType, JailMedium, OfferType } from '../../enums';
+import { diceToString, getPlayerById, getSquareById, getSurpriseCardById } from '../../logic';
 import {
-  diceToString,
-  getChanceCardById,
-  getCommunityChestCardById,
-  getPlayerById,
-  getSquareById,
-} from '../../logic';
-import {
-  chanceSymbol,
   clearMortgageSymbol,
-  communityChestSymbol,
   currencySymbol,
   getOutJailSymbol,
   goSymbol,
@@ -23,6 +15,7 @@ import {
   parkingSymbol,
   passGoMoney,
   sellHouseSymbol,
+  surpriseSymbol,
   taxSymbol,
 } from '../../parameters';
 import { Game, GEvent, Player } from '../../types';
@@ -71,16 +64,10 @@ const renderersMap: {
       icon: '💵',
     };
   },
-  [EventType.card]: (player, event) =>
-    event.cardType === CardType.chance
-      ? {
-          description: `${player.name}: ${getChanceCardById(event.cardId).text}`,
-          icon: chanceSymbol,
-        }
-      : {
-          description: `${player.name}: ${getCommunityChestCardById(event.cardId).text}`,
-          icon: communityChestSymbol,
-        },
+  [EventType.card]: (player, event) => ({
+    description: `${player.name}: ${getSurpriseCardById(event.cardId).text}`,
+    icon: surpriseSymbol,
+  }),
   [EventType.clearMortgage]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return {
@@ -89,15 +76,10 @@ const renderersMap: {
     };
   },
   [EventType.expense]: (player, event) =>
-    event.source === EventSource.chanceCard
+    event.source === EventSource.surpriseCard
       ? {
-          description: `${player.name}: ${getChanceCardById(event.cardId).text}`,
-          icon: chanceSymbol,
-        }
-      : event.source === EventSource.communityChestCard
-      ? {
-          description: `${player.name}: ${getCommunityChestCardById(event.cardId).text}`,
-          icon: communityChestSymbol,
+          description: `${player.name}: ${getSurpriseCardById(event.cardId).text}`,
+          icon: surpriseSymbol,
         }
       : {
           description: `${player.name} pays ${currencySymbol}${event.amount} in taxes`,
@@ -121,12 +103,7 @@ const renderersMap: {
   },
   [EventType.goToJail]: (player, event) => ({
     description: `${player.name} goes to jail`,
-    icon:
-      event.source === EventSource.chanceCard
-        ? chanceSymbol
-        : event.source === EventSource.communityChestCard
-        ? communityChestSymbol
-        : goToJailSymbol,
+    icon: event.source === EventSource.surpriseCard ? surpriseSymbol : goToJailSymbol,
   }),
   [EventType.mortgage]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);

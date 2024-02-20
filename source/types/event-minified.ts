@@ -1,4 +1,4 @@
-import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
+import { AnswerType, EventSource, EventType, JailMedium, OfferType } from '../enums';
 import { PropertyEventType } from './event';
 import { Id } from './id';
 
@@ -32,8 +32,6 @@ export type BankruptcyEventMinified = EventBaseMinified & {
 export type CardEventMinified = EventBaseMinified & {
   /** cardId */
   ci: Id;
-  /** cardType */
-  ct: CardType;
   /** type */
   t: EventType.card;
 };
@@ -49,7 +47,7 @@ export type ExpenseCardEventMinified = ExpenseEventBaseMinified & {
   /** cardId */
   ci: Id;
   /** source */
-  s: EventSource.chanceCard | EventSource.communityChestCard;
+  s: EventSource.surpriseCard;
 };
 
 export type ExpenseTaxEventMinified = ExpenseEventBaseMinified & {

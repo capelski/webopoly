@@ -1,14 +1,13 @@
 import React from 'react';
 import { PropertyStatus, PropertyType, SquareType } from '../../../enums';
 import {
-  chanceSymbol,
-  communityChestSymbol,
   goSymbol,
   goToJailSymbol,
   houseSymbol,
   jailSymbol,
   parkingSymbol,
   stationSymbol,
+  surpriseSymbol,
   taxSymbol,
 } from '../../../parameters';
 import { Square } from '../../../types';
@@ -20,13 +19,12 @@ interface SquareIconProps {
 }
 
 const squareIconMap: { [key in SquareType]: React.ReactNode } = {
-  [SquareType.chance]: chanceSymbol,
-  [SquareType.communityChest]: communityChestSymbol,
   [SquareType.go]: goSymbol,
   [SquareType.goToJail]: goToJailSymbol,
   [SquareType.jail]: jailSymbol,
   [SquareType.parking]: parkingSymbol,
   [SquareType.property]: undefined,
+  [SquareType.surprise]: surpriseSymbol,
   [SquareType.tax]: taxSymbol,
 };
 

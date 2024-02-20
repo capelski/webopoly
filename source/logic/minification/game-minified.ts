@@ -31,8 +31,7 @@ export const minifyGame = (game: Game): GameMinified => {
       const minify: Minifier = eventsMap[event.type].minify;
       return minify(event);
     }),
-    nh: game.nextChanceCardIds,
-    no: game.nextCommunityCardIds,
+    nci: game.nextCardIds,
     pl: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
       g: player.getOutOfJail,
@@ -46,12 +45,11 @@ export const minifyGame = (game: Game): GameMinified => {
       t: player.turnsInJail,
     })),
     sq: game.squares.map<SquareMinified>((square) => {
-      return square.type === SquareType.chance ||
-        square.type === SquareType.communityChest ||
-        square.type === SquareType.go ||
+      return square.type === SquareType.go ||
         square.type === SquareType.goToJail ||
         square.type === SquareType.jail ||
-        square.type === SquareType.parking
+        square.type === SquareType.parking ||
+        square.type === SquareType.surprise
         ? {
             i: square.id,
             t: square.type,
@@ -113,8 +111,7 @@ export const restoreMinifiedGame = (g: GameMinified): Game => {
       const restore: Restorer = eventsMap[e.t].restore;
       return restore(e);
     }),
-    nextChanceCardIds: g.nh,
-    nextCommunityCardIds: g.no,
+    nextCardIds: g.nci,
     notifications: g.n.map<GEvent>((e) => {
       const restore: Restorer = eventsMap[e.t].restore;
       return restore(e);

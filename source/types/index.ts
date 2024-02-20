@@ -1,4 +1,3 @@
-export * from './card';
 export * from './dice';
 export * from './event';
 export * from './event-minified';
@@ -11,3 +10,4 @@ export * from './player-minified';
 export * from './prompt';
 export * from './square';
 export * from './square-minified';
+export * from './surprise-card';

@@ -9,11 +9,7 @@ interface NotificationsProps {
   updateGame: (game: Game | undefined) => void;
 }
 
-const omitSources = [
-  EventSource.chanceCard,
-  EventSource.communityChestCard,
-  EventSource.jailSquare,
-];
+const omitSources = [EventSource.surpriseCard, EventSource.jailSquare];
 
 export const Notifications: React.FC<NotificationsProps> = (props) => {
   useEffect(() => {

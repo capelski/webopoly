@@ -23,7 +23,7 @@ import {
 export const createGame = (nPlayers: number): GameMinified => {
   const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
     i: index + 1,
-    t: SquareType.chance, // The incorrect type will be overwrite on the first restore
+    t: SquareType.go, // The incorrect type will be overwrite on the first restore
   }));
 
   const minifiedPlayers = [...Array(nPlayers)].map<PlayerMinified>((_, index) => ({
@@ -45,8 +45,7 @@ export const createGame = (nPlayers: number): GameMinified => {
     ci: currentPlayerId,
     d: [],
     eh: [],
-    nh: [],
-    no: [],
+    nci: [],
     n: [],
     ph: GamePhase.rollDice,
     pl: minifiedPlayers,

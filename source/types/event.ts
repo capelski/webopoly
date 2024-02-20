@@ -1,4 +1,4 @@
-import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
+import { AnswerType, EventSource, EventType, JailMedium, OfferType } from '../enums';
 import { Id } from './id';
 
 type EventBase = {
@@ -21,7 +21,6 @@ export type BankruptcyEvent = EventBase & {
 
 export type CardEvent = EventBase & {
   cardId: Id;
-  cardType: CardType;
   type: EventType.card;
 };
 
@@ -32,7 +31,7 @@ type ExpenseEventBase = EventBase & {
 
 export type ExpenseCardEvent = ExpenseEventBase & {
   cardId: Id;
-  source: EventSource.chanceCard | EventSource.communityChestCard;
+  source: EventSource.surpriseCard;
 };
 
 export type ExpenseTaxEvent = ExpenseEventBase & {

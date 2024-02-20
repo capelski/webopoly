@@ -9,12 +9,11 @@ type SquareBaseMinified = {
 export type GenericSquareMinified = SquareBaseMinified & {
   /** type */
   t:
-    | SquareType.chance
-    | SquareType.communityChest
     | SquareType.go
     | SquareType.goToJail
     | SquareType.jail
-    | SquareType.parking;
+    | SquareType.parking
+    | SquareType.surprise;
 };
 
 export type TaxSquareMinified = SquareBaseMinified & {
