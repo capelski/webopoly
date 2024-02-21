@@ -99,7 +99,8 @@ export const getNextPlayerId = (game: Game): Id => {
 export const getNextSquareId = (game: Game, movement: number, startingSquareId?: Id): Id => {
   const currentSquareId = startingSquareId || getCurrentSquare(game).id;
   const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquareId);
-  const nextSquareIndex = (currentSquareIndex + movement) % game.squares.length;
+  const safeMovement = movement + game.squares.length; // Necessary to support negative movements
+  const nextSquareIndex = (currentSquareIndex + safeMovement) % game.squares.length;
   return game.squares[nextSquareIndex].id;
 };
 

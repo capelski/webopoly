@@ -10,8 +10,8 @@ import {
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { GamePlayPhase, GamePromptPhase, Id } from '../types';
+import { triggerCardPrompt } from './cards';
 import { triggerExpense, triggerPayRent } from './payments';
-import { triggerCardPrompt } from './surprise-cards';
 
 export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.card>;
 

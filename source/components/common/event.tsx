@@ -1,6 +1,6 @@
 import React from 'react';
 import { AnswerType, EventSource, EventType, JailMedium, OfferType } from '../../enums';
-import { diceToString, getPlayerById, getSquareById, getSurpriseCardById } from '../../logic';
+import { diceToString, getCardText, getPlayerById, getSquareById } from '../../logic';
 import {
   clearMortgageSymbol,
   currencySymbol,
@@ -65,7 +65,7 @@ const renderersMap: {
     };
   },
   [EventType.card]: (player, event) => ({
-    description: `${player.name}: ${getSurpriseCardById(event.cardId).text}`,
+    description: `${player.name}: ${getCardText(event.cardId)}`,
     icon: surpriseSymbol,
   }),
   [EventType.clearMortgage]: (player, event, game) => {
@@ -78,7 +78,7 @@ const renderersMap: {
   [EventType.expense]: (player, event) =>
     event.source === EventSource.surpriseCard
       ? {
-          description: `${player.name}: ${getSurpriseCardById(event.cardId).text}`,
+          description: `${player.name}: ${getCardText(event.cardId)}`,
           icon: surpriseSymbol,
         }
       : {

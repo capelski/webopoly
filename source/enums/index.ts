@@ -1,4 +1,5 @@
 export * from './answer-type';
+export * from './card-type';
 export * from './event-source';
 export * from './event-type';
 export * from './game-phase';

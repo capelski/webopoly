@@ -90,44 +90,6 @@ export const triggerPayRent = (
   return nextGame;
 };
 
-// This function requires a new type of event (e.g. ExpenseBroadcastEvent);
-// not wildly complicated but a lot of effort for little gain
-// export const triggerPayToAllPlayers = (game: Game, amount: number): Game => {
-//   const currentPlayer = getCurrentPlayer(game);
-//   const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
-
-//   return {
-//     ...game,
-//     players: game.players.map((p) => {
-//       return p.id === currentPlayer.id
-//         ? // PENDING Assess player money
-//           { ...p, money: p.money - otherPlayersId.length * amount }
-//         : otherPlayersId.includes(p.id)
-//         ? { ...p, money: p.money + amount }
-//         : p;
-//     }),
-//   };
-// };
-
-// This function can cause a player to go bankrupt outside of its turn; significant changes
-// are required to switch the currentPlayerId in the middle of a player turn
-// export const triggerReceiveFromAllPlayers = (game: Game, amount: number): Game => {
-//   const currentPlayer = getCurrentPlayer(game);
-//   const otherPlayersId = getOtherPlayers(game, game.currentPlayerId).map((p) => p.id);
-
-//   return {
-//     ...game,
-//     players: game.players.map((p) => {
-//       return p.id === currentPlayer.id
-//         ? { ...p, money: p.money + otherPlayersId.length * amount }
-//         : otherPlayersId.includes(p.id)
-//         ? // PENDING Assess each other player money
-//           { ...p, money: p.money - amount }
-//         : p;
-//     }),
-//   };
-// };
-
 export const triggerRepairsExpense = (
   game: GamePromptPhase<PromptType.card>,
   housePrice: number,
