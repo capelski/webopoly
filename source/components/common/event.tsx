@@ -101,9 +101,9 @@ const renderersMap: {
       icon: getOutJailSymbol,
     };
   },
-  [EventType.goToJail]: (player, event) => ({
+  [EventType.goToJail]: (player) => ({
     description: `${player.name} goes to jail`,
-    icon: event.source === EventSource.surpriseCard ? surpriseSymbol : goToJailSymbol,
+    icon: goToJailSymbol,
   }),
   [EventType.mortgage]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);

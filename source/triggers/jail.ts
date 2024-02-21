@@ -1,5 +1,4 @@
 import {
-  EventSource,
   EventType,
   GamePhase,
   JailMedium,
@@ -40,21 +39,14 @@ export const triggerGetOutOfJailCard = (game: GamePromptPhase<PromptType.card>):
 
 export const triggerGoToJail = (
   game: GamePromptPhase<PromptType.goToJail> | GamePromptPhase<PromptType.card>,
-  source: EventSource,
+  event?: GEvent & { type: EventType.goToJail },
 ): GamePlayPhase => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
   const currentPlayer = getCurrentPlayer(game);
 
   return {
     ...game,
-    eventHistory: [
-      {
-        playerId: currentPlayer.id,
-        source,
-        type: EventType.goToJail,
-      },
-      ...game.eventHistory,
-    ],
+    eventHistory: event ? [event, ...game.eventHistory] : game.eventHistory,
     phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id ? { ...p, squareId: jailSquare.id, isInJail: true } : p;

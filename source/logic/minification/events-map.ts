@@ -95,10 +95,7 @@ export const eventsMap: {
     minify: (event) => ({ ...baseMinifier(event), m: event.medium }),
     restore: (e) => ({ ...baseRestorer(e), medium: e.m }),
   },
-  [EventType.goToJail]: {
-    minify: (event) => ({ ...baseMinifier(event), s: event.source }),
-    restore: (e) => ({ ...baseRestorer(e), source: e.s }),
-  },
+  [EventType.goToJail]: { minify: baseMinifier, restore: baseRestorer },
   [EventType.mortgage]: <Mapper<EventType.mortgage>>propertyMappers,
   [EventType.passGo]: { minify: baseMinifier, restore: baseRestorer },
   [EventType.payRent]: {

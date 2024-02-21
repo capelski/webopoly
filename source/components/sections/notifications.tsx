@@ -15,9 +15,7 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
   useEffect(() => {
     if (props.game.notifications.length > 0) {
       const applicableNotifications = props.game.notifications.filter(
-        (e) =>
-          (e.type !== EventType.expense && e.type !== EventType.goToJail) ||
-          !omitSources.includes(e.source),
+        (e) => e.type !== EventType.expense || !omitSources.includes(e.source),
       );
 
       applicableNotifications.forEach((event) => {

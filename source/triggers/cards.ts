@@ -60,7 +60,10 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
     const nextGame = triggerMovePlayer(game, nextSquareId, { preventPassGo: true });
     return pushCardEvent(nextGame, playerId, card);
   },
-  [CardType.goToJail]: (game) => triggerGoToJail(game, EventSource.surpriseCard),
+  [CardType.goToJail]: (game, playerId, card) => {
+    const nextGame = triggerGoToJail(game);
+    return pushCardEvent(nextGame, playerId, card);
+  },
   [CardType.outOfJailCard]: (game, playerId, card) => {
     const nextGame = triggerGetOutOfJailCard(game);
     return pushCardEvent(nextGame, playerId, card);

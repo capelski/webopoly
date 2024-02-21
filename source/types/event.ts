@@ -45,18 +45,13 @@ export type FreeParkingEvent = EventBase & {
   type: EventType.freeParking;
 };
 
-export type GenericEvent = EventBase & {
-  type: EventType.passGo;
+export type GenericEvent<T extends EventType.goToJail | EventType.passGo> = EventBase & {
+  type: T;
 };
 
 export type GetOutOfJailEvent = EventBase & {
   medium: JailMedium;
   type: EventType.getOutOfJail;
-};
-
-export type GoToJailEvent = EventBase & {
-  source: EventSource;
-  type: EventType.goToJail;
 };
 
 export type PayRentEvent = EventBase & {
@@ -90,8 +85,8 @@ export type GEvent =
   | BankruptcyEvent
   | CardEvent
   | FreeParkingEvent
-  | GenericEvent
+  | GenericEvent<EventType.goToJail>
+  | GenericEvent<EventType.passGo>
   | GetOutOfJailEvent
-  | GoToJailEvent
   | PendingEvent
   | PropertyEvent;

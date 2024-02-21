@@ -66,7 +66,7 @@ export type FreeParkingEventMinified = EventBaseMinified & {
 
 export type GenericEventMinified = EventBaseMinified & {
   /** type */
-  t: EventType.passGo;
+  t: EventType.goToJail | EventType.passGo;
 };
 
 export type GetOutOfJailEventMinified = EventBaseMinified & {
@@ -74,13 +74,6 @@ export type GetOutOfJailEventMinified = EventBaseMinified & {
   m: JailMedium;
   /** type*/
   t: EventType.getOutOfJail;
-};
-
-export type GoToJailEventMinified = EventBaseMinified & {
-  /** source */
-  s: EventSource;
-  /** type */
-  t: EventType.goToJail;
 };
 
 export type PayRentEventMinified = EventBaseMinified & {
@@ -114,7 +107,6 @@ export type EventMinified =
   | FreeParkingEventMinified
   | GenericEventMinified
   | GetOutOfJailEventMinified
-  | GoToJailEventMinified
   | PayRentEventMinified
   | PropertyEventMinified
   | TurnInJailEventMinified;
