@@ -8,30 +8,61 @@ interface CreateGameProps {
 }
 
 export const CreateGame: React.FC<CreateGameProps> = (props) => {
-  const [playersNumber, setPlayersNumber] = useState(2);
+  const [playerNames, setPlayerNames] = useState(['Player 1', 'Player 2']);
 
   return (
-    <div>
-      Number of players:{' '}
-      <input
-        type="number"
-        min={2}
-        max={8}
-        onChange={(event) => {
-          const parsedValue = parseInt(event.target.value) || 0;
-          const value = Math.max(2, Math.min(8, parsedValue));
-          setPlayersNumber(value);
-        }}
-        value={playersNumber}
-      />
-      &emsp;
-      <Button
-        onClick={() => {
-          props.setGame(createGame(playersNumber));
-        }}
-      >
-        Start game
-      </Button>
+    <div
+      style={{
+        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        position: 'relative',
+        top: '200px',
+      }}
+    >
+      <div style={{ marginBottom: 48 }}>
+        <Button
+          onClick={() => {
+            props.setGame(createGame(playerNames));
+          }}
+        >
+          Start game
+        </Button>
+      </div>
+
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          disabled={playerNames.length === 8}
+          onClick={() => {
+            setPlayerNames([...playerNames, `Player ${playerNames.length + 1}`]);
+          }}
+        >
+          Add player
+        </Button>
+      </div>
+
+      {playerNames.map((playerName, index) => {
+        return (
+          <div style={{ marginBottom: 8 }} key={index}>
+            <input
+              onChange={(event) => {
+                setPlayerNames(playerNames.map((p, i) => (i === index ? event.target.value : p)));
+              }}
+              value={playerName}
+              style={{ marginRight: 8 }}
+            />
+            <Button
+              disabled={playerNames.length === 2}
+              onClick={() => {
+                setPlayerNames(playerNames.filter((_, i) => index !== i));
+              }}
+            >
+              🗑️
+            </Button>
+          </div>
+        );
+      })}
     </div>
   );
 };

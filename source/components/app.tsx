@@ -26,18 +26,14 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  return (
-    <div>
-      {game ? (
-        <GameComponent
-          game={restoreMinifiedGame(game)}
-          updateGame={(game: Game | undefined) => {
-            updateGame(game && minifyGame(game));
-          }}
-        />
-      ) : (
-        <CreateGame setGame={updateGame} />
-      )}
-    </div>
+  return game ? (
+    <GameComponent
+      game={restoreMinifiedGame(game)}
+      updateGame={(game: Game | undefined) => {
+        updateGame(game && minifyGame(game));
+      }}
+    />
+  ) : (
+    <CreateGame setGame={updateGame} />
   );
 };
