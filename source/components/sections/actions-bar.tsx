@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import { GamePhase, LiquidationReason } from '../../enums';
-import {
-  resumeBuyProperty,
-  resumePendingPayment,
-  triggerDiceRoll,
-  triggerEndTurn,
-} from '../../triggers';
+import { resumeBuyProperty, resumePendingPayment, triggerEndTurn } from '../../triggers';
 import { Game } from '../../types';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
@@ -32,56 +27,49 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         </Modal>
       )}
 
-      <Button
-        disabled={props.game.phase !== GamePhase.rollDice}
-        onClick={() => {
-          if (props.game.phase === GamePhase.rollDice) {
-            props.updateGame(triggerDiceRoll(props.game));
-          }
-        }}
-        style={{ marginTop: 8 }}
-      >
-        Roll dice
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+          <Button
+            disabled={props.game.phase !== GamePhase.play}
+            onClick={() => {
+              if (props.game.phase === GamePhase.play) {
+                props.updateGame(triggerEndTurn(props.game));
+              }
+            }}
+            style={{ marginTop: 8 }}
+          >
+            End turn
+          </Button>
 
-      <Button
-        disabled={props.game.phase !== GamePhase.play}
-        onClick={() => {
-          if (props.game.phase === GamePhase.play) {
-            props.updateGame(triggerEndTurn(props.game));
-          }
-        }}
-        style={{ marginTop: 8 }}
-      >
-        End turn
-      </Button>
+          <Button
+            disabled={props.game.phase !== GamePhase.liquidation}
+            onClick={() => {
+              if (props.game.phase !== GamePhase.liquidation) {
+                return;
+              }
 
-      <Button
-        disabled={props.game.phase !== GamePhase.liquidation}
-        onClick={() => {
-          if (props.game.phase !== GamePhase.liquidation) {
-            return;
-          }
-
-          if (props.game.reason === LiquidationReason.buyProperty) {
-            props.updateGame(resumeBuyProperty(props.game));
-          } else {
-            props.updateGame(resumePendingPayment(props.game));
-          }
-        }}
-        style={{ marginTop: 8 }}
-      >
-        Resume
-      </Button>
-
-      <Button
-        onClick={() => {
-          setClearGameModal(true);
-        }}
-        style={{ color: 'red', marginTop: 8 }}
-      >
-        Clear
-      </Button>
+              if (props.game.reason === LiquidationReason.buyProperty) {
+                props.updateGame(resumeBuyProperty(props.game));
+              } else {
+                props.updateGame(resumePendingPayment(props.game));
+              }
+            }}
+            style={{ marginTop: 8 }}
+          >
+            Resume
+          </Button>
+        </div>
+        <div>
+          <Button
+            onClick={() => {
+              setClearGameModal(true);
+            }}
+            style={{ color: 'red', marginTop: 8 }}
+          >
+            Clear
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

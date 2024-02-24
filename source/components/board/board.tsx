@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { GamePhase, TransitionType } from '../../enums';
 import { diceToString, getCurrentPlayer, isDoublesRoll } from '../../logic';
 import {
-  currencySymbol,
   diceSymbol,
   diceTransitionDuration,
   maxTurnsInJail,
-  parkingSymbol,
   playerTransitionDuration,
 } from '../../parameters';
 import {
+  triggerDiceRoll,
   triggerFirstPlayerTransition,
   triggerLastTurnInJail,
   triggerNextPlayerTransition,
@@ -123,14 +122,30 @@ export const Board: React.FC<BoardProps> = (props) => {
             <div
               style={{
                 fontSize: animateDice ? 48 : undefined,
-                marginBottom: 16,
+                textAlign: 'center',
                 transition: `font-size ${diceTransitionDuration}s`,
               }}
             >
-              {diceSymbol} {diceToString(props.game.dice)}
-            </div>
-            <div>
-              {parkingSymbol} {currencySymbol} {props.game.centerPot}
+              <div
+                onClick={() => {
+                  if (props.game.phase === GamePhase.rollDice) {
+                    props.updateGame(triggerDiceRoll(props.game));
+                  }
+                }}
+                style={{
+                  borderRadius: 15,
+                  boxShadow:
+                    props.game.phase === GamePhase.rollDice
+                      ? '0px 0px 7px 1px goldenrod'
+                      : undefined,
+                  cursor: props.game.phase === GamePhase.rollDice ? 'pointer' : undefined,
+                  marginBottom: 8,
+                  opacity: props.game.phase !== GamePhase.rollDice ? 0.5 : undefined,
+                }}
+              >
+                {diceSymbol}
+              </div>
+              {diceToString(props.game.dice)}
             </div>
           </div>
         </Grid>
