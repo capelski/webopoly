@@ -1,6 +1,7 @@
-import { CardType, PropertyType } from '../enums';
+import { CardType, LiquidationReason, PromptType, PropertyType, SquareType } from '../enums';
 import { currencySymbol } from '../parameters';
-import { Card, Id } from '../types';
+import { Card, GameLiquidationPhase, GamePromptPhase, Id, StreetSquare } from '../types';
+import { getCurrentPlayer } from './game';
 import { squaresMap } from './minification/squares-map';
 
 export const cards: Card[] = [
@@ -169,7 +170,10 @@ export const cards: Card[] = [
   },
 ];
 
-type CardTextGetter<T extends CardType = CardType> = (card: Card<T>) => string;
+type CardTextGetter<T extends CardType = CardType> = (
+  card: Card<T>,
+  amount: T extends CardType.streetRepairs ? number : undefined,
+) => string;
 
 const cardTextMap: { [TCard in CardType]: CardTextGetter<TCard> } = {
   [CardType.advance]: (card) => `Advance to ${squaresMap[card.squareId].name}`,
@@ -179,16 +183,45 @@ const cardTextMap: { [TCard in CardType]: CardTextGetter<TCard> } = {
   [CardType.goBackSpaces]: () => 'Go back 3 spaces',
   [CardType.goToJail]: () => 'Go to Jail',
   [CardType.outOfJailCard]: () => 'Get Out of Jail Free',
-  [CardType.streetRepairs]: (card) => card.text,
+  [CardType.streetRepairs]: (card, amount) => `${card.text} (${currencySymbol}${amount})`,
   [CardType.windfall]: (card) => card.text,
+};
+
+export const getCardAmount = (
+  game:
+    | GamePromptPhase<PromptType.card>
+    | GameLiquidationPhase<LiquidationReason.pendingPayment>
+    | GamePromptPhase<PromptType.cannotPay>,
+  cardId: Id,
+): number => {
+  const card = getCardById(cardId);
+
+  if (card.type === CardType.fee) {
+    return card.amount;
+  }
+
+  if (card.type === CardType.streetRepairs) {
+    const currentPlayer = getCurrentPlayer(game);
+    const playerStreets = game.squares.filter(
+      (s) =>
+        s.type === SquareType.property &&
+        s.propertyType === PropertyType.street &&
+        s.ownerId === currentPlayer.id,
+    ) as StreetSquare[];
+    const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
+
+    return houses * card.housePrice;
+  }
+
+  return 0;
 };
 
 export const getCardById = (id: Id): Card => {
   return cards.find((card) => card.id === id)!;
 };
 
-export const getCardText = (id: Id): string => {
+export const getCardText = (id: Id, amount: number | undefined): string => {
   const card = getCardById(id);
   const getter: CardTextGetter = cardTextMap[card.type];
-  return getter(card);
+  return getter(card, amount);
 };

@@ -19,6 +19,7 @@ import {
   Square,
   SquareMinified,
 } from '../types';
+import { getCardAmount } from './cards';
 
 export const createGame = (nPlayers: number): GameMinified => {
   const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
@@ -121,7 +122,12 @@ export const getPendingAmount = (
     | GamePromptPhase<PromptType.cannotPay>,
 ) => {
   const { pendingEvent } = game.phase === GamePhase.liquidation ? game : game.prompt;
-  const amount = pendingEvent.type === EventType.turnInJail ? jailFine : pendingEvent.amount;
+  const amount =
+    pendingEvent.type === EventType.turnInJail
+      ? jailFine
+      : pendingEvent.type === EventType.card
+      ? getCardAmount(game, pendingEvent.cardId)
+      : pendingEvent.amount;
   return amount;
 };
 

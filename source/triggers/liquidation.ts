@@ -1,6 +1,14 @@
-import { EventType, GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
+import {
+  CardType,
+  EventType,
+  GamePhase,
+  LiquidationReason,
+  PromptType,
+  TransitionType,
+} from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import { GameLiquidationPhase, GamePromptPhase, GameUiTransitionPhase } from '../types';
+import { triggerCardAction } from './cards';
 import { triggerLastTurnInJail } from './jail';
 import {
   ExpenseOutputPhases,
@@ -30,7 +38,9 @@ export const resumePendingPayment = (
   const player = getCurrentPlayer(game);
 
   if (hasEnoughMoney(player, amount)) {
-    if (pendingEvent.type === EventType.expense) {
+    if (pendingEvent.type === EventType.card) {
+      return triggerCardAction<CardType.fee | CardType.streetRepairs>(game, pendingEvent.cardId);
+    } else if (pendingEvent.type === EventType.expense) {
       return triggerExpense(game, pendingEvent);
     } else if (pendingEvent.type === EventType.turnInJail) {
       return triggerLastTurnInJail(game);

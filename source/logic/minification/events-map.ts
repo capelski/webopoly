@@ -65,10 +65,12 @@ export const eventsMap: {
   [EventType.card]: {
     minify: (event) => ({
       ...baseMinifier(event),
+      a: event.amount,
       ci: event.cardId,
     }),
     restore: (e) => ({
       ...baseRestorer(e),
+      amount: e.a,
       cardId: e.ci,
     }),
   },

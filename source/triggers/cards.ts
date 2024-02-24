@@ -1,96 +1,144 @@
-import { CardType, EventSource, EventType, GamePhase, PromptType } from '../enums';
+import { CardType, EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
 import {
   cards,
+  getCardAmount,
   getCardById,
   getCurrentPlayer,
   getNextPropertyOfTypeId,
   getNextSquareId,
+  hasEnoughMoney,
   shuffleArray,
 } from '../logic';
-import { Card, GamePlayPhase, GamePromptPhase, Id } from '../types';
+import {
+  Card,
+  CardEvent,
+  GameLiquidationPhase,
+  GamePlayPhase,
+  GamePromptPhase,
+  Id,
+  Player,
+} from '../types';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
-import { triggerExpense, triggerRepairsExpense, triggerWindfall } from './payments';
+import { triggerCannotPayPrompt } from './payments';
 
-type CardTrigger<TCard extends CardType = CardType> = (
-  game: GamePromptPhase<PromptType.card>,
-  playerId: Id,
+type GameInputType<TCard extends CardType> = TCard extends CardType.fee
+  ? GamePromptPhase<PromptType.card> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  : TCard extends CardType.streetRepairs
+  ? GamePromptPhase<PromptType.card> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  : GamePromptPhase<PromptType.card>;
+
+type GameOutputType<TCard extends CardType> = TCard extends CardType.fee
+  ? GamePromptPhase<PromptType.cannotPay> | GamePlayPhase
+  : TCard extends CardType.streetRepairs
+  ? GamePromptPhase<PromptType.cannotPay> | GamePlayPhase
+  : MovePlayerOutputPhases;
+
+type CardTrigger<TCard extends CardType> = (
+  game: GameInputType<TCard>,
+  player: Player,
   card: Card<TCard>,
-) => MovePlayerOutputPhases;
-
-const pushCardEvent = (
-  game: MovePlayerOutputPhases,
-  playerId: Id,
-  card: Card,
-): MovePlayerOutputPhases => {
-  return {
-    ...game,
-    eventHistory: [
-      {
-        cardId: card.id,
-        playerId,
-        type: EventType.card,
-      },
-      ...game.eventHistory,
-    ],
-  };
-};
+) => GameOutputType<TCard>;
 
 const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
-  [CardType.advance]: (game, playerId, card) => {
-    const nextGame = triggerMovePlayer(game, card.squareId);
-    return pushCardEvent(nextGame, playerId, card);
+  [CardType.advance]: (game, _player, card) => {
+    return triggerMovePlayer(game, card.squareId);
   },
-  [CardType.advanceNext]: (game, playerId, card) => {
+  [CardType.advanceNext]: (game, _player, card) => {
     const nextSquareId = getNextPropertyOfTypeId(game, card.propertyType);
-    const nextGame = triggerMovePlayer(game, nextSquareId);
-    return pushCardEvent(nextGame, playerId, card);
+    return triggerMovePlayer(game, nextSquareId);
   },
-  [CardType.fee]: (game, playerId, card) => {
-    return triggerExpense(game, {
-      amount: card.amount,
-      cardId: card.id,
-      playerId,
-      source: EventSource.surpriseCard,
-      type: EventType.expense,
-    });
+  [CardType.fee]: (game, player, card) => {
+    if (!hasEnoughMoney(player, card.amount)) {
+      const event: CardEvent<typeof card.type> = {
+        amount: undefined,
+        cardId: card.id,
+        playerId: player.id,
+        type: EventType.card,
+      };
+      return triggerCannotPayPrompt(game, event);
+    }
+
+    const nextGame: GamePlayPhase = {
+      ...game,
+      centerPot: game.centerPot + card.amount,
+      phase: GamePhase.play,
+      players: game.players.map((p) => {
+        return p.id === player.id ? { ...p, money: p.money - card.amount } : p;
+      }),
+    };
+
+    return nextGame;
   },
-  [CardType.goBackSpaces]: (game, playerId, card) => {
+  [CardType.goBackSpaces]: (game) => {
     const nextSquareId = getNextSquareId(game, -3);
-    const nextGame = triggerMovePlayer(game, nextSquareId, { preventPassGo: true });
-    return pushCardEvent(nextGame, playerId, card);
+    return triggerMovePlayer(game, nextSquareId, { preventPassGo: true });
   },
-  [CardType.goToJail]: (game, playerId, card) => {
-    const nextGame = triggerGoToJail(game);
-    return pushCardEvent(nextGame, playerId, card);
+  [CardType.goToJail]: (game) => {
+    return triggerGoToJail(game);
   },
-  [CardType.outOfJailCard]: (game, playerId, card) => {
-    const nextGame = triggerGetOutOfJailCard(game);
-    return pushCardEvent(nextGame, playerId, card);
+  [CardType.outOfJailCard]: (game) => {
+    return triggerGetOutOfJailCard(game);
   },
-  [CardType.streetRepairs]: (game, playerId, card) => {
-    return triggerRepairsExpense(game, card.housePrice, {
-      cardId: card.id,
-      playerId,
-      source: EventSource.surpriseCard,
-      type: EventType.expense,
-    });
+  [CardType.streetRepairs]: (game, player, card) => {
+    const amount = getCardAmount(game, card.id);
+    if (!hasEnoughMoney(player, amount)) {
+      const event: CardEvent<typeof card.type> = {
+        amount,
+        cardId: card.id,
+        playerId: player.id,
+        type: EventType.card,
+      };
+      return triggerCannotPayPrompt(game, event);
+    }
+
+    const nextGame: GamePlayPhase = {
+      ...game,
+      centerPot: game.centerPot + amount,
+      phase: GamePhase.play,
+      players: game.players.map((p) => {
+        return p.id === player.id ? { ...p, money: p.money - amount } : p;
+      }),
+    };
+
+    return nextGame;
   },
-  [CardType.windfall]: (game, playerId, card) => {
-    const nextGame = triggerWindfall(game, card.amount);
-    return pushCardEvent(nextGame, playerId, card);
+  [CardType.windfall]: (game, player, card) => {
+    return {
+      ...game,
+      phase: GamePhase.play,
+      players: game.players.map((p) => {
+        return p.id === player.id ? { ...p, money: p.money + card.amount } : p;
+      }),
+    };
   },
 };
 
-export const triggerCardAction = (
-  game: GamePromptPhase<PromptType.card>,
+export const triggerCardAction = <TCard extends CardType = CardType>(
+  game: GameInputType<TCard>,
   cardId: Id,
-): MovePlayerOutputPhases => {
-  const card = getCardById(cardId);
-  const cardTrigger: CardTrigger = cardTriggersMap[card.type];
+): GameOutputType<TCard> => {
+  const card = getCardById(cardId) as Card<TCard>;
+  const cardTrigger: CardTrigger<TCard> = cardTriggersMap[card.type];
   const currentPlayer = getCurrentPlayer(game);
 
-  return cardTrigger(game, currentPlayer.id, card);
+  let nextGame = cardTrigger(game, currentPlayer, card);
+  if (nextGame.phase !== GamePhase.prompt || nextGame.prompt.type !== PromptType.cannotPay) {
+    nextGame = {
+      ...nextGame,
+      eventHistory: [
+        {
+          amount: getCardAmount(game, cardId),
+          cardId: card.id,
+          playerId: currentPlayer.id,
+          type: EventType.card,
+        },
+        ...game.eventHistory,
+      ],
+    };
+  }
+
+  return nextGame;
 };
 
 export const triggerCardPrompt = (

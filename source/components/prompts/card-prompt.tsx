@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PromptType } from '../../enums';
-import { getCardText } from '../../logic';
+import { getCardAmount, getCardText } from '../../logic';
 import { surpriseSymbol } from '../../parameters';
 import { triggerCardAction } from '../../triggers';
 import { Button } from '../common/button';
@@ -9,6 +9,7 @@ import { PromptInterface } from './prompt-interface';
 
 export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
   const [hasDrawn, setHasDrawn] = useState(false);
+  const amount = getCardAmount(props.game, props.game.prompt.cardId);
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -19,7 +20,7 @@ export const CardPrompt: PromptInterface<PromptType.card> = (props) => {
             props.updateGame(triggerCardAction(props.game, props.game.prompt.cardId));
           }}
         >
-          <p>{getCardText(props.game.prompt.cardId)}</p>
+          <p>{getCardText(props.game.prompt.cardId, amount)}</p>
         </OkPrompt>
       ) : (
         <div>

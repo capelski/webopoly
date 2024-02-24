@@ -1,6 +1,11 @@
+- Remove CardExpenseEvent
+- Remove EventSource
+- Restore PayTaxEvent
+
+
+- Generic game type with two type parameters?
+- Remove the MovePlayerInput/Output Phases...
 - Display details of non property squares
-- Display street repair total amount in notification
-- Street repairs expense must be recomputed after cannot pay, as houses might have been sold
 - Extract logic to disable buttons
     E.g. function to determine whether diceRoll can be triggered. Use it both in
     the component to disable the button, in the logic function to return the same game

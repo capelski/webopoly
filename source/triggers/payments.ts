@@ -1,14 +1,6 @@
-import {
-  GamePhase,
-  LiquidationReason,
-  PromptType,
-  PropertyType,
-  SquareType,
-  TransitionType,
-} from '../enums';
+import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
-  ExpenseCardEvent,
   ExpenseEvent,
   GameLiquidationPhase,
   GamePlayPhase,
@@ -16,7 +8,6 @@ import {
   GameUiTransitionPhase,
   PayRentEvent,
   PendingEvent,
-  StreetSquare,
 } from '../types';
 
 export type CannotPayPromptInputPhases =
@@ -88,38 +79,4 @@ export const triggerPayRent = (
     : triggerCannotPayPrompt(game, event);
 
   return nextGame;
-};
-
-export const triggerRepairsExpense = (
-  game: GamePromptPhase<PromptType.card>,
-  housePrice: number,
-  partialEvent: Omit<ExpenseCardEvent, 'amount'>,
-): ExpenseOutputPhases => {
-  const currentPlayer = getCurrentPlayer(game);
-  const playerStreets = game.squares.filter(
-    (s) =>
-      s.type === SquareType.property &&
-      s.propertyType === PropertyType.street &&
-      s.ownerId === currentPlayer.id,
-  ) as StreetSquare[];
-  const houses = playerStreets.reduce((reduced, property) => reduced + property.houses, 0);
-
-  return triggerExpense(game, {
-    ...partialEvent,
-    amount: houses * housePrice,
-  });
-};
-
-export const triggerWindfall = (
-  game: GamePromptPhase<PromptType.card>,
-  payout: number,
-): GamePlayPhase => {
-  const currentPlayer = getCurrentPlayer(game);
-  return {
-    ...game,
-    phase: GamePhase.play,
-    players: game.players.map((p) => {
-      return p.id === currentPlayer.id ? { ...p, money: p.money + payout } : p;
-    }),
-  };
 };

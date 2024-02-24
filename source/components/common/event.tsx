@@ -65,7 +65,7 @@ const renderersMap: {
     };
   },
   [EventType.card]: (player, event) => ({
-    description: `${player.name}: ${getCardText(event.cardId)}`,
+    description: `${player.name}: ${getCardText(event.cardId, event.amount)}`,
     icon: surpriseSymbol,
   }),
   [EventType.clearMortgage]: (player, event, game) => {
@@ -78,7 +78,7 @@ const renderersMap: {
   [EventType.expense]: (player, event) =>
     event.source === EventSource.surpriseCard
       ? {
-          description: `${player.name}: ${getCardText(event.cardId)}`,
+          description: `${player.name}: ${getCardText(event.cardId, event.amount)}`,
           icon: surpriseSymbol,
         }
       : {
