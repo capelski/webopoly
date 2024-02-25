@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Modal from 'react-modal';
 import 'react-toastify/dist/ReactToastify.css';
+import './animations.css';
 import { App } from './components/app';
 
 const container = document.getElementById('app-placeholder')!;

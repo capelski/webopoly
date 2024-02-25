@@ -122,7 +122,7 @@ export const Board: React.FC<BoardProps> = (props) => {
           >
             <div
               style={{
-                fontSize: animateDice ? 48 : undefined,
+                fontSize: animateDice ? 48 : 32,
                 textAlign: 'center',
                 transition: `font-size ${diceTransitionDuration}s`,
               }}
@@ -134,14 +134,15 @@ export const Board: React.FC<BoardProps> = (props) => {
                   }
                 }}
                 style={{
-                  borderRadius: 15,
-                  boxShadow:
+                  animation:
                     props.game.phase === GamePhase.rollDice
-                      ? '0px 0px 7px 1px goldenrod'
+                      ? 'heart-beat 1.5s infinite'
+                      : animateDice
+                      ? `roll ${diceTransitionDuration}s infinite`
                       : undefined,
-                  cursor: props.game.phase === GamePhase.rollDice ? 'pointer' : undefined,
+                  borderRadius: 15,
+                  cursor: 'pointer',
                   marginBottom: 8,
-                  opacity: props.game.phase !== GamePhase.rollDice ? 0.5 : undefined,
                 }}
               >
                 {diceSymbol}
