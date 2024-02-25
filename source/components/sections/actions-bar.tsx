@@ -4,6 +4,7 @@ import { resumeBuyProperty, resumePendingPayment, triggerEndTurn } from '../../t
 import { Game } from '../../types';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
+import { Paragraph } from '../common/paragraph';
 
 interface ActionsBarProps {
   game: Game;
@@ -19,9 +20,11 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
     <div style={{ paddingLeft: 8 }}>
       {clearGameModal && (
         <Modal closeHandler={clearGameCloseHandler}>
-          <div>Are you sure you want to clear the game?</div>
+          <Paragraph>Are you sure you want to clear the game?</Paragraph>
           <div>
-            <Button onClick={() => props.updateGame(undefined)}>Yes</Button>
+            <Button onClick={() => props.updateGame(undefined)} type="delete">
+              Yes
+            </Button>
             <Button onClick={clearGameCloseHandler}>No</Button>
           </div>
         </Modal>
@@ -36,7 +39,10 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
                 props.updateGame(triggerEndTurn(props.game));
               }
             }}
-            style={{ marginTop: 8 }}
+            style={{
+              animation:
+                props.game.phase === GamePhase.play ? 'heart-beat-small 2s infinite' : undefined,
+            }}
           >
             End turn
           </Button>
@@ -54,7 +60,6 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
                 props.updateGame(resumePendingPayment(props.game));
               }
             }}
-            style={{ marginTop: 8 }}
           >
             Resume
           </Button>
@@ -64,7 +69,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             onClick={() => {
               setClearGameModal(true);
             }}
-            style={{ color: 'red', marginTop: 8 }}
+            type="delete"
           >
             Clear
           </Button>

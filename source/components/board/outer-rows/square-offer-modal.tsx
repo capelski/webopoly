@@ -5,7 +5,9 @@ import { currencySymbol } from '../../../parameters';
 import { triggerBuyingOffer, triggerSellingOffer } from '../../../triggers';
 import { Game, Id, PropertySquare } from '../../../types';
 import { Button } from '../../common/button';
+import { Input } from '../../common/input';
 import { Modal } from '../../common/modal';
+import { Paragraph } from '../../common/paragraph';
 
 interface SquareOfferModalProps {
   game: Game;
@@ -16,12 +18,15 @@ interface SquareOfferModalProps {
 }
 
 export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
-  const [offer, setOffer] = useState(0);
-  const [targetPlayerId, setTargetPlayerId] = useState<Id | undefined>(undefined);
-
   const isSellOffer = props.squareModalType === SquareModalType.sellOffer;
   const currentPlayer = getCurrentPlayer(props.game);
   const otherPlayers = getOtherPlayers(props.game, currentPlayer.id);
+
+  const [offer, setOffer] = useState(0);
+  const [targetPlayerId, setTargetPlayerId] = useState<Id | undefined>(
+    otherPlayers.length === 1 ? otherPlayers[0].id : undefined,
+  );
+
   const targetPlayer = !!targetPlayerId && getPlayerById(props.game, targetPlayerId);
 
   const maxAmount = isSellOffer
@@ -39,8 +44,8 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
       {isSellOffer && (
         <div style={{ marginBottom: 16 }}>
           {otherPlayers.map((p) => (
-            <div key={p.id}>
-              <input
+            <Paragraph key={p.id}>
+              <Input
                 checked={targetPlayerId === p.id}
                 onChange={(event) => {
                   setTargetPlayerId(parseInt(event.target.value));
@@ -50,14 +55,14 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
                 value={p.id}
               />
               <label htmlFor="regular">{p.name}</label>
-            </div>
+            </Paragraph>
           ))}
         </div>
       )}
 
       <div style={{ marginBottom: 16 }}>
         {currencySymbol}
-        <input
+        <Input
           disabled={isSellOffer && !targetPlayerId}
           onChange={(event) => {
             const parsedValue = Math.round(parseInt(event.target.value)) || 0;

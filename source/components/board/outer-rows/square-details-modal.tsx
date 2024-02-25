@@ -41,12 +41,12 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
       closeHandler={() => {
         props.setSquareModalType(undefined);
       }}
-      inset="10% 20px"
+      inset="5% 20px"
     >
       <SquareDetails game={props.game} square={props.square} />
 
-      <div style={{ padding: 8 }}>
-        <div style={{ marginBottom: 16 }}>
+      <div style={{ marginTop: 8, textAlign: 'center' }}>
+        <div>
           <Button
             disabled={!canMortgage(props.square, currentPlayer.id)}
             onClick={() => {
@@ -69,7 +69,7 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
         </div>
 
         {props.square.propertyType === PropertyType.street && (
-          <div style={{ marginBottom: 16 }}>
+          <div>
             <Button
               disabled={
                 (props.game.phase !== GamePhase.play && props.game.phase !== GamePhase.rollDice) ||
@@ -119,7 +119,7 @@ export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => 
           </div>
         )}
 
-        <div style={{ marginBottom: 16 }}>
+        <div>
           <Button
             disabled={
               props.game.phase === GamePhase.prompt ||

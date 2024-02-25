@@ -3,6 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { EventSource, EventType } from '../../enums';
 import { Game } from '../../types';
 import { EventComponent } from '../common/event';
+import { Paragraph } from '../common/paragraph';
 
 interface NotificationsProps {
   game: Game;
@@ -19,9 +20,14 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
       );
 
       applicableNotifications.forEach((event) => {
-        toast(<EventComponent event={event} game={props.game} />, {
-          autoClose: 3000,
-        });
+        toast(
+          <Paragraph>
+            <EventComponent event={event} game={props.game} />
+          </Paragraph>,
+          {
+            autoClose: 3000,
+          },
+        );
       });
 
       props.updateGame({

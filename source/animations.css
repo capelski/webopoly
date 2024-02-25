@@ -10,6 +10,18 @@
   }
 }
 
+@keyframes heart-beat-small {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 @keyframes roll {
   0% {
     transform: rotate(0deg);

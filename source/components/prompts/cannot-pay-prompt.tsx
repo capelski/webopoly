@@ -4,6 +4,8 @@ import { getCurrentPlayer, getPendingAmount } from '../../logic';
 import { currencySymbol } from '../../parameters';
 import { triggerBankruptcy, triggerPendingPaymentLiquidation } from '../../triggers';
 import { Button } from '../common/button';
+import { Paragraph } from '../common/paragraph';
+import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) => {
@@ -11,11 +13,11 @@ export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) =>
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h3>Not enough money</h3>
-      <p>
+      <Title>Not enough money</Title>
+      <Paragraph>
         You owe {currencySymbol}
         {getPendingAmount(props.game)}
-      </p>
+      </Paragraph>
       <div style={{ marginBottom: 16 }}></div>
       <div>
         <Button

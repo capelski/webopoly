@@ -4,6 +4,7 @@ import { getCurrentPlayer } from '../../logic';
 import { currencySymbol, jailFine, jailSymbol } from '../../parameters';
 import { triggerDiceRollInJail, triggerPayJailFine, triggerUseJailCard } from '../../triggers';
 import { Button } from '../common/button';
+import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props) => {
@@ -11,10 +12,10 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h2>
+      <Title>
         {jailSymbol}&nbsp;
         {player.name}
-      </h2>
+      </Title>
       <div>
         <Button
           onClick={() => {

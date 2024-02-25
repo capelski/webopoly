@@ -38,7 +38,7 @@ export const Modal: React.FC<ModalProps> = (props) => {
           onClick={(event) => {
             event.stopPropagation();
           }}
-          style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, padding: 20 }}
+          style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, padding: 8 }}
         >
           {props.closeHandler && (
             <div style={{ textAlign: 'right' }}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createGame } from '../logic';
 import { GameMinified } from '../types';
 import { Button } from './common/button';
+import { Input } from './common/input';
 
 interface CreateGameProps {
   setGame: (game: GameMinified) => void;
@@ -26,6 +27,7 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
           onClick={() => {
             props.setGame(createGame(playerNames));
           }}
+          style={{ animation: 'heart-beat 2s infinite' }}
         >
           Start game
         </Button>
@@ -37,6 +39,7 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
           onClick={() => {
             setPlayerNames([...playerNames, `Player ${playerNames.length + 1}`]);
           }}
+          type="secondary"
         >
           Add player
         </Button>
@@ -45,7 +48,7 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
       {playerNames.map((playerName, index) => {
         return (
           <div style={{ marginBottom: 8 }} key={index}>
-            <input
+            <Input
               onChange={(event) => {
                 setPlayerNames(playerNames.map((p, i) => (i === index ? event.target.value : p)));
               }}
@@ -57,6 +60,8 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
               onClick={() => {
                 setPlayerNames(playerNames.filter((_, i) => index !== i));
               }}
+              style={{ padding: 4 }}
+              type="transparent"
             >
               🗑️
             </Button>

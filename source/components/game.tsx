@@ -28,7 +28,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         style={{
           display: 'flex',
           flexDirection: isDesktop ? 'row' : 'column',
-          height: isDesktop ? '100vh' : undefined,
+          height: isDesktop ? '100dvh' : undefined,
           overflow: 'hidden',
         }}
       >

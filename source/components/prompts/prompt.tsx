@@ -15,7 +15,7 @@ const promptsMap: {
   [TKey in PromptType]: { inset?: string; renderer: PromptInterface<TKey> };
 } = {
   [PromptType.answerOffer]: { renderer: AnswerOfferPrompt },
-  [PromptType.buyProperty]: { inset: '15% 20px', renderer: BuyPropertyPrompt },
+  [PromptType.buyProperty]: { inset: '5% 20px', renderer: BuyPropertyPrompt },
   [PromptType.cannotPay]: { renderer: CannotPayPrompt },
   [PromptType.card]: { renderer: CardPrompt },
   [PromptType.goToJail]: { renderer: GoToJailPrompt },

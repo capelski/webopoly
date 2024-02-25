@@ -26,6 +26,7 @@ import {
 import { Game, PropertySquare } from '../../types';
 import { SquareIcon } from '../board/outer-rows/square-icon';
 import { streetsColorMap } from '../board/outer-rows/street-colors-map';
+import { Paragraph } from './paragraph';
 import { PlayerAvatar } from './player-avatar';
 
 interface SquareDetailsProps {
@@ -206,14 +207,14 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <p style={{ border: getRentBorder(ownerUtilities === 1), padding: '0 2px' }}>
+            <Paragraph style={{ border: getRentBorder(ownerUtilities === 1), padding: '0 2px' }}>
               If one Utility is owned, the rent is {getUtilityRentMultiplier(1)} times the last dice
               roll.
-            </p>
-            <p style={{ border: getRentBorder(ownerUtilities === 2), padding: '0 2px' }}>
+            </Paragraph>
+            <Paragraph style={{ border: getRentBorder(ownerUtilities === 2), padding: '0 2px' }}>
               If both Utilities are owned, the rent is {getUtilityRentMultiplier(2)} times the last
               dice roll.
-            </p>
+            </Paragraph>
           </React.Fragment>
         )}
       </div>

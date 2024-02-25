@@ -8,6 +8,7 @@ import {
 } from '../../triggers';
 import { Button } from '../common/button';
 import { SquareDetails } from '../common/square-details';
+import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props) => {
@@ -22,41 +23,47 @@ export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props
 
   return (
     <React.Fragment>
-      <h4>{currentBuyer.name}</h4>
+      <Title>{currentBuyer.name}</Title>
 
       <SquareDetails game={props.game} square={targetSquare} />
 
-      <div>
-        <Button
-          disabled={currentBuyer.money < targetSquare.price}
-          onClick={() => {
-            props.updateGame(
-              triggerBuyProperty(props.game, targetSquare, props.game.prompt.currentBuyerId),
-            );
-          }}
-          style={{ marginTop: 8 }}
-        >
-          Buy
-        </Button>
+      <div style={{ width: 250 }}>
+        <div style={{ display: 'flex' }}>
+          <Button
+            disabled={currentBuyer.money < targetSquare.price}
+            onClick={() => {
+              props.updateGame(
+                triggerBuyProperty(props.game, targetSquare, props.game.prompt.currentBuyerId),
+              );
+            }}
+            style={{ flexBasis: 1, flexGrow: 1, textAlign: 'center' }}
+          >
+            Buy
+          </Button>
 
-        <Button
-          disabled={currentBuyer.money >= targetSquare.price}
-          onClick={() => {
-            props.updateGame(triggerBuyPropertyLiquidation(props.game));
-          }}
-          style={{ marginTop: 8 }}
-        >
-          Liquidate properties
-        </Button>
+          <Button
+            onClick={() => {
+              props.updateGame(triggerRejectProperty(props.game));
+            }}
+            style={{ flexBasis: 1, flexGrow: 1, textAlign: 'center' }}
+            type="delete"
+          >
+            Pass
+          </Button>
+        </div>
 
-        <Button
-          onClick={() => {
-            props.updateGame(triggerRejectProperty(props.game));
-          }}
-          style={{ marginTop: 8 }}
-        >
-          Pass
-        </Button>
+        <div style={{ display: 'flex' }}>
+          <Button
+            disabled={currentBuyer.money >= targetSquare.price}
+            onClick={() => {
+              props.updateGame(triggerBuyPropertyLiquidation(props.game));
+            }}
+            style={{ flexGrow: 1, textAlign: 'center' }}
+            type="secondary"
+          >
+            Liquidate properties
+          </Button>
+        </div>
       </div>
     </React.Fragment>
   );
