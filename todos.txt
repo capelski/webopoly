@@ -1,16 +1,20 @@
+- Invert borders and colors for owned properties
+- Remove no-zoom in mobile restriction ¿?
+- Active player UI
+- Clear button
+
 - Remove CardExpenseEvent
 - Remove EventSource
 - Restore PayTaxEvent
 
-
+- Players to pick their own emoji
 - Generic game type with two type parameters?
 - Remove the MovePlayerInput/Output Phases...
-- Display details of non property squares
+- Display details of non property squares. Parking to display center pot
 - Extract logic to disable buttons
     E.g. function to determine whether diceRoll can be triggered. Use it both in
     the component to disable the button, in the logic function to return the same game
 
-- Create the game in full swing, not minified
 - Trading properties with other players
 - Roll doubles => Extra turn
 - Suggest sales/mortgages when player cannot pay

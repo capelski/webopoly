@@ -8,49 +8,37 @@ import {
   SquareType,
 } from '../enums';
 import { jailFine, playerInitialMoney } from '../parameters';
-import {
-  Game,
-  GameLiquidationPhase,
-  GameMinified,
-  GamePromptPhase,
-  Id,
-  Player,
-  PlayerMinified,
-  Square,
-  SquareMinified,
-} from '../types';
+import { Game, GameLiquidationPhase, GamePromptPhase, Id, Player, Square } from '../types';
 import { getCardAmount } from './cards';
+import { squaresMap } from './minification/squares-map';
 
-export const createGame = (playerNames: string[]): GameMinified => {
-  const minifiedSquares = [...Array(40)].map<SquareMinified>((_, index) => ({
-    i: index + 1,
-    t: SquareType.go, // The incorrect type will be overwrite on the first restore
-  }));
+export const createGame = (playerNames: string[]): Game => {
+  const squares = Object.values(squaresMap);
 
-  const minifiedPlayers = playerNames.map<PlayerMinified>((name, index) => ({
-    c: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
-    g: 0,
-    i: index + 1,
-    ij: false,
-    m: playerInitialMoney,
-    n: name,
-    p: [],
-    si: minifiedSquares[0].i,
-    s: PlayerStatus.playing,
-    t: 0,
+  const players = playerNames.map<Player>((name, index) => ({
+    color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
+    getOutOfJail: 0,
+    id: index + 1,
+    isInJail: false,
+    money: playerInitialMoney,
+    name,
+    properties: [],
+    squareId: squares[0].id,
+    status: PlayerStatus.playing,
+    turnsInJail: 0,
   }));
-  const currentPlayerId = minifiedPlayers[0].i;
+  const currentPlayerId = players[0].id;
 
   return {
-    cp: 0,
-    ci: currentPlayerId,
-    d: [],
-    eh: [],
-    nci: [],
-    n: [],
-    ph: GamePhase.rollDice,
-    pl: minifiedPlayers,
-    sq: minifiedSquares,
+    centerPot: 0,
+    currentPlayerId,
+    dice: [],
+    eventHistory: [],
+    nextCardIds: [],
+    notifications: [],
+    phase: GamePhase.rollDice,
+    players,
+    squares,
   };
 };
 
