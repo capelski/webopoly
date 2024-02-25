@@ -85,6 +85,7 @@ export const Board: React.FC<BoardProps> = (props) => {
   return (
     <div
       style={{
+        backgroundColor: 'lightcyan',
         height: props.isDesktop ? '100vh' : '100vw',
         width: props.isDesktop ? '100vh' : '100vw',
       }}
