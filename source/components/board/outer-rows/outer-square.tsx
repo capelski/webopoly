@@ -20,18 +20,20 @@ export type OuterSquareProps = {
 export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
   const [squareModalType, setSquareModalType] = useState<SquareModalType | undefined>();
 
+  const owner =
+    props.square.type === SquareType.property && props.square.ownerId !== undefined
+      ? getPlayerById(props.game, props.square.ownerId)
+      : undefined;
+
   const backgroundColor =
     props.square.type === SquareType.property
       ? props.square.status === PropertyStatus.mortgaged
         ? 'lightgrey'
         : props.square.propertyType === PropertyType.street
-        ? streetsColorMap[props.square.neighborhood].backgroundColor
+        ? owner
+          ? owner.color
+          : streetsColorMap[props.square.neighborhood].backgroundColor
         : undefined
-      : undefined;
-
-  const owner =
-    props.square.type === SquareType.property && props.square.ownerId !== undefined
-      ? getPlayerById(props.game, props.square.ownerId)
       : undefined;
 
   const ownedPropertyBorders: CSSProperties = {
@@ -92,24 +94,25 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             />
           )}
 
-          {props.square.ownerId !== undefined && (
-            <div
-              style={{
-                border: `3px solid ${owner!.color}`,
-                ...ownedPropertyBorders,
-              }}
-            >
+          {props.square.ownerId !== undefined &&
+            props.square.propertyType === PropertyType.street && (
               <div
                 style={{
-                  alignItems: 'center',
-                  border: `1px solid white`,
-                  display: 'flex',
-                  justifyContent: 'center',
+                  border: `4px solid ${streetsColorMap[props.square.neighborhood].backgroundColor}`,
                   ...ownedPropertyBorders,
                 }}
-              />
-            </div>
-          )}
+              >
+                <div
+                  style={{
+                    alignItems: 'center',
+                    border: `1px solid white`,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    ...ownedPropertyBorders,
+                  }}
+                />
+              </div>
+            )}
         </React.Fragment>
       )}
 
