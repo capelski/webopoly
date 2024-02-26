@@ -1,18 +1,11 @@
 - If localStorage game is invalid, clear it
-- Active player to shine in white color, with transition
-
-- Remove no-zoom in mobile restriction ¿?
-- Active player UI
-- Clear button
 
 - Remove CardExpenseEvent
 - Remove EventSource
 - Restore PayTaxEvent
 
 Events are not useful
-Clear stands in the way
 - Players to pick their own emoji
-- Generic game type with two type parameters?
 - Remove the MovePlayerInput/Output Phases...
 - Display details of non property squares. Parking to display center pot
 - Extract logic to disable buttons

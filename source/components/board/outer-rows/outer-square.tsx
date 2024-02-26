@@ -121,6 +121,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             .map((player, index) => (
               <PlayerInSquare
                 isActive={player.id === currentPlayer.id}
+                isDesktop={props.isDesktop}
                 key={index}
                 offset={index}
                 player={player}

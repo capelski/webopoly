@@ -35,7 +35,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         }}
       >
         <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} zoom={zoom} />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
           <ActionsBar
             game={props.game}
             setZoom={setZoom}

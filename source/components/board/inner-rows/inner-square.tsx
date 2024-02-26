@@ -41,7 +41,6 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
         /* Styling */
         alignItems: 'center',
         display: 'flex',
-        fontSize: props.isDesktop ? 32 : 18,
         justifyContent: 'center',
         position: 'relative',
       }}
@@ -51,6 +50,7 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
           return (
             <PlayerInSquare
               isActive={player.id === currentPlayer.id}
+              isDesktop={props.isDesktop}
               key={`${frameIndex}-${playerIndex}`}
               offset={playerIndex}
               player={player}
