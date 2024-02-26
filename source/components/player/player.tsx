@@ -14,7 +14,7 @@ export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
   return (
     <div
       style={{
-        border: props.isActive ? '2px solid goldenrod' : undefined,
+        fontWeight: props.isActive ? 'bold' : undefined,
         fontStyle: isBankrupt ? 'italic' : undefined,
       }}
     >
