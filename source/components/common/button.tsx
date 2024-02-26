@@ -28,7 +28,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
         border,
         borderRadius: 10,
         color,
-        cursor: 'pointer',
+        cursor: props.disabled ? undefined : 'pointer',
         display: 'inline-block',
         fontSize: 18,
         lineHeight: '18px',

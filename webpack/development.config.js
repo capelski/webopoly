@@ -5,6 +5,6 @@ module.exports = merge(baseConfig, {
   mode: 'development',
   devServer: {
     historyApiFallback: true,
-    open: 'webopoly',
+    open: 'webopoly/',
   },
 });
