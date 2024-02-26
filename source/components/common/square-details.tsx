@@ -34,10 +34,6 @@ interface SquareDetailsProps {
   square: PropertySquare;
 }
 
-const getRentBorder = (isActive: number | boolean | undefined) => {
-  return `2px solid ${isActive ? 'goldenrod' : 'white'}`;
-};
-
 export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
   const { backgroundColor, color } =
     props.square.type === SquareType.property
@@ -127,8 +123,8 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
           <React.Fragment>
             <div
               style={{
-                border: getRentBorder(owner && !props.square.houses && !hasNeighborhood),
                 display: 'flex',
+                fontWeight: owner && !props.square.houses && !hasNeighborhood ? 'bold' : undefined,
                 justifyContent: 'space-between',
                 padding: '0 2px',
               }}
@@ -141,8 +137,8 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
             </div>
             <div
               style={{
-                border: getRentBorder(!props.square.houses && hasNeighborhood),
                 display: 'flex',
+                fontWeight: !props.square.houses && hasNeighborhood ? 'bold' : undefined,
                 justifyContent: 'space-between',
                 padding: '0 2px',
               }}
@@ -160,11 +156,12 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
                 <div
                   key={index}
                   style={{
-                    border: getRentBorder(
-                      props.square.propertyType === PropertyType.street &&
-                        props.square.houses === housesNumber,
-                    ),
                     display: 'flex',
+                    fontWeight:
+                      props.square.propertyType === PropertyType.street &&
+                      props.square.houses === housesNumber
+                        ? 'bold'
+                        : undefined,
                     justifyContent: 'space-between',
                     padding: '0 2px',
                   }}
@@ -188,8 +185,8 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
                 <div
                   key={index}
                   style={{
-                    border: getRentBorder(stationsNumber === ownerStations),
                     display: 'flex',
+                    fontWeight: stationsNumber === ownerStations ? 'bold' : undefined,
                     justifyContent: 'space-between',
                     padding: '0 2px',
                   }}
@@ -207,11 +204,11 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Paragraph style={{ border: getRentBorder(ownerUtilities === 1), padding: '0 2px' }}>
+            <Paragraph style={{ fontWeight: ownerUtilities === 1 ? 'bold' : undefined }}>
               If one Utility is owned, the rent is {getUtilityRentMultiplier(1)} times the last dice
               roll.
             </Paragraph>
-            <Paragraph style={{ border: getRentBorder(ownerUtilities === 2), padding: '0 2px' }}>
+            <Paragraph style={{ fontWeight: ownerUtilities === 2 ? 'bold' : undefined }}>
               If both Utilities are owned, the rent is {getUtilityRentMultiplier(2)} times the last
               dice roll.
             </Paragraph>
