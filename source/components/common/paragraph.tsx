@@ -5,12 +5,15 @@ export type ParagraphProps = React.InputHTMLAttributes<HTMLParagraphElement> & {
 };
 
 export const Paragraph: React.FC<React.InputHTMLAttributes<HTMLParagraphElement>> = (props) => {
+  const { fontSize, margin } =
+    props.type === 'small' ? { fontSize: 16, margin: 0 } : { fontSize: 20, margin: '8px 0' };
+
   return (
     <p
       {...props}
       style={{
-        fontSize: props.type === 'small' ? 18 : 20,
-        margin: props.type === 'small' ? '0' : '8px 0',
+        fontSize,
+        margin,
         ...props.style,
       }}
     >

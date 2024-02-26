@@ -28,6 +28,7 @@ import { SquareIcon } from '../board/outer-rows/square-icon';
 import { streetsColorMap } from '../board/outer-rows/street-colors-map';
 import { Paragraph } from './paragraph';
 import { PlayerAvatar } from './player-avatar';
+import { Title } from './title';
 
 interface SquareDetailsProps {
   game: Game;
@@ -58,7 +59,7 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
         border: `2px solid #aaa`,
         display: 'flex',
         flexDirection: 'column',
-        minHeight: 300,
+        minHeight: 310,
         width: 250,
       }}
     >
@@ -70,7 +71,6 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
           color,
           display: 'flex',
           flexDirection: 'column',
-          fontSize: 24,
           justifyContent: 'center',
           padding: 8,
         }}
@@ -80,7 +80,7 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
             <SquareIcon square={props.square} />
           </div>
         )}
-        <div>{props.square.name}</div>
+        <Title type="small">{props.square.name}</Title>
       </div>
 
       <div
@@ -121,39 +121,41 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
       >
         {props.square.propertyType === PropertyType.street ? (
           <React.Fragment>
-            <div
+            <Paragraph
               style={{
                 display: 'flex',
                 fontWeight: owner && !props.square.houses && !hasNeighborhood ? 'bold' : undefined,
                 justifyContent: 'space-between',
-                padding: '0 2px',
               }}
+              type="small"
             >
-              <span>Rent</span>
+              <span>Single rent</span>
               <span>
                 {currencySymbol}
                 {getStreetRent(props.square.price)}
               </span>
-            </div>
-            <div
+            </Paragraph>
+
+            <Paragraph
               style={{
                 display: 'flex',
                 fontWeight: !props.square.houses && hasNeighborhood ? 'bold' : undefined,
                 justifyContent: 'space-between',
-                padding: '0 2px',
               }}
+              type="small"
             >
-              <span>Rent with color set</span>
+              <span>Color set rent</span>
               <span>
                 {currencySymbol}
                 {getStreetRent(props.square.price, { ownsNeighborhood: true })}
               </span>
-            </div>
+            </Paragraph>
+
             {Object.keys(houseRents).map((housesNumberKey, index) => {
               const housesNumber = parseInt(housesNumberKey);
 
               return (
-                <div
+                <Paragraph
                   key={index}
                   style={{
                     display: 'flex',
@@ -163,17 +165,17 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
                         ? 'bold'
                         : undefined,
                     justifyContent: 'space-between',
-                    padding: '0 2px',
                   }}
+                  type="small"
                 >
                   <span>
-                    Rent with {housesNumber} {houseSymbol}
+                    {housesNumber} {houseSymbol} rent
                   </span>
                   <span>
                     {currencySymbol}
                     {getStreetRent(props.square.price, { housesNumber })}
                   </span>
-                </div>
+                </Paragraph>
               );
             })}
           </React.Fragment>
@@ -182,33 +184,39 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
             {Object.keys(stationRents).map((stationsNumberKey, index) => {
               const stationsNumber = parseInt(stationsNumberKey);
               return (
-                <div
+                <Paragraph
                   key={index}
                   style={{
                     display: 'flex',
                     fontWeight: stationsNumber === ownerStations ? 'bold' : undefined,
                     justifyContent: 'space-between',
-                    padding: '0 2px',
                   }}
+                  type="small"
                 >
                   <span>
-                    Rent with {stationsNumber} {stationSymbol}
+                    {stationsNumber} {stationSymbol} rent
                   </span>
                   <span>
                     {currencySymbol}
                     {getStationRent(stationsNumber)}
                   </span>
-                </div>
+                </Paragraph>
               );
             })}
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Paragraph style={{ fontWeight: ownerUtilities === 1 ? 'bold' : undefined }}>
+            <Paragraph
+              style={{ fontWeight: ownerUtilities === 1 ? 'bold' : undefined, padding: '4px 0' }}
+              type="small"
+            >
               If one Utility is owned, the rent is {getUtilityRentMultiplier(1)} times the last dice
               roll.
             </Paragraph>
-            <Paragraph style={{ fontWeight: ownerUtilities === 2 ? 'bold' : undefined }}>
+            <Paragraph
+              style={{ fontWeight: ownerUtilities === 2 ? 'bold' : undefined, padding: '4px 0' }}
+              type="small"
+            >
               If both Utilities are owned, the rent is {getUtilityRentMultiplier(2)} times the last
               dice roll.
             </Paragraph>
@@ -222,23 +230,23 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
         }}
       >
         {props.square.propertyType === PropertyType.street && (
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Paragraph style={{ display: 'flex', justifyContent: 'space-between' }} type="small">
             <span>Houses</span>
             <span>
               {houseSymbol} {currencySymbol}
               {getBuildHouseAmount(props.square)} / {sellHouseSymbol} {currencySymbol}
               {getSellHouseAmount(props.square)}
             </span>
-          </div>
+          </Paragraph>
         )}
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Paragraph style={{ display: 'flex', justifyContent: 'space-between' }} type="small">
           <span>Mortgage</span>
           <span>
             {mortgageSymbol} {currencySymbol}
             {getMortgageAmount(props.square)} / {clearMortgageSymbol} {currencySymbol}
             {getClearMortgageAmount(props.square)}
           </span>
-        </div>
+        </Paragraph>
       </div>
     </div>
   );
