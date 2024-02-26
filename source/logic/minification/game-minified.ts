@@ -15,8 +15,8 @@ import {
   Square,
   SquareMinified,
 } from '../../types';
+import { squaresMap } from '../squares';
 import { eventsMap, Minifier, Restorer } from './events-map';
-import { squaresMap } from './squares-map';
 
 export const minifyGame = (game: Game): GameMinified => {
   return {

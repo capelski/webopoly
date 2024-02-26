@@ -10,11 +10,9 @@ import {
 import { jailFine, playerInitialMoney } from '../parameters';
 import { Game, GameLiquidationPhase, GamePromptPhase, Id, Player, Square } from '../types';
 import { getCardAmount } from './cards';
-import { squaresMap } from './minification/squares-map';
+import { squares } from './squares';
 
 export const createGame = (playerNames: string[]): Game => {
-  const squares = Object.values(squaresMap);
-
   const players = playerNames.map<Player>((name, index) => ({
     color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
     getOutOfJail: 0,
