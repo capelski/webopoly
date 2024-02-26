@@ -324,6 +324,6 @@ export const squares: Square[] = [
   },
 ];
 
-export const squaresMap: { [key: Id]: Square } = squares.reduce((reduced, square) => {
+export const squaresMap = squares.reduce<{ [key: Id]: Square }>((reduced, square) => {
   return { ...reduced, [square.id]: square };
-});
+}, {});

@@ -170,9 +170,9 @@ export const cards: Card[] = [
   },
 ];
 
-export const cardsMap: { [key: Id]: Card } = cards.reduce((reduced, card) => {
+export const cardsMap = cards.reduce<{ [key: Id]: Card }>((reduced, card) => {
   return { ...reduced, [card.id]: card };
-});
+}, {});
 
 type CardTextGetter<T extends CardType = CardType> = (
   card: Card<T>,
