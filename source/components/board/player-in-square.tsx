@@ -15,14 +15,13 @@ export const PlayerInSquare: React.FC<PlayerInSquareProps> = (props) => {
     <div
       key={props.player.id}
       style={{
-        border: props.isActive ? '2px solid goldenrod' : undefined,
         left: `${20 + props.offset * 10}%`,
         position: 'absolute',
         transform: `rotate(${props.rotate}deg)`,
         zIndex: props.isActive ? zIndexes.activePlayer : undefined,
       }}
     >
-      <PlayerAvatar player={props.player} />
+      <PlayerAvatar isActive={props.isActive} player={props.player} />
     </div>
   );
 };

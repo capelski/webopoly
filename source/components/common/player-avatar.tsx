@@ -10,9 +10,9 @@ export const PlayerAvatar: React.FC<PlayerAvatarProps> = (props) => {
   return (
     <span
       style={{
+        animation: props.isActive ? 'glow 1.5s infinite' : undefined,
         color: 'transparent',
         textShadow: `0 0 0 ${props.player.color}`,
-        border: props.isActive ? '1px solid goldenrod' : undefined,
       }}
     >
       👤

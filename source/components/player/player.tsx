@@ -2,6 +2,7 @@ import React from 'react';
 import { PlayerStatus } from '../../enums';
 import { currencySymbol, getOutJailSymbol } from '../../parameters';
 import { Player } from '../../types';
+import { PlayerAvatar } from '../common/player-avatar';
 
 interface PlayerComponentProps {
   isActive: boolean;
@@ -18,7 +19,7 @@ export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
         fontStyle: isBankrupt ? 'italic' : undefined,
       }}
     >
-      <span style={{ color: 'transparent', textShadow: `0 0 0 ${props.player.color}` }}>👤</span>
+      <PlayerAvatar isActive={props.isActive} player={props.player} />
       <span style={{ paddingLeft: 8, textDecoration: isBankrupt ? 'line-through' : undefined }}>
         {props.player.name}
       </span>

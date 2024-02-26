@@ -4,6 +4,7 @@ import Modal from 'react-modal';
 import 'react-toastify/dist/ReactToastify.css';
 import { App } from './components/app';
 import './styles/animations.css';
+import './styles/fonts.css';
 
 const container = document.getElementById('app-placeholder')!;
 const root = createRoot(container);
