@@ -2,7 +2,7 @@ import { CardType, LiquidationReason, PromptType, PropertyType, SquareType } fro
 import { currencySymbol } from '../parameters';
 import { Card, GameLiquidationPhase, GamePromptPhase, Id, StreetSquare } from '../types';
 import { getCurrentPlayer } from './game';
-import { squaresMap } from './minification/squares-map';
+import { squaresMap } from './squares';
 
 export const cards: Card[] = [
   /** Chance cards */
@@ -170,6 +170,10 @@ export const cards: Card[] = [
   },
 ];
 
+export const cardsMap: { [key: Id]: Card } = cards.reduce((reduced, card) => {
+  return { ...reduced, [card.id]: card };
+});
+
 type CardTextGetter<T extends CardType = CardType> = (
   card: Card<T>,
   amount: T extends CardType.streetRepairs ? number : undefined,
@@ -194,7 +198,7 @@ export const getCardAmount = (
     | GamePromptPhase<PromptType.cannotPay>,
   cardId: Id,
 ): number => {
-  const card = getCardById(cardId);
+  const card = cardsMap[cardId];
 
   if (card.type === CardType.fee) {
     return card.amount;
@@ -216,12 +220,8 @@ export const getCardAmount = (
   return 0;
 };
 
-export const getCardById = (id: Id): Card => {
-  return cards.find((card) => card.id === id)!;
-};
-
 export const getCardText = (id: Id, amount: number | undefined): string => {
-  const card = getCardById(id);
+  const card = cardsMap[id];
   const getter: CardTextGetter = cardTextMap[card.type];
   return getter(card, amount);
 };

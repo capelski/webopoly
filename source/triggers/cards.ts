@@ -1,8 +1,8 @@
 import { CardType, EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
 import {
   cards,
+  cardsMap,
   getCardAmount,
-  getCardById,
   getCurrentPlayer,
   getNextPropertyOfTypeId,
   getNextSquareId,
@@ -118,7 +118,7 @@ export const triggerCardAction = <TCard extends CardType = CardType>(
   game: GameInputType<TCard>,
   cardId: Id,
 ): GameOutputType<TCard> => {
-  const card = getCardById(cardId) as Card<TCard>;
+  const card = cardsMap[cardId] as Card<TCard>;
   const cardTrigger: CardTrigger<TCard> = cardTriggersMap[card.type];
   const currentPlayer = getCurrentPlayer(game);
 
