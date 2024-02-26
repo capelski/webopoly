@@ -6,8 +6,9 @@ import { InnerSquareData } from './inner-squares-map';
 export type InnerRowProps = {
   game: Game;
   innerSquares: InnerSquareData[];
-  isDesktop: boolean;
+  isLandscape: boolean;
   style?: CSSProperties;
+  zoom: number;
 };
 
 export const InnerRow: React.FC<InnerRowProps> = (props) => {
@@ -18,8 +19,9 @@ export const InnerRow: React.FC<InnerRowProps> = (props) => {
           <InnerSquare
             game={props.game}
             innerSquare={innerSquare}
-            isDesktop={props.isDesktop}
+            isLandscape={props.isLandscape}
             key={innerSquare.innerSquareId}
+            zoom={props.zoom}
           />
         );
       })}

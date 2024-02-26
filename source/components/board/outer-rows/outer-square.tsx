@@ -11,10 +11,11 @@ import { streetsColorMap } from './street-colors-map';
 
 export type OuterSquareProps = {
   game: Game;
-  isDesktop: boolean;
+  isLandscape: boolean;
   square: Square;
   style?: CSSProperties;
   updateGame: (game: Game) => void;
+  zoom: number;
 };
 
 export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
@@ -64,7 +65,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         borderRight: '1px solid #aaa',
         boxSizing: 'border-box',
         display: 'flex',
-        fontSize: props.isDesktop ? 32 : 18,
+        fontSize: props.isLandscape ? `${props.zoom * 4}dvh` : `${props.zoom * 4}dvw`,
         justifyContent: 'center',
         position: 'relative',
         ...props.style,
@@ -121,11 +122,12 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             .map((player, index) => (
               <PlayerInSquare
                 isActive={player.id === currentPlayer.id}
-                isDesktop={props.isDesktop}
+                isLandscape={props.isLandscape}
                 key={index}
                 offset={index}
                 player={player}
                 rotate={squaresRotation[11]}
+                zoom={props.zoom}
               />
             ))
         : undefined}

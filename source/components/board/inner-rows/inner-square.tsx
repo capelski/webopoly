@@ -9,7 +9,8 @@ import { InnerSquareData } from './inner-squares-map';
 export type InnerSquareProps = {
   game: Game;
   innerSquare: InnerSquareData;
-  isDesktop: boolean;
+  isLandscape: boolean;
+  zoom: number;
 };
 
 export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
@@ -50,11 +51,12 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
           return (
             <PlayerInSquare
               isActive={player.id === currentPlayer.id}
-              isDesktop={props.isDesktop}
+              isLandscape={props.isLandscape}
               key={`${frameIndex}-${playerIndex}`}
               offset={playerIndex}
               player={player}
               rotate={frame.rotate}
+              zoom={props.zoom}
             />
           );
         });

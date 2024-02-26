@@ -15,7 +15,7 @@ interface GameComponentProps {
 }
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
-  const isDesktop = useMediaQuery({ minWidth: 728 });
+  const isLandscape = useMediaQuery({ orientation: 'landscape' });
   const currentPlayer = getCurrentPlayer(props.game);
 
   const [zoom, setZoom] = useState(1);
@@ -29,12 +29,18 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       <div
         style={{
           display: 'flex',
-          flexDirection: isDesktop ? 'row' : 'column',
-          height: isDesktop ? `${100 * zoom}dvh` : undefined,
+          flexDirection: isLandscape ? 'row' : 'column',
+          // Necessary for the event history not to generate scroll past the board
+          height: isLandscape ? `${100 * zoom}dvh` : undefined,
           overflow: 'hidden',
         }}
       >
-        <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} zoom={zoom} />
+        <Board
+          game={props.game}
+          isLandscape={isLandscape}
+          updateGame={props.updateGame}
+          zoom={zoom}
+        />
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
           <ActionsBar
             game={props.game}

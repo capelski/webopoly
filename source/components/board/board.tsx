@@ -28,7 +28,7 @@ import { OuterTopRow } from './outer-rows/outer-top-row';
 
 interface BoardProps {
   game: Game;
-  isDesktop: boolean;
+  isLandscape: boolean;
   updateGame: (game: Game | undefined) => void;
   zoom: number;
 }
@@ -87,8 +87,8 @@ export const Board: React.FC<BoardProps> = (props) => {
     <div
       style={{
         backgroundColor: 'lightcyan',
-        height: props.isDesktop ? `${100 * props.zoom}dvh` : `${100 * props.zoom}dvw`,
-        width: props.isDesktop ? `${100 * props.zoom}dvh` : `${100 * props.zoom}dvw`,
+        height: props.isLandscape ? `${100 * props.zoom}dvh` : `${100 * props.zoom}dvw`,
+        width: props.isLandscape ? `${100 * props.zoom}dvh` : `${100 * props.zoom}dvw`,
       }}
     >
       <Grid
@@ -118,7 +118,6 @@ export const Board: React.FC<BoardProps> = (props) => {
               height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 24,
             }}
           >
             <div

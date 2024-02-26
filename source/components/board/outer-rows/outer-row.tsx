@@ -6,6 +6,7 @@ import { OuterSquare } from './outer-square';
 export type OuterRowProps = RowComponentDefinitionProps & {
   outerSquareIds: Id[];
   style?: CSSProperties;
+  zoom: number;
 };
 
 export const OuterRow: React.FC<OuterRowProps> = (props) => {
