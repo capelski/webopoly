@@ -617,21 +617,6 @@
     transform: rotate(360deg);
   }
 }
-@font-face {
-  font-family: 'Montserrat';
-  src: url(/webopoly/7e687123cd4528224ce5.ttf);
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  font-style: italic;
-  src: url(/webopoly/7451547bd28d8dddbeea.ttf);
-}
-
-html {
-  font-family: 'Montserrat';
-}
-
 @keyframes heart-beat {
   0% {
     transform: scale(1);
@@ -663,5 +648,30 @@ html {
   100% {
     transform: rotate(360deg);
   }
+}
+
+@keyframes glow {
+  0% {
+  }
+  50% {
+    text-shadow: goldenrod 0px 0px 0px;
+  }
+  100% {
+  }
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url(/webopoly/7e687123cd4528224ce5.ttf);
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  src: url(/webopoly/7451547bd28d8dddbeea.ttf);
+}
+
+html {
+  font-family: 'Montserrat';
 }
 
