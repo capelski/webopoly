@@ -19,6 +19,7 @@ import {
   taxSymbol,
 } from '../../parameters';
 import { Game, GEvent, Player } from '../../types';
+import { Paragraph } from './paragraph';
 
 type Renderer<T = EventType> = (
   player: Player,
@@ -157,8 +158,10 @@ export const EventComponent: React.FC<EventComponentProps> = (props) => {
 
   return (
     <div>
-      <span>{icon}</span>
-      <span style={{ paddingLeft: 8 }}>{description}</span>
+      <Paragraph type="small">
+        <span>{icon}</span>
+        <span style={{ paddingLeft: 8 }}>{description}</span>
+      </Paragraph>
     </div>
   );
 };
