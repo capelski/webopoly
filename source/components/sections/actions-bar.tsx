@@ -8,13 +8,17 @@ import { Paragraph } from '../common/paragraph';
 
 interface ActionsBarProps {
   game: Game;
+  setZoom: (zoom: number) => void;
   updateGame: (game: Game | undefined) => void;
+  zoom: number;
 }
 
 export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
   const [clearGameModal, setClearGameModal] = useState(false);
+  const [settingsModal, setSettingsModal] = useState(false);
 
   const clearGameCloseHandler = () => setClearGameModal(false);
+  const settingsCloseHandler = () => setSettingsModal(false);
 
   return (
     <div style={{ paddingLeft: 8 }}>
@@ -27,6 +31,39 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             </Button>
             <Button onClick={clearGameCloseHandler}>No</Button>
           </div>
+        </Modal>
+      )}
+
+      {settingsModal && (
+        <Modal closeHandler={settingsCloseHandler}>
+          <div>
+            <Button
+              onClick={() => {
+                props.setZoom(props.zoom + 0.05);
+              }}
+              style={{ marginTop: 8 }}
+            >
+              Zoom in
+            </Button>
+
+            <Button
+              onClick={() => {
+                props.setZoom(props.zoom - 0.05);
+              }}
+              style={{ marginTop: 8 }}
+            >
+              Zoom out
+            </Button>
+          </div>
+          <Button
+            onClick={() => {
+              setClearGameModal(true);
+            }}
+            type="delete"
+            style={{ marginTop: 24 }}
+          >
+            Clear
+          </Button>
         </Modal>
       )}
 
@@ -67,11 +104,11 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         <div>
           <Button
             onClick={() => {
-              setClearGameModal(true);
+              setSettingsModal(true);
             }}
-            type="delete"
+            type="border"
           >
-            Clear
+            ⚙️
           </Button>
         </div>
       </div>

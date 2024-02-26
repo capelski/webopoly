@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { getCurrentPlayer } from '../logic';
 import { Game } from '../types';
@@ -18,6 +18,8 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
   const isDesktop = useMediaQuery({ minWidth: 728 });
   const currentPlayer = getCurrentPlayer(props.game);
 
+  const [zoom, setZoom] = useState(1);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Notifications game={props.game} updateGame={props.updateGame} />
@@ -28,13 +30,18 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         style={{
           display: 'flex',
           flexDirection: isDesktop ? 'row' : 'column',
-          height: isDesktop ? '100dvh' : undefined,
+          height: isDesktop ? `${100 * zoom}dvh` : undefined,
           overflow: 'hidden',
         }}
       >
-        <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} />
+        <Board game={props.game} isDesktop={isDesktop} updateGame={props.updateGame} zoom={zoom} />
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <ActionsBar game={props.game} updateGame={props.updateGame} />
+          <ActionsBar
+            game={props.game}
+            setZoom={setZoom}
+            updateGame={props.updateGame}
+            zoom={zoom}
+          />
 
           <Players currentPlayerId={currentPlayer.id} players={props.game.players} />
 
