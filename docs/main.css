@@ -619,13 +619,13 @@
 }
 @font-face {
   font-family: 'Montserrat';
-  src: url(/webopoly7e687123cd4528224ce5.ttf);
+  src: url(/webopoly/7e687123cd4528224ce5.ttf);
 }
 
 @font-face {
   font-family: 'Montserrat';
   font-style: italic;
-  src: url(/webopoly7451547bd28d8dddbeea.ttf);
+  src: url(/webopoly/7451547bd28d8dddbeea.ttf);
 }
 
 html {

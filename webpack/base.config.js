@@ -33,7 +33,7 @@ module.exports = {
   },
   output: {
     path: resolve(__dirname, '..', 'docs'),
-    publicPath: '/webopoly',
+    publicPath: '/webopoly/',
   },
   plugins: [
     new MiniCssExtractPlugin(),
