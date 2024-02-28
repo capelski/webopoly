@@ -1,4 +1,4 @@
-import { EventSource, EventType } from '../../enums';
+import { EventType } from '../../enums';
 import { EventMinified, GEvent, Id, PropertyEventType } from '../../types';
 
 export type Minifier<T extends EventType = EventType> = (
@@ -75,18 +75,14 @@ export const eventsMap: {
     }),
   },
   [EventType.clearMortgage]: <Mapper<EventType.clearMortgage>>propertyMappers,
-  [EventType.expense]: {
+  [EventType.payTax]: {
     minify: (event) => ({
       ...baseMinifier(event),
       a: event.amount,
-      ...(event.source === EventSource.surpriseCard
-        ? { s: event.source, ci: event.cardId }
-        : { s: event.source }),
     }),
     restore: (e) => ({
       ...baseRestorer(e),
       amount: e.a,
-      ...(e.s === EventSource.surpriseCard ? { source: e.s, cardId: e.ci } : { source: e.s }),
     }),
   },
   [EventType.freeParking]: {

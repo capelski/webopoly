@@ -1,4 +1,4 @@
-import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
+import { AnswerType, CardType, EventType, JailMedium, OfferType } from '../enums';
 import { PropertyEventType } from './event';
 import { Id } from './id';
 
@@ -38,27 +38,6 @@ export type CardEventMinified<TCard extends CardType = CardType> = EventBaseMini
   t: EventType.card;
 };
 
-type ExpenseEventBaseMinified = EventBaseMinified & {
-  /** amount */
-  a: number;
-  /** type */
-  t: EventType.expense;
-};
-
-export type ExpenseCardEventMinified = ExpenseEventBaseMinified & {
-  /** cardId */
-  ci: Id;
-  /** source */
-  s: EventSource.surpriseCard;
-};
-
-export type ExpenseTaxEventMinified = ExpenseEventBaseMinified & {
-  /** source */
-  s: EventSource.taxSquare;
-};
-
-export type ExpenseEventMinified = ExpenseCardEventMinified | ExpenseTaxEventMinified;
-
 export type FreeParkingEventMinified = EventBaseMinified & {
   /** pot */
   po: number;
@@ -87,6 +66,13 @@ export type PayRentEventMinified = EventBaseMinified & {
   t: EventType.payRent;
 };
 
+export type PayTaxEventMinified = EventBaseMinified & {
+  /** amount */
+  a: number;
+  /** type */
+  t: EventType.payTax;
+};
+
 export type PropertyEventMinified = EventBaseMinified & {
   /** propertyId */
   pi: Id;
@@ -105,10 +91,10 @@ export type EventMinified =
   | AnswerOfferEventMinified
   | BankruptcyEventMinified
   | CardEventMinified
-  | ExpenseEventMinified
   | FreeParkingEventMinified
   | GenericEventMinified
   | GetOutOfJailEventMinified
   | PayRentEventMinified
+  | PayTaxEventMinified
   | PropertyEventMinified
   | TurnInJailEventMinified;

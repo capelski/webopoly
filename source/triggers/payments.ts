@@ -1,12 +1,12 @@
 import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
-  ExpenseEvent,
   GameLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   GameUiTransitionPhase,
   PayRentEvent,
+  PayTaxEvent,
   PendingEvent,
 } from '../types';
 
@@ -37,26 +37,6 @@ export const triggerCannotPayPrompt = (
   };
 };
 
-export const triggerExpense = (
-  game: ExpenseInputPhases,
-  event: ExpenseEvent,
-): ExpenseOutputPhases => {
-  const currentPlayer = getCurrentPlayer(game);
-  const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
-    ? {
-        ...game,
-        centerPot: game.centerPot + event.amount,
-        notifications: [...game.notifications, event],
-        phase: GamePhase.play,
-        players: game.players.map((p) => {
-          return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
-        }),
-      }
-    : triggerCannotPayPrompt(game, event);
-
-  return nextGame;
-};
-
 export const triggerPayRent = (
   game: ExpenseInputPhases,
   event: PayRentEvent,
@@ -74,6 +54,26 @@ export const triggerPayRent = (
             : p.id === event.landlordId
             ? { ...p, money: p.money + event.amount }
             : p;
+        }),
+      }
+    : triggerCannotPayPrompt(game, event);
+
+  return nextGame;
+};
+
+export const triggerPayTax = (
+  game: ExpenseInputPhases,
+  event: PayTaxEvent,
+): ExpenseOutputPhases => {
+  const currentPlayer = getCurrentPlayer(game);
+  const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
+    ? {
+        ...game,
+        centerPot: game.centerPot + event.amount,
+        notifications: [...game.notifications, event],
+        phase: GamePhase.play,
+        players: game.players.map((p) => {
+          return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
         }),
       }
     : triggerCannotPayPrompt(game, event);

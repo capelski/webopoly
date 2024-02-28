@@ -1,17 +1,9 @@
-import {
-  EventSource,
-  EventType,
-  GamePhase,
-  PlayerStatus,
-  PromptType,
-  SquareType,
-  TaxType,
-} from '../enums';
+import { EventType, GamePhase, PlayerStatus, PromptType, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { passGoMoney } from '../parameters';
 import { GamePlayPhase, GamePromptPhase, Id } from '../types';
 import { triggerCardPrompt } from './cards';
-import { triggerExpense, triggerPayRent } from './payments';
+import { triggerPayRent, triggerPayTax } from './payments';
 
 export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.card>;
 
@@ -111,11 +103,10 @@ export const triggerMovePlayer = (
       nextSquare.taxType === TaxType.income
         ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
         : 100;
-    return triggerExpense(updatedGame, {
+    return triggerPayTax(updatedGame, {
       amount: tax,
       playerId: currentPlayerId,
-      source: EventSource.taxSquare,
-      type: EventType.expense,
+      type: EventType.payTax,
     });
   }
 

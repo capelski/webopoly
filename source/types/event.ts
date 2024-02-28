@@ -1,4 +1,4 @@
-import { AnswerType, CardType, EventSource, EventType, JailMedium, OfferType } from '../enums';
+import { AnswerType, CardType, EventType, JailMedium, OfferType } from '../enums';
 import { Id } from './id';
 
 type EventBase = {
@@ -25,22 +25,6 @@ export type CardEvent<TCard extends CardType = CardType> = EventBase & {
   type: EventType.card;
 };
 
-type ExpenseEventBase = EventBase & {
-  amount: number;
-  type: EventType.expense;
-};
-
-export type ExpenseCardEvent = ExpenseEventBase & {
-  cardId: Id;
-  source: EventSource.surpriseCard;
-};
-
-export type ExpenseTaxEvent = ExpenseEventBase & {
-  source: EventSource.taxSquare;
-};
-
-export type ExpenseEvent = ExpenseCardEvent | ExpenseTaxEvent;
-
 export type FreeParkingEvent = EventBase & {
   pot: number;
   type: EventType.freeParking;
@@ -61,6 +45,11 @@ export type PayRentEvent = EventBase & {
   type: EventType.payRent;
 };
 
+export type PayTaxEvent = EventBase & {
+  amount: number;
+  type: EventType.payTax;
+};
+
 export type PropertyEventType =
   | EventType.buildHouse
   | EventType.buyProperty
@@ -78,7 +67,7 @@ export type TurnInJailEvent = EventBase & {
   type: EventType.turnInJail;
 };
 
-export type PendingEvent = CardEvent | ExpenseEvent | PayRentEvent | TurnInJailEvent;
+export type PendingEvent = CardEvent | PayRentEvent | PayTaxEvent | TurnInJailEvent;
 
 /** The Event type already exists in Typescript. Using GEvent instead (i.e. GameEvent) */
 export type GEvent =

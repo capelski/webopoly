@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnswerType, EventSource, EventType, JailMedium, OfferType } from '../../enums';
+import { AnswerType, EventType, JailMedium, OfferType } from '../../enums';
 import { diceToString, getCardText, getPlayerById, getSquareById } from '../../logic';
 import {
   clearMortgageSymbol,
@@ -76,16 +76,6 @@ const renderersMap: {
       icon: clearMortgageSymbol,
     };
   },
-  [EventType.expense]: (player, event) =>
-    event.source === EventSource.surpriseCard
-      ? {
-          description: `${player.name}: ${getCardText(event.cardId, event.amount)}`,
-          icon: surpriseSymbol,
-        }
-      : {
-          description: `${player.name} pays ${currencySymbol}${event.amount} in taxes`,
-          icon: taxSymbol,
-        },
   [EventType.freeParking]: (player, event) => ({
     description: `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
     icon: parkingSymbol,
@@ -124,6 +114,10 @@ const renderersMap: {
       icon: '🚀',
     };
   },
+  [EventType.payTax]: (player, event) => ({
+    description: `${player.name} pays ${currencySymbol}${event.amount} in taxes`,
+    icon: taxSymbol,
+  }),
   [EventType.sellHouse]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return {

@@ -1,10 +1,5 @@
 - If localStorage game is invalid, clear it
-
-- Remove CardExpenseEvent
-- Remove EventSource
-- Restore PayTaxEvent
-
-Events are not useful
+- Events are not useful
 - Players to pick their own emoji
 - Remove the MovePlayerInput/Output Phases...
 - Display details of non property squares. Parking to display center pot

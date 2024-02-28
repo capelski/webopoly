@@ -13,8 +13,8 @@ import { triggerLastTurnInJail } from './jail';
 import {
   ExpenseOutputPhases,
   triggerCannotPayPrompt,
-  triggerExpense,
   triggerPayRent,
+  triggerPayTax,
 } from './payments';
 
 export const resumeBuyProperty = (
@@ -40,8 +40,8 @@ export const resumePendingPayment = (
   if (hasEnoughMoney(player, amount)) {
     if (pendingEvent.type === EventType.card) {
       return triggerCardAction<CardType.fee | CardType.streetRepairs>(game, pendingEvent.cardId);
-    } else if (pendingEvent.type === EventType.expense) {
-      return triggerExpense(game, pendingEvent);
+    } else if (pendingEvent.type === EventType.payTax) {
+      return triggerPayTax(game, pendingEvent);
     } else if (pendingEvent.type === EventType.turnInJail) {
       return triggerLastTurnInJail(game);
     } else {
