@@ -5,21 +5,11 @@ import {
   SquareType,
   TransitionType,
 } from '../../enums';
-import {
-  EventMinified,
-  Game,
-  GameMinified,
-  GEvent,
-  Player,
-  PlayerMinified,
-  Square,
-  SquareMinified,
-} from '../../types';
-import { squaresMap } from '../squares';
-import { eventsMap, Minifier, Restorer } from './events-map';
+import { EventMinified, Game, GameMinified, PlayerMinified, SquareMinified } from '../../types';
+import { eventsMap, Minifier } from './events-map';
 
-export const minifyGame = (game: Game): GameMinified => {
-  return {
+export const serializeGame = (game: Game): string => {
+  const minifiedGame: GameMinified = {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
@@ -100,62 +90,6 @@ export const minifyGame = (game: Game): GameMinified => {
         : { ph: game.phase, tt: game.transitionType }
       : { ph: game.phase }),
   };
-};
 
-export const restoreMinifiedGame = (g: GameMinified): Game => {
-  return {
-    centerPot: g.cp,
-    currentPlayerId: g.ci,
-    dice: g.d,
-    eventHistory: g.eh.map<GEvent>((e) => {
-      const restore: Restorer = eventsMap[e.t].restore;
-      return restore(e);
-    }),
-    nextCardIds: g.nci,
-    notifications: g.n.map<GEvent>((e) => {
-      const restore: Restorer = eventsMap[e.t].restore;
-      return restore(e);
-    }),
-    players: g.pl.map<Player>((p) => ({
-      color: p.c,
-      getOutOfJail: p.g,
-      id: p.i,
-      isInJail: p.ij,
-      money: p.m,
-      name: p.n,
-      properties: p.p,
-      status: p.s,
-      squareId: p.si,
-      turnsInJail: p.t,
-    })),
-    squares: g.sq.map<Square>((s) => {
-      const square = squaresMap[s.i];
-
-      if (square.type === SquareType.property && s.t === SquareType.property) {
-        square.ownerId = s.o;
-        square.status = s.s;
-
-        if (square.propertyType === PropertyType.street && s.pt === PropertyType.street) {
-          square.houses = s.h;
-        }
-      }
-
-      return square;
-    }),
-    ...(g.ph === GamePhase.liquidation
-      ? g.t === LiquidationReason.buyProperty
-        ? { phase: g.ph, reason: g.t, pendingPrompt: g.pp }
-        : { phase: g.ph, reason: g.t, pendingEvent: g.pe }
-      : g.ph === GamePhase.prompt
-      ? { phase: g.ph, prompt: g.pr }
-      : g.ph === GamePhase.uiTransition
-      ? g.tt === TransitionType.player
-        ? {
-            phase: g.ph,
-            transitionType: g.tt,
-            transitionData: g.td,
-          }
-        : { phase: g.ph, transitionType: g.tt }
-      : { phase: g.ph }),
-  };
+  return JSON.stringify(minifiedGame);
 };
