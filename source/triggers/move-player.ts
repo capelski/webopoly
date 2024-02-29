@@ -98,11 +98,7 @@ export const triggerMovePlayer = (
 
   const payTaxes = nextSquare.type === SquareType.tax;
   if (payTaxes) {
-    const currentPlayer = getCurrentPlayer(updatedGame);
-    const tax =
-      nextSquare.taxType === TaxType.income
-        ? Math.min(Math.round(0.1 * currentPlayer.money), 200)
-        : 100;
+    const tax = nextSquare.taxType === TaxType.income ? 200 : 100;
     return triggerPayTax(updatedGame, {
       amount: tax,
       playerId: currentPlayerId,
