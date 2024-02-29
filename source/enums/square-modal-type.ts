@@ -1,5 +1,6 @@
 export enum SquareModalType {
   buyOffer = 'buyOffer',
-  details = 'details',
+  otherDetails = 'otherDetails',
+  propertyDetails = 'propertyDetails',
   sellOffer = 'sellOffer',
 }

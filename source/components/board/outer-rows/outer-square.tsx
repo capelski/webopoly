@@ -4,7 +4,8 @@ import { getCurrentPlayer, getPlayerById } from '../../../logic';
 import { Game, Square } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
-import { SquareDetailsModal } from './square-details-modal';
+import { OtherSquareDetailsModal } from './other-square-details-modal copy';
+import { PropertySquareDetailsModal } from './property-square-details-modal';
 import { SquareIcon } from './square-icon';
 import { SquareOfferModal } from './square-offer-modal';
 import { streetsColorMap } from './street-colors-map';
@@ -47,13 +48,13 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
 
   return (
     <div
-      onClick={
-        props.square.type === SquareType.property
-          ? () => {
-              setSquareModalType(SquareModalType.details);
-            }
-          : undefined
-      }
+      onClick={() => {
+        if (props.square.type === SquareType.property) {
+          setSquareModalType(SquareModalType.propertyDetails);
+        } else {
+          setSquareModalType(SquareModalType.otherDetails);
+        }
+      }}
       style={{
         /* Sizing */
         flexBasis: 1,
@@ -64,6 +65,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         borderBottom: '1px solid #aaa',
         borderRight: '1px solid #aaa',
         boxSizing: 'border-box',
+        cursor: 'pointer',
         display: 'flex',
         fontSize: props.isLandscape ? `${props.zoom * 4}dvh` : `${props.zoom * 4}dvw`,
         justifyContent: 'center',
@@ -73,8 +75,8 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
     >
       {props.square.type === SquareType.property && (
         <React.Fragment>
-          {squareModalType === SquareModalType.details && (
-            <SquareDetailsModal
+          {squareModalType === SquareModalType.propertyDetails && (
+            <PropertySquareDetailsModal
               game={props.game}
               setSquareModalType={setSquareModalType}
               square={props.square}
@@ -112,6 +114,14 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             </div>
           )}
         </React.Fragment>
+      )}
+
+      {squareModalType === SquareModalType.otherDetails && (
+        <OtherSquareDetailsModal
+          game={props.game}
+          setSquareModalType={setSquareModalType}
+          square={props.square}
+        />
       )}
 
       <SquareIcon rotate={true} square={props.square} />

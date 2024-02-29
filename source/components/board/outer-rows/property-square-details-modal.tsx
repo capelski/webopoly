@@ -26,14 +26,14 @@ import { Button } from '../../common/button';
 import { Modal } from '../../common/modal';
 import { SquareDetails } from '../../common/square-details';
 
-interface SquareDetailsModalProps {
+interface PropertySquareDetailsModalProps {
   game: Game;
   setSquareModalType: (squareModalType: SquareModalType | undefined) => void;
   square: PropertySquare;
   updateGame: (game: Game) => void;
 }
 
-export const SquareDetailsModal: React.FC<SquareDetailsModalProps> = (props) => {
+export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProps> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (
