@@ -14,7 +14,7 @@ import { squares } from './squares';
 
 export const createGame = (playerNames: string[]): Game => {
   const players = playerNames.map<Player>((name, index) => ({
-    color: '#' + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, '0'),
+    color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
     getOutOfJail: 0,
     id: index + 1,
     isInJail: false,
