@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { GamePhase, LiquidationReason } from '../../enums';
-import { resumeBuyProperty, resumePendingPayment, triggerEndTurn } from '../../triggers';
+import { getCurrentPlayer, getPropertyOwnersId, getTradingPlayersId } from '../../logic';
+import {
+  resumeBuyProperty,
+  resumePendingPayment,
+  triggerCancelTrade,
+  triggerEndTurn,
+  triggerStartTrade,
+  triggerTradeOffer,
+} from '../../triggers';
 import { Game } from '../../types';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
@@ -19,6 +27,15 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
 
   const clearGameCloseHandler = () => setClearGameModal(false);
   const settingsCloseHandler = () => setSettingsModal(false);
+
+  const currentPlayer = getCurrentPlayer(props.game);
+  const propertyOwnersId = getPropertyOwnersId(props.game);
+  const tradingPlayersId =
+    props.game.phase === GamePhase.trade ? getTradingPlayersId(props.game) : [];
+  const canTrade =
+    (props.game.phase === GamePhase.play || props.game.phase === GamePhase.rollDice) &&
+    propertyOwnersId.length > 1 &&
+    propertyOwnersId.includes(currentPlayer.id);
 
   return (
     <div style={{ paddingLeft: 8 }}>
@@ -84,22 +101,70 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             End turn
           </Button>
 
-          <Button
-            disabled={props.game.phase !== GamePhase.liquidation}
-            onClick={() => {
-              if (props.game.phase !== GamePhase.liquidation) {
-                return;
-              }
+          {props.game.phase === GamePhase.trade ? (
+            <React.Fragment>
+              <Button
+                disabled={tradingPlayersId.length < 2}
+                onClick={() => {
+                  if (props.game.phase !== GamePhase.trade || tradingPlayersId.length < 2) {
+                    return;
+                  }
 
-              if (props.game.reason === LiquidationReason.buyProperty) {
-                props.updateGame(resumeBuyProperty(props.game));
-              } else {
-                props.updateGame(resumePendingPayment(props.game));
-              }
-            }}
-          >
-            Resume
-          </Button>
+                  props.updateGame(triggerTradeOffer(props.game));
+                }}
+              >
+                Continue
+              </Button>
+
+              <Button
+                onClick={() => {
+                  if (props.game.phase !== GamePhase.trade) {
+                    return;
+                  }
+                  props.updateGame(triggerCancelTrade(props.game));
+                }}
+                type="secondary"
+              >
+                Cancel
+              </Button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Button
+                disabled={!canTrade}
+                onClick={() => {
+                  if (
+                    (props.game.phase !== GamePhase.play &&
+                      props.game.phase !== GamePhase.rollDice) ||
+                    !canTrade
+                  ) {
+                    return;
+                  }
+
+                  props.updateGame(triggerStartTrade(props.game));
+                }}
+              >
+                Trade
+              </Button>
+
+              <Button
+                disabled={props.game.phase !== GamePhase.liquidation}
+                onClick={() => {
+                  if (props.game.phase !== GamePhase.liquidation) {
+                    return;
+                  }
+
+                  if (props.game.reason === LiquidationReason.buyProperty) {
+                    props.updateGame(resumeBuyProperty(props.game));
+                  } else {
+                    props.updateGame(resumePendingPayment(props.game));
+                  }
+                }}
+              >
+                Resume
+              </Button>
+            </React.Fragment>
+          )}
         </div>
         <div>
           <Button

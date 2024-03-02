@@ -1,5 +1,6 @@
 export enum EventType {
   answerOffer = 'answerOffer',
+  answerTrade = 'answerTrade',
   bankruptcy = 'bankruptcy',
   buildHouse = 'buildHouse',
   buyProperty = 'buyProperty',

@@ -3,5 +3,6 @@ export enum GamePhase {
   play = 'play',
   prompt = 'prompt',
   rollDice = 'rollDice',
+  trade = 'trade',
   uiTransition = 'uiTransition',
 }

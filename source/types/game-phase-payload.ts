@@ -29,6 +29,12 @@ export type PromptPhasePayload<TPrompt extends PromptType = PromptType> =
 
 export type RollDicePhasePayload = PhasePayloadBase<GamePhase.rollDice>;
 
+export type TradePhasePayload = PhasePayloadBase<GamePhase.trade> & {
+  previousPhase: GamePhase.play | GamePhase.rollDice;
+  other: { ownerId: Id | undefined; squaresId: Id[] };
+  ownSquaresId: Id[];
+};
+
 export type UiTransitionPhasePayload<TTransition extends TransitionType = TransitionType> =
   PhasePayloadBase<GamePhase.uiTransition> &
     (

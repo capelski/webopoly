@@ -56,6 +56,22 @@ export const eventsMap: {
       targetPlayerId: e.tp,
     }),
   },
+  [EventType.answerTrade]: {
+    minify: (event) => ({
+      ...baseMinifier(event),
+      an: event.answer,
+      ppi: event.playerPropertiesId,
+      tpl: event.targetPlayerId,
+      tpp: event.targetPropertiesId,
+    }),
+    restore: (e) => ({
+      ...baseRestorer(e),
+      answer: e.an,
+      playerPropertiesId: e.ppi,
+      targetPlayerId: e.tpl,
+      targetPropertiesId: e.tpp,
+    }),
+  },
   [EventType.bankruptcy]: {
     minify: (event) => ({ ...baseMinifier(event), ci: event.creditorId }),
     restore: (e) => ({ ...baseRestorer(e), creditorId: e.ci }),

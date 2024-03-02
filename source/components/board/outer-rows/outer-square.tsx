@@ -1,6 +1,18 @@
 import React, { CSSProperties, useState } from 'react';
-import { PropertyStatus, PropertyType, SquareModalType, SquareType } from '../../../enums';
-import { getCurrentPlayer, getPlayerById } from '../../../logic';
+import {
+  GamePhase,
+  PropertyStatus,
+  PropertyType,
+  SquareModalType,
+  SquareType,
+} from '../../../enums';
+import {
+  getCurrentPlayer,
+  getPlayerById,
+  isSelectedForTrade,
+  isTradableSquare,
+} from '../../../logic';
+import { triggerTradeSelectionToggle } from '../../../triggers';
 import { Game, Square } from '../../../types';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
@@ -36,6 +48,15 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
       ? getPlayerById(props.game, props.square.ownerId)
       : undefined;
 
+  const isTradeable =
+    props.game.phase === GamePhase.trade &&
+    props.square.type === SquareType.property &&
+    isTradableSquare(props.game, props.square);
+  const isSelected =
+    props.game.phase === GamePhase.trade &&
+    props.square.type === SquareType.property &&
+    isSelectedForTrade(props.game, props.square);
+
   const ownedPropertyBorders: CSSProperties = {
     bottom: 0,
     left: 0,
@@ -43,16 +64,21 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
     right: 0,
     top: 0,
   };
-
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (
     <div
       onClick={() => {
-        if (props.square.type === SquareType.property) {
-          setSquareModalType(SquareModalType.propertyDetails);
+        if (props.game.phase === GamePhase.trade) {
+          if (isTradeable && props.square.type === SquareType.property) {
+            props.updateGame(triggerTradeSelectionToggle(props.game, props.square));
+          }
         } else {
-          setSquareModalType(SquareModalType.otherDetails);
+          if (props.square.type === SquareType.property) {
+            setSquareModalType(SquareModalType.propertyDetails);
+          } else {
+            setSquareModalType(SquareModalType.otherDetails);
+          }
         }
       }}
       style={{
@@ -61,14 +87,15 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         flexGrow: 1,
         /* Styling */
         alignItems: 'center',
-        backgroundColor,
+        backgroundColor: owner && isSelected ? owner.color : backgroundColor,
         borderBottom: '1px solid #aaa',
         borderRight: '1px solid #aaa',
         boxSizing: 'border-box',
-        cursor: 'pointer',
+        cursor: props.game.phase !== GamePhase.trade || isTradeable ? 'pointer' : undefined,
         display: 'flex',
         fontSize: props.isLandscape ? `${props.zoom * 4}dvh` : `${props.zoom * 4}dvw`,
         justifyContent: 'center',
+        opacity: props.game.phase !== GamePhase.trade || isTradeable ? undefined : 0.5,
         position: 'relative',
         ...props.style,
       }}
@@ -95,10 +122,10 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
             />
           )}
 
-          {props.square.ownerId !== undefined && (
+          {props.square.ownerId !== undefined && owner && (
             <div
               style={{
-                border: `3px solid ${owner!.color}`,
+                border: `3px solid ${owner.color}`,
                 ...ownedPropertyBorders,
               }}
             >

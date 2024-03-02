@@ -79,7 +79,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
         <Button
           disabled={offer <= 0 || (isSellOffer && !targetPlayerId)}
           onClick={() => {
-            if (props.game.phase !== GamePhase.prompt) {
+            if (props.game.phase !== GamePhase.prompt && props.game.phase !== GamePhase.trade) {
               props.setSquareModalType(undefined);
               props.updateGame(
                 isSellOffer

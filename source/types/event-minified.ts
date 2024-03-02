@@ -22,6 +22,19 @@ export type AnswerOfferEventMinified = EventBaseMinified & {
   tp: Id;
 };
 
+export type AnswerTradeEventMinified = EventBaseMinified & {
+  /** answer */
+  an: AnswerType;
+  /*playerPropertiesId **/
+  ppi: Id[];
+  /** targetPlayerId */
+  tpl: Id;
+  /** targetPropertiesId */
+  tpp: Id[];
+  /** type */
+  t: EventType.answerTrade;
+};
+
 export type BankruptcyEventMinified = EventBaseMinified & {
   /** creditor */
   ci: Id | undefined;
@@ -89,6 +102,7 @@ export type TurnInJailEventMinified = EventBaseMinified & {
 
 export type EventMinified =
   | AnswerOfferEventMinified
+  | AnswerTradeEventMinified
   | BankruptcyEventMinified
   | CardEventMinified
   | FreeParkingEventMinified

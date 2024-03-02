@@ -80,6 +80,13 @@ export const serializeGame = (game: Game): string => {
         : { ph: game.phase, t: game.reason, pe: game.pendingEvent }
       : game.phase === GamePhase.prompt
       ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.trade
+      ? {
+          ph: game.phase,
+          pp: game.previousPhase,
+          ot: game.other,
+          ows: game.ownSquaresId,
+        }
       : game.phase === GamePhase.uiTransition
       ? game.transitionType === TransitionType.player
         ? {

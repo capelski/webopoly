@@ -7,6 +7,7 @@ import {
   PlayPhasePayload,
   PromptPhasePayload,
   RollDicePhasePayload,
+  TradePhasePayload,
   UiTransitionPhasePayload,
 } from './game-phase-payload';
 import { Id } from './id';
@@ -34,6 +35,8 @@ export type GamePromptPhase<TPrompt extends PromptType> = GameBase<PromptPhasePa
 
 export type GameRollDicePhase = GameBase<RollDicePhasePayload>;
 
+export type GameTradePhase = GameBase<TradePhasePayload>;
+
 export type GameUiTransitionPhase<TTransition extends TransitionType> = GameBase<
   UiTransitionPhasePayload<TTransition>
 >;
@@ -44,4 +47,4 @@ export type GameNonPromptPhase =
   | GameRollDicePhase
   | GameUiTransitionPhase<TransitionType>;
 
-export type Game = GameNonPromptPhase | GamePromptPhase<PromptType>;
+export type Game = GameNonPromptPhase | GamePromptPhase<PromptType> | GameTradePhase;

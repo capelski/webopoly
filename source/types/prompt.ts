@@ -1,6 +1,6 @@
 import { OfferType, PromptType } from '../enums';
 import { PendingEvent } from './event';
-import { NonPromptPhasePayload } from './game-phase-payload';
+import { NonPromptPhasePayload, TradePhasePayload } from './game-phase-payload';
 import { Id } from './id';
 
 export type AnswerOfferPrompt = {
@@ -11,6 +11,15 @@ export type AnswerOfferPrompt = {
   propertyId: Id;
   targetPlayerId: Id;
   type: PromptType.answerOffer;
+};
+
+export type AnswerTradePrompt = {
+  playerId: Id;
+  playerPropertiesId: Id[];
+  previous: TradePhasePayload['previousPhase'];
+  targetPlayerId: Id;
+  targetPropertiesId: Id[];
+  type: PromptType.answerTrade;
 };
 
 export type BuyPropertyPrompt = {
@@ -40,6 +49,7 @@ export type PlayerWinPrompt = {
 
 export type Prompt<T extends PromptType> = (
   | AnswerOfferPrompt
+  | AnswerTradePrompt
   | BuyPropertyPrompt
   | CannotPayPrompt
   | CardPrompt

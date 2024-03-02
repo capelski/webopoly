@@ -45,6 +45,21 @@ const renderersMap: {
       icon: event.answer === AnswerType.accept ? '👍' : '👎',
     };
   },
+  [EventType.answerTrade]: (player, event, game) => {
+    const initiatorProperties = event.playerPropertiesId.map(
+      (pId) => getSquareById(game, pId).name,
+    );
+    const targetPlayer = getPlayerById(game, event.targetPlayerId);
+    const targetProperties = event.targetPropertiesId.map((pId) => getSquareById(game, pId).name);
+    const acceptsOffer = event.answer === AnswerType.accept;
+
+    return {
+      description: `${targetPlayer.name} ${
+        acceptsOffer ? 'trades' : 'declines trading'
+      } ${initiatorProperties.join('-')} for ${targetProperties.join('-')} with ${player.name}`,
+      icon: event.answer === AnswerType.accept ? '👍' : '👎',
+    };
+  },
   [EventType.bankruptcy]: (player, event, game) => ({
     description: `${player.name} goes bankrupt and turns over its money and properties to ${
       event.creditorId ? getPlayerById(game, event.creditorId).name : 'the bank'

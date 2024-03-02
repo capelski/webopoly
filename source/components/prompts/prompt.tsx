@@ -3,6 +3,7 @@ import { PromptType } from '../../enums';
 import { Game, GamePromptPhase } from '../../types';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
+import { AnswerTradePrompt } from './answer-trade-prompt';
 import { BuyPropertyPrompt } from './buy-property-prompt';
 import { CannotPayPrompt } from './cannot-pay-prompt';
 import { CardPrompt } from './card-prompt';
@@ -15,6 +16,7 @@ const promptsMap: {
   [TKey in PromptType]: { inset?: string; renderer: PromptInterface<TKey> };
 } = {
   [PromptType.answerOffer]: { renderer: AnswerOfferPrompt },
+  [PromptType.answerTrade]: { inset: '15% 20px', renderer: AnswerTradePrompt },
   [PromptType.buyProperty]: { inset: '5% 20px', renderer: BuyPropertyPrompt },
   [PromptType.cannotPay]: { renderer: CannotPayPrompt },
   [PromptType.card]: { renderer: CardPrompt },

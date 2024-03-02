@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyStatus, PropertyType, SquareType } from '../../enums';
+import { PropertyStatus, PropertyType } from '../../enums';
 import {
   getBuildHouseAmount,
   getClearMortgageAmount,
@@ -24,11 +24,9 @@ import {
   stationSymbol,
 } from '../../parameters';
 import { Game, PropertySquare } from '../../types';
-import { SquareIcon } from '../board/outer-rows/square-icon';
-import { streetsColorMap } from '../board/outer-rows/street-colors-map';
 import { Paragraph } from './paragraph';
 import { PlayerAvatar } from './player-avatar';
-import { Title } from './title';
+import { SquareTitle } from './square-title';
 
 interface SquareDetailsProps {
   game: Game;
@@ -36,15 +34,6 @@ interface SquareDetailsProps {
 }
 
 export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
-  const { backgroundColor, color } =
-    props.square.type === SquareType.property
-      ? props.square.status === PropertyStatus.mortgaged
-        ? { backgroundColor: 'lightgrey', color: 'white' }
-        : props.square.propertyType === PropertyType.street
-        ? streetsColorMap[props.square.neighborhood]
-        : { backgroundColor: undefined, color: undefined }
-      : { backgroundColor: undefined, color: undefined };
-
   const owner = props.square.ownerId && getPlayerById(props.game, props.square.ownerId);
   const ownerStations = owner && getPlayerActiveStations(props.game, owner.id).length;
   const ownerUtilities = owner && getPlayerActiveUtilities(props.game, owner.id).length;
@@ -63,25 +52,7 @@ export const SquareDetails: React.FC<SquareDetailsProps> = (props) => {
         width: 250,
       }}
     >
-      <div
-        style={{
-          alignItems: 'center',
-          backgroundColor,
-          borderBottom: `2px solid #aaa`,
-          color,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: 8,
-        }}
-      >
-        {props.square.propertyType !== PropertyType.street && (
-          <div style={{ fontSize: 40 }}>
-            <SquareIcon square={props.square} />
-          </div>
-        )}
-        <Title type="small">{props.square.name}</Title>
-      </div>
+      <SquareTitle game={props.game} square={props.square} />
 
       <div
         style={{

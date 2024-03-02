@@ -1,3 +1,4 @@
+- Minified classes to refer the corresponding non-minified property
 - Events are not useful
 - Players to pick their own emoji
 - Remove the MovePlayerInput/Output Phases...
@@ -5,7 +6,8 @@
     E.g. function to determine whether diceRoll can be triggered. Use it both in
     the component to disable the button, in the logic function to return the same game
 
-- Trading properties with other players
+- Option to disable player move animations
+- Option to disable dice roll animations
 - Roll doubles => Extra turn
 - Suggest sales/mortgages when player cannot pay
 - Make parameters.ts modifiable on createGame

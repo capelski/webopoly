@@ -14,6 +14,14 @@ export type AnswerOfferEvent = EventBase & {
   type: EventType.answerOffer;
 };
 
+export type AnswerTradeEvent = EventBase & {
+  answer: AnswerType;
+  playerPropertiesId: Id[];
+  targetPlayerId: Id;
+  targetPropertiesId: Id[];
+  type: EventType.answerTrade;
+};
+
 export type BankruptcyEvent = EventBase & {
   creditorId: Id | undefined;
   type: EventType.bankruptcy;
@@ -72,6 +80,7 @@ export type PendingEvent = CardEvent | PayRentEvent | PayTaxEvent | TurnInJailEv
 /** The Event type already exists in Typescript. Using GEvent instead (i.e. GameEvent) */
 export type GEvent =
   | AnswerOfferEvent
+  | AnswerTradeEvent
   | BankruptcyEvent
   | FreeParkingEvent
   | GenericEvent<EventType.goToJail>

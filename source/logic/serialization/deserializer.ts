@@ -63,6 +63,8 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
           : { phase: g.ph, reason: g.t, pendingEvent: g.pe }
         : g.ph === GamePhase.prompt
         ? { phase: g.ph, prompt: g.pr }
+        : g.ph === GamePhase.trade
+        ? { phase: g.ph, previousPhase: g.pp, other: g.ot, ownSquaresId: g.ows }
         : g.ph === GamePhase.uiTransition
         ? g.tt === TransitionType.player
           ? {

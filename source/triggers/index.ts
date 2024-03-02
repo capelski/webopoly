@@ -10,4 +10,5 @@ export * from './mortgage';
 export * from './move-player';
 export * from './offers';
 export * from './payments';
+export * from './trade';
 export * from './transitions';

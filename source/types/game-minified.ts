@@ -3,6 +3,7 @@ import { Dice } from './dice';
 import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
 import { GameUiTransitionPhase } from './game';
+import { TradePhasePayload } from './game-phase-payload';
 import { Id } from './id';
 import { PlayerMinified } from './player-minified';
 import { BuyPropertyPrompt, Prompt } from './prompt';
@@ -62,6 +63,17 @@ export type GameRollDicePhaseMinified = GameBaseMinified & {
   ph: GamePhase.rollDice;
 };
 
+export type GameTradePhaseMinified = GameBaseMinified & {
+  /** other */
+  ot: TradePhasePayload['other'];
+  /** ownSquaresId */
+  ows: Id[];
+  /** phase */
+  ph: GamePhase.trade;
+  /** previousPhase */
+  pp: TradePhasePayload['previousPhase'];
+};
+
 export type GameUiTransitionPhaseMinified = GameBaseMinified & {
   /** phase */
   ph: GamePhase.uiTransition;
@@ -91,4 +103,5 @@ export type GameMinified =
   | GamePlayPhaseMinified
   | GamePromptPhaseMinified
   | GameRollDicePhaseMinified
+  | GameTradePhaseMinified
   | GameUiTransitionPhaseMinified;
