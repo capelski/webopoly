@@ -7,7 +7,7 @@
   "name": "@webopoly/core",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "source/index.ts",
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.json",
     "clean": "rm -rf dist",
