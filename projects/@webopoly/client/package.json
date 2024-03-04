@@ -25,8 +25,8 @@
   "license": "ISC",
   "name": "@webopoly/client",
   "scripts": {
-    "build": "npm run clean && webpack --config webpack/production.config.js && cp -r dist ../../../docs",
-    "clean": "rm -rf dist && rm -rf ../../../docs",
+    "build": "npm run clean && webpack --config webpack/production.config.js",
+    "clean": "rm -rf dist",
     "dev": "webpack serve --config webpack/development.config.js"
   },
   "version": "1.0.0"

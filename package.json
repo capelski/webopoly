@@ -32,6 +32,9 @@
     "url": "git+https://github.com/capelski/webopoly.git"
   },
   "scripts": {
+    "build": "npm run clean && npm run build:all && cp -r projects/@webopoly/client/dist docs",
+    "build:all": "npm run build -w @webopoly/core && npm run build -w @webopoly/client",
+    "clean": "rm -rf docs",
     "clean-modules": "rm -rf node_modules",
     "dev": "concurrently 'npm run watch -w @webopoly/core' 'npm run dev -w @webopoly/client'"
   },
