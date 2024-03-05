@@ -1,27 +1,28 @@
-import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
-import { Card } from './card';
-import { Dice } from './dice';
-import { PendingEvent } from './event';
+import { LiquidationReason, TransitionType } from '../enums';
 import { EventMinified } from './event-minified';
-import { GameUiTransitionPhase } from './game';
-import { TradePhasePayload } from './game-phase-payload';
-import { Player } from './player';
+import { Game } from './game';
+import {
+  LiquidationPhasePayload,
+  PlayPhasePayload,
+  PromptPhasePayload,
+  RollDicePhasePayload,
+  TradePhasePayload,
+  UiTransitionPhasePayload,
+} from './game-phase-payload';
 import { PlayerMinified } from './player-minified';
-import { BuyPropertyPrompt, Prompt } from './prompt';
-import { Square } from './square';
 import { SquareMinified } from './square-minified';
 
 type GameBaseMinified = {
   /** centerPot */
-  cp: number;
+  cp: Game['centerPot'];
   /** currentPlayerId */
-  ci: Player['id'];
+  ci: Game['currentPlayerId'];
   /** dice */
-  d: Dice;
+  d: Game['dice'];
   /** eventHistory */
   eh: EventMinified[];
   /** nextCardIds */
-  nci: Card['id'][];
+  nci: Game['nextCardIds'];
   /** notifications */
   n: EventMinified[];
   /** players */
@@ -32,71 +33,71 @@ type GameBaseMinified = {
 
 export type GameLiquidationPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: GamePhase.liquidation;
+  ph: LiquidationPhasePayload['phase'];
 } & (
     | {
         /** pendingPrompt */
-        pp: BuyPropertyPrompt;
-        /** trigger */
-        t: LiquidationReason.buyProperty;
+        pp: LiquidationPhasePayload<LiquidationReason.buyProperty>['pendingPrompt'];
+        /** reason */
+        r: LiquidationPhasePayload<LiquidationReason.buyProperty>['reason'];
       }
     | {
         /** pendingEvent */
-        pe: PendingEvent;
-        /** trigger */
-        t: LiquidationReason.pendingPayment;
+        pe: LiquidationPhasePayload<LiquidationReason.pendingPayment>['pendingEvent'];
+        /** reason */
+        r: LiquidationPhasePayload<LiquidationReason.pendingPayment>['reason'];
       }
   );
 
 export type GamePlayPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: GamePhase.play;
+  ph: PlayPhasePayload['phase'];
 };
 
 export type GamePromptPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: GamePhase.prompt;
+  ph: PromptPhasePayload['phase'];
   /** prompt */
-  pr: Prompt<PromptType>;
+  pr: PromptPhasePayload['prompt'];
 };
 
 export type GameRollDicePhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: GamePhase.rollDice;
+  ph: RollDicePhasePayload['phase'];
 };
 
 export type GameTradePhaseMinified = GameBaseMinified & {
   /** other */
   ot: TradePhasePayload['other'];
   /** ownSquaresId */
-  ows: Square['id'][];
+  ows: TradePhasePayload['ownSquaresId'];
   /** phase */
-  ph: GamePhase.trade;
+  ph: TradePhasePayload['phase'];
   /** previousPhase */
   pp: TradePhasePayload['previousPhase'];
 };
 
 export type GameUiTransitionPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: GamePhase.uiTransition;
+  ph: UiTransitionPhasePayload['phase'];
 } & (
     | {
         /** transitionType */
-        tt: TransitionType.dice;
+        tt: UiTransitionPhasePayload<TransitionType.dice>['transitionType'];
       }
     | {
         /** transitionType */
-        tt: TransitionType.getOutOfJail;
+        tt: UiTransitionPhasePayload<TransitionType.getOutOfJail>['transitionType'];
       }
     | {
         /** transitionType */
-        tt: TransitionType.jailDiceRoll;
+        tt: UiTransitionPhasePayload<TransitionType.jailDiceRoll>['transitionType'];
       }
     | {
         /** Not minifying, as it will not be persisted in the event history */
-        td: GameUiTransitionPhase<TransitionType.player>['transitionData'];
+        td: UiTransitionPhasePayload<TransitionType.player>['transitionData'];
         /** transitionType */
-        tt: TransitionType.player;
+        tt: UiTransitionPhasePayload<TransitionType.player>['transitionType'];
       }
   );
 

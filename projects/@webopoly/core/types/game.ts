@@ -14,7 +14,7 @@ import {
 import { Player } from './player';
 import { Square } from './square';
 
-type GameBase<T extends PhasePayloadBase<any>> = {
+export type GameBase<T extends PhasePayloadBase<any>> = {
   centerPot: number;
   currentPlayerId: Player['id'];
   dice: Dice;

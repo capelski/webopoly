@@ -58,9 +58,9 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
         return square;
       }),
       ...(g.ph === GamePhase.liquidation
-        ? g.t === LiquidationReason.buyProperty
-          ? { phase: g.ph, reason: g.t, pendingPrompt: g.pp }
-          : { phase: g.ph, reason: g.t, pendingEvent: g.pe }
+        ? g.r === LiquidationReason.buyProperty
+          ? { phase: g.ph, reason: g.r, pendingPrompt: g.pp }
+          : { phase: g.ph, reason: g.r, pendingEvent: g.pe }
         : g.ph === GamePhase.prompt
         ? { phase: g.ph, prompt: g.pr }
         : g.ph === GamePhase.trade

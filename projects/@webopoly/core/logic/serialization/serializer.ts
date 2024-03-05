@@ -76,8 +76,8 @@ export const serializeGame = (game: Game): string => {
     }),
     ...(game.phase === GamePhase.liquidation
       ? game.reason === LiquidationReason.buyProperty
-        ? { ph: game.phase, t: game.reason, pp: game.pendingPrompt }
-        : { ph: game.phase, t: game.reason, pe: game.pendingEvent }
+        ? { ph: game.phase, r: game.reason, pp: game.pendingPrompt }
+        : { ph: game.phase, r: game.reason, pe: game.pendingEvent }
       : game.phase === GamePhase.prompt
       ? { ph: game.phase, pr: game.prompt }
       : game.phase === GamePhase.trade

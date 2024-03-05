@@ -3,7 +3,7 @@ import { Card } from './card';
 import { Player } from './player';
 import { Square } from './square';
 
-type EventBase = {
+export type EventBase = {
   playerId: Player['id'];
 };
 

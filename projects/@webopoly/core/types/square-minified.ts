@@ -1,51 +1,52 @@
-import { PropertyStatus, PropertyType, SquareType } from '../enums';
-import { Player } from './player';
-import { Square } from './square';
+import {
+  GenericSquare,
+  PropertySquareBase,
+  SquareBase,
+  StationSquare,
+  StreetSquare,
+  TaxSquare,
+  UtilitySquare,
+} from './square';
 
 type SquareBaseMinified = {
   /** id */
-  i: Square['id'];
+  i: SquareBase['id'];
 };
 
 export type GenericSquareMinified = SquareBaseMinified & {
   /** type */
-  t:
-    | SquareType.go
-    | SquareType.goToJail
-    | SquareType.jail
-    | SquareType.parking
-    | SquareType.surprise;
+  t: GenericSquare['type'];
 };
 
 export type TaxSquareMinified = SquareBaseMinified & {
   /** type */
-  t: SquareType.tax;
+  t: TaxSquare['type'];
 };
 
 type PropertySquareBaseMinified = SquareBaseMinified & {
   /** ownerId */
-  o: Player['id'] | undefined;
+  o: PropertySquareBase['ownerId'];
   /** status */
-  s: PropertyStatus | undefined;
+  s: PropertySquareBase['status'];
   /** type */
-  t: SquareType.property;
+  t: PropertySquareBase['type'];
 };
 
 export type StationSquareMinified = PropertySquareBaseMinified & {
   /** propertyType */
-  pt: PropertyType.station;
+  pt: StationSquare['propertyType'];
 };
 
 export type StreetSquareMinified = PropertySquareBaseMinified & {
   /** houses */
-  h: number;
+  h: StreetSquare['houses'];
   /** propertyType */
-  pt: PropertyType.street;
+  pt: StreetSquare['propertyType'];
 };
 
 export type UtilitySquareMinified = PropertySquareBaseMinified & {
   /** propertyType */
-  pt: PropertyType.utility;
+  pt: UtilitySquare['propertyType'];
 };
 
 export type PropertySquareMinified =

@@ -2,7 +2,7 @@ import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from 
 import { NumberId } from './id';
 import { Player } from './player';
 
-type SquareBase = {
+export type SquareBase = {
   id: NumberId;
   name: string;
 };
@@ -21,7 +21,7 @@ export type TaxSquare = SquareBase & {
   type: SquareType.tax;
 };
 
-type PropertySquareBase = SquareBase & {
+export type PropertySquareBase = SquareBase & {
   ownerId: Player['id'] | undefined;
   price: number;
   status: PropertyStatus | undefined;
