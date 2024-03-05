@@ -2,6 +2,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { resolve } = require('path');
 
+const { path, publicPath } = process.env.BUILD_GITHUB_PAGES
+  ? { path: resolve(__dirname, '..', '..', '..', '..', 'docs'), publicPath: '/webopoly/' }
+  : { path: resolve(__dirname, '..', 'dist'), publicPath: '/' };
+
 module.exports = {
   entry: './source/index.tsx',
   module: {
@@ -32,8 +36,8 @@ module.exports = {
     ],
   },
   output: {
-    path: resolve(__dirname, '..', 'dist'),
-    publicPath: '/webopoly/',
+    path,
+    publicPath,
   },
   plugins: [
     new MiniCssExtractPlugin(),
