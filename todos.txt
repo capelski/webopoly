@@ -1,4 +1,3 @@
-- Minified classes to refer the corresponding non-minified property
 - Events are not useful
 - Players to pick their own emoji
 - Remove the MovePlayerInput/Output Phases...
