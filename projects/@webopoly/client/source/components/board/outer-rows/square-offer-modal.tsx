@@ -6,7 +6,7 @@ import {
   getCurrentPlayer,
   getOtherPlayers,
   getPlayerById,
-  Id,
+  Player,
   PropertySquare,
   SquareModalType,
   triggerBuyingOffer,
@@ -31,7 +31,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
   const otherPlayers = getOtherPlayers(props.game, currentPlayer.id);
 
   const [offer, setOffer] = useState(0);
-  const [targetPlayerId, setTargetPlayerId] = useState<Id | undefined>(
+  const [targetPlayerId, setTargetPlayerId] = useState<Player['id'] | undefined>(
     otherPlayers.length === 1 ? otherPlayers[0].id : undefined,
   );
 
@@ -56,7 +56,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
               <Input
                 checked={targetPlayerId === p.id}
                 onChange={(event) => {
-                  setTargetPlayerId(parseInt(event.target.value));
+                  setTargetPlayerId(event.target.value);
                 }}
                 name="targetPlayerId"
                 type="radio"

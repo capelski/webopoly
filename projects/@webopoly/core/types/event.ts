@@ -1,35 +1,37 @@
 import { AnswerType, CardType, EventType, JailMedium, OfferType } from '../enums';
-import { Id } from './id';
+import { Card } from './card';
+import { Player } from './player';
+import { Square } from './square';
 
 type EventBase = {
-  playerId: Id;
+  playerId: Player['id'];
 };
 
 export type AnswerOfferEvent = EventBase & {
   amount: number;
   answer: AnswerType;
   offerType: OfferType;
-  propertyId: Id;
-  targetPlayerId: Id;
+  propertyId: Square['id'];
+  targetPlayerId: Player['id'];
   type: EventType.answerOffer;
 };
 
 export type AnswerTradeEvent = EventBase & {
   answer: AnswerType;
-  playerPropertiesId: Id[];
-  targetPlayerId: Id;
-  targetPropertiesId: Id[];
+  playerPropertiesId: Square['id'][];
+  targetPlayerId: Player['id'];
+  targetPropertiesId: Square['id'][];
   type: EventType.answerTrade;
 };
 
 export type BankruptcyEvent = EventBase & {
-  creditorId: Id | undefined;
+  creditorId: Player['id'] | undefined;
   type: EventType.bankruptcy;
 };
 
 export type CardEvent<TCard extends CardType = CardType> = EventBase & {
   amount: TCard extends CardType.streetRepairs ? number : undefined;
-  cardId: Id;
+  cardId: Card['id'];
   type: EventType.card;
 };
 
@@ -49,7 +51,7 @@ export type GetOutOfJailEvent = EventBase & {
 
 export type PayRentEvent = EventBase & {
   amount: number;
-  landlordId: Id;
+  landlordId: Player['id'];
   type: EventType.payRent;
 };
 
@@ -66,7 +68,7 @@ export type PropertyEventType =
   | EventType.sellHouse;
 
 export type PropertyEvent = EventBase & {
-  propertyId: Id;
+  propertyId: Square['id'];
   type: PropertyEventType;
 };
 

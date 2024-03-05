@@ -1,5 +1,5 @@
 import { Neighborhood, PropertyType, SquareType, TaxType } from '../enums';
-import { Id, Square } from '../types';
+import { Square } from '../types';
 
 export const squares: Square[] = [
   { id: 1, name: 'Go', type: SquareType.go },
@@ -324,6 +324,6 @@ export const squares: Square[] = [
   },
 ];
 
-export const squaresMap = squares.reduce<{ [key: Id]: Square }>((reduced, square) => {
+export const squaresMap = squares.reduce<{ [id: Square['id']]: Square }>((reduced, square) => {
   return { ...reduced, [square.id]: square };
 }, {});

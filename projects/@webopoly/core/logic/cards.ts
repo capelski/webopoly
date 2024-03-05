@@ -1,6 +1,6 @@
 import { currencySymbol } from '../constants';
 import { CardType, LiquidationReason, PromptType, PropertyType, SquareType } from '../enums';
-import { Card, GameLiquidationPhase, GamePromptPhase, Id, StreetSquare } from '../types';
+import { Card, GameLiquidationPhase, GamePromptPhase, StreetSquare } from '../types';
 import { getCurrentPlayer } from './game';
 import { squaresMap } from './squares';
 
@@ -170,7 +170,7 @@ export const cards: Card[] = [
   },
 ];
 
-export const cardsMap = cards.reduce<{ [key: Id]: Card }>((reduced, card) => {
+export const cardsMap = cards.reduce<{ [id: Card['id']]: Card }>((reduced, card) => {
   return { ...reduced, [card.id]: card };
 }, {});
 
@@ -196,7 +196,7 @@ export const getCardAmount = (
     | GamePromptPhase<PromptType.card>
     | GameLiquidationPhase<LiquidationReason.pendingPayment>
     | GamePromptPhase<PromptType.cannotPay>,
-  cardId: Id,
+  cardId: Card['id'],
 ): number => {
   const card = cardsMap[cardId];
 
@@ -220,7 +220,7 @@ export const getCardAmount = (
   return 0;
 };
 
-export const getCardText = (id: Id, amount: number | undefined): string => {
+export const getCardText = (id: Card['id'], amount: number | undefined): string => {
   const card = cardsMap[id];
   const getter: CardTextGetter = cardTextMap[card.type];
   return getter(card, amount);

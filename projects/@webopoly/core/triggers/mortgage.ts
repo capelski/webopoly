@@ -7,9 +7,9 @@ import {
   getPlayerById,
   getSquareById,
 } from '../logic';
-import { Game, Id } from '../types';
+import { Game, Square } from '../types';
 
-export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
+export const triggerClearMortgage = (game: Game, squareId: Square['id']): Game => {
   const square = getSquareById(game, squareId);
   if (square.type !== SquareType.property || !square.ownerId) {
     return game;
@@ -49,7 +49,7 @@ export const triggerClearMortgage = (game: Game, squareId: Id): Game => {
   };
 };
 
-export const triggerMortgage = (game: Game, squareId: Id): Game => {
+export const triggerMortgage = (game: Game, squareId: Square['id']): Game => {
   const square = getSquareById(game, squareId);
 
   if (

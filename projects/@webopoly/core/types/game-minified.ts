@@ -1,25 +1,27 @@
 import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
+import { Card } from './card';
 import { Dice } from './dice';
 import { PendingEvent } from './event';
 import { EventMinified } from './event-minified';
 import { GameUiTransitionPhase } from './game';
 import { TradePhasePayload } from './game-phase-payload';
-import { Id } from './id';
+import { Player } from './player';
 import { PlayerMinified } from './player-minified';
 import { BuyPropertyPrompt, Prompt } from './prompt';
+import { Square } from './square';
 import { SquareMinified } from './square-minified';
 
 type GameBaseMinified = {
   /** centerPot */
   cp: number;
   /** currentPlayerId */
-  ci: Id;
+  ci: Player['id'];
   /** dice */
   d: Dice;
   /** eventHistory */
   eh: EventMinified[];
   /** nextCardIds */
-  nci: Id[];
+  nci: Card['id'][];
   /** notifications */
   n: EventMinified[];
   /** players */
@@ -67,7 +69,7 @@ export type GameTradePhaseMinified = GameBaseMinified & {
   /** other */
   ot: TradePhasePayload['other'];
   /** ownSquaresId */
-  ows: Id[];
+  ows: Square['id'][];
   /** phase */
   ph: GamePhase.trade;
   /** previousPhase */

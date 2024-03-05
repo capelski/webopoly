@@ -1,8 +1,9 @@
 import { Neighborhood, PropertyStatus, PropertyType, SquareType, TaxType } from '../enums';
-import { Id } from './id';
+import { NumberId } from './id';
+import { Player } from './player';
 
 type SquareBase = {
-  id: Id;
+  id: NumberId;
   name: string;
 };
 
@@ -21,7 +22,7 @@ export type TaxSquare = SquareBase & {
 };
 
 type PropertySquareBase = SquareBase & {
-  ownerId: Id | undefined;
+  ownerId: Player['id'] | undefined;
   price: number;
   status: PropertyStatus | undefined;
   type: SquareType.property;

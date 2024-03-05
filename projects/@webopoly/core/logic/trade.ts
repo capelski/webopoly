@@ -1,9 +1,9 @@
 import { SquareType } from '../enums';
-import { Game, GameTradePhase, Id, PropertySquare } from '../types';
+import { Game, GameTradePhase, Player, PropertySquare } from '../types';
 import { getCurrentPlayer } from './game';
 
-export const getPropertyOwnersId = (game: Game): Id[] => {
-  return game.squares.reduce<Id[]>((reduced, square) => {
+export const getPropertyOwnersId = (game: Game): Player['id'][] => {
+  return game.squares.reduce<Player['id'][]>((reduced, square) => {
     return square.type === SquareType.property &&
       square.ownerId &&
       !reduced.includes(square.ownerId)
@@ -12,7 +12,7 @@ export const getPropertyOwnersId = (game: Game): Id[] => {
   }, []);
 };
 
-export const getTradingPlayersId = (game: GameTradePhase): Id[] => {
+export const getTradingPlayersId = (game: GameTradePhase): Player['id'][] => {
   const currentPlayer = getCurrentPlayer(game);
 
   const ownId = game.ownSquaresId.length > 0 ? [currentPlayer.id] : [];

@@ -1,6 +1,6 @@
-import { Id } from '../../../../core';
+import { Square } from '../../../../core';
 
-export const squaresRotation: { [outerSquareId: Id]: number } = {
+export const squaresRotation: { [outerSquareId: Square['id']]: number } = {
   1: 315,
   2: 0,
   3: 0,

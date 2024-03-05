@@ -15,7 +15,6 @@ import {
   GameLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
-  Id,
   Player,
 } from '../types';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
@@ -116,7 +115,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
 
 export const triggerCardAction = <TCard extends CardType = CardType>(
   game: GameInputType<TCard>,
-  cardId: Id,
+  cardId: Card['id'],
 ): GameOutputType<TCard> => {
   const card = cardsMap[cardId] as Card<TCard>;
   const cardTrigger: CardTrigger<TCard> = cardTriggersMap[card.type];

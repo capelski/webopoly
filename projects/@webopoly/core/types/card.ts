@@ -1,10 +1,11 @@
 import { CardType, PropertyType } from '../enums';
-import { Id } from './id';
+import { NumberId } from './id';
+import { Square } from './square';
 
-export type Card<TCard extends CardType = CardType> = { id: Id } & (
+export type Card<TCard extends CardType = CardType> = { id: NumberId } & (
   | {
       type: CardType.advance;
-      squareId: Id;
+      squareId: Square['id'];
     }
   | {
       type: CardType.advanceNext;

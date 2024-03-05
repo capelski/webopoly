@@ -1,5 +1,5 @@
 import { EventType } from '../../enums';
-import { EventMinified, GEvent, Id, PropertyEventType } from '../../types';
+import { EventMinified, GEvent, Player, PropertyEventType } from '../../types';
 
 export type Minifier<T extends EventType = EventType> = (
   event: GEvent & { type: T },
@@ -14,12 +14,17 @@ type Mapper<T extends EventType = EventType> = {
   restore: Restorer<T>;
 };
 
-const baseMinifier = <T extends EventType>(event: GEvent & { type: T }): { p: Id; t: T } => ({
+const baseMinifier = <T extends EventType>(
+  event: GEvent & { type: T },
+): { p: Player['id']; t: T } => ({
   p: event.playerId,
   t: event.type,
 });
 
-const baseRestorer = <T extends EventType>(e: { p: Id; t: T }): { playerId: Id; type: T } => ({
+const baseRestorer = <T extends EventType>(e: {
+  p: Player['id'];
+  t: T;
+}): { playerId: Player['id']; type: T } => ({
   playerId: e.p,
   type: e.t,
 });

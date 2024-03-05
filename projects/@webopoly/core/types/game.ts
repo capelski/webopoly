@@ -1,4 +1,5 @@
 import { LiquidationReason, PromptType, TransitionType } from '../enums';
+import { Card } from './card';
 import { Dice } from './dice';
 import { GEvent } from './event';
 import {
@@ -10,16 +11,15 @@ import {
   TradePhasePayload,
   UiTransitionPhasePayload,
 } from './game-phase-payload';
-import { Id } from './id';
 import { Player } from './player';
 import { Square } from './square';
 
 type GameBase<T extends PhasePayloadBase<any>> = {
   centerPot: number;
-  currentPlayerId: Id;
+  currentPlayerId: Player['id'];
   dice: Dice;
   eventHistory: GEvent[];
-  nextCardIds: Id[];
+  nextCardIds: Card['id'][];
   notifications: GEvent[];
   players: Player[];
   squares: Square[];

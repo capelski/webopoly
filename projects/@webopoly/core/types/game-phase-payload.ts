@@ -1,7 +1,8 @@
 import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { PendingEvent } from './event';
-import { Id } from './id';
+import { Player } from './player';
 import { BuyPropertyPrompt, Prompt } from './prompt';
+import { Square } from './square';
 
 export type PhasePayloadBase<T extends GamePhase> = {
   phase: T;
@@ -31,8 +32,8 @@ export type RollDicePhasePayload = PhasePayloadBase<GamePhase.rollDice>;
 
 export type TradePhasePayload = PhasePayloadBase<GamePhase.trade> & {
   previousPhase: GamePhase.play | GamePhase.rollDice;
-  other: { ownerId: Id | undefined; squaresId: Id[] };
-  ownSquaresId: Id[];
+  other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
+  ownSquaresId: Square['id'][];
 };
 
 export type UiTransitionPhasePayload<TTransition extends TransitionType = TransitionType> =
@@ -49,9 +50,9 @@ export type UiTransitionPhasePayload<TTransition extends TransitionType = Transi
         }
       | {
           transitionData: {
-            currentSquareId: Id;
+            currentSquareId: Square['id'];
             pendingMoves: number;
-            playerId: Id;
+            playerId: Player['id'];
           };
           transitionType: TransitionType.player;
         }

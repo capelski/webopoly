@@ -1,10 +1,10 @@
-import { Id } from '../../../../../core';
+import { Square } from '../../../../../core';
 
 export type OuterSquaresMap = {
-  bottom: Id[];
-  left: Id[];
-  right: Id[];
-  top: Id[];
+  bottom: Square['id'][];
+  left: Square['id'][];
+  right: Square['id'][];
+  top: Square['id'][];
 };
 
 export const outerSquaresMap: OuterSquaresMap = {

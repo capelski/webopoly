@@ -8,7 +8,7 @@ import {
   PropertyType,
   SquareType,
 } from '../enums';
-import { Game, GameLiquidationPhase, GamePromptPhase, Id, Player, Square } from '../types';
+import { Game, GameLiquidationPhase, GamePromptPhase, Player, Square } from '../types';
 
 import { getCardAmount } from './cards';
 import { squares } from './squares';
@@ -17,7 +17,7 @@ export const createGame = (playerNames: string[]): Game => {
   const players = playerNames.map<Player>((name, index) => ({
     color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
     getOutOfJail: 0,
-    id: index + 1,
+    id: String(index + 1),
     isInJail: false,
     money: playerInitialMoney,
     name,
@@ -70,11 +70,11 @@ export const getCurrentSquare = (game: Game): Square => {
   return game.squares.find((s) => s.id === currentPlayer.squareId)!;
 };
 
-export const getOtherPlayers = (game: Game, playerId: Id): Player[] => {
+export const getOtherPlayers = (game: Game, playerId: Player['id']): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing && p.id !== playerId);
 };
 
-export const getNextPlayerId = (game: Game): Id => {
+export const getNextPlayerId = (game: Game): Player['id'] => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);
   const nextPlayerIndex = (currentPlayerIndex + 1) % game.players.length;
   const playersPool = game.players
@@ -84,7 +84,11 @@ export const getNextPlayerId = (game: Game): Id => {
   return playersPool.find((p) => p.status === PlayerStatus.playing)!.id;
 };
 
-export const getNextSquareId = (game: Game, movement: number, startingSquareId?: Id): Id => {
+export const getNextSquareId = (
+  game: Game,
+  movement: number,
+  startingSquareId?: Square['id'],
+): Square['id'] => {
   const currentSquareId = startingSquareId || getCurrentSquare(game).id;
   const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquareId);
   const safeMovement = movement + game.squares.length; // Necessary to support negative movements
@@ -92,7 +96,7 @@ export const getNextSquareId = (game: Game, movement: number, startingSquareId?:
   return game.squares[nextSquareIndex].id;
 };
 
-export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType): Id => {
+export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType): Square['id'] => {
   const currentSquare = getCurrentSquare(game);
   const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquare.id);
   const nextSquareIndex = (currentSquareIndex + 1) % game.squares.length;
@@ -118,10 +122,10 @@ export const getPendingAmount = (
   return amount;
 };
 
-export const getPlayerById = (game: Game, playerId: Id): Player => {
+export const getPlayerById = (game: Game, playerId: Player['id']): Player => {
   return game.players.find((p) => p.id === playerId)!;
 };
 
-export const getSquareById = (game: Game, squareId: Id): Square => {
+export const getSquareById = (game: Game, squareId: Square['id']): Square => {
   return game.squares.find((s) => s.id === squareId)!;
 };

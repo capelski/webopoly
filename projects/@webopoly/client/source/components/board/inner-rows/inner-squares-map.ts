@@ -1,8 +1,8 @@
-import { Id } from '../../../../../core';
+import { Square } from '../../../../../core';
 
 export type InnerSquareData = {
-  innerSquareId: Id;
-  outerSquareIds: Id[];
+  innerSquareId: Square['id'];
+  outerSquareIds: Square['id'][];
 };
 
 export type InnerSquaresMap = {

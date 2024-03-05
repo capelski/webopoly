@@ -1,10 +1,10 @@
 import React, { CSSProperties } from 'react';
-import { Id } from '../../../../../core';
+import { Square } from '../../../../../core';
 import { RowComponentDefinitionProps } from '../row-component-definition';
 import { OuterSquare } from './outer-square';
 
 export type OuterRowProps = RowComponentDefinitionProps & {
-  outerSquareIds: Id[];
+  outerSquareIds: Square['id'][];
   style?: CSSProperties;
   zoom: number;
 };

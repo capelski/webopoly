@@ -11,8 +11,8 @@ import { getCurrentPlayer } from '../logic';
 import {
   GameNonPromptPhase,
   GamePromptPhase,
-  Id,
   NonPromptPhasePayload,
+  Player,
   PropertySquare,
 } from '../types';
 
@@ -126,7 +126,7 @@ export const triggerSellingOffer = (
   game: GameNonPromptPhase,
   property: PropertySquare,
   amount: number,
-  targetPlayerId: Id,
+  targetPlayerId: Player['id'],
 ): GamePromptPhase<PromptType.answerOffer> => {
   const currentPlayer = getCurrentPlayer(game);
 

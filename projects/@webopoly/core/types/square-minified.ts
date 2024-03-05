@@ -1,9 +1,10 @@
 import { PropertyStatus, PropertyType, SquareType } from '../enums';
-import { Id } from './id';
+import { Player } from './player';
+import { Square } from './square';
 
 type SquareBaseMinified = {
   /** id */
-  i: Id;
+  i: Square['id'];
 };
 
 export type GenericSquareMinified = SquareBaseMinified & {
@@ -23,7 +24,7 @@ export type TaxSquareMinified = SquareBaseMinified & {
 
 type PropertySquareBaseMinified = SquareBaseMinified & {
   /** ownerId */
-  o: Id | undefined;
+  o: Player['id'] | undefined;
   /** status */
   s: PropertyStatus | undefined;
   /** type */

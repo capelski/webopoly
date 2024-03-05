@@ -1,15 +1,16 @@
 import { PlayerStatus } from '../enums';
-import { Id } from './id';
+import { StringId } from './id';
+import { Square } from './square';
 
 export type Player = {
   color: string;
   getOutOfJail: number;
-  id: Id;
+  id: StringId;
   isInJail: boolean;
   money: number;
   name: string;
-  properties: Id[];
-  squareId: Id;
+  properties: Square['id'][];
+  squareId: Square['id'];
   status: PlayerStatus;
   turnsInJail: number;
 };

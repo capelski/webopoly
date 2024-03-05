@@ -14,7 +14,6 @@ import {
   GameLiquidationPhase,
   GamePlayPhase,
   GameRollDicePhase,
-  Id,
   Player,
   PropertySquare,
   StreetSquare,
@@ -59,7 +58,7 @@ export const canClearMortgage = (property: PropertySquare, player: Player): bool
   );
 };
 
-export const canMortgage = (property: PropertySquare, playerId: Id): boolean => {
+export const canMortgage = (property: PropertySquare, playerId: Player['id']): boolean => {
   return (
     property.ownerId === playerId &&
     property.status !== PropertyStatus.mortgaged &&

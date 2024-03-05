@@ -1,7 +1,6 @@
 import { PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   Game,
-  Id,
   Player,
   PropertySquare,
   Square,
@@ -11,7 +10,7 @@ import {
 } from '../types';
 import { getPlayerById } from './game';
 
-export const doesPayRent = (playerId: Id, square: Square): boolean => {
+export const doesPayRent = (playerId: Player['id'], square: Square): boolean => {
   return (
     square.type === SquareType.property &&
     square.ownerId !== undefined &&
@@ -33,7 +32,7 @@ export const getNeighborhoodStreets = (squares: Square[], street: StreetSquare):
   ) as StreetSquare[];
 };
 
-const getPlayerActiveProperties = (game: Game, playerId: Id) => {
+const getPlayerActiveProperties = (game: Game, playerId: Player['id']) => {
   const landlord = getPlayerById(game, playerId);
   const properties = (
     landlord.properties.map(
@@ -44,7 +43,7 @@ const getPlayerActiveProperties = (game: Game, playerId: Id) => {
   return properties;
 };
 
-export const getPlayerActiveStations = (game: Game, playerId: Id) => {
+export const getPlayerActiveStations = (game: Game, playerId: Player['id']) => {
   const properties = getPlayerActiveProperties(game, playerId);
   const stations = properties.filter(
     (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
@@ -53,7 +52,7 @@ export const getPlayerActiveStations = (game: Game, playerId: Id) => {
   return stations;
 };
 
-export const getPlayerActiveUtilities = (game: Game, playerId: Id) => {
+export const getPlayerActiveUtilities = (game: Game, playerId: Player['id']) => {
   const properties = getPlayerActiveProperties(game, playerId);
   const utilities = properties.filter(
     (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,

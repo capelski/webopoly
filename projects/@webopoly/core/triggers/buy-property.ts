@@ -1,10 +1,10 @@
 import { EventType, GamePhase, PromptType } from '../enums';
-import { GamePlayPhase, GamePromptPhase, Id, PropertySquare } from '../types';
+import { GamePlayPhase, GamePromptPhase, Player, PropertySquare } from '../types';
 
 export const triggerBuyProperty = (
   game: GamePromptPhase<PromptType.buyProperty>,
   propertySquare: PropertySquare,
-  buyerId: Id,
+  buyerId: Player['id'],
 ): GamePlayPhase => {
   return {
     ...game,

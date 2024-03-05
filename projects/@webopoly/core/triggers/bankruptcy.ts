@@ -1,11 +1,11 @@
 import { EventType, PlayerStatus, PromptType, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
-import { GamePromptPhase, GEvent, Id, Player, Square } from '../types';
+import { GamePromptPhase, GEvent, Player, Square } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 
 export const triggerBankruptcy = (
   game: GamePromptPhase<PromptType.cannotPay>,
-  playerId: Id,
+  playerId: Player['id'],
 ): EndTurnOutputPhases => {
   const { pendingEvent } = game.prompt;
   const bankruptcyEvent: GEvent = {

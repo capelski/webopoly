@@ -1,5 +1,6 @@
 import { PlayerStatus } from '../enums';
-import { Id } from './id';
+import { Player } from './player';
+import { Square } from './square';
 
 export type PlayerMinified = {
   /** color */
@@ -7,7 +8,7 @@ export type PlayerMinified = {
   /** getOutOfJail */
   g: number;
   /** id */
-  i: Id;
+  i: Player['id'];
   /** isInJail */
   ij: boolean;
   /** money */
@@ -15,9 +16,9 @@ export type PlayerMinified = {
   /** name */
   n: string;
   /** properties */
-  p: Id[];
+  p: Square['id'][];
   /** squareId */
-  si: Id;
+  si: Square['id'];
   /** status */
   s: PlayerStatus;
   /** turnsInJail */

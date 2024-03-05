@@ -1,7 +1,7 @@
 import { passGoMoney } from '../constants';
 import { EventType, GamePhase, PlayerStatus, PromptType, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
-import { GamePlayPhase, GamePromptPhase, Id } from '../types';
+import { GamePlayPhase, GamePromptPhase, Player, Square } from '../types';
 import { triggerCardPrompt } from './cards';
 import { triggerPayRent, triggerPayTax } from './payments';
 
@@ -14,7 +14,10 @@ export type MovePlayerOutputPhases =
   | GamePromptPhase<PromptType.goToJail>
   | GamePromptPhase<PromptType.cannotPay>;
 
-const applyFreeParking = (game: MovePlayerInputPhases, currentPlayerId: Id): GamePlayPhase => {
+const applyFreeParking = (
+  game: MovePlayerInputPhases,
+  currentPlayerId: Player['id'],
+): GamePlayPhase => {
   return {
     ...game,
     centerPot: 0,
@@ -33,7 +36,10 @@ const applyFreeParking = (game: MovePlayerInputPhases, currentPlayerId: Id): Gam
   };
 };
 
-const applyPassGo = (game: MovePlayerInputPhases, currentPlayerId: Id): MovePlayerInputPhases => {
+const applyPassGo = (
+  game: MovePlayerInputPhases,
+  currentPlayerId: Player['id'],
+): MovePlayerInputPhases => {
   return {
     ...game,
     notifications: [
@@ -55,7 +61,7 @@ export type MovePlayerOptions = {
 
 export const triggerMovePlayer = (
   game: MovePlayerInputPhases,
-  nextSquareId: Id,
+  nextSquareId: Square['id'],
   options: MovePlayerOptions = {},
 ): MovePlayerOutputPhases => {
   const { id: currentPlayerId, squareId: currentSquareId } = getCurrentPlayer(game);

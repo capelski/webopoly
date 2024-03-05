@@ -1,10 +1,12 @@
 import { AnswerType, CardType, EventType, JailMedium, OfferType } from '../enums';
+import { Card } from './card';
 import { PropertyEventType } from './event';
-import { Id } from './id';
+import { Player } from './player';
+import { Square } from './square';
 
 type EventBaseMinified = {
   /** playerId */
-  p: Id;
+  p: Player['id'];
 };
 
 export type AnswerOfferEventMinified = EventBaseMinified & {
@@ -15,29 +17,29 @@ export type AnswerOfferEventMinified = EventBaseMinified & {
   /** offerType */
   o: OfferType;
   /** propertyId */
-  pi: Id;
+  pi: Square['id'];
   /** type */
   t: EventType.answerOffer;
   /** targetPlayerId */
-  tp: Id;
+  tp: Player['id'];
 };
 
 export type AnswerTradeEventMinified = EventBaseMinified & {
   /** answer */
   an: AnswerType;
   /*playerPropertiesId **/
-  ppi: Id[];
+  ppi: Square['id'][];
   /** targetPlayerId */
-  tpl: Id;
+  tpl: Player['id'];
   /** targetPropertiesId */
-  tpp: Id[];
+  tpp: Square['id'][];
   /** type */
   t: EventType.answerTrade;
 };
 
 export type BankruptcyEventMinified = EventBaseMinified & {
   /** creditor */
-  ci: Id | undefined;
+  ci: Player['id'] | undefined;
   /** type */
   t: EventType.bankruptcy;
 };
@@ -46,7 +48,7 @@ export type CardEventMinified<TCard extends CardType = CardType> = EventBaseMini
   /** amount */
   a: TCard extends CardType.streetRepairs ? number : undefined;
   /** cardId */
-  ci: Id;
+  ci: Card['id'];
   /** type */
   t: EventType.card;
 };
@@ -74,7 +76,7 @@ export type PayRentEventMinified = EventBaseMinified & {
   /** amount */
   a: number;
   /** landlordId */
-  l: Id;
+  l: Player['id'];
   /** type */
   t: EventType.payRent;
 };
@@ -88,7 +90,7 @@ export type PayTaxEventMinified = EventBaseMinified & {
 
 export type PropertyEventMinified = EventBaseMinified & {
   /** propertyId */
-  pi: Id;
+  pi: Square['id'];
   /** type */
   t: PropertyEventType;
 };

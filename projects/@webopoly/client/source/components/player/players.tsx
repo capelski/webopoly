@@ -3,7 +3,7 @@ import { Player } from '../../../../core';
 import { PlayerComponent } from './player';
 
 interface PlayersProps {
-  currentPlayerId: number;
+  currentPlayerId: Player['id'];
   players: Player[];
 }
 

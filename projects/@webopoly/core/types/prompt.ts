@@ -1,30 +1,32 @@
 import { OfferType, PromptType } from '../enums';
+import { Card } from './card';
 import { PendingEvent } from './event';
 import { NonPromptPhasePayload, TradePhasePayload } from './game-phase-payload';
-import { Id } from './id';
+import { Player } from './player';
+import { Square } from './square';
 
 export type AnswerOfferPrompt = {
   amount: number;
   offerType: OfferType;
-  playerId: Id;
+  playerId: Player['id'];
   previous: NonPromptPhasePayload;
-  propertyId: Id;
-  targetPlayerId: Id;
+  propertyId: Square['id'];
+  targetPlayerId: Player['id'];
   type: PromptType.answerOffer;
 };
 
 export type AnswerTradePrompt = {
-  playerId: Id;
-  playerPropertiesId: Id[];
+  playerId: Player['id'];
+  playerPropertiesId: Square['id'][];
   previous: TradePhasePayload['previousPhase'];
-  targetPlayerId: Id;
-  targetPropertiesId: Id[];
+  targetPlayerId: Player['id'];
+  targetPropertiesId: Square['id'][];
   type: PromptType.answerTrade;
 };
 
 export type BuyPropertyPrompt = {
-  currentBuyerId: Id;
-  potentialBuyersId: Id[];
+  currentBuyerId: Player['id'];
+  potentialBuyersId: Player['id'][];
   type: PromptType.buyProperty;
 };
 
@@ -34,7 +36,7 @@ export type CannotPayPrompt = {
 };
 
 export type CardPrompt = {
-  cardId: Id;
+  cardId: Card['id'];
   type: PromptType.card;
 };
 
@@ -43,7 +45,7 @@ export type GenericPrompt = {
 };
 
 export type PlayerWinPrompt = {
-  playerId: Id;
+  playerId: Player['id'];
   type: PromptType.playerWins;
 };
 
