@@ -15,7 +15,7 @@ import {
 } from '../../../../../core';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
-import { OtherSquareDetailsModal } from './other-square-details-modal copy';
+import { OtherSquareDetailsModal } from './other-square-details-modal';
 import { PropertySquareDetailsModal } from './property-square-details-modal';
 import { SquareIcon } from './square-icon';
 import { SquareOfferModal } from './square-offer-modal';
