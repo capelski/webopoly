@@ -1,0 +1,10 @@
+{
+  "author": "Carles Capellas <capellas.carles@gmail.com>",
+  "license": "ISC",
+  "name": "@webopoly/core",
+  "peerDependencies": {
+    "nanoid": "^5.0.6"
+  },
+  "private": true,
+  "version": "1.0.0"
+}

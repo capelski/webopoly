@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import { jailFine, playerInitialMoney } from '../constants';
 import {
   EventType,
@@ -17,7 +18,7 @@ export const createGame = (playerNames: string[]): Game => {
   const players = playerNames.map<Player>((name, index) => ({
     color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
     getOutOfJail: 0,
-    id: String(index + 1),
+    id: nanoid(),
     isInJail: false,
     money: playerInitialMoney,
     name,
@@ -33,6 +34,7 @@ export const createGame = (playerNames: string[]): Game => {
     currentPlayerId,
     dice: [],
     eventHistory: [],
+    id: nanoid(),
     nextCardIds: [],
     notifications: [],
     phase: GamePhase.rollDice,
