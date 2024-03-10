@@ -62,7 +62,7 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
                 type="radio"
                 value={p.id}
               />
-              <label htmlFor="regular">{p.name}</label>
+              <label htmlFor="targetPlayerId">{p.name}</label>
             </Paragraph>
           ))}
         </div>

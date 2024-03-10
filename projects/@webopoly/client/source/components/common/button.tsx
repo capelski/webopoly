@@ -3,7 +3,7 @@ import React from 'react';
 interface ButtonProps {
   children?: React.ReactNode;
   disabled?: boolean;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onClick?: React.MouseEventHandler<HTMLElement>;
   style?: React.CSSProperties;
   type?: 'border' | 'delete' | 'primary' | 'secondary' | 'transparent';
 }
@@ -21,7 +21,7 @@ export const Button: React.FC<ButtonProps> = (props) => {
       : { backgroundColor: '#3498db', border: undefined, color: 'white' };
 
   return (
-    <div
+    <span
       onClick={props.disabled ? undefined : props.onClick}
       style={{
         backgroundColor,
@@ -41,6 +41,6 @@ export const Button: React.FC<ButtonProps> = (props) => {
       }}
     >
       {props.children}
-    </div>
+    </span>
   );
 };
