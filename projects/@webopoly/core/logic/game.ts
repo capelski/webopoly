@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid';
 import { jailFine, playerInitialMoney } from '../constants';
 import {
   EventType,
@@ -13,35 +12,6 @@ import { Game, GameLiquidationPhase, GamePromptPhase, Player, Square } from '../
 
 import { getCardAmount } from './cards';
 import { squares } from './squares';
-
-export const createGame = (playerNames: string[]): Game => {
-  const players = playerNames.map<Player>((name, index) => ({
-    color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
-    getOutOfJail: 0,
-    id: nanoid(),
-    isInJail: false,
-    money: playerInitialMoney,
-    name,
-    properties: [],
-    squareId: squares[0].id,
-    status: PlayerStatus.playing,
-    turnsInJail: 0,
-  }));
-  const currentPlayerId = players[0].id;
-
-  return {
-    centerPot: 0,
-    currentPlayerId,
-    dice: [],
-    eventHistory: [],
-    id: nanoid(),
-    nextCardIds: [],
-    notifications: [],
-    phase: GamePhase.rollDice,
-    players,
-    squares,
-  };
-};
 
 export const getActivePlayers = (game: Game): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing);
@@ -130,4 +100,32 @@ export const getPlayerById = (game: Game, playerId: Player['id']): Player => {
 
 export const getSquareById = (game: Game, squareId: Square['id']): Square => {
   return game.squares.find((s) => s.id === squareId)!;
+};
+
+export const startGame = (playerNames: string[]): Game => {
+  const players = playerNames.map<Player>((name, index) => ({
+    color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
+    getOutOfJail: 0,
+    id: `${index + 1}`,
+    isInJail: false,
+    money: playerInitialMoney,
+    name,
+    properties: [],
+    squareId: squares[0].id,
+    status: PlayerStatus.playing,
+    turnsInJail: 0,
+  }));
+  const currentPlayerId = players[0].id;
+
+  return {
+    centerPot: 0,
+    currentPlayerId,
+    dice: [],
+    eventHistory: [],
+    nextCardIds: [],
+    notifications: [],
+    phase: GamePhase.rollDice,
+    players,
+    squares,
+  };
 };

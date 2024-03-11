@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { GameController } from './game.controller';
+import { GamesController } from './games.controller';
+import { RoomsController } from './rooms.controller';
+import { SystemController } from './system.controller';
 
 /** Relative to the transpiled file (i.e. server/dist/server/source/app.module.js) */
 const assetsPath = join(__dirname, '..', '..', '..', 'public');
@@ -13,6 +15,6 @@ const assetsPath = join(__dirname, '..', '..', '..', 'public');
       rootPath: assetsPath,
     }),
   ],
-  controllers: [GameController],
+  controllers: [GamesController, RoomsController, SystemController],
 })
-export class GameModule {}
+export class MainModule {}

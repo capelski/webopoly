@@ -26,7 +26,6 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
         const restore: Restorer = eventsMap[e.t].restore;
         return restore(e);
       }),
-      id: g.i,
       nextCardIds: g.nci,
       notifications: g.n.map<GEvent>((e) => {
         const restore: Restorer = eventsMap[e.t].restore;

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Game, getCurrentPlayer } from '../../../core';
-import { Board } from './board/board';
-import { Players } from './player/players';
-import { ActionsBar } from './sections/actions-bar';
-import { EventHistory } from './sections/event-history';
-import { Notifications } from './sections/notifications';
-import { PromptContainer } from './sections/prompt-container';
+import { Game, getCurrentPlayer } from '../../../../core';
+import { Board } from '../board/board';
+import { Players } from '../player/players';
+import { ActionsBar } from '../sections/actions-bar';
+import { EventHistory } from '../sections/event-history';
+import { Notifications } from '../sections/notifications';
+import { PromptContainer } from '../sections/prompt-container';
 
 interface GameComponentProps {
   game: Game;

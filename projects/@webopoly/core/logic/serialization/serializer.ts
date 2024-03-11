@@ -17,7 +17,6 @@ export const serializeGame = (game: Game): string => {
       const minify: Minifier = eventsMap[event.type].minify;
       return minify(event);
     }),
-    i: game.id,
     n: game.notifications.map<EventMinified>((event) => {
       const minify: Minifier = eventsMap[event.type].minify;
       return minify(event);

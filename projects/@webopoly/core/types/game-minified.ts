@@ -21,8 +21,6 @@ type GameBaseMinified = {
   d: Game['dice'];
   /** eventHistory */
   eh: EventMinified[];
-  /** id */
-  i: Game['id'];
   /** nextCardIds */
   nci: Game['nextCardIds'];
   /** notifications */

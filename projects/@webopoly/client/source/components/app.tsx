@@ -1,37 +1,35 @@
-import React from 'react';
-import { deserializeGame, Game, serializeGame } from '../../../core';
-import { CreateGame } from './create-game';
-import { GameComponent } from './game';
+import React, { useEffect, useState } from 'react';
+import { GameMode, GameModeSelector } from './game/game-mode-selector';
+import { LocalGame } from './game/local/local-game';
+import { OnlineGame } from './game/online/online-game';
 
-const GAME_STORAGE_KEY = 'game';
+const GAME_MODE_STORAGE_KEY = 'gameMode';
 
-export class App extends React.Component {
-  state: { game: Game | undefined } = { game: undefined };
+export const App: React.FC = () => {
+  const [mode, setMode] = useState<GameMode>();
 
-  static getDerivedStateFromError() {
-    return { game: undefined };
-  }
-
-  componentDidMount() {
-    const serializedGame = localStorage.getItem(GAME_STORAGE_KEY);
-    this.setState({ game: deserializeGame(serializedGame) });
-  }
-
-  updateGame(game: Game | undefined) {
-    this.setState({ game });
-
-    if (game) {
-      localStorage.setItem(GAME_STORAGE_KEY, serializeGame(game));
-    } else {
-      localStorage.removeItem(GAME_STORAGE_KEY);
+  useEffect(() => {
+    const gameMode = localStorage.getItem(GAME_MODE_STORAGE_KEY) as GameMode | null;
+    if (gameMode) {
+      setMode(gameMode);
     }
-  }
+  }, []);
 
-  render() {
-    return this.state.game ? (
-      <GameComponent game={this.state.game} updateGame={this.updateGame.bind(this)} />
-    ) : (
-      <CreateGame setGame={this.updateGame.bind(this)} />
-    );
-  }
-}
+  const updateMode = (mode: GameMode) => {
+    setMode(mode);
+    localStorage.setItem(GAME_MODE_STORAGE_KEY, mode);
+  };
+
+  const cancel = () => {
+    setMode(undefined);
+    localStorage.removeItem(GAME_MODE_STORAGE_KEY);
+  };
+
+  return mode === 'local' ? (
+    <LocalGame cancel={cancel} />
+  ) : mode === 'online' ? (
+    <OnlineGame cancel={cancel} />
+  ) : (
+    <GameModeSelector setMode={updateMode} />
+  );
+};

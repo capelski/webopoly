@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { createGame, Game } from '../../../core';
-import { Button } from './common/button';
-import { Input } from './common/input';
+import { Game, startGame } from '../../../../../core';
+import { Button } from '../../common/button';
+import { Input } from '../../common/input';
 
-interface CreateGameProps {
+interface StartLocalGameProps {
+  cancel: () => void;
   setGame: (game: Game) => void;
 }
 
-export const CreateGame: React.FC<CreateGameProps> = (props) => {
+const topSpacing = 200;
+
+export const StartLocalGame: React.FC<StartLocalGameProps> = (props) => {
   const [playerNames, setPlayerNames] = useState(['Player 1', 'Player 2']);
 
   return (
@@ -17,14 +20,21 @@ export const CreateGame: React.FC<CreateGameProps> = (props) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        // Deliberately not centering the content vertically to prevent the Add player button moving
         position: 'relative',
-        top: '200px',
+        top: topSpacing,
       }}
     >
+      <div style={{ position: 'absolute', top: -topSpacing, left: 8 }}>
+        <Button onClick={props.cancel} type="transparent">
+          ⬅️
+        </Button>
+      </div>
+
       <div style={{ marginBottom: 48 }}>
         <Button
           onClick={() => {
-            props.setGame(createGame(playerNames));
+            props.setGame(startGame(playerNames));
           }}
           style={{ animation: 'heart-beat 2s infinite' }}
         >

@@ -6,6 +6,7 @@ export * from './jail-medium';
 export * from './liquidation-reason';
 export * from './neighborhood';
 export * from './offer-type';
+export * from './online-error-codes';
 export * from './player-status';
 export * from './prompt-type';
 export * from './property-status';

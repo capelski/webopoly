@@ -2,9 +2,6 @@
   "author": "Carles Capellas <capellas.carles@gmail.com>",
   "license": "ISC",
   "name": "@webopoly/core",
-  "peerDependencies": {
-    "nanoid": "^3.3.7"
-  },
   "private": true,
   "version": "1.0.0"
 }

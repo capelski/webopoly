@@ -11,7 +11,6 @@ import {
   TradePhasePayload,
   UiTransitionPhasePayload,
 } from './game-phase-payload';
-import { StringId } from './id';
 import { Player } from './player';
 import { Square } from './square';
 
@@ -20,7 +19,6 @@ export type GameBase<T extends PhasePayloadBase<any>> = {
   currentPlayerId: Player['id'];
   dice: Dice;
   eventHistory: GEvent[];
-  id: StringId;
   nextCardIds: Card['id'][];
   notifications: GEvent[];
   players: Player[];

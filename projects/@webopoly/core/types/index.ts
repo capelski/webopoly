@@ -9,5 +9,6 @@ export * from './id';
 export * from './player';
 export * from './player-minified';
 export * from './prompt';
+export * from './room';
 export * from './square';
 export * from './square-minified';
