@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Game, Player, Room, RoomJoined, StringId } from '../../../../../core';
-import { errorToast } from '../../common/toasts';
+import { toast, ToastContainer } from 'react-toastify';
+import { io } from 'socket.io-client';
+import {
+  Game,
+  OnlineErrorCodes,
+  Player,
+  RoomState,
+  StringId,
+  WSClientMessageType,
+  WSServerMessageType,
+} from '../../../../../core';
 import { GameComponent } from '../game';
+import { ClientSocket, socketEmit, socketListen } from './client-socket';
 import { OnlineRoomSelector } from './online-room-selector';
 import { StartOnlineGame } from './start-online-game';
 
@@ -15,99 +25,122 @@ export type OnlineGameProps = {
 
 export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
   const [game, setGame] = useState<Game>();
-  const [_playerId, setPlayerId] = useState<Player['id']>();
+  const [_, setPlayerId] = useState<Player['id']>();
   const [playerToken, setPlayerToken] = useState<StringId>();
-  const [roomId, setRoomId] = useState<Room['id']>();
+  const [room, setRoom] = useState<RoomState>();
+  const [socket, setSocket] = useState<ClientSocket>();
 
-  const roomSelected = (roomJoined: RoomJoined) => {
-    setPlayerToken(roomJoined.playerToken);
-    setRoomId(roomJoined.roomId);
-
-    localStorage.setItem(PLAYER_TOKEN_STORAGE_KEY, roomJoined.playerToken);
-    localStorage.setItem(ROOM_ID_STORAGE_KEY, roomJoined.roomId);
+  const createRoom = (playerName: Player['name']) => {
+    socket && socketEmit(socket, WSClientMessageType.createRoom, playerName);
   };
 
-  const roomExited = () => {
-    setPlayerId(undefined);
-    setPlayerToken(undefined);
-    setRoomId(undefined);
-
-    localStorage.removeItem(PLAYER_ID_STORAGE_KEY);
-    localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
-    localStorage.removeItem(ROOM_ID_STORAGE_KEY);
+  const joinRoom = (playerName: Player['name'], _roomId: RoomState['id']) => {
+    socket && socketEmit(socket, WSClientMessageType.joinRoom, { playerName, roomId: _roomId });
   };
 
-  const refreshGame = async (
-    _roomId: Room['id'],
-    _playerToken: StringId,
-    _playerId: Player['id'] | undefined,
-  ) => {
-    try {
-      if (!_playerId) {
-        const playerIdResponse = await fetch(
-          `/api/rooms/player-id?roomId=${_roomId}&playerToken=${_playerToken}`,
-        );
-
-        if (playerIdResponse.ok) {
-          _playerId = await playerIdResponse.text();
-          setPlayerId(_playerId);
-          localStorage.setItem(PLAYER_ID_STORAGE_KEY, _playerId);
-        } else {
-          errorToast(`Error refreshing game "${_roomId}"`);
-        }
-      }
-
-      if (_playerId) {
-        const gameResponse = await fetch(`/api/games/${_roomId}`);
-        if (gameResponse.ok) {
-          const nextGame = await gameResponse.json();
-          setGame(nextGame);
-        } else {
-          errorToast(`Error refreshing game "${_roomId}"`);
-        }
-      }
-    } catch {
-      errorToast(`Error refreshing game "${_roomId}"`);
-    }
+  const exitRoom = async () => {
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.exitRoom, { playerToken, roomId: room.id });
   };
 
-  const gameStarted = async () => {
-    if (roomId && playerToken) {
-      await refreshGame(roomId, playerToken, undefined);
-    }
+  const startGame = async () => {
+    room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
   };
 
   const updateGame = async (_game: Game | undefined) => {
-    // TODO
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.updateGame, { roomId: room.id, game: _game });
   };
 
   useEffect(() => {
-    const playerId = localStorage.getItem(PLAYER_ID_STORAGE_KEY);
-    const playerToken = localStorage.getItem(PLAYER_TOKEN_STORAGE_KEY);
-    const roomId = localStorage.getItem(ROOM_ID_STORAGE_KEY);
+    const nextSocket: ClientSocket = io(`ws://${window.location.hostname}:3000`);
 
-    if (playerToken && roomId) {
-      roomSelected({ playerToken, roomId });
-      if (playerId) {
-        setPlayerId(playerId);
-        refreshGame(roomId, playerToken, playerId);
+    nextSocket.on('connect', () => {
+      console.log('Connected');
+
+      const _playerToken = localStorage.getItem(PLAYER_TOKEN_STORAGE_KEY);
+      const roomId = localStorage.getItem(ROOM_ID_STORAGE_KEY);
+
+      if (_playerToken && roomId) {
+        setPlayerToken(_playerToken);
+
+        nextSocket.emit(WSClientMessageType.retrieveRoom, {
+          playerToken: _playerToken,
+          roomId,
+        });
       }
-    }
+    });
+
+    socketListen(nextSocket, WSServerMessageType.roomEntered, (data) => {
+      setPlayerToken(data.playerToken);
+      setRoom(data.roomState);
+
+      localStorage.setItem(PLAYER_TOKEN_STORAGE_KEY, data.playerToken);
+      localStorage.setItem(ROOM_ID_STORAGE_KEY, data.roomState.id);
+    });
+
+    socketListen(nextSocket, WSServerMessageType.roomRetrieved, (data) => {
+      setRoom(data);
+
+      if (data.game) {
+        const roomPlayer = data.players.find((p) => p.isOwnPlayer)!;
+
+        setPlayerId(roomPlayer.id);
+        setGame(data.game);
+      }
+    });
+
+    socketListen(nextSocket, WSServerMessageType.playerChanged, setRoom);
+
+    socketListen(nextSocket, WSServerMessageType.roomExited, () => {
+      setPlayerId(undefined);
+      setPlayerToken(undefined);
+      setRoom(undefined);
+
+      localStorage.removeItem(PLAYER_ID_STORAGE_KEY);
+      localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(ROOM_ID_STORAGE_KEY);
+    });
+
+    socketListen(nextSocket, WSServerMessageType.gameUpdated, setGame);
+
+    socketListen(nextSocket, WSServerMessageType.error, (data) => {
+      const errorMessage =
+        data.code === OnlineErrorCodes.DUPLICATE_PLAYER_NAME
+          ? 'Duplicate player name'
+          : 'Game has already started';
+
+      toast(errorMessage, {
+        type: 'error',
+        autoClose: 3000,
+      });
+    });
+
+    nextSocket.on('disconnect', () => {
+      console.log('Disconnected');
+    });
+
+    setSocket(nextSocket);
+
+    return () => {
+      nextSocket.close();
+    };
   }, []);
 
   return (
     <React.Fragment>
+      <ToastContainer position="top-left" />
+
       {game ? (
         <GameComponent game={game} updateGame={updateGame} />
-      ) : roomId && playerToken ? (
-        <StartOnlineGame
-          gameStarted={gameStarted}
-          playerToken={playerToken}
-          roomExited={roomExited}
-          roomId={roomId}
-        />
+      ) : room ? (
+        <StartOnlineGame exitRoom={exitRoom} room={room} startGame={startGame} />
       ) : (
-        <OnlineRoomSelector cancel={props.cancel} roomSelected={roomSelected} />
+        <OnlineRoomSelector cancel={props.cancel} createRoom={createRoom} joinRoom={joinRoom} />
       )}
     </React.Fragment>
   );

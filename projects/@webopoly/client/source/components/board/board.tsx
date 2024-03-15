@@ -41,6 +41,7 @@ export const Board: React.FC<BoardProps> = (props) => {
       return;
     }
 
+    // TODO Do not trigger full updates for transitions, as they storm WS
     if (props.game.phase === GamePhase.uiTransition) {
       const { game } = props;
 

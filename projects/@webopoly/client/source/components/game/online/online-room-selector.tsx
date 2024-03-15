@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { ToastContainer } from 'react-toastify';
-import { OnlineErrorCodes, Player, Room, RoomJoined } from '../../../../../core';
+import { Player, RoomState } from '../../../../../core';
 import { Button } from '../../common/button';
 import { Input } from '../../common/input';
 import { Paragraph } from '../../common/paragraph';
-import { errorToast } from '../../common/toasts';
 
 interface OnlineRoomSelector {
   cancel: () => void;
-  roomSelected: (roomJoined: RoomJoined) => void;
+  createRoom: (playerName: Player['name']) => void;
+  joinRoom: (playerName: Player['name'], roomId: RoomState['id']) => void;
 }
 
 export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
@@ -17,52 +16,6 @@ export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
 
   const createRoomEnabled = playerName && playerName.length > 2 && !roomId;
   const joinRoomEnabled = playerName && playerName.length > 2 && !!roomId;
-
-  const createRoom = async (playerName: Player['name']) => {
-    try {
-      const response = await fetch('/api/rooms/create', {
-        body: JSON.stringify({ playerName }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'post',
-      });
-      if (response.ok) {
-        const roomJoined: RoomJoined = await response.json();
-        props.roomSelected(roomJoined);
-      } else {
-        errorToast('An error occurred when creating the game');
-      }
-    } catch {
-      errorToast('An error occurred when creating the game');
-    }
-  };
-
-  const joinRoom = async (playerName: Player['name'], roomId: Room['id']) => {
-    try {
-      const response = await fetch('/api/rooms/join', {
-        body: JSON.stringify({ roomId, playerName }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'post',
-      });
-      if (response.ok) {
-        const roomJoined: RoomJoined = await response.json();
-        props.roomSelected(roomJoined);
-      } else {
-        const error = await response.json();
-
-        errorToast(
-          error.code === OnlineErrorCodes.DUPLICATE_PLAYER_NAME
-            ? `Player name "${playerName}" is already taken`
-            : 'An error occurred when joining the room',
-        );
-      }
-    } catch {
-      errorToast('An error occurred when joining the game');
-    }
-  };
 
   return (
     <div
@@ -74,8 +27,6 @@ export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
         minHeight: '100dvh',
       }}
     >
-      <ToastContainer position="top-left" />
-
       <div style={{ position: 'absolute', top: 0, left: 8 }}>
         <Button onClick={props.cancel} type="transparent">
           ⬅️
@@ -97,7 +48,7 @@ export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
           disabled={!createRoomEnabled}
           onClick={() => {
             if (createRoomEnabled) {
-              createRoom(playerName);
+              props.createRoom(playerName);
             }
           }}
           style={{
@@ -127,7 +78,7 @@ export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
           disabled={!joinRoomEnabled}
           onClick={() => {
             if (joinRoomEnabled) {
-              joinRoom(playerName, roomId);
+              props.joinRoom(playerName, roomId);
             }
           }}
           style={{ animation: joinRoomEnabled ? 'heart-beat-small 2s infinite' : undefined }}

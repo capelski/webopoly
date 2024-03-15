@@ -1,3 +1,4 @@
+- Restrict actions to current player: server and client
 - Events are not useful
 - Players to pick their own emoji
 - Remove the MovePlayerInput/Output Phases...
