@@ -34,8 +34,9 @@ const roomToRoomState = (room: Room, playerToken: StringId): RoomState => {
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: 'http://localhost:8080',
   },
+  path: '/ws/socket.io',
 })
 export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleConnection(client: ServerSocket) {

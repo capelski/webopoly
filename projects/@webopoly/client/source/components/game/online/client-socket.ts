@@ -14,7 +14,7 @@ export const socketEmit = <TKey extends keyof WSClientMessages>(
   data: WSClientMessages[TKey],
 ) => {
   if (logEvents) {
-    console.log(`${event} received`, data);
+    console.log(`${event} emitted`, data);
   }
 
   (socket.emit as (event: TKey, data: WSClientMessages[TKey]) => void)(event, data);

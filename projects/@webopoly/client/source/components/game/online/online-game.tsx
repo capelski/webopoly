@@ -57,7 +57,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
   };
 
   useEffect(() => {
-    const nextSocket: ClientSocket = io(`ws://${window.location.hostname}:3000`);
+    const nextSocket: ClientSocket = io({ path: '/ws/socket.io' });
 
     nextSocket.on('connect', () => {
       console.log('Connected');
