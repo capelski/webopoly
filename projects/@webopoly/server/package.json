@@ -32,6 +32,8 @@
     "clean": "rm -rf dist",
     "clean:assets": "rm -rf public",
     "dev": "nest start --watch",
+    "docker-build": "./docker-build.sh",
+    "docker-run": "docker run -p 3000:3000 l3bowski/webopoly",
     "nest": "nest",
     "start": "node dist/server/source/main.js"
   }
