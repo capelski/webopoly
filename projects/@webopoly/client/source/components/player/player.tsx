@@ -6,6 +6,7 @@ import { PlayerAvatar } from '../common/player-avatar';
 interface PlayerComponentProps {
   isActive: boolean;
   player: Player;
+  windowPlayerId: Player['id'];
 }
 
 export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
@@ -21,6 +22,7 @@ export const PlayerComponent: React.FC<PlayerComponentProps> = (props) => {
       <PlayerAvatar isActive={props.isActive} player={props.player} />
       <span style={{ paddingLeft: 8, textDecoration: isBankrupt ? 'line-through' : undefined }}>
         {props.player.name}
+        {props.windowPlayerId === props.player.id ? ' (You)' : ''}
       </span>
       <span style={{ paddingLeft: 8 }}>
         {currencySymbol} {props.player.money}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Game, GamePromptPhase, PromptType } from '../../../../core';
+import { PromptType } from '../../../../core';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { AnswerTradePrompt } from './answer-trade-prompt';
@@ -24,12 +24,7 @@ const promptsMap: {
   [PromptType.playerWins]: { renderer: PlayerWinsPrompt },
 };
 
-interface PromptComponentProps {
-  game: GamePromptPhase<PromptType>;
-  updateGame: (game: Game | undefined) => void;
-}
-
-export const PromptComponent: React.FC<PromptComponentProps> = (props) => {
+export const PromptComponent: PromptInterface<PromptType> = (props) => {
   const renderer: PromptInterface<PromptType> = promptsMap[props.game.prompt.type].renderer;
   const { inset } = promptsMap[props.game.prompt.type];
   return <Modal inset={inset}>{renderer(props)}</Modal>;

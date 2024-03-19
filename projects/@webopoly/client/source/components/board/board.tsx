@@ -6,6 +6,7 @@ import {
   getCurrentPlayer,
   isDoublesRoll,
   maxTurnsInJail,
+  Player,
   TransitionType,
   triggerDiceRoll,
   triggerFirstPlayerTransition,
@@ -29,11 +30,17 @@ interface BoardProps {
   game: Game;
   isLandscape: boolean;
   updateGame: (game: Game | undefined) => void;
+  windowPlayerId: Player['id'];
   zoom: number;
 }
 
 export const Board: React.FC<BoardProps> = (props) => {
   const [animateDice, setAnimateDice] = useState(false);
+
+  const currentPlayer = getCurrentPlayer(props.game);
+
+  const canRollDice =
+    props.game.phase === GamePhase.rollDice && props.windowPlayerId === currentPlayer.id;
 
   useEffect(() => {
     if (props.game.notifications.length) {
@@ -129,19 +136,18 @@ export const Board: React.FC<BoardProps> = (props) => {
             >
               <div
                 onClick={() => {
-                  if (props.game.phase === GamePhase.rollDice) {
+                  if (canRollDice && props.game.phase === GamePhase.rollDice) {
                     props.updateGame(triggerDiceRoll(props.game));
                   }
                 }}
                 style={{
-                  animation:
-                    props.game.phase === GamePhase.rollDice
-                      ? 'heart-beat 1.5s infinite'
-                      : animateDice
-                      ? `roll ${diceTransitionDuration}s infinite`
-                      : undefined,
+                  animation: canRollDice
+                    ? 'heart-beat 1.5s infinite'
+                    : animateDice
+                    ? `roll ${diceTransitionDuration}s infinite`
+                    : undefined,
                   borderRadius: 15,
-                  cursor: 'pointer',
+                  cursor: canRollDice ? 'pointer' : undefined,
                   marginBottom: 8,
                 }}
               >

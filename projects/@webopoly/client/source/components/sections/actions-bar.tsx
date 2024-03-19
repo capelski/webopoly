@@ -6,6 +6,7 @@ import {
   getPropertyOwnersId,
   getTradingPlayersId,
   LiquidationReason,
+  Player,
   resumeBuyProperty,
   resumePendingPayment,
   triggerCancelTrade,
@@ -21,6 +22,7 @@ interface ActionsBarProps {
   game: Game;
   setZoom: (zoom: number) => void;
   updateGame: (game: Game | undefined) => void;
+  windowPlayerId: Player['id'];
   zoom: number;
 }
 

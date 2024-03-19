@@ -15,7 +15,6 @@ import { ClientSocket, socketEmit, socketListen } from './client-socket';
 import { OnlineRoomSelector } from './online-room-selector';
 import { StartOnlineGame } from './start-online-game';
 
-const PLAYER_ID_STORAGE_KEY = 'playerId';
 const PLAYER_TOKEN_STORAGE_KEY = 'playerToken';
 const ROOM_ID_STORAGE_KEY = 'roomId';
 
@@ -24,8 +23,6 @@ export type OnlineGameProps = {
 };
 
 export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
-  const [game, setGame] = useState<Game>();
-  const [_, setPlayerId] = useState<Player['id']>();
   const [playerToken, setPlayerToken] = useState<StringId>();
   const [room, setRoom] = useState<RoomState>();
   const [socket, setSocket] = useState<ClientSocket>();
@@ -49,11 +46,20 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
   };
 
-  const updateGame = async (_game: Game | undefined) => {
+  const updateGame = async (game: Game | undefined) => {
     playerToken &&
       room &&
       socket &&
-      socketEmit(socket, WSClientMessageType.updateGame, { roomId: room.id, game: _game });
+      socketEmit(socket, WSClientMessageType.updateGame, {
+        game,
+        playerToken,
+        roomId: room.id,
+      });
+  };
+
+  const roomEntered = (_playerToken: StringId, _room: RoomState) => {
+    setPlayerToken(_playerToken);
+    setRoom(_room);
   };
 
   useEffect(() => {
@@ -66,8 +72,6 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
       const roomId = localStorage.getItem(ROOM_ID_STORAGE_KEY);
 
       if (_playerToken && roomId) {
-        setPlayerToken(_playerToken);
-
         nextSocket.emit(WSClientMessageType.retrieveRoom, {
           playerToken: _playerToken,
           roomId,
@@ -76,43 +80,35 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     });
 
     socketListen(nextSocket, WSServerMessageType.roomEntered, (data) => {
-      setPlayerToken(data.playerToken);
-      setRoom(data.roomState);
+      roomEntered(data.playerToken, data.room);
 
       localStorage.setItem(PLAYER_TOKEN_STORAGE_KEY, data.playerToken);
-      localStorage.setItem(ROOM_ID_STORAGE_KEY, data.roomState.id);
+      localStorage.setItem(ROOM_ID_STORAGE_KEY, data.room.id);
     });
 
     socketListen(nextSocket, WSServerMessageType.roomRetrieved, (data) => {
-      setRoom(data);
-
-      if (data.game) {
-        const roomPlayer = data.players.find((p) => p.isOwnPlayer)!;
-
-        setPlayerId(roomPlayer.id);
-        setGame(data.game);
-      }
+      roomEntered(data.playerToken, data.room);
     });
 
     socketListen(nextSocket, WSServerMessageType.playerChanged, setRoom);
 
     socketListen(nextSocket, WSServerMessageType.roomExited, () => {
-      setPlayerId(undefined);
       setPlayerToken(undefined);
       setRoom(undefined);
 
-      localStorage.removeItem(PLAYER_ID_STORAGE_KEY);
       localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
       localStorage.removeItem(ROOM_ID_STORAGE_KEY);
     });
 
-    socketListen(nextSocket, WSServerMessageType.gameUpdated, setGame);
+    socketListen(nextSocket, WSServerMessageType.gameUpdated, setRoom);
 
     socketListen(nextSocket, WSServerMessageType.error, (data) => {
       const errorMessage =
         data.code === OnlineErrorCodes.DUPLICATE_PLAYER_NAME
           ? 'Duplicate player name'
-          : 'Game has already started';
+          : data.code === OnlineErrorCodes.GAME_ALREADY_STARTED
+          ? 'Game has already started'
+          : data.code;
 
       toast(errorMessage, {
         type: 'error',
@@ -135,8 +131,12 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     <React.Fragment>
       <ToastContainer position="top-left" />
 
-      {game ? (
-        <GameComponent game={game} updateGame={updateGame} />
+      {room && room.game ? (
+        <GameComponent
+          game={room.game}
+          updateGame={updateGame}
+          windowPlayerId={room.players.find((p) => p.isOwnPlayer)!.id!}
+        />
       ) : room ? (
         <StartOnlineGame exitRoom={exitRoom} room={room} startGame={startGame} />
       ) : (

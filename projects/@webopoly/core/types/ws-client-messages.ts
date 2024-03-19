@@ -10,5 +10,9 @@ export type WSClientMessages = {
   [WSClientMessageType.joinRoom]: { playerName: Player['name']; roomId: RoomState['id'] };
   [WSClientMessageType.retrieveRoom]: { playerToken: StringId; roomId: RoomState['id'] };
   [WSClientMessageType.startGame]: RoomState['id'];
-  [WSClientMessageType.updateGame]: { game: Game | undefined; roomId: RoomState['id'] };
+  [WSClientMessageType.updateGame]: {
+    game: Game | undefined;
+    playerToken: StringId;
+    roomId: RoomState['id'];
+  };
 };

@@ -1,3 +1,4 @@
+- Toast error out when updating the game while some messages are active
 - Restrict actions to current player: server and client
 - Events are not useful
 - Players to pick their own emoji

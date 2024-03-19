@@ -1,5 +1,4 @@
-import React from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import React, { useEffect, useState } from 'react';
 import { RoomState } from '../../../../../core';
 import { Button } from '../../common/button';
 import { Paragraph } from '../../common/paragraph';
@@ -11,6 +10,22 @@ interface StartOnlineGameProps {
 }
 
 export const StartOnlineGame: React.FC<StartOnlineGameProps> = (props) => {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (copied) {
+      timeout = setTimeout(() => {
+        setCopied(false);
+      }, 1000);
+    }
+
+    return () => {
+      timeout && clearTimeout(timeout);
+    };
+  }, [copied]);
+
   return (
     <div
       style={{
@@ -21,8 +36,6 @@ export const StartOnlineGame: React.FC<StartOnlineGameProps> = (props) => {
         minHeight: '100dvh',
       }}
     >
-      <ToastContainer position="top-left" />
-
       <div style={{ marginBottom: 32, textAlign: 'center' }}>
         <Paragraph style={{ fontWeight: 'bold' }}>Game id</Paragraph>
         <Paragraph>
@@ -30,12 +43,12 @@ export const StartOnlineGame: React.FC<StartOnlineGameProps> = (props) => {
           <Button
             onClick={() => {
               navigator.clipboard.writeText(props.room.id);
-              toast(`"${props.room.id}" copied to clipboard`, { autoClose: 1000 });
+              setCopied(true);
             }}
             style={{ marginLeft: 8 }}
             type="secondary"
           >
-            📎
+            {copied ? '✅' : '📎'}
           </Button>
         </Paragraph>
       </div>

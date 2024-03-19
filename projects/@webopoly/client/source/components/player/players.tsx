@@ -5,6 +5,7 @@ import { PlayerComponent } from './player';
 interface PlayersProps {
   currentPlayerId: Player['id'];
   players: Player[];
+  windowPlayerId: Player['id'];
 }
 
 export const Players: React.FC<PlayersProps> = (props) => {
@@ -15,6 +16,7 @@ export const Players: React.FC<PlayersProps> = (props) => {
           isActive={player.id === props.currentPlayerId}
           key={player.name}
           player={player}
+          windowPlayerId={props.windowPlayerId}
         />
       ))}
     </div>

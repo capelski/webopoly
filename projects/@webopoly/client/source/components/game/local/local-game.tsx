@@ -38,7 +38,11 @@ export class LocalGame extends React.Component<LocalGameProps> {
 
   render() {
     return this.state.game ? (
-      <GameComponent game={this.state.game} updateGame={this.updateGame.bind(this)} />
+      <GameComponent
+        game={this.state.game}
+        updateGame={this.updateGame.bind(this)}
+        windowPlayerId={this.state.game.currentPlayerId}
+      />
     ) : (
       <StartLocalGame cancel={this.props.cancel} setGame={this.updateGame.bind(this)} />
     );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Game, getCurrentPlayer } from '../../../../core';
+import { Game, getCurrentPlayer, Player } from '../../../../core';
 import { Board } from '../board/board';
 import { Players } from '../player/players';
 import { ActionsBar } from '../sections/actions-bar';
@@ -11,6 +11,7 @@ import { PromptContainer } from '../sections/prompt-container';
 interface GameComponentProps {
   game: Game;
   updateGame: (game: Game | undefined) => void;
+  windowPlayerId: Player['id'];
 }
 
 export const GameComponent: React.FC<GameComponentProps> = (props) => {
@@ -23,7 +24,11 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       <Notifications game={props.game} updateGame={props.updateGame} />
 
-      <PromptContainer game={props.game} updateGame={props.updateGame} />
+      <PromptContainer
+        game={props.game}
+        updateGame={props.updateGame}
+        windowPlayerId={props.windowPlayerId}
+      />
 
       <div
         style={{
@@ -38,6 +43,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
           game={props.game}
           isLandscape={isLandscape}
           updateGame={props.updateGame}
+          windowPlayerId={props.windowPlayerId}
           zoom={zoom}
         />
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
@@ -45,10 +51,15 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             game={props.game}
             setZoom={setZoom}
             updateGame={props.updateGame}
+            windowPlayerId={props.windowPlayerId}
             zoom={zoom}
           />
 
-          <Players currentPlayerId={currentPlayer.id} players={props.game.players} />
+          <Players
+            currentPlayerId={currentPlayer.id}
+            players={props.game.players}
+            windowPlayerId={props.windowPlayerId}
+          />
 
           <EventHistory game={props.game} updateGame={props.updateGame} />
         </div>

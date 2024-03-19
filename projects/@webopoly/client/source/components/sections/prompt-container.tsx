@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Game, GamePhase } from '../../../../core';
+import { Game, GamePhase, Player } from '../../../../core';
 import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {
   game: Game;
   updateGame: (game: Game | undefined) => void;
+  windowPlayerId: Player['id'];
 }
 
 export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
@@ -25,6 +26,7 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
         setDisplayPrompt(false);
         return props.updateGame(game);
       }}
+      windowPlayerId={props.windowPlayerId}
     />
   ) : undefined;
 };

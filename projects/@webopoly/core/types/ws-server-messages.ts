@@ -1,17 +1,16 @@
-import { OnlineErrorCodes, WSServerMessageType } from '../enums';
-import { Game } from './game';
+import { OnlineErrorCodes, WSClientMessageType, WSServerMessageType } from '../enums';
 import { StringId } from './id';
 import { RoomState } from './room-state';
 
 export type WSServerMessages = {
-  [WSServerMessageType.error]: { code: OnlineErrorCodes };
-  [WSServerMessageType.gameUpdated]: Game | undefined;
+  [WSServerMessageType.error]: { code: OnlineErrorCodes; event: WSClientMessageType };
+  [WSServerMessageType.gameUpdated]: RoomState;
   [WSServerMessageType.playerChanged]: RoomState;
-  [WSServerMessageType.roomEntered]: { playerToken: StringId; roomState: RoomState };
+  [WSServerMessageType.roomEntered]: { playerToken: StringId; room: RoomState };
   [WSServerMessageType.roomExited]: undefined;
-  [WSServerMessageType.roomRetrieved]: RoomState;
+  [WSServerMessageType.roomRetrieved]: { playerToken: StringId; room: RoomState };
 };
 
-export type WSServerResponse<T = WSServerMessages> = {
+export type WSServerMessage<T = WSServerMessages> = {
   [TKey in keyof T]: { data: T[TKey]; event: TKey };
 };
