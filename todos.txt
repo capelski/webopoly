@@ -1,5 +1,5 @@
-- Toast error out when updating the game while some messages are active
 - Restrict actions to current player: server and client
+- Docker build => Trigger builds of both client/server sides
 - Events are not useful
 - Players to pick their own emoji
 - Remove the MovePlayerInput/Output Phases...
