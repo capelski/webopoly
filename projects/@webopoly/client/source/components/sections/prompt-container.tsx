@@ -16,16 +16,15 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
       setTimeout(() => {
         setDisplayPrompt(true);
       }, 800);
+    } else if (displayPrompt && props.game.phase !== GamePhase.prompt) {
+      setDisplayPrompt(false);
     }
   }, [props.game]);
 
   return displayPrompt && props.game.phase === GamePhase.prompt ? (
     <PromptComponent
       game={props.game}
-      updateGame={(game) => {
-        setDisplayPrompt(false);
-        return props.updateGame(game);
-      }}
+      updateGame={props.updateGame}
       windowPlayerId={props.windowPlayerId}
     />
   ) : undefined;
