@@ -36,14 +36,14 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     socket && socketEmit(socket, WSClientMessageType.joinRoom, { playerName, roomId: _roomId });
   };
 
-  const exitRoom = async () => {
+  const exitRoom = () => {
     playerToken &&
       room &&
       socket &&
       socketEmit(socket, WSClientMessageType.exitRoom, { playerToken, roomId: room.id });
   };
 
-  const startGame = async () => {
+  const startGame = () => {
     room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
   };
 
@@ -56,12 +56,25 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     }
   };
 
-  const updateGame = async (game: Game | undefined) => {
+  const updateGame = (game: Game) => {
     playerToken &&
       room &&
       socket &&
       socketEmit(socket, WSClientMessageType.updateGame, {
         game,
+        playerToken,
+        roomId: room.id,
+      });
+  };
+
+  const exitGame = () => {
+    // TODO Exit the room instead of clearing the game.
+
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.updateGame, {
+        game: undefined,
         playerToken,
         roomId: room.id,
       });
@@ -144,6 +157,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
       {room && room.game ? (
         <GameComponent
           clearNotifications={clearNotificationsHandler}
+          exitGame={exitGame}
           game={room.game}
           updateGame={updateGame}
           windowPlayerId={room.players.find((p) => p.isOwnPlayer)!.id!}

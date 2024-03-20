@@ -19,9 +19,10 @@ import { Modal } from '../common/modal';
 import { Paragraph } from '../common/paragraph';
 
 interface ActionsBarProps {
+  exitGame: () => void;
   game: Game;
   setZoom: (zoom: number) => void;
-  updateGame: (game: Game | undefined) => void;
+  updateGame: (game: Game) => void;
   windowPlayerId: Player['id'];
   zoom: number;
 }
@@ -48,7 +49,7 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
         <Modal closeHandler={clearGameCloseHandler}>
           <Paragraph>Are you sure you want to clear the game?</Paragraph>
           <div>
-            <Button onClick={() => props.updateGame(undefined)} type="delete">
+            <Button onClick={props.exitGame} type="delete">
               Yes
             </Button>
             <Button onClick={clearGameCloseHandler}>No</Button>

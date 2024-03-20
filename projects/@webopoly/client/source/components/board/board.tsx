@@ -29,7 +29,7 @@ import { OuterTopRow } from './outer-rows/outer-top-row';
 interface BoardProps {
   game: Game;
   isLandscape: boolean;
-  updateGame: (game: Game | undefined) => void;
+  updateGame: (game: Game) => void;
   windowPlayerId: Player['id'];
   zoom: number;
 }

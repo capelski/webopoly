@@ -3,8 +3,9 @@ import { Game, GamePhase, Player } from '../../../../core';
 import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {
+  exitGame: () => void;
   game: Game;
-  updateGame: (game: Game | undefined) => void;
+  updateGame: (game: Game) => void;
   windowPlayerId: Player['id'];
 }
 
@@ -23,6 +24,7 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
 
   return displayPrompt && props.game.phase === GamePhase.prompt ? (
     <PromptComponent
+      exitGame={props.exitGame}
       game={props.game}
       updateGame={props.updateGame}
       windowPlayerId={props.windowPlayerId}

@@ -14,7 +14,7 @@ export const PlayerWinsPrompt: PromptInterface<PromptType.playerWins> = (props) 
       <div style={{ fontSize: 72, marginBottom: 32 }}>🏆🎉</div>
       <Button
         onClick={() => {
-          props.updateGame(undefined);
+          props.exitGame();
         }}
       >
         Clear game

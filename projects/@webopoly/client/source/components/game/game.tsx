@@ -10,8 +10,9 @@ import { PromptContainer } from '../sections/prompt-container';
 
 interface GameComponentProps {
   clearNotifications: () => void;
+  exitGame: () => void;
   game: Game;
-  updateGame: (game: Game | undefined) => void;
+  updateGame: (game: Game) => void;
   windowPlayerId: Player['id'];
 }
 
@@ -26,6 +27,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       <Notifications clearNotifications={props.clearNotifications} game={props.game} />
 
       <PromptContainer
+        exitGame={props.exitGame}
         game={props.game}
         updateGame={props.updateGame}
         windowPlayerId={props.windowPlayerId}
@@ -49,6 +51,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         />
         <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
           <ActionsBar
+            exitGame={props.exitGame}
             game={props.game}
             setZoom={setZoom}
             updateGame={props.updateGame}
@@ -62,7 +65,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             windowPlayerId={props.windowPlayerId}
           />
 
-          <EventHistory game={props.game} updateGame={props.updateGame} />
+          <EventHistory game={props.game} />
         </div>
       </div>
     </div>

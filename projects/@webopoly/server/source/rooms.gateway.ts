@@ -234,7 +234,6 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return null;
   }
 
-  // TODO Do not allow clearing the game. Instead, exit the room.
   // TODO Only allow change events instead of replacing the entire game
   @SubscribeMessage(WSClientMessageType.updateGame)
   updateGame(

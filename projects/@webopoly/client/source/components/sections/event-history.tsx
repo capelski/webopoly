@@ -4,7 +4,6 @@ import { EventComponent } from '../common/event';
 
 interface EventHistoryProps {
   game: Game;
-  updateGame: (game: Game | undefined) => void;
 }
 
 export const EventHistory: React.FC<EventHistoryProps> = (props) => {

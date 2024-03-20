@@ -31,21 +31,21 @@ export class LocalGame extends React.Component<LocalGameProps> {
     }
   }
 
-  updateGame(game: Game | undefined) {
+  updateGame(game: Game) {
     this.setState({ game });
-    this.props;
-    if (game) {
-      localStorage.setItem(LOCAL_GAME_STORAGE_KEY, serializeGame(game));
-    } else {
-      localStorage.removeItem(LOCAL_GAME_STORAGE_KEY);
-      this.props.cancel();
-    }
+    localStorage.setItem(LOCAL_GAME_STORAGE_KEY, serializeGame(game));
+  }
+
+  exitGame() {
+    this.setState({ game: undefined });
+    localStorage.removeItem(LOCAL_GAME_STORAGE_KEY);
   }
 
   render() {
     return this.state.game ? (
       <GameComponent
         clearNotifications={this.clearNotificationsHandler.bind(this)}
+        exitGame={this.exitGame.bind(this)}
         game={this.state.game}
         updateGame={this.updateGame.bind(this)}
         windowPlayerId={this.state.game.currentPlayerId}
