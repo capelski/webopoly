@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import {
+  clearNotifications,
   Game,
   OnlineErrorCodes,
   Player,
@@ -44,6 +45,15 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
 
   const startGame = async () => {
     room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
+  };
+
+  const clearNotificationsHandler = () => {
+    if (room?.game) {
+      setRoom({
+        ...room,
+        game: clearNotifications(room.game),
+      });
+    }
   };
 
   const updateGame = async (game: Game | undefined) => {
@@ -133,6 +143,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
 
       {room && room.game ? (
         <GameComponent
+          clearNotifications={clearNotificationsHandler}
           game={room.game}
           updateGame={updateGame}
           windowPlayerId={room.players.find((p) => p.isOwnPlayer)!.id!}

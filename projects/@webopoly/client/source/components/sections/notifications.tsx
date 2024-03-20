@@ -4,8 +4,8 @@ import { Game } from '../../../../core';
 import { EventComponent } from '../common/event';
 
 interface NotificationsProps {
+  clearNotifications: () => void;
   game: Game;
-  updateGame: (game: Game | undefined) => void;
 }
 
 export const Notifications: React.FC<NotificationsProps> = (props) => {
@@ -17,11 +17,7 @@ export const Notifications: React.FC<NotificationsProps> = (props) => {
         });
       });
 
-      props.updateGame({
-        ...props.game,
-        notifications: [],
-        eventHistory: [...props.game.notifications.reverse(), ...props.game.eventHistory],
-      });
+      props.clearNotifications();
     }
   }, [props.game.notifications]);
 

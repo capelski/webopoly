@@ -9,6 +9,7 @@ import { Notifications } from '../sections/notifications';
 import { PromptContainer } from '../sections/prompt-container';
 
 interface GameComponentProps {
+  clearNotifications: () => void;
   game: Game;
   updateGame: (game: Game | undefined) => void;
   windowPlayerId: Player['id'];
@@ -22,7 +23,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Notifications game={props.game} updateGame={props.updateGame} />
+      <Notifications clearNotifications={props.clearNotifications} game={props.game} />
 
       <PromptContainer
         game={props.game}

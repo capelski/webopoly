@@ -1,5 +1,5 @@
 import React from 'react';
-import { deserializeGame, Game, serializeGame } from '../../../../../core';
+import { clearNotifications, deserializeGame, Game, serializeGame } from '../../../../../core';
 import { GameComponent } from '../game';
 import { StartLocalGame } from './start-local-game';
 
@@ -25,6 +25,12 @@ export class LocalGame extends React.Component<LocalGameProps> {
     }
   }
 
+  clearNotificationsHandler() {
+    if (this.state.game) {
+      this.updateGame(clearNotifications(this.state.game));
+    }
+  }
+
   updateGame(game: Game | undefined) {
     this.setState({ game });
     this.props;
@@ -39,6 +45,7 @@ export class LocalGame extends React.Component<LocalGameProps> {
   render() {
     return this.state.game ? (
       <GameComponent
+        clearNotifications={this.clearNotificationsHandler.bind(this)}
         game={this.state.game}
         updateGame={this.updateGame.bind(this)}
         windowPlayerId={this.state.game.currentPlayerId}

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/websockets';
 import { nanoid } from 'nanoid';
 import {
+  clearNotifications,
   getCurrentPlayer,
   OnlineErrorCodes,
   RoomState,
@@ -233,6 +234,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     return null;
   }
 
+  // TODO Do not allow clearing the game. Instead, exit the room.
   // TODO Only allow change events instead of replacing the entire game
   @SubscribeMessage(WSClientMessageType.updateGame)
   updateGame(
@@ -272,6 +274,11 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     room.players.forEach((p) => {
       emitMessage(WSServerMessageType.gameUpdated, roomToRoomState(room, p.token), p.socket);
     });
+
+    if (data.game) {
+      /** Notifications will be immediately cleared in the client side; clear them in the server as well */
+      room.game = clearNotifications(data.game);
+    }
 
     return null;
   }

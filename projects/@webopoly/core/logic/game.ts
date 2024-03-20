@@ -13,6 +13,14 @@ import { Game, GameLiquidationPhase, GamePromptPhase, Player, Square } from '../
 import { getCardAmount } from './cards';
 import { squares } from './squares';
 
+export const clearNotifications = (game: Game): Game => {
+  return {
+    ...game,
+    notifications: [],
+    eventHistory: [...game.notifications.reverse(), ...game.eventHistory],
+  };
+};
+
 export const getActivePlayers = (game: Game): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing);
 };
