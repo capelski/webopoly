@@ -9,8 +9,11 @@ import {
 } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
+  GameLiquidationPhase,
   GameNonPromptPhase,
+  GamePlayPhase,
   GamePromptPhase,
+  GameRollDicePhase,
   NonPromptPhasePayload,
   Player,
   PropertySquare,
@@ -77,14 +80,11 @@ export const triggerAcceptOffer = (
 };
 
 export const triggerBuyingOffer = (
-  game: GameNonPromptPhase,
+  game: GamePlayPhase | GameRollDicePhase,
   property: PropertySquare,
   amount: number,
-): GameNonPromptPhase | GamePromptPhase<PromptType.answerOffer> => {
+): GamePromptPhase<PromptType.answerOffer> => {
   const currentPlayer = getCurrentPlayer(game);
-  if (currentPlayer.money < amount || property.ownerId === undefined) {
-    return game;
-  }
 
   return {
     ...game,
@@ -95,7 +95,7 @@ export const triggerBuyingOffer = (
       playerId: currentPlayer.id,
       previous: getPreviousPayload(game),
       propertyId: property.id,
-      targetPlayerId: property.ownerId,
+      targetPlayerId: property.ownerId!,
       type: PromptType.answerOffer,
     },
   };
@@ -123,7 +123,7 @@ export const triggerDeclineOffer = (
 };
 
 export const triggerSellingOffer = (
-  game: GameNonPromptPhase,
+  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],

@@ -13,6 +13,7 @@ export enum EventType {
   passGo = 'passGo',
   payRent = 'payRent',
   payTax = 'payTax',
+  playerExit = 'playerExit',
   sellHouse = 'sellHouse',
   turnInJail = 'turnInJail',
 }

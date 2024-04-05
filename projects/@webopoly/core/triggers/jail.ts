@@ -39,14 +39,22 @@ export const triggerGetOutOfJailCard = (game: GamePromptPhase<PromptType.card>):
 
 export const triggerGoToJail = (
   game: GamePromptPhase<PromptType.goToJail> | GamePromptPhase<PromptType.card>,
-  event?: GEvent & { type: EventType.goToJail },
+  skipEvent = false,
 ): GamePlayPhase => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
   const currentPlayer = getCurrentPlayer(game);
 
   return {
     ...game,
-    eventHistory: event ? [event, ...game.eventHistory] : game.eventHistory,
+    eventHistory: skipEvent
+      ? game.eventHistory
+      : [
+          {
+            playerId: currentPlayer.id,
+            type: EventType.goToJail,
+          },
+          ...game.eventHistory,
+        ],
     phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
@@ -81,12 +89,6 @@ export const triggerLastTurnInJail = (
 export const triggerPayJailFine = (
   game: GamePromptPhase<PromptType.jailOptions>,
 ): EndTurnOutputPhases => {
-  const currentPlayer = getCurrentPlayer(game);
-
-  if (!hasEnoughMoney(currentPlayer, jailFine)) {
-    return { ...game };
-  }
-
   const nextGame = updatePlayerOutOfJail(game, JailMedium.fine);
   return triggerEndTurn(nextGame);
 };

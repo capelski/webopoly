@@ -5,6 +5,7 @@ export * from './event-minified';
 export * from './game';
 export * from './game-minified';
 export * from './game-phase-payload';
+export * from './game-update';
 export * from './id';
 export * from './player';
 export * from './player-minified';

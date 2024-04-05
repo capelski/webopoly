@@ -1,11 +1,14 @@
 import { Socket } from 'socket.io';
 import {
   SocketHandlers,
+  StringId,
   WSClientMessages,
   WSClientMessageType,
   WSServerMessages,
   WSServerMessageType,
 } from '../../core';
+import { Room } from './rooms-register';
+import { roomToRoomState } from './transformers';
 
 export type ServerSocket = Socket<
   SocketHandlers<WSClientMessages>,
@@ -14,16 +17,16 @@ export type ServerSocket = Socket<
 
 const logEvents = true;
 
-export const emitMessage = <T extends WSServerMessageType>(
-  messageType: T,
-  data: WSServerMessages[T],
-  socket: ServerSocket,
-) => {
+export const broadcastRoomUpdate = (room: Room, excludePlayerToken?: StringId) => {
   if (logEvents) {
-    console.log(`${messageType} emitted`, data);
+    console.log(`${WSServerMessageType.roomUpdated} emitted`);
   }
 
-  (socket.emit as (event: T, data: WSServerMessages[T]) => void)(messageType, data);
+  room.players
+    .filter((p) => p.token !== excludePlayerToken)
+    .forEach((p) => {
+      p.socket.emit(WSServerMessageType.roomUpdated, roomToRoomState(room, p.token));
+    });
 };
 
 export const messageReceived = <T extends WSClientMessageType>(

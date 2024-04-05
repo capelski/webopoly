@@ -1,5 +1,5 @@
 import { WSClientMessageType } from '../enums';
-import { Game } from './game';
+import { GameUpdate } from './game-update';
 import { StringId } from './id';
 import { Player } from './player';
 import { RoomState } from './room-state';
@@ -10,9 +10,9 @@ export type WSClientMessages = {
   [WSClientMessageType.joinRoom]: { playerName: Player['name']; roomId: RoomState['id'] };
   [WSClientMessageType.retrieveRoom]: { playerToken: StringId; roomId: RoomState['id'] };
   [WSClientMessageType.startGame]: RoomState['id'];
-  [WSClientMessageType.updateGame]: {
-    game: Game | undefined;
+  [WSClientMessageType.triggerUpdate]: {
     playerToken: StringId;
     roomId: RoomState['id'];
+    update: GameUpdate;
   };
 };

@@ -8,31 +8,19 @@ import {
 } from '@nestjs/websockets';
 import { nanoid } from 'nanoid';
 import {
-  clearNotifications,
-  getCurrentPlayer,
+  Game,
   OnlineErrorCodes,
-  RoomState,
   startGame,
-  StringId,
+  triggerRemovePlayer,
+  triggerUpdate,
   WSClientMessages,
   WSClientMessageType,
   WSServerMessage,
   WSServerMessageType,
 } from '../../core';
 import { Room, roomsRegister } from './rooms-register';
-import { emitMessage, messageReceived, replyMessage, ServerSocket } from './server-socket';
-
-const roomToRoomState = (room: Room, playerToken: StringId): RoomState => {
-  return {
-    game: room.game,
-    id: room.id,
-    players: room.players.map((player) => ({
-      id: player.id,
-      isOwnPlayer: player.token === playerToken,
-      name: player.name,
-    })),
-  };
-};
+import { broadcastRoomUpdate, messageReceived, replyMessage, ServerSocket } from './server-socket';
+import { roomToRoomState } from './transformers';
 
 @WebSocketGateway({
   cors: {
@@ -125,7 +113,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       token: playerToken,
     });
 
-    this.notifyPlayerChange(room, playerToken);
+    broadcastRoomUpdate(room, playerToken);
 
     return replyMessage(WSServerMessageType.roomEntered, {
       playerToken,
@@ -187,22 +175,25 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
 
-    room.players.splice(playerIndex, 1);
+    const [player] = room.players.splice(playerIndex, 1);
+
     if (room.players.length > 0) {
-      this.notifyPlayerChange(room, data.playerToken);
+      if (room.game && player.id) {
+        room.game = triggerRemovePlayer(room.game, player.id);
+
+        broadcastRoomUpdate(room, data.playerToken);
+
+        /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
+        room.game.notifications = [];
+        room.game.eventHistory = [...room.game.notifications.reverse(), ...room.game.eventHistory];
+      } else {
+        broadcastRoomUpdate(room, data.playerToken);
+      }
     } else {
       delete roomsRegister[data.roomId];
     }
 
     return replyMessage(WSServerMessageType.roomExited, undefined);
-  }
-
-  notifyPlayerChange(room: Room, playerToken: StringId) {
-    room.players
-      .filter((p) => p.token !== playerToken)
-      .forEach((p) => {
-        emitMessage(WSServerMessageType.playerChanged, roomToRoomState(room, p.token), p.socket);
-      });
   }
 
   @SubscribeMessage(WSClientMessageType.startGame)
@@ -227,24 +218,21 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       player.id = game.players[index].id;
     });
 
-    room.players.forEach((p) => {
-      emitMessage(WSServerMessageType.gameUpdated, roomToRoomState(room, p.token), p.socket);
-    });
+    broadcastRoomUpdate(room);
 
     return null;
   }
 
-  // TODO Only allow change events instead of replacing the entire game
-  @SubscribeMessage(WSClientMessageType.updateGame)
-  updateGame(
-    @MessageBody() data: WSClientMessages[WSClientMessageType.updateGame],
+  @SubscribeMessage(WSClientMessageType.triggerUpdate)
+  triggerUpdate(
+    @MessageBody() data: WSClientMessages[WSClientMessageType.triggerUpdate],
   ): WSServerMessage[WSServerMessageType.error] | null {
-    messageReceived(WSClientMessageType.updateGame, data);
+    messageReceived(WSClientMessageType.triggerUpdate, data);
 
     const room = roomsRegister[data.roomId];
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
-        event: WSClientMessageType.updateGame,
+        event: WSClientMessageType.triggerUpdate,
         code: OnlineErrorCodes.INVALID_ROOM_ID,
       });
     }
@@ -252,32 +240,26 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const player = room.players.find((p) => p.token === data.playerToken);
     if (!player) {
       return replyMessage(WSServerMessageType.error, {
-        event: WSClientMessageType.updateGame,
+        event: WSClientMessageType.triggerUpdate,
         code: OnlineErrorCodes.INVALID_PLAYER_TOKEN,
       });
     }
 
-    if (!room.game) {
+    if (!room.game || !player.id) {
       return null;
     }
 
-    const currentPlayer = getCurrentPlayer(room.game);
-    if (data.game && player.id !== currentPlayer.id) {
-      return replyMessage(WSServerMessageType.error, {
-        event: WSClientMessageType.updateGame,
-        code: OnlineErrorCodes.NOT_YOUR_TURN,
-      });
-    }
+    triggerUpdate(room.game, data.update, player.id, (updatedGame: Game) => {
+      room.game = updatedGame;
+      broadcastRoomUpdate(room);
 
-    room.game = data.game;
-    room.players.forEach((p) => {
-      emitMessage(WSServerMessageType.gameUpdated, roomToRoomState(room, p.token), p.socket);
+      /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
+      updatedGame.notifications = [];
+      updatedGame.eventHistory = [
+        ...updatedGame.notifications.reverse(),
+        ...updatedGame.eventHistory,
+      ];
     });
-
-    if (data.game) {
-      /** Notifications will be immediately cleared in the client side; clear them in the server as well */
-      room.game = clearNotifications(data.game);
-    }
 
     return null;
   }

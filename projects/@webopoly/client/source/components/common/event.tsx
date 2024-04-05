@@ -143,6 +143,10 @@ const renderersMap: {
     description: `${player.name} pays ${currencySymbol}${event.amount} in taxes`,
     icon: taxSymbol,
   }),
+  [EventType.playerExit]: (player) => ({
+    description: `${player.name} has exited the game`,
+    icon: '☠️',
+  }),
   [EventType.sellHouse]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return {

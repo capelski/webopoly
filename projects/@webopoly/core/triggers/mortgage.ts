@@ -1,45 +1,37 @@
-import { EventType, PropertyStatus, SquareType } from '../enums';
+import { EventType, LiquidationReason, PropertyStatus } from '../enums';
+import { getClearMortgageAmount, getMortgageAmount } from '../logic';
 import {
-  canClearMortgage,
-  canMortgage,
-  getClearMortgageAmount,
-  getMortgageAmount,
-  getPlayerById,
-  getSquareById,
-} from '../logic';
-import { Game, Square } from '../types';
+  Game,
+  GameLiquidationPhase,
+  GamePlayPhase,
+  GameRollDicePhase,
+  PropertySquare,
+} from '../types';
 
-export const triggerClearMortgage = (game: Game, squareId: Square['id']): Game => {
-  const square = getSquareById(game, squareId);
-  if (square.type !== SquareType.property || !square.ownerId) {
-    return game;
-  }
-
-  const player = getPlayerById(game, square.ownerId);
-  if (!canClearMortgage(square, player)) {
-    return game;
-  }
-
+export const triggerClearMortgage = (
+  game: GamePlayPhase | GameRollDicePhase,
+  property: PropertySquare,
+): Game => {
   return {
     ...game,
     notifications: [
       ...game.notifications,
       {
-        playerId: square.ownerId,
-        propertyId: squareId,
+        playerId: property.ownerId!,
+        propertyId: property.id,
         type: EventType.clearMortgage,
       },
     ],
     players: game.players.map((p) => {
-      return p.id === square.ownerId
+      return p.id === property.ownerId
         ? {
             ...p,
-            money: p.money - getClearMortgageAmount(square),
+            money: p.money - getClearMortgageAmount(property),
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === squareId
+      return s.id === property.id
         ? {
             ...s,
             status: undefined,
@@ -49,37 +41,30 @@ export const triggerClearMortgage = (game: Game, squareId: Square['id']): Game =
   };
 };
 
-export const triggerMortgage = (game: Game, squareId: Square['id']): Game => {
-  const square = getSquareById(game, squareId);
-
-  if (
-    square.type !== SquareType.property ||
-    !square.ownerId ||
-    !canMortgage(square, square.ownerId)
-  ) {
-    return game;
-  }
-
+export const triggerMortgage = (
+  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
+  property: PropertySquare,
+): Game => {
   return {
     ...game,
     notifications: [
       ...game.notifications,
       {
-        playerId: square.ownerId,
-        propertyId: squareId,
+        playerId: property.ownerId!,
+        propertyId: property.id,
         type: EventType.mortgage,
       },
     ],
     players: game.players.map((p) => {
-      return p.id === square.ownerId
+      return p.id === property.ownerId
         ? {
             ...p,
-            money: p.money + getMortgageAmount(square),
+            money: p.money + getMortgageAmount(property),
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === squareId
+      return s.id === property.id
         ? {
             ...s,
             status: PropertyStatus.mortgaged,

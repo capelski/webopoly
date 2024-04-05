@@ -4,11 +4,10 @@ import { RoomState } from './room-state';
 
 export type WSServerMessages = {
   [WSServerMessageType.error]: { code: OnlineErrorCodes; event: WSClientMessageType };
-  [WSServerMessageType.gameUpdated]: RoomState;
-  [WSServerMessageType.playerChanged]: RoomState;
   [WSServerMessageType.roomEntered]: { playerToken: StringId; room: RoomState };
   [WSServerMessageType.roomExited]: undefined;
   [WSServerMessageType.roomRetrieved]: { playerToken: StringId; room: RoomState };
+  [WSServerMessageType.roomUpdated]: RoomState;
 };
 
 export type WSServerMessage<T = WSServerMessages> = {

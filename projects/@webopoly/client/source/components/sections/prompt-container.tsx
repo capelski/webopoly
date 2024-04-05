@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Game, GamePhase, Player } from '../../../../core';
+import { Game, GamePhase, GameUpdate, Player } from '../../../../core';
 import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {
   exitGame: () => void;
   game: Game;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
 }
 
@@ -26,7 +26,7 @@ export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
     <PromptComponent
       exitGame={props.exitGame}
       game={props.game}
-      updateGame={props.updateGame}
+      triggerUpdate={props.triggerUpdate}
       windowPlayerId={props.windowPlayerId}
     />
   ) : undefined;

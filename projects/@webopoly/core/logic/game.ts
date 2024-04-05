@@ -8,10 +8,17 @@ import {
   PropertyType,
   SquareType,
 } from '../enums';
-import { Game, GameLiquidationPhase, GamePromptPhase, Player, Square } from '../types';
-
+import { Game, GameLiquidationPhase, GamePromptPhase, Player, Prompt, Square } from '../types';
 import { getCardAmount } from './cards';
 import { squares } from './squares';
+import { turnConsiderations } from './turn-considerations';
+
+export const castPromptGame = <T extends PromptType>(
+  game: GamePromptPhase<PromptType>,
+  prompt: Prompt<T>,
+): GamePromptPhase<T> => {
+  return { ...game, prompt };
+};
 
 export const clearNotifications = (game: Game): Game => {
   return {
@@ -27,21 +34,18 @@ export const getActivePlayers = (game: Game): Player[] => {
 
 export const getCurrentPlayer = (
   game: Game,
-  { omitBuyPhase }: { omitBuyPhase?: boolean } = {},
+  { omitTurnConsiderations }: { omitTurnConsiderations?: boolean } = {},
 ): Player => {
+  const playerId =
+    (!omitTurnConsiderations &&
+      (turnConsiderations.answeringOffer(game)?.currentPlayerId ||
+        turnConsiderations.answeringTrade(game)?.currentPlayerId ||
+        turnConsiderations.buyingProperty(game)?.currentPlayerId ||
+        turnConsiderations.buyingPropertyLiquidation(game)?.currentPlayerId)) ||
+    game.currentPlayerId;
+
   return game.players.find((p) => {
-    return (
-      p.id ===
-      (game.phase === GamePhase.liquidation && game.reason === LiquidationReason.buyProperty
-        ? game.pendingPrompt.currentBuyerId
-        : !omitBuyPhase &&
-          game.phase === GamePhase.prompt &&
-          game.prompt.type === PromptType.buyProperty
-        ? game.prompt.currentBuyerId
-        : game.phase === GamePhase.prompt && game.prompt.type === PromptType.answerOffer
-        ? game.prompt.targetPlayerId
-        : game.currentPlayerId)
-    );
+    return p.id === playerId;
   })!;
 };
 

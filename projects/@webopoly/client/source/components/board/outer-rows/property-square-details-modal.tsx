@@ -6,14 +6,13 @@ import {
   canSellHouse,
   Game,
   GamePhase,
+  GameUpdate,
+  GameUpdateType,
   getCurrentPlayer,
+  Player,
   PropertySquare,
   PropertyType,
   SquareModalType,
-  triggerBuildHouse,
-  triggerClearMortgage,
-  triggerMortgage,
-  triggerSellHouse,
 } from '../../../../../core';
 import {
   buyOfferSymbol,
@@ -31,7 +30,8 @@ interface PropertySquareDetailsModalProps {
   game: Game;
   setSquareModalType: (squareModalType: SquareModalType | undefined) => void;
   square: PropertySquare;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
+  windowPlayerId: Player['id'];
 }
 
 export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProps> = (props) => {
@@ -49,20 +49,23 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
       <div style={{ marginTop: 8, textAlign: 'center' }}>
         <div>
           <Button
-            disabled={!canMortgage(props.square, currentPlayer.id)}
+            disabled={!canMortgage(props.game, props.square.id, props.windowPlayerId)}
             onClick={() => {
               props.setSquareModalType(undefined);
-              props.updateGame(triggerMortgage(props.game, props.square.id));
+              props.triggerUpdate({ type: GameUpdateType.mortgage, squareId: props.square.id });
             }}
           >
             {mortgageSymbol} Mortgage
           </Button>
 
           <Button
-            disabled={!canClearMortgage(props.square, currentPlayer)}
+            disabled={!canClearMortgage(props.game, props.square.id, props.windowPlayerId)}
             onClick={() => {
               props.setSquareModalType(undefined);
-              props.updateGame(triggerClearMortgage(props.game, props.square.id));
+              props.triggerUpdate({
+                type: GameUpdateType.clearMortgage,
+                squareId: props.square.id,
+              });
             }}
           >
             {clearMortgageSymbol} Clear mortgage
@@ -72,47 +75,20 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
         {props.square.propertyType === PropertyType.street && (
           <div>
             <Button
-              disabled={
-                (props.game.phase !== GamePhase.play && props.game.phase !== GamePhase.rollDice) ||
-                !canBuildHouse(props.game, props.square, currentPlayer)
-              }
+              disabled={!canBuildHouse(props.game, props.square.id, props.windowPlayerId)}
               onClick={() => {
-                if (
-                  props.square.propertyType !== PropertyType.street ||
-                  (props.game.phase !== GamePhase.play &&
-                    props.game.phase !== GamePhase.rollDice) ||
-                  !canBuildHouse(props.game, props.square, currentPlayer)
-                ) {
-                  return;
-                }
-
                 props.setSquareModalType(undefined);
-                props.updateGame(triggerBuildHouse(props.game, props.square));
+                props.triggerUpdate({ type: GameUpdateType.buildHouse, squareId: props.square.id });
               }}
             >
               {houseSymbol} Build house
             </Button>
 
             <Button
-              disabled={
-                (props.game.phase !== GamePhase.liquidation &&
-                  props.game.phase !== GamePhase.play &&
-                  props.game.phase !== GamePhase.rollDice) ||
-                !canSellHouse(props.game, props.square, currentPlayer)
-              }
+              disabled={!canSellHouse(props.game, props.square.id, props.windowPlayerId)}
               onClick={() => {
-                if (
-                  props.square.propertyType !== PropertyType.street ||
-                  (props.game.phase !== GamePhase.liquidation &&
-                    props.game.phase !== GamePhase.play &&
-                    props.game.phase !== GamePhase.rollDice) ||
-                  !canSellHouse(props.game, props.square, currentPlayer)
-                ) {
-                  return;
-                }
-
                 props.setSquareModalType(undefined);
-                props.updateGame(triggerSellHouse(props.game, props.square));
+                props.triggerUpdate({ type: GameUpdateType.sellHouse, squareId: props.square.id });
               }}
             >
               {sellHouseSymbol} Sell house
@@ -126,7 +102,8 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
               props.game.phase === GamePhase.prompt ||
               !props.square.ownerId ||
               (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
-              currentPlayer.id === props.square.ownerId
+              props.windowPlayerId === props.square.ownerId ||
+              props.windowPlayerId !== currentPlayer.id
             }
             onClick={() => {
               props.setSquareModalType(SquareModalType.buyOffer);
@@ -140,7 +117,8 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
               props.game.phase === GamePhase.prompt ||
               !props.square.ownerId ||
               (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
-              currentPlayer.id !== props.square.ownerId
+              props.windowPlayerId !== props.square.ownerId ||
+              props.windowPlayerId !== currentPlayer.id
             }
             onClick={() => {
               props.setSquareModalType(SquareModalType.sellOffer);

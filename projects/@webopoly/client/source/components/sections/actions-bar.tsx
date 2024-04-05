@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
 import {
+  canCancelTrade,
+  canEndTurn,
+  canResume,
+  canStartTrade,
+  canTriggerTradeOffer,
   Game,
   GamePhase,
-  getCurrentPlayer,
-  getPropertyOwnersId,
-  getTradingPlayersId,
-  LiquidationReason,
+  GameUpdate,
+  GameUpdateType,
   Player,
-  resumeBuyProperty,
-  resumePendingPayment,
-  triggerCancelTrade,
-  triggerEndTurn,
-  triggerStartTrade,
-  triggerTradeOffer,
 } from '../../../../core';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
@@ -22,37 +19,30 @@ interface ActionsBarProps {
   exitGame: () => void;
   game: Game;
   setZoom: (zoom: number) => void;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
   zoom: number;
 }
 
 export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
-  const [clearGameModal, setClearGameModal] = useState(false);
+  const [exitGameModal, setExitGameModal] = useState(false);
   const [settingsModal, setSettingsModal] = useState(false);
 
-  const clearGameCloseHandler = () => setClearGameModal(false);
+  const exitGameCloseHandler = () => setExitGameModal(false);
   const settingsCloseHandler = () => setSettingsModal(false);
 
-  const currentPlayer = getCurrentPlayer(props.game);
-  const propertyOwnersId = getPropertyOwnersId(props.game);
-  const tradingPlayersId =
-    props.game.phase === GamePhase.trade ? getTradingPlayersId(props.game) : [];
-  const canTrade =
-    (props.game.phase === GamePhase.play || props.game.phase === GamePhase.rollDice) &&
-    propertyOwnersId.length > 1 &&
-    propertyOwnersId.includes(currentPlayer.id);
+  const canEnd = canEndTurn(props.game, props.windowPlayerId);
 
   return (
     <div style={{ paddingLeft: 8 }}>
-      {clearGameModal && (
-        <Modal closeHandler={clearGameCloseHandler}>
-          <Paragraph>Are you sure you want to clear the game?</Paragraph>
+      {exitGameModal && (
+        <Modal closeHandler={exitGameCloseHandler}>
+          <Paragraph>Are you sure you want to exit the game?</Paragraph>
           <div>
             <Button onClick={props.exitGame} type="delete">
               Yes
             </Button>
-            <Button onClick={clearGameCloseHandler}>No</Button>
+            <Button onClick={exitGameCloseHandler}>No</Button>
           </div>
         </Modal>
       )}
@@ -80,12 +70,12 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
           </div>
           <Button
             onClick={() => {
-              setClearGameModal(true);
+              setExitGameModal(true);
             }}
             type="delete"
             style={{ marginTop: 24 }}
           >
-            Clear
+            Exit
           </Button>
         </Modal>
       )}
@@ -93,15 +83,12 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <Button
-            disabled={props.game.phase !== GamePhase.play}
+            disabled={!canEnd}
             onClick={() => {
-              if (props.game.phase === GamePhase.play) {
-                props.updateGame(triggerEndTurn(props.game));
-              }
+              props.triggerUpdate({ type: GameUpdateType.endTurn });
             }}
             style={{
-              animation:
-                props.game.phase === GamePhase.play ? 'heart-beat-small 2s infinite' : undefined,
+              animation: canEnd ? 'heart-beat-small 2s infinite' : undefined,
             }}
           >
             End turn
@@ -110,24 +97,18 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
           {props.game.phase === GamePhase.trade ? (
             <React.Fragment>
               <Button
-                disabled={tradingPlayersId.length < 2}
+                disabled={!canTriggerTradeOffer(props.game, props.windowPlayerId)}
                 onClick={() => {
-                  if (props.game.phase !== GamePhase.trade || tradingPlayersId.length < 2) {
-                    return;
-                  }
-
-                  props.updateGame(triggerTradeOffer(props.game));
+                  props.triggerUpdate({ type: GameUpdateType.tradeOffer });
                 }}
               >
                 Continue
               </Button>
 
               <Button
+                disabled={!canCancelTrade(props.game, props.windowPlayerId)}
                 onClick={() => {
-                  if (props.game.phase !== GamePhase.trade) {
-                    return;
-                  }
-                  props.updateGame(triggerCancelTrade(props.game));
+                  props.triggerUpdate({ type: GameUpdateType.cancelTrade });
                 }}
                 type="secondary"
               >
@@ -137,34 +118,18 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
           ) : (
             <React.Fragment>
               <Button
-                disabled={!canTrade}
+                disabled={!canStartTrade(props.game, props.windowPlayerId)}
                 onClick={() => {
-                  if (
-                    (props.game.phase !== GamePhase.play &&
-                      props.game.phase !== GamePhase.rollDice) ||
-                    !canTrade
-                  ) {
-                    return;
-                  }
-
-                  props.updateGame(triggerStartTrade(props.game));
+                  props.triggerUpdate({ type: GameUpdateType.startTrade });
                 }}
               >
                 Trade
               </Button>
 
               <Button
-                disabled={props.game.phase !== GamePhase.liquidation}
+                disabled={!canResume(props.game, props.windowPlayerId)}
                 onClick={() => {
-                  if (props.game.phase !== GamePhase.liquidation) {
-                    return;
-                  }
-
-                  if (props.game.reason === LiquidationReason.buyProperty) {
-                    props.updateGame(resumeBuyProperty(props.game));
-                  } else {
-                    props.updateGame(resumePendingPayment(props.game));
-                  }
+                  props.triggerUpdate({ type: GameUpdateType.resume });
                 }}
               >
                 Resume

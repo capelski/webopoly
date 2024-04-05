@@ -6,3 +6,4 @@ export * from './player';
 export * from './property';
 export * from './serialization';
 export * from './trade';
+export * from './turn-considerations';

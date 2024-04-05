@@ -40,8 +40,12 @@ export type CardPrompt = {
   type: PromptType.card;
 };
 
-export type GenericPrompt = {
-  type: PromptType.goToJail | PromptType.jailOptions;
+export type GoToJailPrompt = {
+  type: PromptType.goToJail;
+};
+
+export type JailOptionsPrompt = {
+  type: PromptType.jailOptions;
 };
 
 export type PlayerWinPrompt = {
@@ -55,6 +59,7 @@ export type Prompt<T extends PromptType> = (
   | BuyPropertyPrompt
   | CannotPayPrompt
   | CardPrompt
-  | GenericPrompt
+  | GoToJailPrompt
+  | JailOptionsPrompt
   | PlayerWinPrompt
 ) & { type: T };

@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import {
   clearNotifications,
-  Game,
+  GameUpdate,
   OnlineErrorCodes,
   Player,
   RoomState,
@@ -27,6 +27,8 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
   const [playerToken, setPlayerToken] = useState<StringId>();
   const [room, setRoom] = useState<RoomState>();
   const [socket, setSocket] = useState<ClientSocket>();
+
+  const windowPlayerId = room?.players.find((p) => p.isOwnPlayer)?.id;
 
   const createRoom = (playerName: Player['name']) => {
     socket && socketEmit(socket, WSClientMessageType.createRoom, playerName);
@@ -56,30 +58,16 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     }
   };
 
-  const updateGame = (game: Game) => {
+  const triggerUpdate = (gameUpdate: GameUpdate) => {
     playerToken &&
       room &&
       socket &&
-      socketEmit(socket, WSClientMessageType.updateGame, {
-        game,
+      socketEmit(socket, WSClientMessageType.triggerUpdate, {
         playerToken,
         roomId: room.id,
+        update: gameUpdate,
       });
   };
-
-  const exitGame = () => {
-    // TODO Exit the room instead of clearing the game.
-
-    playerToken &&
-      room &&
-      socket &&
-      socketEmit(socket, WSClientMessageType.updateGame, {
-        game: undefined,
-        playerToken,
-        roomId: room.id,
-      });
-  };
-
   const roomEntered = (_playerToken: StringId, _room: RoomState) => {
     setPlayerToken(_playerToken);
     setRoom(_room);
@@ -113,8 +101,6 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
       roomEntered(data.playerToken, data.room);
     });
 
-    socketListen(nextSocket, WSServerMessageType.playerChanged, setRoom);
-
     socketListen(nextSocket, WSServerMessageType.roomExited, () => {
       setPlayerToken(undefined);
       setRoom(undefined);
@@ -123,7 +109,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
       localStorage.removeItem(ROOM_ID_STORAGE_KEY);
     });
 
-    socketListen(nextSocket, WSServerMessageType.gameUpdated, setRoom);
+    socketListen(nextSocket, WSServerMessageType.roomUpdated, setRoom);
 
     socketListen(nextSocket, WSServerMessageType.error, (data) => {
       const errorMessage =
@@ -154,18 +140,26 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
     <React.Fragment>
       <ToastContainer position="top-left" />
 
-      {room && room.game ? (
+      {room && room.game && windowPlayerId ? (
         <GameComponent
           clearNotifications={clearNotificationsHandler}
-          exitGame={exitGame}
+          exitGame={exitRoom}
           game={room.game}
-          updateGame={updateGame}
-          windowPlayerId={room.players.find((p) => p.isOwnPlayer)!.id!}
+          triggerUpdate={triggerUpdate}
+          windowPlayerId={windowPlayerId}
         />
       ) : room ? (
         <StartOnlineGame exitRoom={exitRoom} room={room} startGame={startGame} />
       ) : (
-        <OnlineRoomSelector cancel={props.cancel} createRoom={createRoom} joinRoom={joinRoom} />
+        <OnlineRoomSelector
+          cancel={() => {
+            localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
+            localStorage.removeItem(ROOM_ID_STORAGE_KEY);
+            props.cancel();
+          }}
+          createRoom={createRoom}
+          joinRoom={joinRoom}
+        />
       )}
     </React.Fragment>
   );

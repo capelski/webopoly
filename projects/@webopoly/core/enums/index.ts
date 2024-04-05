@@ -2,6 +2,7 @@ export * from './answer-type';
 export * from './card-type';
 export * from './event-type';
 export * from './game-phase';
+export * from './game-update-type';
 export * from './jail-medium';
 export * from './liquidation-reason';
 export * from './neighborhood';

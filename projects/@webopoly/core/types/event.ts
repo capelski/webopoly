@@ -40,9 +40,10 @@ export type FreeParkingEvent = EventBase & {
   type: EventType.freeParking;
 };
 
-export type GenericEvent<T extends EventType.goToJail | EventType.passGo> = EventBase & {
-  type: T;
-};
+export type GenericEvent<T extends EventType.goToJail | EventType.passGo | EventType.playerExit> =
+  EventBase & {
+    type: T;
+  };
 
 export type GetOutOfJailEvent = EventBase & {
   medium: JailMedium;
@@ -87,6 +88,7 @@ export type GEvent =
   | FreeParkingEvent
   | GenericEvent<EventType.goToJail>
   | GenericEvent<EventType.passGo>
+  | GenericEvent<EventType.playerExit>
   | GetOutOfJailEvent
   | PendingEvent
   | PropertyEvent;

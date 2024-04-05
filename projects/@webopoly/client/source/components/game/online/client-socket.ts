@@ -1,5 +1,10 @@
 import { Socket } from 'socket.io-client';
-import { SocketHandlers, WSClientMessages, WSServerMessages } from '../../../../../core';
+import {
+  SocketHandlers,
+  WSClientMessages,
+  WSClientMessageType,
+  WSServerMessages,
+} from '../../../../../core';
 
 export type ClientSocket = Socket<
   SocketHandlers<WSServerMessages>,
@@ -14,7 +19,14 @@ export const socketEmit = <TKey extends keyof WSClientMessages>(
   data: WSClientMessages[TKey],
 ) => {
   if (logEvents) {
-    console.log(`${event} emitted`, data);
+    console.log(
+      `${event} ${
+        event === WSClientMessageType.triggerUpdate
+          ? (data as WSClientMessages[WSClientMessageType.triggerUpdate]).update.type
+          : ''
+      } emitted`,
+      data,
+    );
   }
 
   (socket.emit as (event: TKey, data: WSClientMessages[TKey]) => void)(event, data);

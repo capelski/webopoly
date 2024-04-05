@@ -94,10 +94,6 @@ export const triggerTradeOffer = (
 ): GamePromptPhase<PromptType.answerTrade> | GameTradePhase => {
   const currentPlayer = getCurrentPlayer(game);
 
-  if (game.ownSquaresId.length === 0 || !game.other.ownerId || game.other.squaresId.length === 0) {
-    return game;
-  }
-
   return {
     ...game,
     phase: GamePhase.prompt,
@@ -105,7 +101,7 @@ export const triggerTradeOffer = (
       playerId: currentPlayer.id,
       playerPropertiesId: game.ownSquaresId,
       previous: game.previousPhase,
-      targetPlayerId: game.other.ownerId,
+      targetPlayerId: game.other.ownerId!,
       targetPropertiesId: game.other.squaresId,
       type: PromptType.answerTrade,
     },
@@ -117,10 +113,6 @@ export const triggerTradeSelectionToggle = (
   square: PropertySquare,
 ): GameTradePhase => {
   const currentPlayer = getCurrentPlayer(game);
-
-  if (!square.ownerId) {
-    return game;
-  }
 
   const isSelected = isSelectedForTrade(game, square);
   const isOwnSquare = currentPlayer.id === square.ownerId;

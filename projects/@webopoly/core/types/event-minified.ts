@@ -72,7 +72,7 @@ export type FreeParkingEventMinified = EventBaseMinified & {
 
 export type GenericEventMinified = EventBaseMinified & {
   /** type */
-  t: GenericEvent<EventType.goToJail | EventType.passGo>['type'];
+  t: GenericEvent<EventType.goToJail | EventType.passGo | EventType.playerExit>['type'];
 };
 
 export type GetOutOfJailEventMinified = EventBaseMinified & {

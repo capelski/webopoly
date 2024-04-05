@@ -1,10 +1,11 @@
 import React from 'react';
-import { Game } from '../../../../core';
+import { Game, GameUpdate, Player } from '../../../../core';
 
 export interface RowComponentDefinitionProps {
   game: Game;
   isLandscape: boolean;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
+  windowPlayerId: Player['id'];
   zoom: number;
 }
 

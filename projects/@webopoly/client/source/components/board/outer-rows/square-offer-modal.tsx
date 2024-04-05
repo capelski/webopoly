@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import {
+  canTriggerBuyingOffer,
+  canTriggerSellingOffer,
   currencySymbol,
   Game,
-  GamePhase,
+  GameUpdate,
+  GameUpdateType,
   getCurrentPlayer,
   getOtherPlayers,
   getPlayerById,
   Player,
   PropertySquare,
   SquareModalType,
-  triggerBuyingOffer,
-  triggerSellingOffer,
 } from '../../../../../core';
 import { Button } from '../../common/button';
 import { Input } from '../../common/input';
@@ -22,7 +23,8 @@ interface SquareOfferModalProps {
   setSquareModalType: (squareModalType: undefined) => void;
   square: PropertySquare;
   squareModalType: SquareModalType.buyOffer | SquareModalType.sellOffer;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
+  windowPlayerId: Player['id'];
 }
 
 export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
@@ -85,16 +87,29 @@ export const SquareOfferModal: React.FC<SquareOfferModalProps> = (props) => {
 
       <div style={{ marginBottom: 16 }}>
         <Button
-          disabled={offer <= 0 || (isSellOffer && !targetPlayerId)}
+          disabled={
+            !(isSellOffer
+              ? canTriggerSellingOffer(
+                  props.game,
+                  props.square.id,
+                  offer,
+                  targetPlayerId,
+                  props.windowPlayerId,
+                )
+              : canTriggerBuyingOffer(props.game, props.square.id, offer, props.windowPlayerId))
+          }
           onClick={() => {
-            if (props.game.phase !== GamePhase.prompt && props.game.phase !== GamePhase.trade) {
-              props.setSquareModalType(undefined);
-              props.updateGame(
-                isSellOffer
-                  ? triggerSellingOffer(props.game, props.square, offer, targetPlayerId!)
-                  : triggerBuyingOffer(props.game, props.square, offer),
-              );
-            }
+            props.setSquareModalType(undefined);
+            props.triggerUpdate(
+              isSellOffer
+                ? {
+                    type: GameUpdateType.sellingOffer,
+                    amount: offer,
+                    squareId: props.square.id,
+                    targetPlayerId: targetPlayerId!,
+                  }
+                : { type: GameUpdateType.buyingOffer, amount: offer, squareId: props.square.id },
+            );
           }}
         >
           Send offer

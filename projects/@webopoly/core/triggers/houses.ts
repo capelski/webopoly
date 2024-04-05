@@ -1,11 +1,5 @@
 import { EventType, LiquidationReason } from '../enums';
-import {
-  canBuildHouse,
-  canSellHouse,
-  getBuildHouseAmount,
-  getCurrentPlayer,
-  getSellHouseAmount,
-} from '../logic';
+import { getBuildHouseAmount, getCurrentPlayer, getSellHouseAmount } from '../logic';
 import { GameLiquidationPhase, GamePlayPhase, GameRollDicePhase, StreetSquare } from '../types';
 
 export const triggerBuildHouse = (
@@ -13,9 +7,6 @@ export const triggerBuildHouse = (
   street: StreetSquare,
 ): GamePlayPhase | GameRollDicePhase => {
   const currentPlayer = getCurrentPlayer(game);
-  if (!canBuildHouse(game, street, currentPlayer)) {
-    return game;
-  }
 
   return {
     ...game,
@@ -46,9 +37,6 @@ export const triggerSellHouse = (
   street: StreetSquare,
 ): GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase => {
   const currentPlayer = getCurrentPlayer(game);
-  if (!canSellHouse(game, street, currentPlayer)) {
-    return game;
-  }
 
   return {
     ...game,

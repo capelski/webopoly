@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Game, getCurrentPlayer, Player } from '../../../../core';
+import { Game, GameUpdate, getCurrentPlayer, Player } from '../../../../core';
 import { Board } from '../board/board';
 import { Players } from '../player/players';
 import { ActionsBar } from '../sections/actions-bar';
@@ -12,7 +12,7 @@ interface GameComponentProps {
   clearNotifications: () => void;
   exitGame: () => void;
   game: Game;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
 }
 
@@ -29,7 +29,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
       <PromptContainer
         exitGame={props.exitGame}
         game={props.game}
-        updateGame={props.updateGame}
+        triggerUpdate={props.triggerUpdate}
         windowPlayerId={props.windowPlayerId}
       />
 
@@ -45,7 +45,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
         <Board
           game={props.game}
           isLandscape={isLandscape}
-          updateGame={props.updateGame}
+          triggerUpdate={props.triggerUpdate}
           windowPlayerId={props.windowPlayerId}
           zoom={zoom}
         />
@@ -54,7 +54,7 @@ export const GameComponent: React.FC<GameComponentProps> = (props) => {
             exitGame={props.exitGame}
             game={props.game}
             setZoom={setZoom}
-            updateGame={props.updateGame}
+            triggerUpdate={props.triggerUpdate}
             windowPlayerId={props.windowPlayerId}
             zoom={zoom}
           />

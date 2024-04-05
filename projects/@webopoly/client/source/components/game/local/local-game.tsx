@@ -1,5 +1,14 @@
 import React from 'react';
-import { clearNotifications, deserializeGame, Game, serializeGame } from '../../../../../core';
+import {
+  clearNotifications,
+  deserializeGame,
+  Game,
+  GameUpdate,
+  getCurrentPlayer,
+  Player,
+  serializeGame,
+  triggerUpdate,
+} from '../../../../../core';
 import { GameComponent } from '../game';
 import { StartLocalGame } from './start-local-game';
 
@@ -31,6 +40,12 @@ export class LocalGame extends React.Component<LocalGameProps> {
     }
   }
 
+  triggerUpdateHandler(gameUpdate: GameUpdate, playerId: Player['id']) {
+    if (this.state.game) {
+      triggerUpdate(this.state.game, gameUpdate, playerId, this.updateGame.bind(this));
+    }
+  }
+
   updateGame(game: Game) {
     this.setState({ game });
     localStorage.setItem(LOCAL_GAME_STORAGE_KEY, serializeGame(game));
@@ -42,16 +57,21 @@ export class LocalGame extends React.Component<LocalGameProps> {
   }
 
   render() {
-    return this.state.game ? (
+    if (!this.state.game) {
+      return <StartLocalGame cancel={this.props.cancel} setGame={this.updateGame.bind(this)} />;
+    }
+    const currentPlayer = getCurrentPlayer(this.state.game);
+
+    return (
       <GameComponent
         clearNotifications={this.clearNotificationsHandler.bind(this)}
         exitGame={this.exitGame.bind(this)}
         game={this.state.game}
-        updateGame={this.updateGame.bind(this)}
-        windowPlayerId={this.state.game.currentPlayerId}
+        triggerUpdate={(gameUpdate: GameUpdate) =>
+          this.triggerUpdateHandler(gameUpdate, currentPlayer.id)
+        }
+        windowPlayerId={currentPlayer.id}
       />
-    ) : (
-      <StartLocalGame cancel={this.props.cancel} setGame={this.updateGame.bind(this)} />
     );
   }
 }

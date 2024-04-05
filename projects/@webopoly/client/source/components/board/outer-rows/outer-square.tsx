@@ -1,17 +1,19 @@
 import React, { CSSProperties, useState } from 'react';
 import {
+  canToggleTradeSelection,
   Game,
   GamePhase,
+  GameUpdate,
+  GameUpdateType,
   getCurrentPlayer,
   getPlayerById,
   isSelectedForTrade,
-  isTradableSquare,
+  Player,
   PropertyStatus,
   PropertyType,
   Square,
   SquareModalType,
   SquareType,
-  triggerTradeSelectionToggle,
 } from '../../../../../core';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
@@ -26,7 +28,8 @@ export type OuterSquareProps = {
   isLandscape: boolean;
   square: Square;
   style?: CSSProperties;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
+  windowPlayerId: Player['id'];
   zoom: number;
 };
 
@@ -47,10 +50,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
       ? getPlayerById(props.game, props.square.ownerId)
       : undefined;
 
-  const isTradeable =
-    props.game.phase === GamePhase.trade &&
-    props.square.type === SquareType.property &&
-    isTradableSquare(props.game, props.square);
+  const isTradeable = canToggleTradeSelection(props.game, props.square.id, props.windowPlayerId);
   const isSelected =
     props.game.phase === GamePhase.trade &&
     props.square.type === SquareType.property &&
@@ -69,8 +69,11 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
     <div
       onClick={() => {
         if (props.game.phase === GamePhase.trade) {
-          if (isTradeable && props.square.type === SquareType.property) {
-            props.updateGame(triggerTradeSelectionToggle(props.game, props.square));
+          if (isTradeable) {
+            props.triggerUpdate({
+              type: GameUpdateType.toggleTradeSelection,
+              squareId: props.square.id,
+            });
           }
         } else {
           if (props.square.type === SquareType.property) {
@@ -106,7 +109,8 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
               game={props.game}
               setSquareModalType={setSquareModalType}
               square={props.square}
-              updateGame={props.updateGame}
+              triggerUpdate={props.triggerUpdate}
+              windowPlayerId={props.windowPlayerId}
             />
           )}
 
@@ -117,7 +121,8 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
               setSquareModalType={setSquareModalType}
               square={props.square}
               squareModalType={squareModalType}
-              updateGame={props.updateGame}
+              triggerUpdate={props.triggerUpdate}
+              windowPlayerId={props.windowPlayerId}
             />
           )}
 

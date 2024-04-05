@@ -16,7 +16,7 @@ export const getTradingPlayersId = (game: GameTradePhase): Player['id'][] => {
   const currentPlayer = getCurrentPlayer(game);
 
   const ownId = game.ownSquaresId.length > 0 ? [currentPlayer.id] : [];
-  const otherId = game.other.ownerId ? [game.other.ownerId] : [];
+  const otherId = game.other.ownerId && game.other.squaresId.length > 0 ? [game.other.ownerId] : [];
 
   return [...ownId, ...otherId];
 };

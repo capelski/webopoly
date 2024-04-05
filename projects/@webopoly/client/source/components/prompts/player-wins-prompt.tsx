@@ -16,8 +16,9 @@ export const PlayerWinsPrompt: PromptInterface<PromptType.playerWins> = (props) 
         onClick={() => {
           props.exitGame();
         }}
+        type="delete"
       >
-        Clear game
+        Exit
       </Button>
     </React.Fragment>
   );

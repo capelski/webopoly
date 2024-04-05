@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import {
+  canRollDice,
   diceToString,
+  diceTransitionDuration,
   Game,
   GamePhase,
-  getCurrentPlayer,
-  isDoublesRoll,
-  maxTurnsInJail,
+  GameUpdate,
+  GameUpdateType,
   Player,
   TransitionType,
-  triggerDiceRoll,
-  triggerFirstPlayerTransition,
-  triggerLastTurnInJail,
-  triggerNextPlayerTransition,
-  triggerRemainInJail,
-  triggerRollDoublesInJail,
 } from '../../../../core';
-import { diceSymbol, diceTransitionDuration, playerTransitionDuration } from '../../parameters';
+import { diceSymbol } from '../../parameters';
 import { Grid } from './grid';
 import { InnerBottomRow } from './inner-rows/inner-bottom-row';
 import { InnerLeftRow } from './inner-rows/inner-left-row';
@@ -29,7 +24,7 @@ import { OuterTopRow } from './outer-rows/outer-top-row';
 interface BoardProps {
   game: Game;
   isLandscape: boolean;
-  updateGame: (game: Game) => void;
+  triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
   zoom: number;
 }
@@ -37,10 +32,7 @@ interface BoardProps {
 export const Board: React.FC<BoardProps> = (props) => {
   const [animateDice, setAnimateDice] = useState(false);
 
-  const currentPlayer = getCurrentPlayer(props.game);
-
-  const canRollDice =
-    props.game.phase === GamePhase.rollDice && props.windowPlayerId === currentPlayer.id;
+  const canRoll = canRollDice(props.game, props.windowPlayerId);
 
   useEffect(() => {
     if (props.game.notifications.length) {
@@ -48,45 +40,15 @@ export const Board: React.FC<BoardProps> = (props) => {
       return;
     }
 
-    // TODO Do not trigger full updates for transitions, as they storm WS
-    if (props.game.phase === GamePhase.uiTransition) {
-      const { game } = props;
-
-      if (game.transitionType === TransitionType.player) {
-        setTimeout(() => {
-          props.updateGame(triggerNextPlayerTransition(game));
-        }, playerTransitionDuration * 1000);
-      } else if (game.transitionType === TransitionType.dice) {
-        setAnimateDice(true);
-        setTimeout(() => {
-          setAnimateDice(false);
-          setTimeout(() => {
-            props.updateGame(triggerFirstPlayerTransition(game));
-          }, diceTransitionDuration * 1000);
-        }, diceTransitionDuration * 1000);
-      } else if (game.transitionType === TransitionType.jailDiceRoll) {
-        setAnimateDice(true);
-        setTimeout(() => {
-          setAnimateDice(false);
-          setTimeout(() => {
-            const player = getCurrentPlayer(game);
-            const isDoubles = isDoublesRoll(game.dice);
-            const isLastTurnInJail = player.turnsInJail === maxTurnsInJail - 1;
-
-            const nextGame = isDoubles
-              ? triggerRollDoublesInJail(game)
-              : isLastTurnInJail
-              ? triggerLastTurnInJail(game)
-              : triggerRemainInJail(game);
-
-            props.updateGame(nextGame);
-          }, diceTransitionDuration * 1000);
-        }, diceTransitionDuration * 1000);
-      } else if (game.transitionType === TransitionType.getOutOfJail) {
-        setTimeout(() => {
-          props.updateGame(triggerFirstPlayerTransition(game));
-        }, playerTransitionDuration * 1000);
-      }
+    if (
+      props.game.phase === GamePhase.uiTransition &&
+      (props.game.transitionType === TransitionType.dice ||
+        props.game.transitionType === TransitionType.jailDiceRoll)
+    ) {
+      setAnimateDice(true);
+      setTimeout(() => {
+        setAnimateDice(false);
+      }, diceTransitionDuration * 1000);
     }
   }, [props.game]);
 
@@ -136,18 +98,18 @@ export const Board: React.FC<BoardProps> = (props) => {
             >
               <div
                 onClick={() => {
-                  if (canRollDice && props.game.phase === GamePhase.rollDice) {
-                    props.updateGame(triggerDiceRoll(props.game));
+                  if (canRoll) {
+                    props.triggerUpdate({ type: GameUpdateType.rollDice });
                   }
                 }}
                 style={{
-                  animation: canRollDice
+                  animation: canRoll
                     ? 'heart-beat 1.5s infinite'
                     : animateDice
                     ? `roll ${diceTransitionDuration}s infinite`
                     : undefined,
                   borderRadius: 15,
-                  cursor: canRollDice ? 'pointer' : undefined,
+                  cursor: canRoll ? 'pointer' : undefined,
                   marginBottom: 8,
                 }}
               >

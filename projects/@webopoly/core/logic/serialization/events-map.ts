@@ -125,6 +125,7 @@ export const eventsMap: {
     }),
     restore: (e) => ({ ...baseRestorer(e), amount: e.a, landlordId: e.l }),
   },
+  [EventType.playerExit]: { minify: baseMinifier, restore: baseRestorer },
   [EventType.sellHouse]: <Mapper<EventType.sellHouse>>propertyMappers,
   [EventType.turnInJail]: {
     minify: (event) => ({ ...baseMinifier(event), tj: event.turnsInJail }),

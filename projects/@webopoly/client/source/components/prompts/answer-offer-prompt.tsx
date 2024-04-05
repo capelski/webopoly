@@ -1,12 +1,12 @@
 import React from 'react';
 import {
+  canAnswerOffer,
   currencySymbol,
+  GameUpdateType,
   getPlayerById,
   getSquareById,
   OfferType,
   PromptType,
-  triggerAcceptOffer,
-  triggerDeclineOffer,
 } from '../../../../core';
 import { buyOfferSymbol, sellOfferSymbol } from '../../parameters';
 import { Button } from '../common/button';
@@ -19,6 +19,7 @@ export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props
   const square = getSquareById(props.game, props.game.prompt.propertyId);
   const targetPlayer = getPlayerById(props.game, props.game.prompt.targetPlayerId);
   const isBuyingOffer = props.game.prompt.offerType === OfferType.buy;
+  const canAnswer = canAnswerOffer(props.game, props.windowPlayerId);
 
   return (
     <div style={{ textAlign: 'center' }}>
@@ -31,15 +32,17 @@ export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props
       </Paragraph>
       <div>
         <Button
+          disabled={!canAnswer}
           onClick={() => {
-            props.updateGame(triggerAcceptOffer(props.game));
+            props.triggerUpdate({ type: GameUpdateType.acceptOffer });
           }}
         >
           Accept
         </Button>
         <Button
+          disabled={!canAnswer}
           onClick={() => {
-            props.updateGame(triggerDeclineOffer(props.game));
+            props.triggerUpdate({ type: GameUpdateType.declineOffer });
           }}
           type="delete"
         >

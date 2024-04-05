@@ -1,11 +1,11 @@
 import React from 'react';
 import {
+  canAnswerTrade,
+  GameUpdateType,
   getPlayerById,
   getSquareById,
   PromptType,
   PropertySquare,
-  triggerAcceptTrade,
-  triggerDeclineTrade,
 } from '../../../../core';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
@@ -22,29 +22,32 @@ export const AnswerTradePrompt: PromptInterface<PromptType.answerTrade> = (props
   const targetProperties = props.game.prompt.targetPropertiesId.map((pId) =>
     getSquareById(props.game, pId),
   ) as PropertySquare[];
+  const canAnswer = canAnswerTrade(props.game, props.windowPlayerId);
 
   return (
     <div style={{ textAlign: 'center' }}>
       <Title>{targetPlayer.name}</Title>
       <Paragraph>{initiatorPlayer.name} is offering</Paragraph>
       {initiatorProperties.map((square) => {
-        return <SquareTitle game={props.game} mode="trade" square={square} />;
+        return <SquareTitle game={props.game} key={square.id} mode="trade" square={square} />;
       })}
       <Paragraph>for</Paragraph>
       {targetProperties.map((square) => {
-        return <SquareTitle game={props.game} mode="trade" square={square} />;
+        return <SquareTitle game={props.game} key={square.id} mode="trade" square={square} />;
       })}
       <div style={{ marginTop: 24 }}>
         <Button
+          disabled={!canAnswer}
           onClick={() => {
-            props.updateGame(triggerAcceptTrade(props.game));
+            props.triggerUpdate({ type: GameUpdateType.acceptTrade });
           }}
         >
           Accept
         </Button>
         <Button
+          disabled={!canAnswer}
           onClick={() => {
-            props.updateGame(triggerDeclineTrade(props.game));
+            props.triggerUpdate({ type: GameUpdateType.declineTrade });
           }}
           type="delete"
         >

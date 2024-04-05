@@ -1,11 +1,11 @@
 import React from 'react';
 import {
+  canDeclareBankruptcy,
+  canLiquidatePendingPayment,
   currencySymbol,
-  getCurrentPlayer,
+  GameUpdateType,
   getPendingAmount,
   PromptType,
-  triggerBankruptcy,
-  triggerPendingPaymentLiquidation,
 } from '../../../../core';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
@@ -13,8 +13,6 @@ import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) => {
-  const currentPlayer = getCurrentPlayer(props.game);
-
   return (
     <div style={{ textAlign: 'center' }}>
       <Title>Not enough money</Title>
@@ -25,15 +23,17 @@ export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) =>
       <div style={{ marginBottom: 16 }}></div>
       <div>
         <Button
+          disabled={!canLiquidatePendingPayment(props.game, props.windowPlayerId)}
           onClick={() => {
-            props.updateGame(triggerPendingPaymentLiquidation(props.game));
+            props.triggerUpdate({ type: GameUpdateType.pendingPaymentLiquidation });
           }}
         >
           Liquidate properties
         </Button>
         <Button
+          disabled={!canDeclareBankruptcy(props.game, props.windowPlayerId)}
           onClick={() => {
-            props.updateGame(triggerBankruptcy(props.game, currentPlayer.id));
+            props.triggerUpdate({ type: GameUpdateType.bankruptcy });
           }}
         >
           Declare bankruptcy
