@@ -184,8 +184,8 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
         broadcastRoomUpdate(room, data.playerToken);
 
         /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
-        room.game.notifications = [];
         room.game.eventHistory = [...room.game.notifications.reverse(), ...room.game.eventHistory];
+        room.game.notifications = [];
       } else {
         broadcastRoomUpdate(room, data.playerToken);
       }
@@ -254,11 +254,11 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       broadcastRoomUpdate(room);
 
       /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
-      updatedGame.notifications = [];
       updatedGame.eventHistory = [
         ...updatedGame.notifications.reverse(),
         ...updatedGame.eventHistory,
       ];
+      updatedGame.notifications = [];
     });
 
     return null;
