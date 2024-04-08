@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { RoomState } from '../../../../../core';
+import { gameIdQueryStringParameter } from '../../../parameters';
 import { Button } from '../../common/button';
 import { Paragraph } from '../../common/paragraph';
 
@@ -42,7 +43,9 @@ export const StartOnlineGame: React.FC<StartOnlineGameProps> = (props) => {
           <span>{props.room.id}</span>
           <Button
             onClick={() => {
-              navigator.clipboard.writeText(props.room.id);
+              const url = new URL(window.location.origin);
+              url.searchParams.append(gameIdQueryStringParameter, props.room.id);
+              navigator.clipboard.writeText(url.toString());
               setCopied(true);
             }}
             style={{ marginLeft: 8 }}

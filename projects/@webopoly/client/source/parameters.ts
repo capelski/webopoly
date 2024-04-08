@@ -14,6 +14,8 @@ export const stationSymbol = '🚂';
 export const surpriseSymbol = '⭐️';
 export const taxSymbol = '💰';
 
+export const gameIdQueryStringParameter = 'gameId';
+
 export const zIndexes = {
   activePlayer: 10,
   modal: 20,

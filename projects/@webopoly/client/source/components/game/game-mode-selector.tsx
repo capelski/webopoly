@@ -1,25 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Button } from '../common/button';
 
 export type GameMode = 'local' | 'online';
 
 export type GameModeProps = {
+  isOnlineAvailable: boolean;
   setMode: (mode: GameMode) => void;
 };
 
 export const GameModeSelector: React.FC<GameModeProps> = (props) => {
-  const [isOnlineAvailable, setIsOnlineAvailable] = useState(false);
-
-  useEffect(() => {
-    try {
-      fetch('/api/system/is-up').then((response) => {
-        if (response.ok) {
-          setIsOnlineAvailable(true);
-        }
-      });
-    } catch {}
-  }, []);
-
   return (
     <div
       style={{
@@ -30,7 +19,7 @@ export const GameModeSelector: React.FC<GameModeProps> = (props) => {
       }}
     >
       <Button
-        disabled={!isOnlineAvailable}
+        disabled={!props.isOnlineAvailable}
         onClick={() => {
           props.setMode('online');
         }}

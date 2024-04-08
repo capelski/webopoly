@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Player, RoomState } from '../../../../../core';
+import { getGameIdParameter } from '../../../url-params';
 import { Button } from '../../common/button';
 import { Input } from '../../common/input';
 import { Paragraph } from '../../common/paragraph';
@@ -16,6 +17,13 @@ export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
 
   const createRoomEnabled = playerName && playerName.length > 2 && !roomId;
   const joinRoomEnabled = playerName && playerName.length > 2 && !!roomId;
+
+  useEffect(() => {
+    const roomIdParam = getGameIdParameter();
+    if (roomIdParam) {
+      setRoomId(roomIdParam);
+    }
+  }, []);
 
   return (
     <div
