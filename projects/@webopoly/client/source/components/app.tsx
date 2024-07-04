@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getGameIdParameter } from '../url-params';
 import { GameMode, GameModeSelector } from './game/game-mode-selector';
 import { LocalGame } from './game/local/local-game';
-import { OnlineGame } from './game/online/online-game';
+import { ServerGame } from './game/server/server-game';
 
 const GAME_MODE_STORAGE_KEY = 'gameMode';
 
 export const App: React.FC = () => {
-  const [isOnlineAvailable, setIsOnlineAvailable] = useState(false);
+  const [isServerAvailable, setIsServerAvailable] = useState(false);
   const [mode, setMode] = useState<GameMode>();
 
   useEffect(() => {
@@ -19,10 +19,10 @@ export const App: React.FC = () => {
     try {
       fetch('/api/system/is-up').then((response) => {
         if (response.ok) {
-          setIsOnlineAvailable(true);
+          setIsServerAvailable(true);
           const roomIdParam = getGameIdParameter();
           if (roomIdParam) {
-            setMode('online');
+            setMode('server');
           }
         }
       });
@@ -41,9 +41,9 @@ export const App: React.FC = () => {
 
   return mode === 'local' ? (
     <LocalGame cancel={cancel} />
-  ) : mode === 'online' ? (
-    <OnlineGame cancel={cancel} />
+  ) : mode === 'server' ? (
+    <ServerGame cancel={cancel} />
   ) : (
-    <GameModeSelector isOnlineAvailable={isOnlineAvailable} setMode={updateMode} />
+    <GameModeSelector isServerAvailable={isServerAvailable} setMode={updateMode} />
   );
 };

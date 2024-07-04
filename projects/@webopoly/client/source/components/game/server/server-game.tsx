@@ -4,26 +4,26 @@ import { io } from 'socket.io-client';
 import {
   clearNotifications,
   GameUpdate,
-  OnlineErrorCodes,
   Player,
   RoomState,
+  ServerErrorCodes,
   StringId,
   WSClientMessageType,
   WSServerMessageType,
 } from '../../../../../core';
 import { GameComponent } from '../game';
 import { ClientSocket, socketEmit, socketListen } from './client-socket';
-import { OnlineRoomSelector } from './online-room-selector';
-import { StartOnlineGame } from './start-online-game';
+import { ServerRoomSelector } from './server-room-selector';
+import { StartServerGame } from './start-server-game';
 
 const PLAYER_TOKEN_STORAGE_KEY = 'playerToken';
 const ROOM_ID_STORAGE_KEY = 'roomId';
 
-export type OnlineGameProps = {
+export type ServerGameProps = {
   cancel: () => void;
 };
 
-export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
+export const ServerGame: React.FC<ServerGameProps> = (props) => {
   const [playerToken, setPlayerToken] = useState<StringId>();
   const [room, setRoom] = useState<RoomState>();
   const [socket, setSocket] = useState<ClientSocket>();
@@ -113,9 +113,9 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
 
     socketListen(nextSocket, WSServerMessageType.error, (data) => {
       const errorMessage =
-        data.code === OnlineErrorCodes.DUPLICATE_PLAYER_NAME
+        data.code === ServerErrorCodes.DUPLICATE_PLAYER_NAME
           ? 'Duplicate player name'
-          : data.code === OnlineErrorCodes.GAME_ALREADY_STARTED
+          : data.code === ServerErrorCodes.GAME_ALREADY_STARTED
           ? 'Game has already started'
           : data.code;
 
@@ -149,9 +149,9 @@ export const OnlineGame: React.FC<OnlineGameProps> = (props) => {
           windowPlayerId={windowPlayerId}
         />
       ) : room ? (
-        <StartOnlineGame exitRoom={exitRoom} room={room} startGame={startGame} />
+        <StartServerGame exitRoom={exitRoom} room={room} startGame={startGame} />
       ) : (
-        <OnlineRoomSelector
+        <ServerRoomSelector
           cancel={() => {
             localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
             localStorage.removeItem(ROOM_ID_STORAGE_KEY);

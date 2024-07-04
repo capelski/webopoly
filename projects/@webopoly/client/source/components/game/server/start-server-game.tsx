@@ -4,13 +4,13 @@ import { gameIdQueryStringParameter } from '../../../parameters';
 import { Button } from '../../common/button';
 import { Paragraph } from '../../common/paragraph';
 
-interface StartOnlineGameProps {
+interface StartServerGameProps {
   exitRoom: () => void;
   room: RoomState;
   startGame: () => void;
 }
 
-export const StartOnlineGame: React.FC<StartOnlineGameProps> = (props) => {
+export const StartServerGame: React.FC<StartServerGameProps> = (props) => {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {

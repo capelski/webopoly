@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '../common/button';
 
-export type GameMode = 'local' | 'online';
+export type GameMode = 'local' | 'server';
 
 export type GameModeProps = {
-  isOnlineAvailable: boolean;
+  isServerAvailable: boolean;
   setMode: (mode: GameMode) => void;
 };
 
@@ -19,12 +19,12 @@ export const GameModeSelector: React.FC<GameModeProps> = (props) => {
       }}
     >
       <Button
-        disabled={!props.isOnlineAvailable}
+        disabled={!props.isServerAvailable}
         onClick={() => {
-          props.setMode('online');
+          props.setMode('server');
         }}
       >
-        Play online
+        Server game
       </Button>
 
       <Button
@@ -32,7 +32,7 @@ export const GameModeSelector: React.FC<GameModeProps> = (props) => {
           props.setMode('local');
         }}
       >
-        Play local
+        Local game
       </Button>
     </div>
   );

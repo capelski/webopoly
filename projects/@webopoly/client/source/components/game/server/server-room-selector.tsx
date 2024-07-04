@@ -5,13 +5,13 @@ import { Button } from '../../common/button';
 import { Input } from '../../common/input';
 import { Paragraph } from '../../common/paragraph';
 
-interface OnlineRoomSelector {
+interface ServerRoomSelectorProps {
   cancel: () => void;
   createRoom: (playerName: Player['name']) => void;
   joinRoom: (playerName: Player['name'], roomId: RoomState['id']) => void;
 }
 
-export const OnlineRoomSelector: React.FC<OnlineRoomSelector> = (props) => {
+export const ServerRoomSelector: React.FC<ServerRoomSelectorProps> = (props) => {
   const [roomId, setRoomId] = useState('');
   const [playerName, setPlayerName] = useState('');
 

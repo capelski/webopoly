@@ -9,7 +9,7 @@ import {
 import { nanoid } from 'nanoid';
 import {
   Game,
-  OnlineErrorCodes,
+  ServerErrorCodes,
   startGame,
   triggerRemovePlayer,
   triggerUpdate,
@@ -47,7 +47,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!playerName) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.createRoom,
-        code: OnlineErrorCodes.MISSING_PLAYER_NAME,
+        code: ServerErrorCodes.MISSING_PLAYER_NAME,
       });
     }
 
@@ -78,7 +78,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!data.playerName) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.joinRoom,
-        code: OnlineErrorCodes.MISSING_PLAYER_NAME,
+        code: ServerErrorCodes.MISSING_PLAYER_NAME,
       });
     }
 
@@ -86,13 +86,13 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.joinRoom,
-        code: OnlineErrorCodes.INVALID_ROOM_ID,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
       });
     }
 
     if (room.game) {
       return replyMessage(WSServerMessageType.error, {
-        code: OnlineErrorCodes.GAME_ALREADY_STARTED,
+        code: ServerErrorCodes.GAME_ALREADY_STARTED,
         event: WSClientMessageType.joinRoom,
       });
     }
@@ -100,7 +100,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const duplicateName = room.players.find((p) => p.name === data.playerName);
     if (duplicateName) {
       return replyMessage(WSServerMessageType.error, {
-        code: OnlineErrorCodes.DUPLICATE_PLAYER_NAME,
+        code: ServerErrorCodes.DUPLICATE_PLAYER_NAME,
         event: WSClientMessageType.joinRoom,
       });
     }
@@ -134,7 +134,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.retrieveRoom,
-        code: OnlineErrorCodes.INVALID_ROOM_ID,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
       });
     }
 
@@ -142,7 +142,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!player) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.retrieveRoom,
-        code: OnlineErrorCodes.INVALID_PLAYER_TOKEN,
+        code: ServerErrorCodes.INVALID_PLAYER_TOKEN,
       });
     }
 
@@ -163,7 +163,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.exitRoom,
-        code: OnlineErrorCodes.INVALID_ROOM_ID,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
       });
     }
 
@@ -171,7 +171,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (playerIndex === -1) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.exitRoom,
-        code: OnlineErrorCodes.INVALID_PLAYER_TOKEN,
+        code: ServerErrorCodes.INVALID_PLAYER_TOKEN,
       });
     }
 
@@ -206,7 +206,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.startGame,
-        code: OnlineErrorCodes.INVALID_ROOM_ID,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
       });
     }
 
@@ -233,7 +233,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.triggerUpdate,
-        code: OnlineErrorCodes.INVALID_ROOM_ID,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
       });
     }
 
@@ -241,7 +241,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (!player) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.triggerUpdate,
-        code: OnlineErrorCodes.INVALID_PLAYER_TOKEN,
+        code: ServerErrorCodes.INVALID_PLAYER_TOKEN,
       });
     }
 

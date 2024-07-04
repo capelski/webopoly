@@ -1,9 +1,9 @@
-import { OnlineErrorCodes, WSClientMessageType, WSServerMessageType } from '../enums';
+import { ServerErrorCodes, WSClientMessageType, WSServerMessageType } from '../enums';
 import { StringId } from './id';
 import { RoomState } from './room-state';
 
 export type WSServerMessages = {
-  [WSServerMessageType.error]: { code: OnlineErrorCodes; event: WSClientMessageType };
+  [WSServerMessageType.error]: { code: ServerErrorCodes; event: WSClientMessageType };
   [WSServerMessageType.roomEntered]: { playerToken: StringId; room: RoomState };
   [WSServerMessageType.roomExited]: undefined;
   [WSServerMessageType.roomRetrieved]: { playerToken: StringId; room: RoomState };
