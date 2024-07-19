@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { Player, RoomState } from '../../../../../core';
-import { getGameIdParameter } from '../../../url-params';
-import { Button } from '../../common/button';
-import { Input } from '../../common/input';
-import { Paragraph } from '../../common/paragraph';
+import { RoomState } from '../../../../core';
+import { getGameIdParameter } from '../../url-params';
+import { Button } from '../common/button';
+import { Input } from '../common/input';
+import { Paragraph } from '../common/paragraph';
+import { GameMode } from './game-mode';
 
-interface ServerRoomSelectorProps {
+interface RoomSelectorProps {
   cancel: () => void;
-  createRoom: (playerName: Player['name']) => void;
-  joinRoom: (playerName: Player['name'], roomId: RoomState['id']) => void;
+  createRoom: () => void;
+  gameMode: GameMode.peers | GameMode.server;
+  joinRoom: (roomId: RoomState['id']) => void;
 }
 
-export const ServerRoomSelector: React.FC<ServerRoomSelectorProps> = (props) => {
+export const RoomSelector: React.FC<RoomSelectorProps> = (props) => {
   const [roomId, setRoomId] = useState('');
-  const [playerName, setPlayerName] = useState('');
 
-  const createRoomEnabled = playerName && playerName.length > 2 && !roomId;
-  const joinRoomEnabled = playerName && playerName.length > 2 && !!roomId;
+  const createRoomEnabled = !roomId;
+  const joinRoomEnabled = !!roomId;
 
   useEffect(() => {
-    const roomIdParam = getGameIdParameter();
+    const roomIdParam = getGameIdParameter(props.gameMode);
     if (roomIdParam) {
       setRoomId(roomIdParam);
+      window.history.pushState({}, '', window.location.origin + window.location.pathname);
+      props.joinRoom(roomIdParam);
     }
   }, []);
 
@@ -41,22 +44,12 @@ export const ServerRoomSelector: React.FC<ServerRoomSelectorProps> = (props) => 
         </Button>
       </div>
 
-      <div style={{ borderBottom: '1px solid black', marginBottom: 32, paddingBottom: 32 }}>
-        <Input
-          onChange={(event) => {
-            setPlayerName(event.target.value);
-          }}
-          placeholder="Player name"
-          value={playerName}
-        />
-      </div>
-
       <div style={{ marginBottom: 32 }}>
         <Button
           disabled={!createRoomEnabled}
           onClick={() => {
             if (createRoomEnabled) {
-              props.createRoom(playerName);
+              props.createRoom();
             }
           }}
           style={{
@@ -86,7 +79,7 @@ export const ServerRoomSelector: React.FC<ServerRoomSelectorProps> = (props) => 
           disabled={!joinRoomEnabled}
           onClick={() => {
             if (joinRoomEnabled) {
-              props.joinRoom(playerName, roomId);
+              props.joinRoom(roomId);
             }
           }}
           style={{ animation: joinRoomEnabled ? 'heart-beat-small 2s infinite' : undefined }}

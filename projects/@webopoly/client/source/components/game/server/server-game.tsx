@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { io } from 'socket.io-client';
 import {
@@ -12,8 +12,9 @@ import {
   WSServerMessageType,
 } from '../../../../../core';
 import { GameComponent } from '../game';
+import { GameMode } from '../game-mode';
+import { RoomSelector } from '../room-selector';
 import { ClientSocket, socketEmit, socketListen } from './client-socket';
-import { ServerRoomSelector } from './server-room-selector';
 import { StartServerGame } from './start-server-game';
 
 const PLAYER_TOKEN_STORAGE_KEY = 'playerToken';
@@ -26,54 +27,7 @@ export type ServerGameProps = {
 export const ServerGame: React.FC<ServerGameProps> = (props) => {
   const [playerToken, setPlayerToken] = useState<StringId>();
   const [room, setRoom] = useState<RoomState>();
-  const [socket, setSocket] = useState<ClientSocket>();
-
-  const windowPlayerId = room?.players.find((p) => p.isOwnPlayer)?.id;
-
-  const createRoom = (playerName: Player['name']) => {
-    socket && socketEmit(socket, WSClientMessageType.createRoom, playerName);
-  };
-
-  const joinRoom = (playerName: Player['name'], _roomId: RoomState['id']) => {
-    socket && socketEmit(socket, WSClientMessageType.joinRoom, { playerName, roomId: _roomId });
-  };
-
-  const exitRoom = () => {
-    playerToken &&
-      room &&
-      socket &&
-      socketEmit(socket, WSClientMessageType.exitRoom, { playerToken, roomId: room.id });
-  };
-
-  const startGame = () => {
-    room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
-  };
-
-  const clearNotificationsHandler = () => {
-    if (room?.game) {
-      setRoom({
-        ...room,
-        game: clearNotifications(room.game),
-      });
-    }
-  };
-
-  const triggerUpdate = (gameUpdate: GameUpdate) => {
-    playerToken &&
-      room &&
-      socket &&
-      socketEmit(socket, WSClientMessageType.triggerUpdate, {
-        playerToken,
-        roomId: room.id,
-        update: gameUpdate,
-      });
-  };
-  const roomEntered = (_playerToken: StringId, _room: RoomState) => {
-    setPlayerToken(_playerToken);
-    setRoom(_room);
-  };
-
-  useEffect(() => {
+  const socket = useMemo<ClientSocket>(() => {
     const nextSocket: ClientSocket = io({ path: '/ws/socket.io' });
 
     nextSocket.on('connect', () => {
@@ -129,10 +83,70 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
       console.log('Disconnected');
     });
 
-    setSocket(nextSocket);
+    return nextSocket;
+  }, []);
 
+  const windowPlayerId = room?.players.find((p) => p.isOwnPlayer)?.id;
+
+  const createRoom = () => {
+    socket && socketEmit(socket, WSClientMessageType.createRoom, undefined);
+  };
+
+  const joinRoom = (_roomId: RoomState['id']) => {
+    console.log('socket', socket);
+    socket && socketEmit(socket, WSClientMessageType.joinRoom, _roomId);
+  };
+
+  const updatePlayerName = (playerName: Player['name']) => {
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.updatePlayerName, {
+        playerName,
+        playerToken,
+        roomId: room.id,
+      });
+  };
+
+  const exitRoom = () => {
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.exitRoom, { playerToken, roomId: room.id });
+  };
+
+  const startGame = () => {
+    room && socket && socketEmit(socket, WSClientMessageType.startGame, room.id);
+  };
+
+  const clearNotificationsHandler = () => {
+    if (room?.game) {
+      setRoom({
+        ...room,
+        game: clearNotifications(room.game),
+      });
+    }
+  };
+
+  const triggerUpdate = (gameUpdate: GameUpdate) => {
+    playerToken &&
+      room &&
+      socket &&
+      socketEmit(socket, WSClientMessageType.triggerUpdate, {
+        playerToken,
+        roomId: room.id,
+        update: gameUpdate,
+      });
+  };
+
+  const roomEntered = (_playerToken: StringId, _room: RoomState) => {
+    setPlayerToken(_playerToken);
+    setRoom(_room);
+  };
+
+  useEffect(() => {
     return () => {
-      nextSocket.close();
+      socket.close();
     };
   }, []);
 
@@ -149,15 +163,21 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
           windowPlayerId={windowPlayerId}
         />
       ) : room ? (
-        <StartServerGame exitRoom={exitRoom} room={room} startGame={startGame} />
+        <StartServerGame
+          exitRoom={exitRoom}
+          room={room}
+          startGame={startGame}
+          updatePlayerName={updatePlayerName}
+        />
       ) : (
-        <ServerRoomSelector
+        <RoomSelector
           cancel={() => {
             localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
             localStorage.removeItem(ROOM_ID_STORAGE_KEY);
             props.cancel();
           }}
           createRoom={createRoom}
+          gameMode={GameMode.server}
           joinRoom={joinRoom}
         />
       )}

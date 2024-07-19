@@ -5,4 +5,5 @@ export enum WSClientMessageType {
   retrieveRoom = 'retrieveRoom',
   startGame = 'startGame',
   triggerUpdate = 'triggerUpdate',
+  updatePlayerName = 'updatePlayerName',
 }

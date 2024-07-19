@@ -44,20 +44,13 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): WSServerMessage[WSServerMessageType.roomEntered] | WSServerMessage[WSServerMessageType.error] {
     messageReceived(WSClientMessageType.createRoom, playerName);
 
-    if (!playerName) {
-      return replyMessage(WSServerMessageType.error, {
-        event: WSClientMessageType.createRoom,
-        code: ServerErrorCodes.MISSING_PLAYER_NAME,
-      });
-    }
-
     const id = nanoid();
     const playerToken = nanoid();
 
     const room: Room = {
       game: undefined,
       id,
-      players: [{ id: undefined, name: playerName, socket, token: playerToken }],
+      players: [{ id: undefined, name: 'Player 1', socket, token: playerToken }],
     };
 
     roomsRegister[id] = room;
@@ -75,14 +68,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ): WSServerMessage[WSServerMessageType.roomEntered] | WSServerMessage[WSServerMessageType.error] {
     messageReceived(WSClientMessageType.joinRoom, data);
 
-    if (!data.playerName) {
-      return replyMessage(WSServerMessageType.error, {
-        event: WSClientMessageType.joinRoom,
-        code: ServerErrorCodes.MISSING_PLAYER_NAME,
-      });
-    }
-
-    const room = roomsRegister[data.roomId];
+    const room = roomsRegister[data];
     if (!room) {
       return replyMessage(WSServerMessageType.error, {
         event: WSClientMessageType.joinRoom,
@@ -97,19 +83,11 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       });
     }
 
-    const duplicateName = room.players.find((p) => p.name === data.playerName);
-    if (duplicateName) {
-      return replyMessage(WSServerMessageType.error, {
-        code: ServerErrorCodes.DUPLICATE_PLAYER_NAME,
-        event: WSClientMessageType.joinRoom,
-      });
-    }
-
     const playerToken = nanoid();
     room.players.push({
       socket,
       id: undefined,
-      name: data.playerName,
+      name: `Player ${room.players.length + 1}`,
       token: playerToken,
     });
 
@@ -119,6 +97,50 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       playerToken,
       room: roomToRoomState(room, playerToken),
     });
+  }
+
+  @SubscribeMessage(WSClientMessageType.updatePlayerName)
+  updatePlayerName(
+    @MessageBody() data: WSClientMessages[WSClientMessageType.updatePlayerName],
+  ): WSServerMessage[WSServerMessageType.error] | null {
+    messageReceived(WSClientMessageType.updatePlayerName, data);
+
+    const room = roomsRegister[data.roomId];
+    if (!room) {
+      return replyMessage(WSServerMessageType.error, {
+        event: WSClientMessageType.retrieveRoom,
+        code: ServerErrorCodes.INVALID_ROOM_ID,
+      });
+    }
+
+    const player = room.players.find((p) => p.token === data.playerToken);
+    if (!player) {
+      return replyMessage(WSServerMessageType.error, {
+        event: WSClientMessageType.retrieveRoom,
+        code: ServerErrorCodes.INVALID_PLAYER_TOKEN,
+      });
+    }
+
+    if (!data.playerName) {
+      return replyMessage(WSServerMessageType.error, {
+        event: WSClientMessageType.joinRoom,
+        code: ServerErrorCodes.MISSING_PLAYER_NAME,
+      });
+    }
+
+    const duplicateName = room.players.find((p) => p.name === data.playerName);
+    if (duplicateName) {
+      return replyMessage(WSServerMessageType.error, {
+        code: ServerErrorCodes.DUPLICATE_PLAYER_NAME,
+        event: WSClientMessageType.joinRoom,
+      });
+    }
+
+    player.name = data.playerName;
+
+    broadcastRoomUpdate(room);
+
+    return null;
   }
 
   @SubscribeMessage(WSClientMessageType.retrieveRoom)

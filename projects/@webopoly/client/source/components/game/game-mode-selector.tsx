@@ -1,7 +1,6 @@
 import React from 'react';
 import { Button } from '../common/button';
-
-export type GameMode = 'local' | 'server';
+import { GameMode } from './game-mode';
 
 export type GameModeProps = {
   isServerAvailable: boolean;
@@ -14,25 +13,37 @@ export const GameModeSelector: React.FC<GameModeProps> = (props) => {
       style={{
         alignItems: 'center',
         display: 'flex',
+        flexDirection: 'column',
         justifyContent: 'center',
         minHeight: '100dvh',
       }}
     >
       <Button
-        disabled={!props.isServerAvailable}
         onClick={() => {
-          props.setMode('server');
+          props.setMode(GameMode.local);
         }}
+        style={{ marginBottom: 16 }}
+        type="border"
       >
-        Server game
+        Local game
       </Button>
 
       <Button
         onClick={() => {
-          props.setMode('local');
+          props.setMode(GameMode.peers);
+        }}
+        style={{ marginBottom: 16 }}
+      >
+        Peers game
+      </Button>
+
+      <Button
+        disabled={!props.isServerAvailable}
+        onClick={() => {
+          props.setMode(GameMode.server);
         }}
       >
-        Local game
+        Server game
       </Button>
     </div>
   );
