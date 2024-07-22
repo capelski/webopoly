@@ -1,52 +1,43 @@
-import { MessagingConnection } from '@easy-rtc/react';
+import { MessagingGroup } from '@easy-rtc/react';
 import { startGame } from '../../../../../core';
 import {
   PendingState,
   PlayerPending,
   PlayerPlaying,
   PlayingState,
-  RemotePlayerPending,
   StarterPeerState,
 } from './starter-peer-state';
 import { WebRTCMessage } from './webrtc-message';
-import { WebRTCMessageType } from './webrtc-message-type';
 import { WebRTCRoom } from './webrtc-room';
 
-export const broadcastRoomUpdate = (peerState: StarterPeerState) => {
-  peerState.others
-    .filter((other) => other.connection.isActive)
-    .forEach((other) => {
-      other.connection.sendMessage({
-        type: WebRTCMessageType.roomUpdated,
-        payload: getRoom(peerState, other),
-      });
-    });
-};
-
 export const getInitialState = (): PendingState => {
+  const messagingGroup = new MessagingGroup<WebRTCMessage, PlayerPending>({ minification: true });
+  messagingGroup.addNode({ name: `Player 2` });
+
   return {
     game: undefined,
-    others: [getNewPlayer(2)],
+    messagingGroup,
     self: { name: 'Player 1' },
   };
 };
 
-export const getNewPlayer = (playerNumber: number): RemotePlayerPending => {
-  return {
-    connection: new MessagingConnection<WebRTCMessage>({ minification: true }),
-    name: `Player ${playerNumber}`,
-  };
-};
-
 export const getPlayingState = (pendingState: PendingState): PlayingState => {
-  const game = startGame([pendingState.self.name, ...pendingState.others.map((p) => p.name)]);
+  const game = startGame([
+    pendingState.self.name,
+    ...pendingState.messagingGroup.nodes.map(({ state }) => state.name),
+  ]);
+
+  const messagingGroup = MessagingGroup.from(
+    pendingState.messagingGroup,
+    (state, index): PlayerPlaying => ({
+      ...state,
+      id: game.players[index + 1].id,
+    }),
+  );
 
   return {
     game,
-    others: pendingState.others.map((player, index) => ({
-      ...player,
-      id: game.players[index + 1].id,
-    })),
+    messagingGroup,
     self: {
       id: game.players[0].id,
       name: pendingState.self.name,
@@ -54,7 +45,7 @@ export const getPlayingState = (pendingState: PendingState): PlayingState => {
   };
 };
 
-const getRoom = (
+export const getRoom = (
   peerState: StarterPeerState,
   player: PlayerPending | PlayerPlaying,
 ): WebRTCRoom => {
@@ -66,10 +57,10 @@ const getRoom = (
             ...peerState.self,
             isOwnPlayer: peerState.self === player,
           },
-          ...peerState.others.map((other) => ({
-            id: other.id,
-            isOwnPlayer: other === player,
-            name: other.name,
+          ...peerState.messagingGroup.nodes.map(({ state }) => ({
+            id: state.id,
+            isOwnPlayer: state === player,
+            name: state.name,
           })),
         ],
       }
@@ -80,20 +71,10 @@ const getRoom = (
             ...peerState.self,
             isOwnPlayer: peerState.self === player,
           },
-          ...peerState.others
-            .filter((other) => other.connection.isActive)
-            .map((other) => ({
-              isOwnPlayer: other === player,
-              name: other.name,
-            })),
+          ...peerState.messagingGroup.activeNodes.map(({ state }) => ({
+            isOwnPlayer: state === player,
+            name: state.name,
+          })),
         ],
       };
-};
-
-export const terminateAllConnections = (currentPeerState: StarterPeerState) => {
-  currentPeerState.others
-    .filter((other) => other.connection.isActive)
-    .forEach((other) => {
-      other.connection.closeConnection();
-    });
 };

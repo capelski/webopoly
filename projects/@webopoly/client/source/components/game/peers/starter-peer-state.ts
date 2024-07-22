@@ -1,4 +1,4 @@
-import { MessagingConnection } from '@easy-rtc/react';
+import { MessagingConnection, MessagingGroup } from '@easy-rtc/react';
 import { Game, Player } from '../../../../../core';
 import { WebRTCMessage } from './webrtc-message';
 
@@ -20,13 +20,13 @@ export type RemotePlayerPlaying = PlayerPlaying & {
 
 export type PendingState = {
   game?: undefined;
-  others: RemotePlayerPending[];
+  messagingGroup: MessagingGroup<WebRTCMessage, PlayerPending>;
   self: PlayerPending;
 };
 
 export type PlayingState = {
   game: Game;
-  others: RemotePlayerPlaying[];
+  messagingGroup: MessagingGroup<WebRTCMessage, PlayerPlaying>;
   self: PlayerPlaying;
 };
 

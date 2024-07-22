@@ -11,14 +11,8 @@ import { EditName } from '../../common/edit-name';
 import { Paragraph } from '../../common/paragraph';
 import { GameComponent } from '../game';
 import { StarterPeerConnection } from './starter-peer-connection';
-import {
-  broadcastRoomUpdate,
-  getInitialState,
-  getNewPlayer,
-  getPlayingState,
-  terminateAllConnections,
-} from './starter-peer-logic';
-import { PendingState, PlayerPending, PlayingState, StarterPeerState } from './starter-peer-state';
+import { getInitialState, getPlayingState, getRoom } from './starter-peer-logic';
+import { PlayerPending, PlayingState, StarterPeerState } from './starter-peer-state';
 import { WebRTCMessageType } from './webrtc-message-type';
 
 interface StarterPeerProps {
@@ -30,7 +24,13 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
 
   const updatePeerState = (nextPeerState: StarterPeerState) => {
     setPeerState(nextPeerState);
-    broadcastRoomUpdate(nextPeerState);
+
+    nextPeerState.messagingGroup.broadcastMessage((player) => {
+      return {
+        type: WebRTCMessageType.roomUpdated,
+        payload: getRoom(nextPeerState, player),
+      };
+    });
   };
 
   const triggerUpdateHandler = (
@@ -50,9 +50,8 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
     if (player === nextPeerState.self) {
       nextPeerState.self.name = playerName;
     } else {
-      nextPeerState.others = nextPeerState.others.map((other) =>
-        other === player ? { ...other, name: playerName } : other,
-      );
+      const other = nextPeerState.messagingGroup.activeNodes.find(({ state }) => state === player)!;
+      other.state.name = playerName;
     }
 
     updatePeerState(nextPeerState);
@@ -60,37 +59,35 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
 
   useEffect(() => {
     if (peerState.game) {
-      peerState.others.forEach((other) => {
+      peerState.messagingGroup.nodes.forEach((other) => {
         other.connection.on('connectionClosed', () => {
+          peerState.messagingGroup.removeNode(other.connection);
           updatePeerState({
             ...peerState,
-            game: triggerRemovePlayer(peerState.game, other.id),
-            others: peerState.others.filter((o) => o !== other),
+            game: triggerRemovePlayer(peerState.game, other.state.id),
           });
         });
 
         other.connection.on('messageReceived', (message) => {
           if (message.type === WebRTCMessageType.gameUpdate) {
-            triggerUpdateHandler(peerState, message.payload, other.id);
+            triggerUpdateHandler(peerState, message.payload, other.state.id);
           }
         });
       });
     } else {
-      peerState.others.forEach((other) => {
+      peerState.messagingGroup.nodes.forEach((other) => {
         other.connection.on('connectionReady', () => {
           updatePeerState({ ...peerState }); // Necessary to re-evaluate react state
         });
 
         other.connection.on('connectionClosed', () => {
-          updatePeerState({
-            ...peerState,
-            others: peerState.others.filter((o) => o !== other),
-          });
+          peerState.messagingGroup.removeNode(other.connection);
+          updatePeerState({ ...peerState });
         });
 
         other.connection.on('messageReceived', (message) => {
           if (message.type === WebRTCMessageType.playerNameUpdate) {
-            updatePlayerName(message.payload, other);
+            updatePlayerName(message.payload, other.state);
           }
         });
       });
@@ -98,7 +95,7 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
 
     const onWindowClose = (event: Event) => {
       event.preventDefault();
-      terminateAllConnections(peerState);
+      peerState.messagingGroup.closeAllConnections();
     };
 
     window.addEventListener('unload', onWindowClose);
@@ -108,7 +105,7 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
   }, [peerState]);
 
   const exitRoom = () => {
-    terminateAllConnections(peerState);
+    peerState.messagingGroup.closeAllConnections();
     props.exitRoom();
   };
 
@@ -138,22 +135,18 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
           playerName={peerState.self.name}
           updatePlayerName={(playerName) => updatePlayerName(playerName, peerState.self)}
         />
-        {peerState.others.map((player, index) => {
+        {peerState.messagingGroup.nodes.map((player, index) => {
           return (
             <StarterPeerConnection
               key={index}
               messagingConnection={player.connection}
-              playerName={player.name}
+              playerName={player.state.name}
               removeConnection={() => {
                 if (player.connection.isActive) {
                   player.connection.closeConnection();
                 } else {
-                  const nextPeerState: PendingState = {
-                    ...peerState,
-                    others: peerState.others.filter((other) => other !== player),
-                  };
-
-                  updatePeerState(nextPeerState);
+                  peerState.messagingGroup.removeNode(player.connection);
+                  updatePeerState({ ...peerState });
                 }
               }}
             />
@@ -164,9 +157,11 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
       <div>
         <Button
           onClick={() => {
+            peerState.messagingGroup.addNode({
+              name: `Player ${peerState.messagingGroup.nodes.length + 2}`,
+            });
             setPeerState({
               ...peerState,
-              others: [...peerState.others, getNewPlayer(2 + peerState.others.length)],
             });
           }}
           style={{ marginLeft: 8 }}
@@ -176,7 +171,8 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
         </Button>
         <Button
           disabled={
-            peerState.others.length === 0 || peerState.others.some((p) => !p.connection.isActive)
+            peerState.messagingGroup.nodes.length === 0 ||
+            peerState.messagingGroup.nodes.some((node) => !node.connection.isActive)
           }
           onClick={() => {
             const nextPeerState = getPlayingState(peerState);
