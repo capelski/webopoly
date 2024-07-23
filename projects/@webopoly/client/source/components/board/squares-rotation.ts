@@ -1,4 +1,4 @@
-import { Square } from '../../../../core';
+import { Square } from '@webopoly/core';
 
 export const squaresRotation: { [outerSquareId: Square['id']]: number } = {
   1: 315,

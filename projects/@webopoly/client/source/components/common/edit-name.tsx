@@ -1,5 +1,5 @@
+import { Player } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
-import { Player } from '../../../../core';
 import { Button } from './button';
 import { Input } from './input';
 import { Paragraph } from './paragraph';

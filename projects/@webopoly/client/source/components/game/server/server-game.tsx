@@ -1,6 +1,3 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import { io } from 'socket.io-client';
 import {
   clearNotifications,
   GameUpdate,
@@ -10,7 +7,10 @@ import {
   StringId,
   WSClientMessageType,
   WSServerMessageType,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React, { useEffect, useMemo, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { io } from 'socket.io-client';
 import { GameComponent } from '../game';
 import { GameMode } from '../game-mode';
 import { RoomSelector } from '../room-selector';

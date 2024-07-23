@@ -1,6 +1,6 @@
+import { Game } from '@webopoly/core';
 import React, { useEffect } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
-import { Game } from '../../../../core';
 import { EventComponent } from '../common/event';
 
 interface NotificationsProps {

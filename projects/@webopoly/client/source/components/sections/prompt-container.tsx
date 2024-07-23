@@ -1,5 +1,5 @@
+import { Game, GamePhase, GameUpdate, Player } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
-import { Game, GamePhase, GameUpdate, Player } from '../../../../core';
 import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {

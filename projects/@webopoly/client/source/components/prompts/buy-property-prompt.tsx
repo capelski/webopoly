@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canBuyProperty,
   canLiquidateBuyProperty,
@@ -8,7 +7,8 @@ import {
   getSquareById,
   PromptType,
   SquareType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { Button } from '../common/button';
 import { SquareDetails } from '../common/square-details';
 import { Title } from '../common/title';

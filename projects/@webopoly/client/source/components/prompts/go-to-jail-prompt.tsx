@@ -1,5 +1,5 @@
+import { GameUpdateType, getCurrentPlayer, mustGoToJail, PromptType } from '@webopoly/core';
 import React from 'react';
-import { GameUpdateType, getCurrentPlayer, mustGoToJail, PromptType } from '../../../../core';
 import { goToJailSymbol } from '../../parameters';
 import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';

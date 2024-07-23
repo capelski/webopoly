@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   AnswerType,
   currencySymbol,
@@ -15,7 +14,8 @@ import {
   OfferType,
   passGoMoney,
   Player,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import {
   clearMortgageSymbol,
   getOutJailSymbol,

@@ -1,4 +1,4 @@
-import { Square } from '../../../../../core';
+import { Square } from '@webopoly/core';
 
 export type OuterSquaresMap = {
   bottom: Square['id'][];

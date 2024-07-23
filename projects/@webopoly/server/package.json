@@ -7,6 +7,7 @@
     "@nestjs/platform-socket.io": "^10.3.3",
     "@nestjs/serve-static": "^4.0.1",
     "@nestjs/websockets": "^10.3.3",
+    "@webopoly/core": "file:../core",
     "nanoid": "^3.3.7",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1"
@@ -28,14 +29,14 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build --path tsconfig.server.json",
     "clean": "rm -rf dist",
     "clean:assets": "rm -rf public",
-    "dev": "nest start --watch",
+    "dev": "nest start --watch --path tsconfig.server.json",
     "docker-build": "./docker-build.sh",
     "docker-run": "docker run -p 3000:3000 l3bowski/webopoly",
     "docker-push": "docker push l3bowski/webopoly",
     "nest": "nest",
-    "start": "node dist/server/source/main.js"
+    "start": "node dist/main.js"
   }
 }

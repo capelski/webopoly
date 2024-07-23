@@ -1,5 +1,5 @@
+import { Neighborhood } from '@webopoly/core';
 import { CSSProperties } from 'react';
-import { Neighborhood } from '../../../../../core';
 
 export const streetsColorMap: { [group in Neighborhood]: CSSProperties } = {
   [Neighborhood.brown]: { backgroundColor: 'brown', color: 'white' },

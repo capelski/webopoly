@@ -1,4 +1,3 @@
-import React, { CSSProperties, useState } from 'react';
 import {
   canToggleTradeSelection,
   Game,
@@ -14,7 +13,8 @@ import {
   Square,
   SquareModalType,
   SquareType,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React, { CSSProperties, useState } from 'react';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
 import { OtherSquareDetailsModal } from './other-square-details-modal';

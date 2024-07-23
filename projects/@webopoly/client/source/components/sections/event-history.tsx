@@ -1,5 +1,5 @@
+import { Game } from '@webopoly/core';
 import React from 'react';
-import { Game } from '../../../../core';
 import { EventComponent } from '../common/event';
 
 interface EventHistoryProps {

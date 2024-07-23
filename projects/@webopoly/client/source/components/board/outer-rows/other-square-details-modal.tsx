@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   currencySymbol,
   Game,
@@ -7,7 +6,8 @@ import {
   SquareModalType,
   SquareType,
   TaxType,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { Modal } from '../../common/modal';
 import { Paragraph } from '../../common/paragraph';
 import { Title } from '../../common/title';

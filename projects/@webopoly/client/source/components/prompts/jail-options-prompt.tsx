@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canPayJailFine,
   canRollDiceInJail,
@@ -8,7 +7,8 @@ import {
   getCurrentPlayer,
   jailFine,
   PromptType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { jailSymbol } from '../../parameters';
 import { Button } from '../common/button';
 import { Title } from '../common/title';

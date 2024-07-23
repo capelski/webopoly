@@ -4,7 +4,6 @@
     "jsx": "react",
     "lib": ["dom", "es2021"],
     "outDir": "./compiler-output",
-    "rootDir": ".."
-  },
-  "include": ["source/**/*"]
+    "rootDir": "./source"
+  }
 }

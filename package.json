@@ -17,11 +17,11 @@
     "assets:docs": "export BUILD_GITHUB_PAGES=true && npm run build -w @webopoly/client",
     "assets:server": "cp -r projects/@webopoly/client/dist projects/@webopoly/server/public",
     "build": "npm run clean-assets && npm run build:all && npm run assets",
-    "build:all": "npm run build -w @webopoly/client && npm run build -w @webopoly/server",
+    "build:all": "npm run build -w @webopoly/core && npm run build -w @webopoly/client && npm run build -w @webopoly/server",
     "clean": "npm run clean -ws && npm run clean-assets",
     "clean-assets": "npm run clean:assets -w @webopoly/server && rm -rf docs",
     "clean-modules": "rm -rf node_modules",
-    "dev": "concurrently 'npm run dev -w @webopoly/client' 'npm run dev -w @webopoly/server'"
+    "dev": "concurrently 'npm run dev -w @webopoly/core' && npm run dev -w @webopoly/client' 'npm run dev -w @webopoly/server'"
   },
   "version": "1.0.0",
   "workspaces": [

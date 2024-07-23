@@ -1,5 +1,5 @@
+import { Game } from '@webopoly/core';
 import React, { CSSProperties } from 'react';
-import { Game } from '../../../../../core';
 import { InnerSquare } from './inner-square';
 import { InnerSquareData } from './inner-squares-map';
 

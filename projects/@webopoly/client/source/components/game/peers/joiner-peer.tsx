@@ -1,6 +1,6 @@
 import { useMessagingConnection } from '@easy-rtc/react';
+import { clearNotifications, GameUpdate } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
-import { clearNotifications, GameUpdate } from '../../../../../core';
 import { Button } from '../../common/button';
 import { EditName } from '../../common/edit-name';
 import { Paragraph } from '../../common/paragraph';

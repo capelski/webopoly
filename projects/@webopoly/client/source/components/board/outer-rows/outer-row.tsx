@@ -1,5 +1,5 @@
+import { Square } from '@webopoly/core';
 import React, { CSSProperties } from 'react';
-import { Square } from '../../../../../core';
 import { RowComponentDefinitionProps } from '../row-component-definition';
 import { OuterSquare } from './outer-square';
 

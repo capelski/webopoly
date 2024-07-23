@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   currencySymbol,
   Game,
@@ -18,7 +17,8 @@ import {
   PropertyStatus,
   PropertyType,
   stationRents,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import {
   clearMortgageSymbol,
   houseSymbol,

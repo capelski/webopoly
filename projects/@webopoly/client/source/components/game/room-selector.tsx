@@ -1,5 +1,5 @@
+import { RoomState } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
-import { RoomState } from '../../../../core';
 import { getGameIdParameter } from '../../url-params';
 import { Button } from '../common/button';
 import { Input } from '../common/input';

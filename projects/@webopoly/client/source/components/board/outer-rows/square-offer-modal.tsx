@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   canTriggerBuyingOffer,
   canTriggerSellingOffer,
@@ -12,7 +11,8 @@ import {
   Player,
   PropertySquare,
   SquareModalType,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React, { useState } from 'react';
 import { Button } from '../../common/button';
 import { Input } from '../../common/input';
 import { Modal } from '../../common/modal';

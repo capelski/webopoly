@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import {
   clearNotifications,
   GameUpdate,
   Player,
   triggerRemovePlayer,
   triggerUpdate,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../common/button';
 import { EditName } from '../../common/edit-name';
 import { Paragraph } from '../../common/paragraph';

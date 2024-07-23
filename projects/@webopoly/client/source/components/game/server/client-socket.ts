@@ -1,10 +1,10 @@
-import { Socket } from 'socket.io-client';
 import {
   SocketHandlers,
   WSClientMessages,
   WSClientMessageType,
   WSServerMessages,
-} from '../../../../../core';
+} from '@webopoly/core';
+import { Socket } from 'socket.io-client';
 
 export type ClientSocket = Socket<
   SocketHandlers<WSServerMessages>,

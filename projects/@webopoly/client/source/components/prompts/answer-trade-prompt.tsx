@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canAnswerTrade,
   GameUpdateType,
@@ -6,7 +5,8 @@ import {
   getSquareById,
   PromptType,
   PropertySquare,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
 import { SquareTitle } from '../common/square-title';

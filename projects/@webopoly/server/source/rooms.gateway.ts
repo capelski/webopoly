@@ -6,7 +6,6 @@ import {
   SubscribeMessage,
   WebSocketGateway,
 } from '@nestjs/websockets';
-import { nanoid } from 'nanoid';
 import {
   Game,
   ServerErrorCodes,
@@ -17,7 +16,8 @@ import {
   WSClientMessageType,
   WSServerMessage,
   WSServerMessageType,
-} from '../../core';
+} from '@webopoly/core';
+import { nanoid } from 'nanoid';
 import { Room, roomsRegister } from './rooms-register';
 import { broadcastRoomUpdate, messageReceived, replyMessage, ServerSocket } from './server-socket';
 import { roomToRoomState } from './transformers';

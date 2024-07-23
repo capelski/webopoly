@@ -1,4 +1,4 @@
-import { GameUpdate, Player } from '../../../../../core';
+import { GameUpdate, Player } from '@webopoly/core';
 import { WebRTCMessageType } from './webrtc-message-type';
 import { WebRTCRoom } from './webrtc-room';
 

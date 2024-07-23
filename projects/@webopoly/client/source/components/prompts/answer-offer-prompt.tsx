@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canAnswerOffer,
   currencySymbol,
@@ -7,7 +6,8 @@ import {
   getSquareById,
   OfferType,
   PromptType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { buyOfferSymbol, sellOfferSymbol } from '../../parameters';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';

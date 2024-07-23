@@ -1,5 +1,5 @@
+import { Game, PropertySquare, PropertyStatus, PropertyType, SquareType } from '@webopoly/core';
 import React, { CSSProperties } from 'react';
-import { Game, PropertySquare, PropertyStatus, PropertyType, SquareType } from '../../../../core';
 import { SquareIcon } from '../board/outer-rows/square-icon';
 import { streetsColorMap } from '../board/outer-rows/street-colors-map';
 import { Title } from './title';

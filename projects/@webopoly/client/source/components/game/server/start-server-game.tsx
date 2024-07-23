@@ -1,5 +1,5 @@
+import { Player, RoomState } from '@webopoly/core';
 import React from 'react';
-import { Player, RoomState } from '../../../../../core';
 import { serverGameIdQueryString } from '../../../parameters';
 import { Button } from '../../common/button';
 import { EditName } from '../../common/edit-name';

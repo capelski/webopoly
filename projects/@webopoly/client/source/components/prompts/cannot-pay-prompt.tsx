@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canDeclareBankruptcy,
   canLiquidatePendingPayment,
@@ -6,7 +5,8 @@ import {
   GameUpdateType,
   getPendingAmount,
   PromptType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';

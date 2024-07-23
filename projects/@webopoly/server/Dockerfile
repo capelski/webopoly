@@ -13,6 +13,10 @@ FROM node:${NODE_VERSION}-alpine
 # Use production node environment by default.
 ENV NODE_ENV production
 
+# The folder in the docker image must be named the same as the core directory,
+# as the local dependency creates a symlink to that directory
+WORKDIR /usr/src/core
+COPY ./core . 
 
 WORKDIR /usr/src/app
 
@@ -20,8 +24,8 @@ WORKDIR /usr/src/app
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
 # Leverage a bind mounts to package.json and package-lock.json to avoid having to copy them into
 # into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
+RUN --mount=type=bind,source=server/package.json,target=package.json \
+    --mount=type=bind,source=server/package-lock.json,target=package-lock.json \
     --mount=type=cache,target=/root/.npm \
     npm ci --omit=dev
 
@@ -29,7 +33,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 USER node
 
 # Copy the rest of the source files into the image.
-COPY . .
+COPY ./server .
 
 # Expose the port that the application listens on.
 EXPOSE 3000

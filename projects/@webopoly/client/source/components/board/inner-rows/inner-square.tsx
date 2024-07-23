@@ -1,5 +1,5 @@
+import { Game, GamePhase, getCurrentPlayer, TransitionType } from '@webopoly/core';
 import React from 'react';
-import { Game, GamePhase, getCurrentPlayer, TransitionType } from '../../../../../core';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
 import { InnerSquareData } from './inner-squares-map';

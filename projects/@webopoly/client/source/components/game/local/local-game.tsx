@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   clearNotifications,
   deserializeGame,
@@ -8,7 +7,8 @@ import {
   Player,
   serializeGame,
   triggerUpdate,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import { GameComponent } from '../game';
 import { StartLocalGame } from './start-local-game';
 

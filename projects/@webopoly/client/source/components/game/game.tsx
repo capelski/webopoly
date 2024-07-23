@@ -1,6 +1,6 @@
+import { Game, GameUpdate, getCurrentPlayer, Player } from '@webopoly/core';
 import React, { useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Game, GameUpdate, getCurrentPlayer, Player } from '../../../../core';
 import { Board } from '../board/board';
 import { Players } from '../player/players';
 import { ActionsBar } from '../sections/actions-bar';

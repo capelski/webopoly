@@ -1,5 +1,5 @@
+import { PropertyStatus, PropertyType, Square, SquareType } from '@webopoly/core';
 import React from 'react';
-import { PropertyStatus, PropertyType, Square, SquareType } from '../../../../../core';
 import {
   goSymbol,
   goToJailSymbol,

@@ -1,5 +1,5 @@
 import { MessagingConnection, MessagingGroup } from '@easy-rtc/react';
-import { Game, Player } from '../../../../../core';
+import { Game, Player } from '@webopoly/core';
 import { WebRTCMessage } from './webrtc-message';
 
 export type PlayerPending = {

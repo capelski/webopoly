@@ -1,5 +1,5 @@
+import { PromptType } from '@webopoly/core';
 import React from 'react';
-import { PromptType } from '../../../../core';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
 import { AnswerTradePrompt } from './answer-trade-prompt';

@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   canBuildHouse,
   canClearMortgage,
@@ -13,7 +12,8 @@ import {
   PropertySquare,
   PropertyType,
   SquareModalType,
-} from '../../../../../core';
+} from '@webopoly/core';
+import React from 'react';
 import {
   buyOfferSymbol,
   clearMortgageSymbol,

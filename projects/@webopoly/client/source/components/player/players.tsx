@@ -1,5 +1,5 @@
+import { Player } from '@webopoly/core';
 import React from 'react';
-import { Player } from '../../../../core';
 import { PlayerComponent } from './player';
 
 interface PlayersProps {

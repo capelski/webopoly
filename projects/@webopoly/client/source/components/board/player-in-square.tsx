@@ -1,5 +1,5 @@
+import { Player } from '@webopoly/core';
 import React from 'react';
-import { Player } from '../../../../core';
 import { zIndexes } from '../../parameters';
 import { PlayerAvatar } from '../common/player-avatar';
 

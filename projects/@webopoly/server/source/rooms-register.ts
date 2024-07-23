@@ -1,4 +1,4 @@
-import { Game, Player, StringId } from '../../core';
+import { Game, Player, StringId } from '@webopoly/core';
 import { ServerSocket } from './server-socket';
 
 export type Room = {

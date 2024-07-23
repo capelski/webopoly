@@ -1,5 +1,5 @@
+import { Game, startGame } from '@webopoly/core';
 import React, { useState } from 'react';
-import { Game, startGame } from '../../../../../core';
 import { Button } from '../../common/button';
 import { Input } from '../../common/input';
 

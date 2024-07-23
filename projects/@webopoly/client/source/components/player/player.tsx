@@ -1,5 +1,5 @@
+import { currencySymbol, Player, PlayerStatus } from '@webopoly/core';
 import React from 'react';
-import { currencySymbol, Player, PlayerStatus } from '../../../../core';
 import { getOutJailSymbol } from '../../parameters';
 import { PlayerAvatar } from '../common/player-avatar';
 

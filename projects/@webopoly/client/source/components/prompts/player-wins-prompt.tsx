@@ -1,5 +1,5 @@
+import { getPlayerById, PromptType } from '@webopoly/core';
 import React from 'react';
-import { getPlayerById, PromptType } from '../../../../core';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 

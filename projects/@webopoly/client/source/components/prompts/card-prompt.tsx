@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
 import {
   canApplyCard,
   GameUpdateType,
   getCardAmount,
   getCardText,
   PromptType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React, { useState } from 'react';
 import { surpriseSymbol } from '../../parameters';
 import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';

@@ -1,4 +1,4 @@
-import { RoomState, StringId } from '../../core';
+import { RoomState, StringId } from '@webopoly/core';
 import { Room } from './rooms-register';
 
 export const roomToRoomState = (room: Room, playerToken: StringId): RoomState => {

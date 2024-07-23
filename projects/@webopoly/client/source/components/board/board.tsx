@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import {
   canRollDice,
   diceToString,
@@ -9,7 +8,8 @@ import {
   GameUpdateType,
   Player,
   TransitionType,
-} from '../../../../core';
+} from '@webopoly/core';
+import React, { useEffect, useState } from 'react';
 import { diceSymbol } from '../../parameters';
 import { Grid } from './grid';
 import { InnerBottomRow } from './inner-rows/inner-bottom-row';

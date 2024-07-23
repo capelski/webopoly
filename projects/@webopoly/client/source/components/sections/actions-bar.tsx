@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   canCancelTrade,
   canEndTurn,
@@ -10,7 +9,8 @@ import {
   GameUpdate,
   GameUpdateType,
   Player,
-} from '../../../../core';
+} from '@webopoly/core';
+import React, { useState } from 'react';
 import { Button } from '../common/button';
 import { Modal } from '../common/modal';
 import { Paragraph } from '../common/paragraph';

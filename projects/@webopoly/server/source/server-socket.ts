@@ -1,4 +1,3 @@
-import { Socket } from 'socket.io';
 import {
   SocketHandlers,
   StringId,
@@ -6,7 +5,8 @@ import {
   WSClientMessageType,
   WSServerMessages,
   WSServerMessageType,
-} from '../../core';
+} from '@webopoly/core';
+import { Socket } from 'socket.io';
 import { Room } from './rooms-register';
 import { roomToRoomState } from './transformers';
 

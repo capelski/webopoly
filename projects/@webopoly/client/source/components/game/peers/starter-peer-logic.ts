@@ -1,5 +1,5 @@
 import { MessagingGroup } from '@easy-rtc/react';
-import { startGame } from '../../../../../core';
+import { startGame } from '@webopoly/core';
 import {
   PendingState,
   PlayerPending,

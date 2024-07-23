@@ -1,5 +1,5 @@
+import { Game, GameUpdate, Player } from '@webopoly/core';
 import React from 'react';
-import { Game, GameUpdate, Player } from '../../../../core';
 
 export interface RowComponentDefinitionProps {
   game: Game;

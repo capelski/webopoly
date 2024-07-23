@@ -1,4 +1,4 @@
-import { Game, Player } from '../../../../../core';
+import { Game, Player } from '@webopoly/core';
 
 export type RoomPlayerPending = {
   isOwnPlayer: boolean;
