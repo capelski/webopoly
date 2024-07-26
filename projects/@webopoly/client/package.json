@@ -31,6 +31,7 @@
   "scripts": {
     "build": "npm run clean && webpack --config webpack/production.config.js",
     "clean": "rm -rf dist",
+    "clean-modules": "rm -rf node_modules",
     "compile": "tsc --project tsconfig.client.json",
     "dev": "webpack serve --config webpack/development.config.js"
   },

@@ -9,7 +9,6 @@
     "incremental": true,
     "outDir": "./dist",
     "removeComments": true,
-    "sourceMap": true,
-    "rootDir": "./source"
+    "sourceMap": true
   }
 }

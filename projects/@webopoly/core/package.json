@@ -7,6 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "npm run clean && tsc --project tsconfig.core.json",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "dev": "tsc --project tsconfig.core.json --watch"
   }
 }

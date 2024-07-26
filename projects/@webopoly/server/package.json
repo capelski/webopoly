@@ -29,10 +29,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build": "nest build --path tsconfig.server.json",
+    "build": "nest build",
     "clean": "rm -rf dist",
+    "clean-modules": "rm -rf node_modules",
     "clean:assets": "rm -rf public",
-    "dev": "nest start --watch --path tsconfig.server.json",
+    "dev": "nest start --watch",
     "docker-build": "./docker-build.sh",
     "docker-run": "docker run -p 3000:3000 l3bowski/webopoly",
     "docker-push": "docker push l3bowski/webopoly",

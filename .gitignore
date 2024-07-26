@@ -2,4 +2,3 @@ node_modules/
 dist/
 projects/@webopoly/client/compiler-output
 projects/@webopoly/server/public
-*.tsbuildinfo
