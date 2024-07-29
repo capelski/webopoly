@@ -24,6 +24,11 @@ export type AnswerTradePrompt = {
   type: PromptType.answerTrade;
 };
 
+export type ApplyCardPrompt = {
+  cardId: Card['id'];
+  type: PromptType.applyCard;
+};
+
 export type BuyPropertyPrompt = {
   currentBuyerId: Player['id'];
   potentialBuyersId: Player['id'][];
@@ -35,13 +40,12 @@ export type CannotPayPrompt = {
   type: PromptType.cannotPay;
 };
 
-export type CardPrompt = {
-  cardId: Card['id'];
-  type: PromptType.card;
-};
-
 export type GoToJailPrompt = {
   type: PromptType.goToJail;
+};
+
+export type DrawCardPrompt = {
+  type: PromptType.drawCard;
 };
 
 export type JailOptionsPrompt = {
@@ -56,9 +60,10 @@ export type PlayerWinPrompt = {
 export type Prompt<T extends PromptType> = (
   | AnswerOfferPrompt
   | AnswerTradePrompt
+  | ApplyCardPrompt
   | BuyPropertyPrompt
   | CannotPayPrompt
-  | CardPrompt
+  | DrawCardPrompt
   | GoToJailPrompt
   | JailOptionsPrompt
   | PlayerWinPrompt

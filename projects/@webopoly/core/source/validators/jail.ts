@@ -62,10 +62,12 @@ export const canUseJailCard = (
 export const mustGoToJail = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GamePromptPhase<PromptType.card> | GamePromptPhase<PromptType.goToJail> } | null => {
+): {
+  game: GamePromptPhase<PromptType.applyCard> | GamePromptPhase<PromptType.goToJail>;
+} | null => {
   if (
     game.phase !== GamePhase.prompt ||
-    (game.prompt.type !== PromptType.card && game.prompt.type !== PromptType.goToJail)
+    (game.prompt.type !== PromptType.applyCard && game.prompt.type !== PromptType.goToJail)
   ) {
     return null;
   }
@@ -75,7 +77,7 @@ export const mustGoToJail = (
     return null;
   }
 
-  return game.prompt.type === PromptType.card
+  return game.prompt.type === PromptType.applyCard
     ? { game: castPromptGame(game, game.prompt) }
     : { game: castPromptGame(game, game.prompt) };
 };

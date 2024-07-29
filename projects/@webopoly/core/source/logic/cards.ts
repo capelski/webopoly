@@ -193,7 +193,7 @@ const cardTextMap: { [TCard in CardType]: CardTextGetter<TCard> } = {
 
 export const getCardAmount = (
   game:
-    | GamePromptPhase<PromptType.card>
+    | GamePromptPhase<PromptType.applyCard>
     | GameLiquidationPhase<LiquidationReason.pendingPayment>
     | GamePromptPhase<PromptType.cannotPay>,
   cardId: Card['id'],
@@ -222,6 +222,6 @@ export const getCardAmount = (
 
 export const getCardText = (id: Card['id'], amount: number | undefined): string => {
   const card = cardsMap[id];
-  const getter: CardTextGetter = cardTextMap[card.type];
+  const getter = cardTextMap[card.type] as CardTextGetter;
   return getter(card, amount);
 };

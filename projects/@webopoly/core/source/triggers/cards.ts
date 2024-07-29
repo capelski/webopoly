@@ -22,10 +22,10 @@ import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 import { triggerCannotPayPrompt } from './payments';
 
 type GameInputType<TCard extends CardType> = TCard extends CardType.fee
-  ? GamePromptPhase<PromptType.card> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  ? GamePromptPhase<PromptType.applyCard> | GameLiquidationPhase<LiquidationReason.pendingPayment>
   : TCard extends CardType.streetRepairs
-  ? GamePromptPhase<PromptType.card> | GameLiquidationPhase<LiquidationReason.pendingPayment>
-  : GamePromptPhase<PromptType.card>;
+  ? GamePromptPhase<PromptType.applyCard> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  : GamePromptPhase<PromptType.applyCard>;
 
 type GameOutputType<TCard extends CardType> = TCard extends CardType.fee
   ? GamePromptPhase<PromptType.cannotPay> | GamePlayPhase
@@ -113,7 +113,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
   },
 };
 
-export const triggerCardAction = <TCard extends CardType = CardType>(
+export const triggerApplyCard = <TCard extends CardType = CardType>(
   game: GameInputType<TCard>,
   cardId: Card['id'],
 ): GameOutputType<TCard> => {
@@ -141,8 +141,20 @@ export const triggerCardAction = <TCard extends CardType = CardType>(
 };
 
 export const triggerCardPrompt = (
-  game: GamePlayPhase | GamePromptPhase<PromptType.card>,
-): GamePromptPhase<PromptType.card> => {
+  game: GamePlayPhase | GamePromptPhase<PromptType.applyCard>,
+): GamePromptPhase<PromptType.drawCard> => {
+  return {
+    ...game,
+    phase: GamePhase.prompt,
+    prompt: {
+      type: PromptType.drawCard,
+    },
+  };
+};
+
+export const triggerDrawCard = (
+  game: GamePromptPhase<PromptType.drawCard>,
+): GamePromptPhase<PromptType.applyCard> => {
   let nextCardIds = [...game.nextCardIds];
 
   if (nextCardIds.length === 0) {
@@ -157,7 +169,7 @@ export const triggerCardPrompt = (
     phase: GamePhase.prompt,
     prompt: {
       cardId,
-      type: PromptType.card,
+      type: PromptType.applyCard,
     },
   };
 };

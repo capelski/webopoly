@@ -25,7 +25,9 @@ export type PlayerOutOfJailPhases =
   | GameUiTransitionPhase<TransitionType.jailDiceRoll>
   | GameLiquidationPhase<LiquidationReason.pendingPayment>;
 
-export const triggerGetOutOfJailCard = (game: GamePromptPhase<PromptType.card>): GamePlayPhase => {
+export const triggerGetOutOfJailCard = (
+  game: GamePromptPhase<PromptType.applyCard>,
+): GamePlayPhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -38,7 +40,7 @@ export const triggerGetOutOfJailCard = (game: GamePromptPhase<PromptType.card>):
 };
 
 export const triggerGoToJail = (
-  game: GamePromptPhase<PromptType.goToJail> | GamePromptPhase<PromptType.card>,
+  game: GamePromptPhase<PromptType.goToJail> | GamePromptPhase<PromptType.applyCard>,
   skipEvent = false,
 ): GamePlayPhase => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;

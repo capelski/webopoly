@@ -13,12 +13,12 @@ import {
 export type CannotPayPromptInputPhases =
   | GamePlayPhase
   | GameUiTransitionPhase<TransitionType.jailDiceRoll> // Is player's last turn in jail and they don't have enough money to pay the fine
-  | GamePromptPhase<PromptType.card>
+  | GamePromptPhase<PromptType.applyCard>
   | GameLiquidationPhase<LiquidationReason.pendingPayment>; // Player resumes a pending payment but they still don't have enough money
 
 export type ExpenseInputPhases =
   | GamePlayPhase
-  | GamePromptPhase<PromptType.card>
+  | GamePromptPhase<PromptType.applyCard>
   | GameLiquidationPhase<LiquidationReason.pendingPayment>; // Player resumes a pending payment and has enough money
 
 export type ExpenseOutputPhases = GamePlayPhase | GamePromptPhase<PromptType.cannotPay>;

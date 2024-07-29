@@ -21,6 +21,7 @@ import {
   canCancelTrade,
   canClearMortgage,
   canDeclareBankruptcy,
+  canDrawCard,
   canEndTurn,
   canLiquidateBuyProperty,
   canLiquidatePendingPayment,
@@ -41,7 +42,7 @@ import {
 } from '../validators';
 import { triggerBankruptcy } from './bankruptcy';
 import { triggerBuyProperty, triggerRejectProperty } from './buy-property';
-import { triggerCardAction } from './cards';
+import { triggerApplyCard, triggerDrawCard } from './cards';
 import { triggerDiceRoll, triggerDiceRollInJail } from './dice-roll';
 import { triggerEndTurn } from './end-turn';
 import { triggerBuildHouse, triggerSellHouse } from './houses';
@@ -142,7 +143,7 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.applyCard) {
     const validation = canApplyCard(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerCardAction(validation.game, validation.game.prompt.cardId));
+      updateFunction(triggerApplyCard(validation.game, validation.game.prompt.cardId));
     }
   } else if (gameUpdate.type === GameUpdateType.bankruptcy) {
     const validation = canDeclareBankruptcy(game, windowPlayerId);
@@ -199,6 +200,11 @@ export const triggerUpdate = (
     if (validation) {
       updateFunction(triggerDeclineTrade(validation.game));
     }
+  } else if (gameUpdate.type === GameUpdateType.drawCard) {
+    const validation = canDrawCard(game, windowPlayerId);
+    if (validation) {
+      updateFunction(triggerDrawCard(validation.game));
+    }
   } else if (gameUpdate.type === GameUpdateType.endTurn) {
     const validation = canEndTurn(game, windowPlayerId);
     if (validation) {
@@ -208,7 +214,7 @@ export const triggerUpdate = (
     const validation = mustGoToJail(game, windowPlayerId);
     if (validation) {
       updateFunction(
-        triggerGoToJail(validation.game, validation.game.prompt.type === PromptType.card),
+        triggerGoToJail(validation.game, validation.game.prompt.type === PromptType.applyCard),
       );
     }
   } else if (gameUpdate.type === GameUpdateType.pendingPaymentLiquidation) {

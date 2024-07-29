@@ -5,12 +5,12 @@ import { GamePlayPhase, GamePromptPhase, Player, Square } from '../types';
 import { triggerCardPrompt } from './cards';
 import { triggerPayRent, triggerPayTax } from './payments';
 
-export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.card>;
+export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.applyCard>;
 
 export type MovePlayerOutputPhases =
   | GamePlayPhase
   | GamePromptPhase<PromptType.buyProperty>
-  | GamePromptPhase<PromptType.card>
+  | GamePromptPhase<PromptType.drawCard>
   | GamePromptPhase<PromptType.goToJail>
   | GamePromptPhase<PromptType.cannotPay>;
 

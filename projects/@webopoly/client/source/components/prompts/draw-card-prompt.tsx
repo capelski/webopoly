@@ -1,0 +1,26 @@
+import { canDrawCard, GameUpdateType, PromptType } from '@webopoly/core';
+import React from 'react';
+import { surpriseSymbol } from '../../parameters';
+import { Button } from '../common/button';
+import { Title } from '../common/title';
+import { PromptInterface } from './prompt-interface';
+
+export const DrawCardPrompt: PromptInterface<PromptType.drawCard> = (props) => {
+  const canApply = canDrawCard(props.game, props.windowPlayerId);
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: 40 }}>{surpriseSymbol}</div>
+
+      <Title>Surprise card</Title>
+      <Button
+        disabled={!canApply}
+        onClick={() => {
+          props.triggerUpdate({ type: GameUpdateType.drawCard });
+        }}
+      >
+        Draw
+      </Button>
+    </div>
+  );
+};

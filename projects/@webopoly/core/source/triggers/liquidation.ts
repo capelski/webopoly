@@ -8,7 +8,7 @@ import {
 } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import { GameLiquidationPhase, GamePromptPhase, GameUiTransitionPhase } from '../types';
-import { triggerCardAction } from './cards';
+import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
 import {
   ExpenseOutputPhases,
@@ -39,7 +39,7 @@ export const resumePendingPayment = (
 
   if (hasEnoughMoney(player, amount)) {
     if (pendingEvent.type === EventType.card) {
-      return triggerCardAction<CardType.fee | CardType.streetRepairs>(game, pendingEvent.cardId);
+      return triggerApplyCard<CardType.fee | CardType.streetRepairs>(game, pendingEvent.cardId);
     } else if (pendingEvent.type === EventType.payTax) {
       return triggerPayTax(game, pendingEvent);
     } else if (pendingEvent.type === EventType.turnInJail) {
