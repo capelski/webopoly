@@ -155,7 +155,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         />
       )}
 
-      <SquareIcon rotate={true} square={props.square} />
+      <SquareIcon game={props.game} rotate={true} square={props.square} />
 
       {props.square.type === SquareType.jail
         ? props.game.players

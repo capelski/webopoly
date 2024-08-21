@@ -1,4 +1,4 @@
-import { PropertyStatus, PropertyType, Square, SquareType } from '@webopoly/core';
+import { Game, PropertyStatus, PropertyType, Square, SquareType } from '@webopoly/core';
 import React from 'react';
 import {
   goSymbol,
@@ -13,6 +13,7 @@ import {
 import { squaresRotation } from '../squares-rotation';
 
 interface SquareIconProps {
+  game?: Game;
   rotate?: boolean;
   square: Square;
 }
@@ -43,7 +44,9 @@ export const SquareIcon: React.FC<SquareIconProps> = (props) => {
       }}
     >
       {props.square.type !== SquareType.property
-        ? squareIconMap[props.square.type]
+        ? props.square.type === SquareType.parking && props.game?.centerPot
+          ? props.game.centerPot
+          : squareIconMap[props.square.type]
         : props.square.propertyType === PropertyType.station
         ? stationSymbol
         : props.square.propertyType === PropertyType.utility
