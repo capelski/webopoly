@@ -14,6 +14,7 @@ export enum GameUpdateType {
   declineTrade = 'declineTrade',
   drawCard = 'drawCard',
   endTurn = 'endTurn',
+  getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',
   mortgage = 'mortgage',
   payJailFine = 'payJailFine',

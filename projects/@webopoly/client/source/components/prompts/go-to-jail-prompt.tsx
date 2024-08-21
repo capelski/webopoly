@@ -1,23 +1,29 @@
 import { GameUpdateType, getCurrentPlayer, mustGoToJail, PromptType } from '@webopoly/core';
 import React from 'react';
 import { goToJailSymbol } from '../../parameters';
+import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';
-import { OkPrompt } from './ok-prompt';
 import { PromptInterface } from './prompt-interface';
 
 export const GoToJailPrompt: PromptInterface<PromptType.goToJail> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (
-    <OkPrompt
-      disabled={!mustGoToJail(props.game, props.windowPlayerId)}
-      okHandler={() => {
-        props.triggerUpdate({ type: GameUpdateType.goToJail });
-      }}
-    >
+    <div style={{ textAlign: 'center' }}>
       <Title>{currentPlayer.name}</Title>
       <Paragraph>{goToJailSymbol} Go to Jail</Paragraph>
-    </OkPrompt>
+
+      <Button
+        autoClick={GameUpdateType.goToJail}
+        defaultAction={props.game.defaultAction}
+        disabled={!mustGoToJail(props.game, props.windowPlayerId)}
+        onClick={() => {
+          props.triggerUpdate({ type: GameUpdateType.goToJail });
+        }}
+      >
+        Ok
+      </Button>
+    </div>
   );
 };

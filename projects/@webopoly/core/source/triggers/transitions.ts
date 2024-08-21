@@ -1,4 +1,5 @@
-import { GamePhase, LiquidationReason, TransitionType } from '../enums';
+import { playerTransitionDuration } from '../constants';
+import { GamePhase, GameUpdateType, LiquidationReason, TransitionType } from '../enums';
 import { getCurrentPlayer, getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
 import { GameLiquidationPhase, GameUiTransitionPhase } from '../types';
 import { applyDiceRoll } from './dice-roll';
@@ -15,6 +16,11 @@ export const triggerFirstPlayerTransition = (
 
   return triggerNextPlayerTransition({
     ...game,
+    defaultAction: {
+      interval: playerTransitionDuration * 1000,
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.playerTransition },
+    },
     phase: GamePhase.uiTransition,
     transitionType: TransitionType.player,
     transitionData: {
@@ -40,6 +46,11 @@ export const triggerNextPlayerTransition = (
 
   return {
     ...game,
+    defaultAction: {
+      interval: playerTransitionDuration * 1000,
+      playerId,
+      update: { type: GameUpdateType.playerTransition },
+    },
     phase: GamePhase.uiTransition,
     transitionType: TransitionType.player,
     transitionData: {

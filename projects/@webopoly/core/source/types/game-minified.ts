@@ -19,6 +19,8 @@ type GameBaseMinified = {
   ci: Game['currentPlayerId'];
   /** dice */
   d: Game['dice'];
+  /** defaultAction */
+  da: Game['defaultAction'];
   /** eventHistory */
   eh: EventMinified[];
   /** nextCardIds */

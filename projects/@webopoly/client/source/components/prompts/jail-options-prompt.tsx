@@ -25,6 +25,8 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
       </Title>
       <div>
         <Button
+          autoClick={GameUpdateType.rollDiceInJail}
+          defaultAction={props.game.defaultAction}
           disabled={!canRollDiceInJail(props.game, props.windowPlayerId)}
           onClick={() => {
             props.triggerUpdate({ type: GameUpdateType.rollDiceInJail });
@@ -44,6 +46,8 @@ export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props
         </Button>
 
         <Button
+          autoClick={GameUpdateType.useJailCard}
+          defaultAction={props.game.defaultAction}
           disabled={!canUseJailCard(props.game, props.windowPlayerId)}
           onClick={() => {
             props.triggerUpdate({ type: GameUpdateType.useJailCard });

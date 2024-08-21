@@ -1,4 +1,5 @@
-import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
+import { longActionInterval } from '../constants';
+import { GamePhase, GameUpdateType, LiquidationReason, PromptType, TransitionType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   GameLiquidationPhase,
@@ -29,6 +30,11 @@ export const triggerCannotPayPrompt = (
 ): GamePromptPhase<PromptType.cannotPay> => {
   return {
     ...game,
+    defaultAction: {
+      interval: longActionInterval * 1000,
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.bankruptcy },
+    },
     phase: GamePhase.prompt,
     prompt: {
       pendingEvent: event,
@@ -46,6 +52,10 @@ export const triggerPayRent = (
   const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
+        defaultAction: {
+          playerId: currentPlayer.id,
+          update: { type: GameUpdateType.endTurn },
+        },
         notifications: [...game.notifications, event],
         phase: GamePhase.play,
         players: game.players.map((p) => {
@@ -69,6 +79,10 @@ export const triggerPayTax = (
   const nextGame: ExpenseOutputPhases = hasEnoughMoney(currentPlayer, event.amount)
     ? {
         ...game,
+        defaultAction: {
+          playerId: currentPlayer.id,
+          update: { type: GameUpdateType.endTurn },
+        },
         centerPot: game.centerPot + event.amount,
         notifications: [...game.notifications, event],
         phase: GamePhase.play,

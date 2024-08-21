@@ -31,6 +31,8 @@ export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) =>
           Liquidate properties
         </Button>
         <Button
+          autoClick={GameUpdateType.bankruptcy}
+          defaultAction={props.game.defaultAction}
           disabled={!canDeclareBankruptcy(props.game, props.windowPlayerId)}
           onClick={() => {
             props.triggerUpdate({ type: GameUpdateType.bankruptcy });

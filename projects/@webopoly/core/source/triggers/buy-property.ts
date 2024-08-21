@@ -1,4 +1,5 @@
-import { EventType, GamePhase, PromptType } from '../enums';
+import { EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
+import { getCurrentPlayer } from '../logic';
 import { GamePlayPhase, GamePromptPhase, Player, PropertySquare } from '../types';
 
 export const triggerBuyProperty = (
@@ -8,6 +9,10 @@ export const triggerBuyProperty = (
 ): GamePlayPhase => {
   return {
     ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.endTurn },
+    },
     notifications: [
       ...game.notifications,
       {
@@ -38,7 +43,14 @@ export const triggerRejectProperty = (
   const { potentialBuyersId } = game.prompt;
 
   if (potentialBuyersId.length === 0) {
-    return { ...game, phase: GamePhase.play };
+    return {
+      ...game,
+      defaultAction: {
+        playerId: getCurrentPlayer(game, { omitTurnConsiderations: true }).id,
+        update: { type: GameUpdateType.endTurn },
+      },
+      phase: GamePhase.play,
+    };
   }
 
   const nextPotentialBuyersId = [...potentialBuyersId];
@@ -46,6 +58,10 @@ export const triggerRejectProperty = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: nextCurrentBuyerId,
+      update: { type: GameUpdateType.buyPropertyReject },
+    },
     phase: GamePhase.prompt,
     prompt: {
       currentBuyerId: nextCurrentBuyerId,

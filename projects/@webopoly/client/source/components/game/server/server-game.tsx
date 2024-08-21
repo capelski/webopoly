@@ -30,6 +30,14 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
   const socket = useMemo<ClientSocket>(() => {
     const nextSocket: ClientSocket = io({ path: '/ws/socket.io' });
 
+    const exitRoomHandler = () => {
+      setPlayerToken(undefined);
+      setRoom(undefined);
+
+      localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(ROOM_ID_STORAGE_KEY);
+    };
+
     nextSocket.on('connect', () => {
       console.log('Connected');
 
@@ -55,13 +63,7 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
       roomEntered(data.playerToken, data.room);
     });
 
-    socketListen(nextSocket, WSServerMessageType.roomExited, () => {
-      setPlayerToken(undefined);
-      setRoom(undefined);
-
-      localStorage.removeItem(PLAYER_TOKEN_STORAGE_KEY);
-      localStorage.removeItem(ROOM_ID_STORAGE_KEY);
-    });
+    socketListen(nextSocket, WSServerMessageType.roomExited, exitRoomHandler);
 
     socketListen(nextSocket, WSServerMessageType.roomUpdated, setRoom);
 
@@ -72,6 +74,10 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
           : data.code === ServerErrorCodes.GAME_ALREADY_STARTED
           ? 'Game has already started'
           : data.code;
+
+      if (data.code === ServerErrorCodes.INVALID_ROOM_ID) {
+        exitRoomHandler();
+      }
 
       toast(errorMessage, {
         type: 'error',

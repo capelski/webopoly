@@ -11,6 +11,7 @@ import {
 } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
 import { diceSymbol } from '../../parameters';
+import { Button } from '../common/button';
 import { Grid } from './grid';
 import { InnerBottomRow } from './inner-rows/inner-bottom-row';
 import { InnerLeftRow } from './inner-rows/inner-left-row';
@@ -84,39 +85,35 @@ export const Board: React.FC<BoardProps> = (props) => {
             style={{
               display: 'flex',
               flexDirection: 'column',
+              fontSize: 32,
               height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <div
+            <Button
+              autoClick={GameUpdateType.rollDice}
+              defaultAction={props.game.defaultAction}
+              disabled={!canRoll}
+              onClick={() => {
+                props.triggerUpdate({ type: GameUpdateType.rollDice });
+              }}
               style={{
+                animation: canRoll
+                  ? 'heart-beat 1.5s infinite'
+                  : animateDice
+                  ? `roll ${diceTransitionDuration}s infinite`
+                  : undefined,
+                borderRadius: 15,
                 fontSize: animateDice ? 48 : 32,
-                textAlign: 'center',
+                marginBottom: 8,
                 transition: `font-size ${diceTransitionDuration}s`,
               }}
+              type="transparent"
             >
-              <div
-                onClick={() => {
-                  if (canRoll) {
-                    props.triggerUpdate({ type: GameUpdateType.rollDice });
-                  }
-                }}
-                style={{
-                  animation: canRoll
-                    ? 'heart-beat 1.5s infinite'
-                    : animateDice
-                    ? `roll ${diceTransitionDuration}s infinite`
-                    : undefined,
-                  borderRadius: 15,
-                  cursor: canRoll ? 'pointer' : undefined,
-                  marginBottom: 8,
-                }}
-              >
-                {diceSymbol}
-              </div>
-              {diceToString(props.game.dice)}
-            </div>
+              {diceSymbol}
+            </Button>
+            {diceToString(props.game.dice)}
           </div>
         </Grid>
       </Grid>

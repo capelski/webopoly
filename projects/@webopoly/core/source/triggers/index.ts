@@ -1,4 +1,4 @@
-import { diceTransitionDuration, maxTurnsInJail, playerTransitionDuration } from '../constants';
+import { defaultActionInterval, maxTurnsInJail } from '../constants';
 import {
   EventType,
   GamePhase,
@@ -10,8 +10,14 @@ import {
   SquareType,
   TransitionType,
 } from '../enums';
-import { getCurrentPlayer, isDoublesRoll, turnConsiderations } from '../logic';
-import { Game, GameUpdate, Player } from '../types';
+import {
+  clearNotifications,
+  getActivePlayers,
+  getCurrentPlayer,
+  isDoublesRoll,
+  turnConsiderations,
+} from '../logic';
+import { DefaultAction, Game, GameUpdate, Player } from '../types';
 import {
   canAnswerOffer,
   canAnswerTrade,
@@ -77,7 +83,19 @@ import {
 } from './trade';
 import { triggerFirstPlayerTransition, triggerNextPlayerTransition } from './transitions';
 
-export const triggerRemovePlayer = (game: Game, playerId: Player['id']): Game => {
+export const triggerRemovePlayer = (
+  game: Game,
+  playerId: Player['id'],
+  updateFunction: (game: Game) => void,
+) => {
+  let defaultAction: DefaultAction | undefined;
+
+  if (game.defaultAction) {
+    defaultAction = { ...game.defaultAction };
+    clearTimeout(game.defaultAction.timer);
+    game.defaultAction = undefined;
+  }
+
   let nextGame: Game = {
     ...game,
     notifications: [
@@ -116,12 +134,50 @@ export const triggerRemovePlayer = (game: Game, playerId: Player['id']): Game =>
       ? triggerRejectProperty(resumeBuyProperty(buyingPropertyLiquidation.game))
       : nextGame;
 
+  /* If the player was on the list of potential buyer ids, remove it */
+  if (
+    game.phase === GamePhase.prompt &&
+    game.prompt.type === PromptType.buyProperty &&
+    game.prompt.potentialBuyersId.includes(playerId)
+  ) {
+    game.prompt.potentialBuyersId = game.prompt.potentialBuyersId.filter((id) => id != playerId);
+  }
+
   /* If it was the player turn, end the turn on their behalf */
   if (getCurrentPlayer(nextGame, { omitTurnConsiderations: true }).id === playerId) {
     nextGame = triggerEndTurn({ ...nextGame, phase: GamePhase.play });
   }
 
-  return nextGame;
+  const remainingPlayers = getActivePlayers(nextGame);
+  if (remainingPlayers.length === 1) {
+    nextGame = {
+      ...nextGame,
+      currentPlayerId: remainingPlayers[0].id,
+      phase: GamePhase.prompt,
+      prompt: {
+        playerId: remainingPlayers[0].id,
+        type: PromptType.playerWins,
+      },
+    };
+  } else if (defaultAction && defaultAction.playerId !== playerId) {
+    nextGame.defaultAction = { ...defaultAction };
+  }
+
+  updateFunction(nextGame);
+  setDefaultTrigger(nextGame, updateFunction);
+};
+
+export const setDefaultTrigger = (game: Game, updateFunction: (game: Game) => void) => {
+  if (game.defaultAction) {
+    game.defaultAction.timer = setTimeout(() => {
+      triggerUpdate(
+        clearNotifications(game),
+        game.defaultAction!.update,
+        game.defaultAction!.playerId,
+        updateFunction,
+      );
+    }, game.defaultAction.interval ?? defaultActionInterval * 1000);
+  }
 };
 
 export const triggerUpdate = (
@@ -130,30 +186,46 @@ export const triggerUpdate = (
   windowPlayerId: Player['id'],
   updateFunction: (game: Game) => void,
 ) => {
+  let defaultAction: DefaultAction | undefined;
+
+  if (game.defaultAction) {
+    defaultAction = { ...game.defaultAction };
+    clearTimeout(game.defaultAction?.timer);
+    delete game.defaultAction;
+  }
+
+  let nextGame = game;
+
   if (gameUpdate.type === GameUpdateType.acceptOffer) {
     const validation = canAnswerOffer(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerAcceptOffer(validation.game));
+      nextGame = triggerAcceptOffer(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.acceptTrade) {
     const validation = canAnswerTrade(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerAcceptTrade(validation.game));
+      nextGame = triggerAcceptTrade(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.applyCard) {
     const validation = canApplyCard(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerApplyCard(validation.game, validation.game.prompt.cardId));
+      nextGame = triggerApplyCard(validation.game, validation.game.prompt.cardId);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.bankruptcy) {
     const validation = canDeclareBankruptcy(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerBankruptcy(validation.game, windowPlayerId));
+      nextGame = triggerBankruptcy(validation.game, windowPlayerId);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buildHouse) {
     const validation = canBuildHouse(game, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      updateFunction(triggerBuildHouse(validation.game, validation.street));
+      nextGame = triggerBuildHouse(validation.game, validation.street);
+      nextGame.defaultAction = defaultAction;
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyingOffer) {
     const validation = canTriggerBuyingOffer(
@@ -163,109 +235,109 @@ export const triggerUpdate = (
       windowPlayerId,
     );
     if (validation) {
-      updateFunction(triggerBuyingOffer(validation.game, validation.property, gameUpdate.amount));
+      nextGame = triggerBuyingOffer(validation.game, validation.property, gameUpdate.amount);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyProperty) {
     const validation = canBuyProperty(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerBuyProperty(validation.game, validation.square, windowPlayerId));
+      nextGame = triggerBuyProperty(validation.game, validation.square, windowPlayerId);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyPropertyReject) {
     const validation = canRejectProperty(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerRejectProperty(validation.game));
+      nextGame = triggerRejectProperty(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyPropertyLiquidation) {
     const validation = canLiquidateBuyProperty(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerBuyPropertyLiquidation(validation.game));
+      nextGame = triggerBuyPropertyLiquidation(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.cancelTrade) {
     const validation = canCancelTrade(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerCancelTrade(validation.game));
+      nextGame = triggerCancelTrade(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.clearMortgage) {
     const validation = canClearMortgage(game, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      updateFunction(triggerClearMortgage(validation.game, validation.property));
+      nextGame = triggerClearMortgage(validation.game, validation.property);
+      nextGame.defaultAction = defaultAction;
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.declineOffer) {
     const validation = canAnswerOffer(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerDeclineOffer(validation.game));
+      nextGame = triggerDeclineOffer(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.declineTrade) {
     const validation = canAnswerTrade(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerDeclineTrade(validation.game));
+      nextGame = triggerDeclineTrade(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.drawCard) {
     const validation = canDrawCard(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerDrawCard(validation.game));
+      nextGame = triggerDrawCard(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.endTurn) {
     const validation = canEndTurn(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerEndTurn(validation.game));
+      nextGame = triggerEndTurn(validation.game);
+      updateFunction(nextGame);
+    }
+  } else if (gameUpdate.type === GameUpdateType.getOutOfJail) {
+    if (
+      nextGame.phase === GamePhase.uiTransition &&
+      nextGame.transitionType === TransitionType.getOutOfJail
+    ) {
+      nextGame = triggerFirstPlayerTransition(nextGame);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
     const validation = mustGoToJail(game, windowPlayerId);
     if (validation) {
-      updateFunction(
-        triggerGoToJail(validation.game, validation.game.prompt.type === PromptType.applyCard),
+      nextGame = triggerGoToJail(
+        validation.game,
+        validation.game.prompt.type === PromptType.applyCard,
       );
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.pendingPaymentLiquidation) {
     const validation = canLiquidatePendingPayment(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerPendingPaymentLiquidation(validation.game));
+      nextGame = triggerPendingPaymentLiquidation(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.mortgage) {
     const validation = canMortgage(game, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      updateFunction(triggerMortgage(validation.game, validation.property));
+      nextGame = triggerMortgage(validation.game, validation.property);
+      nextGame.defaultAction = defaultAction;
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.payJailFine) {
     const validation = canPayJailFine(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerPayJailFine(validation.game));
+      nextGame = triggerPayJailFine(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.playerTransition) {
     if (game.phase === GamePhase.uiTransition && game.transitionType === TransitionType.player) {
-      const nextGame = triggerNextPlayerTransition(game);
+      nextGame = triggerNextPlayerTransition(game);
       updateFunction(nextGame);
-
-      if (
-        nextGame.phase === GamePhase.uiTransition &&
-        nextGame.transitionType === TransitionType.player
-      ) {
-        /** Wait for the UI to animate the transition */
-        setTimeout(() => {
-          triggerUpdate(
-            nextGame,
-            { type: GameUpdateType.playerTransition },
-            windowPlayerId,
-            updateFunction,
-          );
-        }, playerTransitionDuration * 1000);
-      }
     }
   } else if (gameUpdate.type === GameUpdateType.postDice) {
     if (game.phase === GamePhase.uiTransition && game.transitionType === TransitionType.dice) {
-      const nextGame = triggerFirstPlayerTransition(game);
+      nextGame = triggerFirstPlayerTransition(game);
       updateFunction(nextGame);
-
-      /** Wait for the UI to animate the transition */
-      setTimeout(() => {
-        triggerUpdate(
-          nextGame,
-          { type: GameUpdateType.playerTransition },
-          windowPlayerId,
-          updateFunction,
-        );
-      }, playerTransitionDuration * 1000);
     }
   } else if (gameUpdate.type === GameUpdateType.postDiceInJail) {
     if (
@@ -276,69 +348,43 @@ export const triggerUpdate = (
       const isDoubles = isDoublesRoll(game.dice);
       const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail - 1;
 
-      const nextGame = isDoubles
+      nextGame = isDoubles
         ? triggerRollDoublesInJail(game)
         : isLastTurnInJail
         ? triggerLastTurnInJail(game)
         : triggerRemainInJail(game);
-      updateFunction(nextGame);
 
-      if (
-        nextGame.phase === GamePhase.uiTransition &&
-        nextGame.transitionType === TransitionType.getOutOfJail
-      ) {
-        /** Wait for the UI to animate the transition */
-        setTimeout(() => {
-          const futureGame = triggerFirstPlayerTransition(nextGame);
-          triggerUpdate(
-            futureGame,
-            { type: GameUpdateType.playerTransition },
-            windowPlayerId,
-            updateFunction,
-          );
-        }, playerTransitionDuration * 1000);
-      }
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.resume) {
     const validation = canResume(game, windowPlayerId);
     if (validation) {
       if (validation.game.reason === LiquidationReason.buyProperty) {
-        updateFunction(resumeBuyProperty(validation.game));
+        nextGame = resumeBuyProperty(validation.game);
+        updateFunction(nextGame);
       } else {
-        updateFunction(resumePendingPayment(validation.game));
+        nextGame = resumePendingPayment(validation.game);
+        updateFunction(nextGame);
       }
     }
   } else if (gameUpdate.type === GameUpdateType.rollDice) {
     const validation = canRollDice(game, windowPlayerId);
     if (validation) {
-      const nextGame = triggerDiceRoll(validation.game);
+      nextGame = triggerDiceRoll(validation.game);
       updateFunction(nextGame);
-
-      /** Wait for the UI to animate the transition */
-      setTimeout(() => {
-        triggerUpdate(nextGame, { type: GameUpdateType.postDice }, windowPlayerId, updateFunction);
-      }, diceTransitionDuration * 2 * 1000);
     }
   } else if (gameUpdate.type === GameUpdateType.rollDiceInJail) {
     const validation = canRollDiceInJail(game, windowPlayerId);
     if (validation) {
-      const nextGame = triggerDiceRollInJail(validation.game);
+      nextGame = triggerDiceRollInJail(validation.game);
       updateFunction(nextGame);
-
-      /** Wait for the UI to animate the transition */
-      setTimeout(() => {
-        triggerUpdate(
-          nextGame,
-          { type: GameUpdateType.postDiceInJail },
-          windowPlayerId,
-          updateFunction,
-        );
-      }, diceTransitionDuration * 2 * 1000);
     }
   } else if (gameUpdate.type === GameUpdateType.sellHouse) {
     const validation = canSellHouse(game, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      updateFunction(triggerSellHouse(validation.game, validation.street));
+      nextGame = triggerSellHouse(validation.game, validation.street);
+      nextGame.defaultAction = defaultAction;
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.sellingOffer) {
     const validation = canTriggerSellingOffer(
@@ -349,35 +395,42 @@ export const triggerUpdate = (
       windowPlayerId,
     );
     if (validation) {
-      updateFunction(
-        triggerSellingOffer(
-          validation.game,
-          validation.property,
-          gameUpdate.amount,
-          gameUpdate.targetPlayerId,
-        ),
+      nextGame = triggerSellingOffer(
+        validation.game,
+        validation.property,
+        gameUpdate.amount,
+        gameUpdate.targetPlayerId,
       );
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.startTrade) {
     const validation = canStartTrade(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerStartTrade(validation.game));
+      nextGame = triggerStartTrade(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.tradeOffer) {
     const validation = canTriggerTradeOffer(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerTradeOffer(validation.game));
+      nextGame = triggerTradeOffer(validation.game);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.toggleTradeSelection) {
     const validation = canToggleTradeSelection(game, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      updateFunction(triggerTradeSelectionToggle(validation.game, validation.property));
+      nextGame = triggerTradeSelectionToggle(validation.game, validation.property);
+      updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.useJailCard) {
     const validation = canUseJailCard(game, windowPlayerId);
     if (validation) {
-      updateFunction(triggerUseJailCard(validation.game));
+      nextGame = triggerUseJailCard(validation.game);
+      updateFunction(nextGame);
     }
   }
-  // else if (gameUpdate.type) {}
+  // else if (gameUpdate.type) {} // type should always be inferred as never
+
+  if (game.defaultAction !== nextGame.defaultAction) {
+    setDefaultTrigger(nextGame, updateFunction);
+  }
 };

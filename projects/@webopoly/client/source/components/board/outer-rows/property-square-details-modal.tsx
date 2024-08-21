@@ -3,8 +3,9 @@ import {
   canClearMortgage,
   canMortgage,
   canSellHouse,
+  canTriggerBuyingOffer,
+  canTriggerSellingOffer,
   Game,
-  GamePhase,
   GameUpdate,
   GameUpdateType,
   getCurrentPlayer,
@@ -99,11 +100,12 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
         <div>
           <Button
             disabled={
-              props.game.phase === GamePhase.prompt ||
-              !props.square.ownerId ||
-              (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
-              props.windowPlayerId === props.square.ownerId ||
-              props.windowPlayerId !== currentPlayer.id
+              !canTriggerBuyingOffer(
+                props.game,
+                props.square.id,
+                currentPlayer.money,
+                props.windowPlayerId,
+              )
             }
             onClick={() => {
               props.setSquareModalType(SquareModalType.buyOffer);
@@ -114,11 +116,13 @@ export const PropertySquareDetailsModal: React.FC<PropertySquareDetailsModalProp
 
           <Button
             disabled={
-              props.game.phase === GamePhase.prompt ||
-              !props.square.ownerId ||
-              (props.square.propertyType === PropertyType.street && props.square.houses > 0) ||
-              props.windowPlayerId !== props.square.ownerId ||
-              props.windowPlayerId !== currentPlayer.id
+              !canTriggerSellingOffer(
+                props.game,
+                props.square.id,
+                1,
+                props.windowPlayerId,
+                props.windowPlayerId,
+              )
             }
             onClick={() => {
               props.setSquareModalType(SquareModalType.sellOffer);

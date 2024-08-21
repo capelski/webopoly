@@ -6,15 +6,18 @@ import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const DrawCardPrompt: PromptInterface<PromptType.drawCard> = (props) => {
-  const canApply = canDrawCard(props.game, props.windowPlayerId);
+  const canDraw = canDrawCard(props.game, props.windowPlayerId);
 
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: 40 }}>{surpriseSymbol}</div>
 
       <Title>Surprise card</Title>
+
       <Button
-        disabled={!canApply}
+        autoClick={GameUpdateType.drawCard}
+        defaultAction={props.game.defaultAction}
+        disabled={!canDraw}
         onClick={() => {
           props.triggerUpdate({ type: GameUpdateType.drawCard });
         }}

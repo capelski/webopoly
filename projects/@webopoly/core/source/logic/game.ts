@@ -2,6 +2,7 @@ import { jailFine, playerInitialMoney } from '../constants';
 import {
   EventType,
   GamePhase,
+  GameUpdateType,
   LiquidationReason,
   PlayerStatus,
   PromptType,
@@ -132,6 +133,10 @@ export const startGame = (playerNames: string[]): Game => {
   return {
     centerPot: 0,
     currentPlayerId,
+    defaultAction: {
+      playerId: currentPlayerId,
+      update: { type: GameUpdateType.rollDice },
+    },
     dice: [],
     eventHistory: [],
     nextCardIds: [],

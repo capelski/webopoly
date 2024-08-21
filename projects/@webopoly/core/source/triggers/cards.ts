@@ -1,4 +1,11 @@
-import { CardType, EventType, GamePhase, LiquidationReason, PromptType } from '../enums';
+import {
+  CardType,
+  EventType,
+  GamePhase,
+  GameUpdateType,
+  LiquidationReason,
+  PromptType,
+} from '../enums';
 import {
   cards,
   cardsMap,
@@ -60,6 +67,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
 
     const nextGame: GamePlayPhase = {
       ...game,
+      defaultAction: { playerId: player.id, update: { type: GameUpdateType.endTurn } },
       centerPot: game.centerPot + card.amount,
       phase: GamePhase.play,
       players: game.players.map((p) => {
@@ -93,6 +101,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
 
     const nextGame: GamePlayPhase = {
       ...game,
+      defaultAction: { playerId: player.id, update: { type: GameUpdateType.endTurn } },
       centerPot: game.centerPot + amount,
       phase: GamePhase.play,
       players: game.players.map((p) => {
@@ -105,6 +114,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
   [CardType.windfall]: (game, player, card) => {
     return {
       ...game,
+      defaultAction: { playerId: player.id, update: { type: GameUpdateType.endTurn } },
       phase: GamePhase.play,
       players: game.players.map((p) => {
         return p.id === player.id ? { ...p, money: p.money + card.amount } : p;
@@ -145,6 +155,10 @@ export const triggerCardPrompt = (
 ): GamePromptPhase<PromptType.drawCard> => {
   return {
     ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.drawCard },
+    },
     phase: GamePhase.prompt,
     prompt: {
       type: PromptType.drawCard,
@@ -165,6 +179,10 @@ export const triggerDrawCard = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.applyCard },
+    },
     nextCardIds,
     phase: GamePhase.prompt,
     prompt: {

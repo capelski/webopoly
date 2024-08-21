@@ -17,6 +17,7 @@ export type GameUpdate =
         | GameUpdateType.declineTrade
         | GameUpdateType.drawCard
         | GameUpdateType.endTurn
+        | GameUpdateType.getOutOfJail
         | GameUpdateType.goToJail
         | GameUpdateType.payJailFine
         | GameUpdateType.pendingPaymentLiquidation

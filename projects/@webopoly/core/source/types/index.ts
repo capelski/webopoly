@@ -1,4 +1,5 @@
 export * from './card';
+export * from './default-action';
 export * from './dice';
 export * from './event';
 export * from './event-minified';

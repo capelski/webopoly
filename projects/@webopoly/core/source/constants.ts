@@ -23,7 +23,10 @@ export const houseRents: { [housesNumber: number]: number } = {
 };
 
 export const diceTransitionDuration = 1; // In seconds
-export const playerTransitionDuration = 0.4; // In seconds
+export const playerTransitionDuration = 0.25; // In seconds
+
+export const defaultActionInterval = 10; // In seconds
+export const longActionInterval = 20; // In seconds
 
 // TODO Server should not know about currency symbol
 export const currencySymbol = '￡';

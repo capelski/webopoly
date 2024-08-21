@@ -1,6 +1,7 @@
-import { GamePhase, PromptType } from '../enums';
+import { GamePhase, GameUpdateType, PromptType } from '../enums';
 import { getActivePlayers, getNextPlayerId, getPlayerById } from '../logic';
 import { GamePlayPhase, GamePromptPhase, GameRollDicePhase } from '../types';
+import { canUseJailCard } from '../validators';
 
 export type EndTurnInputPhases =
   | GamePlayPhase // A player finishes their turn
@@ -17,30 +18,47 @@ export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases =>
   const nextPlayer = getPlayerById(game, nextPlayerId);
   const remainingPlayers = getActivePlayers(game);
 
-  const nextGame: EndTurnInputPhases = {
+  if (remainingPlayers.length === 1) {
+    return {
+      ...game,
+      currentPlayerId: nextPlayerId,
+      phase: GamePhase.prompt,
+      prompt: {
+        playerId: nextPlayerId,
+        type: PromptType.playerWins,
+      },
+    };
+  }
+
+  if (nextPlayer.isInJail) {
+    const nextGame: GamePromptPhase<PromptType.jailOptions> = {
+      ...game,
+      currentPlayerId: nextPlayerId,
+      phase: GamePhase.prompt,
+      prompt: {
+        type: PromptType.jailOptions,
+      },
+    };
+
+    nextGame.defaultAction = {
+      playerId: nextPlayerId,
+      update: {
+        type: canUseJailCard(nextGame, nextPlayerId)
+          ? GameUpdateType.useJailCard
+          : GameUpdateType.rollDiceInJail,
+      },
+    };
+
+    return nextGame;
+  }
+
+  return {
     ...game,
     currentPlayerId: nextPlayerId,
+    defaultAction: {
+      playerId: nextPlayerId,
+      update: { type: GameUpdateType.rollDice },
+    },
+    phase: GamePhase.rollDice,
   };
-
-  return remainingPlayers.length === 1
-    ? {
-        ...nextGame,
-        phase: GamePhase.prompt,
-        prompt: {
-          playerId: nextPlayerId,
-          type: PromptType.playerWins,
-        },
-      }
-    : nextPlayer.isInJail
-    ? {
-        ...nextGame,
-        phase: GamePhase.prompt,
-        prompt: {
-          type: PromptType.jailOptions,
-        },
-      }
-    : {
-        ...nextGame,
-        phase: GamePhase.rollDice,
-      };
 };

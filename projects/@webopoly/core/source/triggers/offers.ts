@@ -1,11 +1,12 @@
+import { longActionInterval } from '../constants';
 import {
   AnswerType,
   EventType,
   GamePhase,
+  GameUpdateType,
   LiquidationReason,
   OfferType,
   PromptType,
-  TransitionType,
 } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
@@ -19,19 +20,13 @@ import {
   PropertySquare,
 } from '../types';
 
-const getPreviousPayload = (game: GameNonPromptPhase): NonPromptPhasePayload => {
+const getPreviousPayload = (
+  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
+): NonPromptPhasePayload => {
   return game.phase === GamePhase.liquidation
     ? game.reason === LiquidationReason.buyProperty
       ? { phase: game.phase, reason: game.reason, pendingPrompt: game.pendingPrompt }
       : { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
-    : game.phase === GamePhase.uiTransition
-    ? game.transitionType === TransitionType.player
-      ? {
-          phase: game.phase,
-          transitionType: game.transitionType,
-          transitionData: game.transitionData,
-        }
-      : { phase: game.phase, transitionType: game.transitionType }
     : { phase: game.phase };
 };
 
@@ -46,6 +41,19 @@ export const triggerAcceptOffer = (
   return {
     ...game,
     ...game.prompt.previous,
+    defaultAction: {
+      playerId: game.prompt.playerId,
+      update:
+        game.prompt.previous.phase === GamePhase.play
+          ? { type: GameUpdateType.endTurn }
+          : game.prompt.previous.phase === GamePhase.rollDice
+          ? { type: GameUpdateType.rollDice }
+          : { type: GameUpdateType.resume },
+      interval:
+        game.prompt.previous.phase === GamePhase.liquidation
+          ? longActionInterval * 1000
+          : undefined,
+    },
     notifications: [
       ...game.notifications,
       {
@@ -88,6 +96,10 @@ export const triggerBuyingOffer = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: property.ownerId!,
+      update: { type: GameUpdateType.declineOffer },
+    },
     phase: GamePhase.prompt,
     prompt: {
       amount,
@@ -106,6 +118,19 @@ export const triggerDeclineOffer = (
 ): GameNonPromptPhase => {
   return {
     ...game,
+    defaultAction: {
+      playerId: game.prompt.playerId,
+      update:
+        game.prompt.previous.phase === GamePhase.play
+          ? { type: GameUpdateType.endTurn }
+          : game.prompt.previous.phase === GamePhase.rollDice
+          ? { type: GameUpdateType.rollDice }
+          : { type: GameUpdateType.resume },
+      interval:
+        game.prompt.previous.phase === GamePhase.liquidation
+          ? longActionInterval * 1000
+          : undefined,
+    },
     notifications: [
       ...game.notifications,
       {
@@ -132,6 +157,10 @@ export const triggerSellingOffer = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: targetPlayerId,
+      update: { type: GameUpdateType.declineOffer },
+    },
     phase: GamePhase.prompt,
     prompt: {
       amount,

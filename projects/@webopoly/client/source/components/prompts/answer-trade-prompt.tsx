@@ -45,6 +45,8 @@ export const AnswerTradePrompt: PromptInterface<PromptType.answerTrade> = (props
           Accept
         </Button>
         <Button
+          autoClick={GameUpdateType.declineTrade}
+          defaultAction={props.game.defaultAction}
           disabled={!canAnswer}
           onClick={() => {
             props.triggerUpdate({ type: GameUpdateType.declineTrade });

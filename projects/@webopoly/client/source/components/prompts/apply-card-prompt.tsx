@@ -7,8 +7,8 @@ import {
 } from '@webopoly/core';
 import React from 'react';
 import { surpriseSymbol } from '../../parameters';
+import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
-import { OkPrompt } from './ok-prompt';
 import { PromptInterface } from './prompt-interface';
 
 export const ApplyCardPrompt: PromptInterface<PromptType.applyCard> = (props) => {
@@ -18,14 +18,19 @@ export const ApplyCardPrompt: PromptInterface<PromptType.applyCard> = (props) =>
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: 40 }}>{surpriseSymbol}</div>
-      <OkPrompt
+
+      <Paragraph>{getCardText(props.game.prompt.cardId, amount)}</Paragraph>
+
+      <Button
+        autoClick={GameUpdateType.applyCard}
+        defaultAction={props.game.defaultAction}
         disabled={!canApply}
-        okHandler={() => {
+        onClick={() => {
           props.triggerUpdate({ type: GameUpdateType.applyCard });
         }}
       >
-        <Paragraph>{getCardText(props.game.prompt.cardId, amount)}</Paragraph>
-      </OkPrompt>
+        Ok
+      </Button>
     </div>
   );
 };

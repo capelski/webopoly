@@ -1,5 +1,13 @@
 import { passGoMoney } from '../constants';
-import { EventType, GamePhase, PlayerStatus, PromptType, SquareType, TaxType } from '../enums';
+import {
+  EventType,
+  GamePhase,
+  GameUpdateType,
+  PlayerStatus,
+  PromptType,
+  SquareType,
+  TaxType,
+} from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { GamePlayPhase, GamePromptPhase, Player, Square } from '../types';
 import { triggerCardPrompt } from './cards';
@@ -21,6 +29,10 @@ const applyFreeParking = (
   return {
     ...game,
     centerPot: 0,
+    defaultAction: {
+      playerId: currentPlayerId,
+      update: { type: GameUpdateType.endTurn },
+    },
     notifications: [
       ...game.notifications,
       {
@@ -84,6 +96,10 @@ export const triggerMovePlayer = (
   if (goesToJail) {
     const nextGame: GamePromptPhase<PromptType.goToJail> = {
       ...updatedGame,
+      defaultAction: {
+        playerId: currentPlayerId,
+        update: { type: GameUpdateType.goToJail },
+      },
       phase: GamePhase.prompt,
       prompt: {
         type: PromptType.goToJail,
@@ -135,6 +151,10 @@ export const triggerMovePlayer = (
     if (currentBuyerId) {
       const nextGame: GamePromptPhase<PromptType.buyProperty> = {
         ...updatedGame,
+        defaultAction: {
+          playerId: currentBuyerId,
+          update: { type: GameUpdateType.buyPropertyReject },
+        },
         phase: GamePhase.prompt,
         prompt: {
           currentBuyerId,
@@ -142,10 +162,15 @@ export const triggerMovePlayer = (
           type: PromptType.buyProperty,
         },
       };
+
       return nextGame;
     }
   }
 
-  const nextGame: GamePlayPhase = { ...updatedGame, phase: GamePhase.play };
+  const nextGame: GamePlayPhase = {
+    ...updatedGame,
+    defaultAction: { playerId: currentPlayerId, update: { type: GameUpdateType.endTurn } },
+    phase: GamePhase.play,
+  };
   return nextGame;
 };

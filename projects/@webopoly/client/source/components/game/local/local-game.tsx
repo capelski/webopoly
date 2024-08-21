@@ -6,6 +6,7 @@ import {
   getCurrentPlayer,
   Player,
   serializeGame,
+  setDefaultTrigger,
   triggerUpdate,
 } from '@webopoly/core';
 import React from 'react';
@@ -29,8 +30,8 @@ export class LocalGame extends React.Component<LocalGameProps> {
     const serializedGame = localStorage.getItem(LOCAL_GAME_STORAGE_KEY);
     const game = deserializeGame(serializedGame);
     if (game) {
-      console.log(`Local game resumed`);
       this.setState({ game });
+      setDefaultTrigger(game, this.updateGame.bind(this));
     }
   }
 
@@ -49,11 +50,19 @@ export class LocalGame extends React.Component<LocalGameProps> {
   updateGame(game: Game) {
     this.setState({ game });
     localStorage.setItem(LOCAL_GAME_STORAGE_KEY, serializeGame(game));
+
+    if (!this.state.game && game) {
+      setDefaultTrigger(game, this.updateGame.bind(this));
+    }
   }
 
   exitGame() {
     this.setState({ game: undefined });
     localStorage.removeItem(LOCAL_GAME_STORAGE_KEY);
+
+    if (this.state.game?.defaultAction) {
+      clearTimeout(this.state.game.defaultAction.timer);
+    }
   }
 
   render() {

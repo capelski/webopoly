@@ -43,6 +43,8 @@ export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props
             </Button>
 
             <Button
+              autoClick={GameUpdateType.buyPropertyReject}
+              defaultAction={props.game.defaultAction}
               disabled={!canRejectProperty(props.game, props.windowPlayerId)}
               onClick={() => {
                 props.triggerUpdate({ type: GameUpdateType.buyPropertyReject });

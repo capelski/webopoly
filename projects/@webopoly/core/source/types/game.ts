@@ -1,5 +1,6 @@
 import { LiquidationReason, PromptType, TransitionType } from '../enums';
 import { Card } from './card';
+import { DefaultAction } from './default-action';
 import { Dice } from './dice';
 import { GEvent } from './event';
 import {
@@ -17,6 +18,7 @@ import { Square } from './square';
 export type GameBase<T extends PhasePayloadBase<any>> = {
   centerPot: number;
   currentPlayerId: Player['id'];
+  defaultAction: DefaultAction | undefined;
   dice: Dice;
   eventHistory: GEvent[];
   nextCardIds: Card['id'][];

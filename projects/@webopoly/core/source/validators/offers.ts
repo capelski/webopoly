@@ -1,4 +1,4 @@
-import { GamePhase, LiquidationReason, PromptType, SquareType } from '../enums';
+import { GamePhase, LiquidationReason, PromptType, PropertyType, SquareType } from '../enums';
 import { castPromptGame, getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
 import {
   Game,
@@ -48,7 +48,13 @@ export const canTriggerBuyingOffer = (
   }
 
   const square = getSquareById(game, squareId);
-  if (square.type !== SquareType.property || !square.ownerId || amount <= 0) {
+  if (
+    square.type !== SquareType.property ||
+    !square.ownerId ||
+    square.ownerId === windowPlayerId ||
+    (square.propertyType === PropertyType.street && square.houses > 0) ||
+    amount <= 0
+  ) {
     return null;
   }
 
@@ -83,7 +89,14 @@ export const canTriggerSellingOffer = (
   }
 
   const square = getSquareById(game, squareId);
-  if (square.type !== SquareType.property || !square.ownerId || amount <= 0 || !targetPlayerId) {
+  if (
+    square.type !== SquareType.property ||
+    !square.ownerId ||
+    square.ownerId !== windowPlayerId ||
+    (square.propertyType === PropertyType.street && square.houses > 0) ||
+    amount <= 0 ||
+    !targetPlayerId
+  ) {
     return null;
   }
 

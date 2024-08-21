@@ -21,14 +21,15 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
     game = {
       centerPot: g.cp,
       currentPlayerId: g.ci,
+      defaultAction: g.da,
       dice: g.d,
       eventHistory: g.eh.map<GEvent>((e) => {
-        const restore: Restorer = eventsMap[e.t].restore;
+        const restore = eventsMap[e.t].restore as Restorer;
         return restore(e);
       }),
       nextCardIds: g.nci,
       notifications: g.n.map<GEvent>((e) => {
-        const restore: Restorer = eventsMap[e.t].restore;
+        const restore = eventsMap[e.t].restore as Restorer;
         return restore(e);
       }),
       players: g.pl.map<Player>((p) => ({

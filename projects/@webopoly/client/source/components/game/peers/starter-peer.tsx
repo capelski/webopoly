@@ -2,6 +2,7 @@ import {
   clearNotifications,
   GameUpdate,
   Player,
+  setDefaultTrigger,
   triggerRemovePlayer,
   triggerUpdate,
 } from '@webopoly/core';
@@ -62,9 +63,9 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
       peerState.messagingGroup.nodes.forEach((other) => {
         other.connection.on('connectionClosed', () => {
           peerState.messagingGroup.removeNode(other.connection);
-          updatePeerState({
-            ...peerState,
-            game: triggerRemovePlayer(peerState.game, other.state.id),
+
+          triggerRemovePlayer(peerState.game, other.state.id, (updatedGame) => {
+            updatePeerState({ ...peerState, game: updatedGame });
           });
         });
 
@@ -177,6 +178,9 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
           onClick={() => {
             const nextPeerState = getPlayingState(peerState);
             updatePeerState(nextPeerState);
+            setDefaultTrigger(nextPeerState.game, (updatedGame) => {
+              updatePeerState({ ...nextPeerState, game: updatedGame });
+            });
           }}
         >
           Start

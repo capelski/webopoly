@@ -1,4 +1,5 @@
-import { AnswerType, EventType, GamePhase, PromptType } from '../enums';
+import { longActionInterval } from '../constants';
+import { AnswerType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
 import { getCurrentPlayer, isSelectedForTrade } from '../logic';
 import {
   GamePlayPhase,
@@ -13,6 +14,13 @@ export const triggerAcceptTrade = (
 ): GamePlayPhase | GameRollDicePhase => {
   return {
     ...game,
+    defaultAction: {
+      playerId: game.prompt.playerId,
+      update:
+        game.prompt.previous === GamePhase.play
+          ? { type: GameUpdateType.endTurn }
+          : { type: GameUpdateType.rollDice },
+    },
     notifications: [
       ...game.notifications,
       {
@@ -53,7 +61,17 @@ export const triggerAcceptTrade = (
 };
 
 export const triggerCancelTrade = (game: GameTradePhase): GamePlayPhase | GameRollDicePhase => {
-  return { ...game, phase: game.previousPhase };
+  return {
+    ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update:
+        game.previousPhase === GamePhase.play
+          ? { type: GameUpdateType.endTurn }
+          : { type: GameUpdateType.rollDice },
+    },
+    phase: game.previousPhase,
+  };
 };
 
 export const triggerDeclineTrade = (
@@ -61,6 +79,13 @@ export const triggerDeclineTrade = (
 ): GamePlayPhase | GameRollDicePhase => {
   return {
     ...game,
+    defaultAction: {
+      playerId: game.prompt.playerId,
+      update:
+        game.prompt.previous === GamePhase.play
+          ? { type: GameUpdateType.endTurn }
+          : { type: GameUpdateType.rollDice },
+    },
     notifications: [
       ...game.notifications,
       {
@@ -79,6 +104,11 @@ export const triggerDeclineTrade = (
 export const triggerStartTrade = (game: GamePlayPhase | GameRollDicePhase): GameTradePhase => {
   return {
     ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.cancelTrade },
+      interval: longActionInterval * 1000,
+    },
     phase: GamePhase.trade,
     previousPhase: game.phase,
     other: {
@@ -96,6 +126,10 @@ export const triggerTradeOffer = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: game.other.ownerId!,
+      update: { type: GameUpdateType.declineTrade },
+    },
     phase: GamePhase.prompt,
     prompt: {
       playerId: currentPlayer.id,
@@ -136,6 +170,11 @@ export const triggerTradeSelectionToggle = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.cancelTrade },
+      interval: longActionInterval * 1000,
+    },
     other: {
       ownerId: nextOtherOwnerId,
       squaresId: nextOtherSquareIds,

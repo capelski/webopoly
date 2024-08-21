@@ -40,6 +40,8 @@ export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props
           Accept
         </Button>
         <Button
+          autoClick={GameUpdateType.declineOffer}
+          defaultAction={props.game.defaultAction}
           disabled={!canAnswer}
           onClick={() => {
             props.triggerUpdate({ type: GameUpdateType.declineOffer });

@@ -83,12 +83,11 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div>
           <Button
+            autoClick={GameUpdateType.endTurn}
+            defaultAction={props.game.defaultAction}
             disabled={!canEnd}
             onClick={() => {
               props.triggerUpdate({ type: GameUpdateType.endTurn });
-            }}
-            style={{
-              animation: canEnd ? 'heart-beat-small 2s infinite' : undefined,
             }}
           >
             End turn
@@ -106,6 +105,8 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
               </Button>
 
               <Button
+                autoClick={GameUpdateType.cancelTrade}
+                defaultAction={props.game.defaultAction}
                 disabled={!canCancelTrade(props.game, props.windowPlayerId)}
                 onClick={() => {
                   props.triggerUpdate({ type: GameUpdateType.cancelTrade });
@@ -127,6 +128,8 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
               </Button>
 
               <Button
+                autoClick={GameUpdateType.resume}
+                defaultAction={props.game.defaultAction}
                 disabled={!canResume(props.game, props.windowPlayerId)}
                 onClick={() => {
                   props.triggerUpdate({ type: GameUpdateType.resume });

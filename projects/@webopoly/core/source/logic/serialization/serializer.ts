@@ -13,12 +13,13 @@ export const serializeGame = (game: Game): string => {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,
+    da: game.defaultAction,
     eh: game.eventHistory.map<EventMinified>((event) => {
-      const minify: Minifier = eventsMap[event.type].minify;
+      const minify = eventsMap[event.type].minify as Minifier;
       return minify(event);
     }),
     n: game.notifications.map<EventMinified>((event) => {
-      const minify: Minifier = eventsMap[event.type].minify;
+      const minify = eventsMap[event.type].minify as Minifier;
       return minify(event);
     }),
     nci: game.nextCardIds,

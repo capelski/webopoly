@@ -9,6 +9,7 @@ import {
 import {
   Game,
   ServerErrorCodes,
+  setDefaultTrigger,
   startGame,
   triggerRemovePlayer,
   triggerUpdate,
@@ -21,6 +22,15 @@ import { nanoid } from 'nanoid';
 import { Room, roomsRegister } from './rooms-register';
 import { broadcastRoomUpdate, messageReceived, replyMessage, ServerSocket } from './server-socket';
 import { roomToRoomState } from './transformers';
+
+const updateGame = (room: Room) => (updatedGame: Game) => {
+  room.game = updatedGame;
+  broadcastRoomUpdate(room);
+
+  /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
+  updatedGame.eventHistory = [...updatedGame.notifications.reverse(), ...updatedGame.eventHistory];
+  updatedGame.notifications = [];
+};
 
 @WebSocketGateway({
   cors: {
@@ -201,13 +211,18 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     if (room.players.length > 0) {
       if (room.game && player.id) {
-        room.game = triggerRemovePlayer(room.game, player.id);
+        triggerRemovePlayer(room.game, player.id, (updatedGame) => {
+          room.game = updatedGame;
 
-        broadcastRoomUpdate(room, data.playerToken);
+          broadcastRoomUpdate(room, data.playerToken);
 
-        /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
-        room.game.eventHistory = [...room.game.notifications.reverse(), ...room.game.eventHistory];
-        room.game.notifications = [];
+          /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
+          room.game.eventHistory = [
+            ...room.game.notifications.reverse(),
+            ...room.game.eventHistory,
+          ];
+          room.game.notifications = [];
+        });
       } else {
         broadcastRoomUpdate(room, data.playerToken);
       }
@@ -241,6 +256,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
 
     broadcastRoomUpdate(room);
+    setDefaultTrigger(game, updateGame(room));
 
     return null;
   }
@@ -271,17 +287,7 @@ export class RoomsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return null;
     }
 
-    triggerUpdate(room.game, data.update, player.id, (updatedGame: Game) => {
-      room.game = updatedGame;
-      broadcastRoomUpdate(room);
-
-      /** Notifications will be immediately cleared in the client side; clearing them in the server as well */
-      updatedGame.eventHistory = [
-        ...updatedGame.notifications.reverse(),
-        ...updatedGame.eventHistory,
-      ];
-      updatedGame.notifications = [];
-    });
+    triggerUpdate(room.game, data.update, player.id, updateGame(room));
 
     return null;
   }

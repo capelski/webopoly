@@ -1,7 +1,8 @@
-import { jailFine, maxTurnsInJail } from '../constants';
+import { jailFine, maxTurnsInJail, playerTransitionDuration } from '../constants';
 import {
   EventType,
   GamePhase,
+  GameUpdateType,
   JailMedium,
   LiquidationReason,
   PromptType,
@@ -32,6 +33,10 @@ export const triggerGetOutOfJailCard = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.endTurn },
+    },
     phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id ? { ...p, getOutOfJail: p.getOutOfJail + 1 } : p;
@@ -48,6 +53,10 @@ export const triggerGoToJail = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.endTurn },
+    },
     eventHistory: skipEvent
       ? game.eventHistory
       : [
@@ -83,6 +92,11 @@ export const triggerLastTurnInJail = (
 
   return {
     ...nextGame,
+    defaultAction: {
+      interval: playerTransitionDuration * 1000,
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.getOutOfJail },
+    },
     phase: GamePhase.uiTransition,
     transitionType: TransitionType.getOutOfJail,
   };
@@ -107,6 +121,10 @@ export const triggerRemainInJail = (
 
   return {
     ...game,
+    defaultAction: {
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.endTurn },
+    },
     notifications: [
       ...game.notifications,
       {
@@ -126,6 +144,11 @@ export const triggerRollDoublesInJail = (
   const nextGame = updatePlayerOutOfJail(game, JailMedium.dice);
   return {
     ...nextGame,
+    defaultAction: {
+      interval: playerTransitionDuration * 1000,
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.getOutOfJail },
+    },
     phase: GamePhase.uiTransition,
     transitionType: TransitionType.getOutOfJail,
   };
@@ -135,7 +158,14 @@ export const triggerUseJailCard = (
   game: GamePromptPhase<PromptType.jailOptions>,
 ): GameRollDicePhase => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.card);
-  return { ...nextGame, phase: GamePhase.rollDice };
+  return {
+    ...nextGame,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.rollDice },
+    },
+    phase: GamePhase.rollDice,
+  };
 };
 
 const updatePlayerOutOfJail = <TGame extends PlayerOutOfJailPhases>(
