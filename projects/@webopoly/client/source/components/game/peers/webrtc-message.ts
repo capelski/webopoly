@@ -1,6 +1,6 @@
 import { GameUpdate, Player } from '@webopoly/core';
 import { WebRTCMessageType } from './webrtc-message-type';
-import { WebRTCRoom } from './webrtc-room';
+import { WebRTCRoomStringified } from './webrtc-room';
 
 export type WebRTCMessage =
   | {
@@ -13,5 +13,5 @@ export type WebRTCMessage =
     }
   | {
       type: WebRTCMessageType.roomUpdated;
-      payload: WebRTCRoom;
+      payload: WebRTCRoomStringified;
     };

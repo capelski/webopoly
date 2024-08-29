@@ -1,5 +1,5 @@
 import { MessagingGroup } from '@easy-rtc/react';
-import { startGame } from '@webopoly/core';
+import { serializeGame, startGame } from '@webopoly/core';
 import {
   PendingState,
   PlayerPending,
@@ -8,7 +8,7 @@ import {
   StarterPeerState,
 } from './starter-peer-state';
 import { WebRTCMessage } from './webrtc-message';
-import { WebRTCRoom } from './webrtc-room';
+import { WebRTCRoomStringified } from './webrtc-room';
 
 export const getInitialState = (): PendingState => {
   const messagingGroup = new MessagingGroup<WebRTCMessage, PlayerPending>({ minification: true });
@@ -48,10 +48,10 @@ export const getPlayingState = (pendingState: PendingState): PlayingState => {
 export const getRoom = (
   peerState: StarterPeerState,
   player: PlayerPending | PlayerPlaying,
-): WebRTCRoom => {
+): WebRTCRoomStringified => {
   return peerState.game
     ? {
-        game: peerState.game,
+        game: serializeGame(peerState.game),
         players: [
           {
             ...peerState.self,
@@ -65,7 +65,7 @@ export const getRoom = (
         ],
       }
     : {
-        game: peerState.game,
+        game: undefined,
         players: [
           {
             ...peerState.self,

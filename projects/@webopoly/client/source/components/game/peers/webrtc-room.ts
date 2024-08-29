@@ -20,3 +20,5 @@ export type WebRTCRoomPlaying = {
   game: Game;
   players: RoomPlayerPlaying[];
 };
+
+export type WebRTCRoomStringified = Omit<WebRTCRoom, 'game'> & { game?: string };

@@ -1,5 +1,5 @@
 import { useMessagingConnection } from '@easy-rtc/react';
-import { clearNotifications, GameUpdate } from '@webopoly/core';
+import { clearNotifications, deserializeGame, GameUpdate } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
 import { Button } from '../../common/button';
 import { EditName } from '../../common/edit-name';
@@ -8,7 +8,7 @@ import { useClipboardAnimation } from '../../common/use-clipboard-animation';
 import { GameComponent } from '../game';
 import { WebRTCMessage } from './webrtc-message';
 import { WebRTCMessageType } from './webrtc-message-type';
-import { WebRTCRoom } from './webrtc-room';
+import { RoomPlayerPending, RoomPlayerPlaying, WebRTCRoom } from './webrtc-room';
 
 interface JoinerPeerProps {
   exitRoom: () => void;
@@ -22,8 +22,17 @@ export const JoinerPeer: React.FC<JoinerPeerProps> = (props) => {
 
   connection.on('messageReceived', (message) => {
     if (message.type === WebRTCMessageType.roomUpdated) {
-      setRoom(message.payload);
-      // TODO For better UX animation, do not listen to player movement events and compute in this peer
+      const nextRoom = message.payload.game
+        ? {
+            game: deserializeGame(message.payload.game)!,
+            players: message.payload.players as RoomPlayerPlaying[],
+          }
+        : {
+            game: undefined,
+            players: message.payload.players as RoomPlayerPending[],
+          };
+
+      setRoom(nextRoom);
     }
   });
 
