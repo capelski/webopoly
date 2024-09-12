@@ -1,9 +1,16 @@
+- Change avatar when the player is not active
+- Two dice
+
+? Buy property in owned neighbourhood on pass go
+? Jail: allow paying fine. If lost three turns, don't pay
+? Remove properties based on players number
+
+- Allow "pausing" the game
+- Allow skipping the player transitions
+- Allow disabling defaultActions. Note player transitions must still be triggered
+- Transform triggerRemovePlayer into a GameUpdateType
+- For better UX animation, do not listen to player movement events and compute in this peer
 - Docker build => Trigger builds of both client/server sides
-- Remove the MovePlayerInput/Output Phases...
-- Option to disable player move animations
-- Option to disable dice roll animations
 - Roll doubles => Extra turn
-- Suggest sales/mortgages when player cannot pay
 - Make parameters.ts modifiable on createGame
-- Progress bar to automatically trigger next action
 - Display error toast on disabled buttons?
