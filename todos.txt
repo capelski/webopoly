@@ -1,4 +1,3 @@
-- Change avatar when the player is not active
 - Two dice
 
 ? Buy property in owned neighbourhood on pass go

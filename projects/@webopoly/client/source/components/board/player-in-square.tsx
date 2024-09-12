@@ -1,4 +1,4 @@
-import { Player } from '@webopoly/core';
+import { Player, PlayerStatus } from '@webopoly/core';
 import React from 'react';
 import { zIndexes } from '../../parameters';
 import { PlayerAvatar } from '../common/player-avatar';
@@ -13,7 +13,7 @@ export type PlayerInSquareProps = {
 };
 
 export const PlayerInSquare: React.FC<PlayerInSquareProps> = (props) => {
-  return (
+  return props.player.status === PlayerStatus.bankrupt ? undefined : (
     <div
       key={props.player.id}
       style={{
