@@ -1,4 +1,4 @@
-import { Game, GamePhase, getCurrentPlayer, TransitionType } from '@webopoly/core';
+import { Game, GamePhase, getCurrentPlayer } from '@webopoly/core';
 import React from 'react';
 import { PlayerInSquare } from '../player-in-square';
 import { squaresRotation } from '../squares-rotation';
@@ -15,15 +15,12 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
   const frames = props.innerSquare.outerSquareIds
     .map((outerSquareId) => {
       const players = props.game.players.filter((p) => {
-        const transitionData =
-          props.game.phase === GamePhase.uiTransition &&
-          props.game.transitionType === TransitionType.player &&
-          props.game.transitionData;
+        const animation = props.game.phase === GamePhase.playerAnimation && props.game.animation;
 
-        const isPlayerTransitioning = transitionData && p.id === transitionData.playerId;
+        const isPlayerTransitioning = animation && p.id === animation.playerId;
 
         return isPlayerTransitioning
-          ? transitionData.currentSquareId === outerSquareId
+          ? animation.currentSquareId === outerSquareId
           : p.squareId === outerSquareId && !p.isInJail;
       });
       return { players, rotate: squaresRotation[outerSquareId] };

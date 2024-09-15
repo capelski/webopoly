@@ -8,7 +8,6 @@ import {
   PromptType,
   PropertyType,
   SquareType,
-  TransitionType,
 } from '../enums';
 import {
   clearNotifications,
@@ -197,31 +196,31 @@ export const triggerUpdate = (
   let nextGame = game;
 
   if (gameUpdate.type === GameUpdateType.acceptOffer) {
-    const validation = canAnswerOffer(game, windowPlayerId);
+    const validation = canAnswerOffer(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerAcceptOffer(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.acceptTrade) {
-    const validation = canAnswerTrade(game, windowPlayerId);
+    const validation = canAnswerTrade(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerAcceptTrade(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.applyCard) {
-    const validation = canApplyCard(game, windowPlayerId);
+    const validation = canApplyCard(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerApplyCard(validation.game, validation.game.prompt.cardId);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.bankruptcy) {
-    const validation = canDeclareBankruptcy(game, windowPlayerId);
+    const validation = canDeclareBankruptcy(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerBankruptcy(validation.game, windowPlayerId);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buildHouse) {
-    const validation = canBuildHouse(game, gameUpdate.squareId, windowPlayerId);
+    const validation = canBuildHouse(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
       nextGame = triggerBuildHouse(validation.game, validation.street);
       nextGame.defaultAction = defaultAction;
@@ -239,70 +238,67 @@ export const triggerUpdate = (
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyProperty) {
-    const validation = canBuyProperty(game, windowPlayerId);
+    const validation = canBuyProperty(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerBuyProperty(validation.game, validation.square, windowPlayerId);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyPropertyReject) {
-    const validation = canRejectProperty(game, windowPlayerId);
+    const validation = canRejectProperty(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerRejectProperty(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyPropertyLiquidation) {
-    const validation = canLiquidateBuyProperty(game, windowPlayerId);
+    const validation = canLiquidateBuyProperty(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerBuyPropertyLiquidation(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.cancelTrade) {
-    const validation = canCancelTrade(game, windowPlayerId);
+    const validation = canCancelTrade(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerCancelTrade(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.clearMortgage) {
-    const validation = canClearMortgage(game, gameUpdate.squareId, windowPlayerId);
+    const validation = canClearMortgage(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
       nextGame = triggerClearMortgage(validation.game, validation.property);
       nextGame.defaultAction = defaultAction;
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.declineOffer) {
-    const validation = canAnswerOffer(game, windowPlayerId);
+    const validation = canAnswerOffer(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerDeclineOffer(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.declineTrade) {
-    const validation = canAnswerTrade(game, windowPlayerId);
+    const validation = canAnswerTrade(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerDeclineTrade(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.drawCard) {
-    const validation = canDrawCard(game, windowPlayerId);
+    const validation = canDrawCard(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerDrawCard(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.endTurn) {
-    const validation = canEndTurn(game, windowPlayerId);
+    const validation = canEndTurn(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerEndTurn(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.getOutOfJail) {
-    if (
-      nextGame.phase === GamePhase.uiTransition &&
-      nextGame.transitionType === TransitionType.getOutOfJail
-    ) {
+    if (nextGame.phase === GamePhase.outOfJailAnimation) {
       nextGame = triggerFirstPlayerTransition(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
-    const validation = mustGoToJail(game, windowPlayerId);
+    const validation = mustGoToJail(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerGoToJail(
         validation.game,
@@ -311,53 +307,50 @@ export const triggerUpdate = (
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.pendingPaymentLiquidation) {
-    const validation = canLiquidatePendingPayment(game, windowPlayerId);
+    const validation = canLiquidatePendingPayment(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerPendingPaymentLiquidation(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.mortgage) {
-    const validation = canMortgage(game, gameUpdate.squareId, windowPlayerId);
+    const validation = canMortgage(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
       nextGame = triggerMortgage(validation.game, validation.property);
       nextGame.defaultAction = defaultAction;
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.payJailFine) {
-    const validation = canPayJailFine(game, windowPlayerId);
+    const validation = canPayJailFine(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerPayJailFine(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.playerTransition) {
-    if (game.phase === GamePhase.uiTransition && game.transitionType === TransitionType.player) {
-      nextGame = triggerNextPlayerTransition(game);
+    if (nextGame.phase === GamePhase.playerAnimation) {
+      nextGame = triggerNextPlayerTransition(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.postDice) {
-    if (game.phase === GamePhase.uiTransition && game.transitionType === TransitionType.dice) {
-      nextGame = triggerFirstPlayerTransition(game);
+    if (nextGame.phase === GamePhase.diceAnimation) {
+      nextGame = triggerFirstPlayerTransition(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.postDiceInJail) {
-    if (
-      game.phase === GamePhase.uiTransition &&
-      game.transitionType === TransitionType.jailDiceRoll
-    ) {
-      const currentPlayer = getCurrentPlayer(game);
-      const isDoubles = isDoublesRoll(game.dice);
+    if (nextGame.phase === GamePhase.diceInJailAnimation) {
+      const currentPlayer = getCurrentPlayer(nextGame);
+      const isDoubles = isDoublesRoll(nextGame.dice);
       const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail - 1;
 
       nextGame = isDoubles
-        ? triggerRollDoublesInJail(game)
+        ? triggerRollDoublesInJail(nextGame)
         : isLastTurnInJail
-        ? triggerLastTurnInJail(game)
-        : triggerRemainInJail(game);
+        ? triggerLastTurnInJail(nextGame)
+        : triggerRemainInJail(nextGame);
 
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.resume) {
-    const validation = canResume(game, windowPlayerId);
+    const validation = canResume(nextGame, windowPlayerId);
     if (validation) {
       if (validation.game.reason === LiquidationReason.buyProperty) {
         nextGame = resumeBuyProperty(validation.game);
@@ -368,19 +361,19 @@ export const triggerUpdate = (
       }
     }
   } else if (gameUpdate.type === GameUpdateType.rollDice) {
-    const validation = canRollDice(game, windowPlayerId);
+    const validation = canRollDice(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerDiceRoll(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.rollDiceInJail) {
-    const validation = canRollDiceInJail(game, windowPlayerId);
+    const validation = canRollDiceInJail(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerDiceRollInJail(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.sellHouse) {
-    const validation = canSellHouse(game, gameUpdate.squareId, windowPlayerId);
+    const validation = canSellHouse(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
       nextGame = triggerSellHouse(validation.game, validation.street);
       nextGame.defaultAction = defaultAction;
@@ -388,7 +381,7 @@ export const triggerUpdate = (
     }
   } else if (gameUpdate.type === GameUpdateType.sellingOffer) {
     const validation = canTriggerSellingOffer(
-      game,
+      nextGame,
       gameUpdate.squareId,
       gameUpdate.amount,
       gameUpdate.targetPlayerId,
@@ -404,25 +397,25 @@ export const triggerUpdate = (
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.startTrade) {
-    const validation = canStartTrade(game, windowPlayerId);
+    const validation = canStartTrade(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerStartTrade(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.tradeOffer) {
-    const validation = canTriggerTradeOffer(game, windowPlayerId);
+    const validation = canTriggerTradeOffer(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerTradeOffer(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.toggleTradeSelection) {
-    const validation = canToggleTradeSelection(game, gameUpdate.squareId, windowPlayerId);
+    const validation = canToggleTradeSelection(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
       nextGame = triggerTradeSelectionToggle(validation.game, validation.property);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.useJailCard) {
-    const validation = canUseJailCard(game, windowPlayerId);
+    const validation = canUseJailCard(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerUseJailCard(validation.game);
       updateFunction(nextGame);
@@ -430,7 +423,7 @@ export const triggerUpdate = (
   }
   // else if (gameUpdate.type) {} // type should always be inferred as never
 
-  if (game.defaultAction !== nextGame.defaultAction) {
+  if (nextGame.defaultAction !== game.defaultAction) {
     setDefaultTrigger(nextGame, updateFunction);
   }
 };

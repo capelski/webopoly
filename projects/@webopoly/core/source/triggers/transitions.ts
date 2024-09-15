@@ -1,5 +1,5 @@
 import { playerTransitionDuration } from '../constants';
-import { GamePhase, GameUpdateType, LiquidationReason, PromptType, TransitionType } from '../enums';
+import { GamePhase, GameUpdateType, LiquidationReason, PromptType } from '../enums';
 import {
   exceedsMaxDoublesInARow,
   getCurrentPlayer,
@@ -7,16 +7,22 @@ import {
   getDiceMovement,
   getNextSquareId,
 } from '../logic';
-import { GameLiquidationPhase, GamePromptPhase, GameUiTransitionPhase } from '../types';
+import {
+  GameDiceAnimationPhase,
+  GameLiquidationPhase,
+  GameOutOfJailAnimationPhase,
+  GamePlayerAnimationPhase,
+  GamePromptPhase,
+} from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
 
 export const triggerFirstPlayerTransition = (
   game:
-    | GameUiTransitionPhase<TransitionType.dice>
-    | GameUiTransitionPhase<TransitionType.getOutOfJail>
+    | GameDiceAnimationPhase
+    | GameOutOfJailAnimationPhase
     | GameLiquidationPhase<LiquidationReason.pendingPayment>,
-): GameUiTransitionPhase<TransitionType.player> | GamePromptPhase<PromptType.goToJail> => {
+): GamePlayerAnimationPhase | GamePromptPhase<PromptType.goToJail> => {
   const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
 
@@ -41,20 +47,19 @@ export const triggerFirstPlayerTransition = (
       playerId: currentPlayer.id,
       update: { type: GameUpdateType.playerTransition },
     },
-    phase: GamePhase.uiTransition,
-    transitionType: TransitionType.player,
-    transitionData: {
+    phase: GamePhase.playerAnimation,
+    animation: {
       currentSquareId: getCurrentSquare(game).id,
       pendingMoves,
       playerId: currentPlayer.id,
     },
-  }) as GameUiTransitionPhase<TransitionType.player>;
+  }) as GamePlayerAnimationPhase;
 };
 
 export const triggerNextPlayerTransition = (
-  game: GameUiTransitionPhase<TransitionType.player>,
-): GameUiTransitionPhase<TransitionType.player> | MovePlayerOutputPhases => {
-  const { currentSquareId, pendingMoves, playerId } = game.transitionData;
+  game: GamePlayerAnimationPhase,
+): GamePlayerAnimationPhase | MovePlayerOutputPhases => {
+  const { currentSquareId, pendingMoves, playerId } = game.animation;
   const nextMove = 1;
 
   if (pendingMoves <= nextMove) {
@@ -71,9 +76,8 @@ export const triggerNextPlayerTransition = (
       playerId,
       update: { type: GameUpdateType.playerTransition },
     },
-    phase: GamePhase.uiTransition,
-    transitionType: TransitionType.player,
-    transitionData: {
+    phase: GamePhase.playerAnimation,
+    animation: {
       currentSquareId: nextSquareId,
       pendingMoves: nextPendingMoves,
       playerId,

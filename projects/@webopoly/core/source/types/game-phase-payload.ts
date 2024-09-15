@@ -1,4 +1,4 @@
-import { GamePhase, LiquidationReason, PromptType, TransitionType } from '../enums';
+import { GamePhase, LiquidationReason, PromptType } from '../enums';
 import { PendingEvent } from './event';
 import { Player } from './player';
 import { BuyPropertyPrompt, Prompt } from './prompt';
@@ -21,8 +21,6 @@ export type LiquidationPhasePayload<TReason extends LiquidationReason = Liquidat
         }
     ) & { reason: TReason };
 
-export type PlayPhasePayload = PhasePayloadBase<GamePhase.play>;
-
 export type PromptPhasePayload<TPrompt extends PromptType = PromptType> =
   PhasePayloadBase<GamePhase.prompt> & {
     prompt: Prompt<TPrompt>;
@@ -36,32 +34,4 @@ export type TradePhasePayload = PhasePayloadBase<GamePhase.trade> & {
   ownSquaresId: Square['id'][];
 };
 
-export type UiTransitionPhasePayload<TTransition extends TransitionType = TransitionType> =
-  PhasePayloadBase<GamePhase.uiTransition> &
-    (
-      | {
-          transitionType: TransitionType.dice;
-        }
-      | {
-          transitionType: TransitionType.getOutOfJail;
-        }
-      | {
-          transitionType: TransitionType.jailDiceRoll;
-        }
-      | {
-          transitionData: {
-            currentSquareId: Square['id'];
-            pendingMoves: number;
-            playerId: Player['id'];
-          };
-          transitionType: TransitionType.player;
-        }
-    ) & {
-      transitionType: TTransition;
-    };
-
-export type NonPromptPhasePayload =
-  | LiquidationPhasePayload
-  | PlayPhasePayload
-  | RollDicePhasePayload
-  | UiTransitionPhasePayload;
+export type NonPromptPhasePayload = LiquidationPhasePayload | RollDicePhasePayload;

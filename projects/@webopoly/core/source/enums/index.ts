@@ -15,6 +15,5 @@ export * from './server-error-codes';
 export * from './square-modal-type';
 export * from './square-type';
 export * from './tax-type';
-export * from './transition-type';
 export * from './ws-client-message-type';
 export * from './ws-server-message-type';

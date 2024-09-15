@@ -1,13 +1,18 @@
-import { LiquidationReason, TransitionType } from '../enums';
+import { LiquidationReason } from '../enums';
 import { EventMinified } from './event-minified';
-import { Game } from './game';
+import {
+  Game,
+  GameDiceAnimationPhase,
+  GameDiceInJailAnimationPhase,
+  GameOutOfJailAnimationPhase,
+  GamePlayerAnimationPhase,
+  GamePlayPhase,
+  GameRollDicePhase,
+} from './game';
 import {
   LiquidationPhasePayload,
-  PlayPhasePayload,
   PromptPhasePayload,
-  RollDicePhasePayload,
   TradePhasePayload,
-  UiTransitionPhasePayload,
 } from './game-phase-payload';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
@@ -51,9 +56,11 @@ export type GameLiquidationPhaseMinified = GameBaseMinified & {
       }
   );
 
-export type GamePlayPhaseMinified = GameBaseMinified & {
+export type GamePlayerAnimationPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: PlayPhasePayload['phase'];
+  ph: GamePlayerAnimationPhase['phase'];
+  /** Not minifying, as it will not be persisted in the event history */
+  a: GamePlayerAnimationPhase['animation'];
 };
 
 export type GamePromptPhaseMinified = GameBaseMinified & {
@@ -61,11 +68,6 @@ export type GamePromptPhaseMinified = GameBaseMinified & {
   ph: PromptPhasePayload['phase'];
   /** prompt */
   pr: PromptPhasePayload['prompt'];
-};
-
-export type GameRollDicePhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph: RollDicePhasePayload['phase'];
 };
 
 export type GameTradePhaseMinified = GameBaseMinified & {
@@ -79,34 +81,19 @@ export type GameTradePhaseMinified = GameBaseMinified & {
   pp: TradePhasePayload['previousPhase'];
 };
 
-export type GameUiTransitionPhaseMinified = GameBaseMinified & {
+export type GenericGamePhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: UiTransitionPhasePayload['phase'];
-} & (
-    | {
-        /** transitionType */
-        tt: UiTransitionPhasePayload<TransitionType.dice>['transitionType'];
-      }
-    | {
-        /** transitionType */
-        tt: UiTransitionPhasePayload<TransitionType.getOutOfJail>['transitionType'];
-      }
-    | {
-        /** transitionType */
-        tt: UiTransitionPhasePayload<TransitionType.jailDiceRoll>['transitionType'];
-      }
-    | {
-        /** Not minifying, as it will not be persisted in the event history */
-        td: UiTransitionPhasePayload<TransitionType.player>['transitionData'];
-        /** transitionType */
-        tt: UiTransitionPhasePayload<TransitionType.player>['transitionType'];
-      }
-  );
+  ph:
+    | GameDiceAnimationPhase['phase']
+    | GameDiceInJailAnimationPhase['phase']
+    | GameOutOfJailAnimationPhase['phase']
+    | GamePlayPhase['phase']
+    | GameRollDicePhase['phase'];
+};
 
 export type GameMinified =
   | GameLiquidationPhaseMinified
-  | GamePlayPhaseMinified
+  | GamePlayerAnimationPhaseMinified
   | GamePromptPhaseMinified
-  | GameRollDicePhaseMinified
   | GameTradePhaseMinified
-  | GameUiTransitionPhaseMinified;
+  | GenericGamePhaseMinified;

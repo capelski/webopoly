@@ -7,7 +7,6 @@ import {
   GameUpdate,
   GameUpdateType,
   Player,
-  TransitionType,
 } from '@webopoly/core';
 import React, { useEffect, useState } from 'react';
 import { diceSymbol } from '../../parameters';
@@ -42,9 +41,8 @@ export const Board: React.FC<BoardProps> = (props) => {
     }
 
     if (
-      props.game.phase === GamePhase.uiTransition &&
-      (props.game.transitionType === TransitionType.dice ||
-        props.game.transitionType === TransitionType.jailDiceRoll)
+      props.game.phase === GamePhase.diceAnimation ||
+      props.game.phase === GamePhase.diceInJailAnimation
     ) {
       setAnimateDice(true);
       setTimeout(() => {

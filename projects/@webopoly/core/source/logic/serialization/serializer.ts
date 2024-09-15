@@ -1,10 +1,4 @@
-import {
-  GamePhase,
-  LiquidationReason,
-  PropertyType,
-  SquareType,
-  TransitionType,
-} from '../../enums';
+import { GamePhase, LiquidationReason, PropertyType, SquareType } from '../../enums';
 import { EventMinified, Game, GameMinified, PlayerMinified, SquareMinified } from '../../types';
 import { eventsMap, Minifier } from './events-map';
 
@@ -89,14 +83,11 @@ export const serializeGame = (game: Game): string => {
           ot: game.other,
           ows: game.ownSquaresId,
         }
-      : game.phase === GamePhase.uiTransition
-      ? game.transitionType === TransitionType.player
-        ? {
-            ph: game.phase,
-            tt: game.transitionType,
-            td: game.transitionData,
-          }
-        : { ph: game.phase, tt: game.transitionType }
+      : game.phase === GamePhase.playerAnimation
+      ? {
+          ph: game.phase,
+          a: game.animation,
+        }
       : { ph: game.phase }),
   };
 

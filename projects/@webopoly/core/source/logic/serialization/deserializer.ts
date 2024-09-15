@@ -1,10 +1,4 @@
-import {
-  GamePhase,
-  LiquidationReason,
-  PropertyType,
-  SquareType,
-  TransitionType,
-} from '../../enums';
+import { GamePhase, LiquidationReason, PropertyType, SquareType } from '../../enums';
 import { Game, GameMinified, GEvent, Player, Square } from '../../types';
 import { squaresMap } from '../squares';
 import { eventsMap, Restorer } from './events-map';
@@ -67,14 +61,11 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
         ? { phase: g.ph, prompt: g.pr }
         : g.ph === GamePhase.trade
         ? { phase: g.ph, previousPhase: g.pp, other: g.ot, ownSquaresId: g.ows }
-        : g.ph === GamePhase.uiTransition
-        ? g.tt === TransitionType.player
-          ? {
-              phase: g.ph,
-              transitionType: g.tt,
-              transitionData: g.td,
-            }
-          : { phase: g.ph, transitionType: g.tt }
+        : g.ph === GamePhase.playerAnimation
+        ? {
+            phase: g.ph,
+            animation: g.a,
+          }
         : { phase: g.ph }),
     };
   } catch (error) {

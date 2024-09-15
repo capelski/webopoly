@@ -1,11 +1,11 @@
 import { longActionInterval } from '../constants';
-import { GamePhase, GameUpdateType, LiquidationReason, PromptType, TransitionType } from '../enums';
+import { GamePhase, GameUpdateType, LiquidationReason, PromptType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
+  GameDiceInJailAnimationPhase,
   GameLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
-  GameUiTransitionPhase,
   PayRentEvent,
   PayTaxEvent,
   PendingEvent,
@@ -13,7 +13,7 @@ import {
 
 export type CannotPayPromptInputPhases =
   | GamePlayPhase
-  | GameUiTransitionPhase<TransitionType.jailDiceRoll> // Is player's last turn in jail and they don't have enough money to pay the fine
+  | GameDiceInJailAnimationPhase // Is player's last turn in jail and they don't have enough money to pay the fine
   | GamePromptPhase<PromptType.applyCard>
   | GameLiquidationPhase<LiquidationReason.pendingPayment>; // Player resumes a pending payment but they still don't have enough money
 

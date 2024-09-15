@@ -1,5 +1,5 @@
 import { diceTransitionDuration } from '../constants';
-import { EventType, GamePhase, GameUpdateType, PromptType, TransitionType } from '../enums';
+import { EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
 import {
   exceedsMaxDoublesInARow,
   getCurrentPlayer,
@@ -8,7 +8,13 @@ import {
   getNextSquareId,
   isDoublesRoll,
 } from '../logic';
-import { GamePlayPhase, GamePromptPhase, GameRollDicePhase, GameUiTransitionPhase } from '../types';
+import {
+  GameDiceAnimationPhase,
+  GameDiceInJailAnimationPhase,
+  GamePlayPhase,
+  GamePromptPhase,
+  GameRollDicePhase,
+} from '../types';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 
 export const applyDiceRoll = (game: GamePlayPhase): MovePlayerOutputPhases => {
@@ -17,9 +23,7 @@ export const applyDiceRoll = (game: GamePlayPhase): MovePlayerOutputPhases => {
   return triggerMovePlayer(game, nextSquareId);
 };
 
-export const triggerDiceRoll = (
-  game: GameRollDicePhase,
-): GameUiTransitionPhase<TransitionType.dice> => {
+export const triggerDiceRoll = (game: GameRollDicePhase): GameDiceAnimationPhase => {
   const currentPlayer = getCurrentPlayer(game);
   const nextDice = getDiceRoll();
   const isDoubles = isDoublesRoll(nextDice);
@@ -49,14 +53,13 @@ export const triggerDiceRoll = (
       update: { type: GameUpdateType.postDice },
     },
     dice: nextDice,
-    phase: GamePhase.uiTransition,
-    transitionType: TransitionType.dice,
+    phase: GamePhase.diceAnimation,
   };
 };
 
 export const triggerDiceRollInJail = (
   game: GamePromptPhase<PromptType.jailOptions>,
-): GameUiTransitionPhase<TransitionType.jailDiceRoll> => {
+): GameDiceInJailAnimationPhase => {
   return {
     ...game,
     defaultAction: {
@@ -65,7 +68,6 @@ export const triggerDiceRollInJail = (
       update: { type: GameUpdateType.postDiceInJail },
     },
     dice: getDiceRoll(),
-    phase: GamePhase.uiTransition,
-    transitionType: TransitionType.jailDiceRoll,
+    phase: GamePhase.diceInJailAnimation,
   };
 };
