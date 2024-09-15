@@ -1,5 +1,11 @@
 import { GamePhase, GameUpdateType, PromptType } from '../enums';
-import { getActivePlayers, getNextPlayerId, getPlayerById } from '../logic';
+import {
+  getActivePlayers,
+  getCurrentPlayer,
+  getNextPlayerId,
+  getPlayerById,
+  hasExtraTurn,
+} from '../logic';
 import { GamePlayPhase, GamePromptPhase, GameRollDicePhase } from '../types';
 import { canUseJailCard } from '../validators';
 
@@ -14,6 +20,20 @@ export type EndTurnOutputPhases =
   | GamePromptPhase<PromptType.playerWins>; // Next player must start their turn and they have won
 
 export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases => {
+  const currentPlayer = getCurrentPlayer(game);
+  if (hasExtraTurn(currentPlayer) && !currentPlayer.isInJail) {
+    return {
+      ...game,
+      defaultAction: {
+        playerId: currentPlayer.id,
+        update: { type: GameUpdateType.rollDice },
+      },
+      phase: GamePhase.rollDice,
+    };
+  } else {
+    currentPlayer.doublesInARow = 0;
+  }
+
   const nextPlayerId = getNextPlayerId(game);
   const nextPlayer = getPlayerById(game, nextPlayerId);
   const remainingPlayers = getActivePlayers(game);

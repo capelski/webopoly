@@ -1,7 +1,13 @@
 import { playerTransitionDuration } from '../constants';
-import { GamePhase, GameUpdateType, LiquidationReason, TransitionType } from '../enums';
-import { getCurrentPlayer, getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
-import { GameLiquidationPhase, GameUiTransitionPhase } from '../types';
+import { GamePhase, GameUpdateType, LiquidationReason, PromptType, TransitionType } from '../enums';
+import {
+  exceedsMaxDoublesInARow,
+  getCurrentPlayer,
+  getCurrentSquare,
+  getDiceMovement,
+  getNextSquareId,
+} from '../logic';
+import { GameLiquidationPhase, GamePromptPhase, GameUiTransitionPhase } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
 
@@ -10,9 +16,23 @@ export const triggerFirstPlayerTransition = (
     | GameUiTransitionPhase<TransitionType.dice>
     | GameUiTransitionPhase<TransitionType.getOutOfJail>
     | GameLiquidationPhase<LiquidationReason.pendingPayment>,
-): GameUiTransitionPhase<TransitionType.player> => {
+): GameUiTransitionPhase<TransitionType.player> | GamePromptPhase<PromptType.goToJail> => {
   const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
+
+  if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
+    return <GamePromptPhase<PromptType.goToJail>>{
+      ...game,
+      defaultAction: {
+        playerId: currentPlayer.id,
+        update: { type: GameUpdateType.goToJail },
+      },
+      phase: GamePhase.prompt,
+      prompt: {
+        type: PromptType.goToJail,
+      },
+    };
+  }
 
   return triggerNextPlayerTransition({
     ...game,

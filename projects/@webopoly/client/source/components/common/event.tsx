@@ -18,6 +18,7 @@ import {
 import React from 'react';
 import {
   clearMortgageSymbol,
+  extraTurnSymbol,
   getOutJailSymbol,
   goSymbol,
   goToJailSymbol,
@@ -101,6 +102,12 @@ const renderersMap: {
       icon: clearMortgageSymbol,
     };
   },
+  [EventType.extraTurn]: (player, event) => ({
+    description: `${player.name} rolls doubles and will play an extra turn (${
+      [, '1st', '2nd'][event.doublesInARow]
+    })`,
+    icon: extraTurnSymbol,
+  }),
   [EventType.freeParking]: (player, event) => ({
     description: `${player.name} collects ${currencySymbol}${event.pot} from Free Parking`,
     icon: parkingSymbol,
@@ -117,10 +124,16 @@ const renderersMap: {
       icon: getOutJailSymbol,
     };
   },
-  [EventType.goToJail]: (player) => ({
-    description: `${player.name} goes to jail`,
-    icon: goToJailSymbol,
-  }),
+  [EventType.goToJail]: (player, event) =>
+    event.tooManyDoublesInARow
+      ? {
+          description: `${player.name} rolls doubles for the third time in a row and goes to jail`,
+          icon: goToJailSymbol,
+        }
+      : {
+          description: `${player.name} goes to jail`,
+          icon: goToJailSymbol,
+        },
   [EventType.mortgage]: (player, event, game) => {
     const square = getSquareById(game, event.propertyId);
     return {

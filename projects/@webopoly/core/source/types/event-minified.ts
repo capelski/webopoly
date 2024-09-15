@@ -5,9 +5,11 @@ import {
   BankruptcyEvent,
   CardEvent,
   EventBase,
+  ExtraTurnEvent,
   FreeParkingEvent,
   GenericEvent,
   GetOutOfJailEvent,
+  GoToJailEvent,
   PayRentEvent,
   PayTaxEvent,
   PropertyEvent,
@@ -63,6 +65,13 @@ export type CardEventMinified<TCard extends CardType = CardType> = EventBaseMini
   t: CardEvent['type'];
 };
 
+export type ExtraTurnEventMinified = EventBaseMinified & {
+  /** pot */
+  d: ExtraTurnEvent['doublesInARow'];
+  /** type */
+  t: ExtraTurnEvent['type'];
+};
+
 export type FreeParkingEventMinified = EventBaseMinified & {
   /** pot */
   po: FreeParkingEvent['pot'];
@@ -72,7 +81,7 @@ export type FreeParkingEventMinified = EventBaseMinified & {
 
 export type GenericEventMinified = EventBaseMinified & {
   /** type */
-  t: GenericEvent<EventType.goToJail | EventType.passGo | EventType.playerExit>['type'];
+  t: GenericEvent<EventType.passGo | EventType.playerExit>['type'];
 };
 
 export type GetOutOfJailEventMinified = EventBaseMinified & {
@@ -80,6 +89,13 @@ export type GetOutOfJailEventMinified = EventBaseMinified & {
   m: GetOutOfJailEvent['medium'];
   /** type*/
   t: GetOutOfJailEvent['type'];
+};
+
+export type GoToJailEventMinified = EventBaseMinified & {
+  /** tooManyDoublesInARow */
+  d: GoToJailEvent['tooManyDoublesInARow'];
+  /** type*/
+  t: GoToJailEvent['type'];
 };
 
 export type PayRentEventMinified = EventBaseMinified & {
@@ -117,9 +133,11 @@ export type EventMinified =
   | AnswerTradeEventMinified
   | BankruptcyEventMinified
   | CardEventMinified
+  | ExtraTurnEventMinified
   | FreeParkingEventMinified
   | GenericEventMinified
   | GetOutOfJailEventMinified
+  | GoToJailEventMinified
   | PayRentEventMinified
   | PayTaxEventMinified
   | PropertyEventMinified

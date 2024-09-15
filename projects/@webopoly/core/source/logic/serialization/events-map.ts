@@ -81,8 +81,8 @@ export const eventsMap: {
     minify: (event) => ({ ...baseMinifier(event), ci: event.creditorId }),
     restore: (e) => ({ ...baseRestorer(e), creditorId: e.ci }),
   },
-  [EventType.buyProperty]: <Mapper<EventType.buyProperty>>propertyMappers,
   [EventType.buildHouse]: <Mapper<EventType.buildHouse>>propertyMappers,
+  [EventType.buyProperty]: <Mapper<EventType.buyProperty>>propertyMappers,
   [EventType.card]: {
     minify: (event) => ({
       ...baseMinifier(event),
@@ -96,15 +96,9 @@ export const eventsMap: {
     }),
   },
   [EventType.clearMortgage]: <Mapper<EventType.clearMortgage>>propertyMappers,
-  [EventType.payTax]: {
-    minify: (event) => ({
-      ...baseMinifier(event),
-      a: event.amount,
-    }),
-    restore: (e) => ({
-      ...baseRestorer(e),
-      amount: e.a,
-    }),
+  [EventType.extraTurn]: {
+    minify: (event) => ({ ...baseMinifier(event), d: event.doublesInARow }),
+    restore: (e) => ({ ...baseRestorer(e), doublesInARow: e.d }),
   },
   [EventType.freeParking]: {
     minify: (event) => ({ ...baseMinifier(event), po: event.pot }),
@@ -114,7 +108,10 @@ export const eventsMap: {
     minify: (event) => ({ ...baseMinifier(event), m: event.medium }),
     restore: (e) => ({ ...baseRestorer(e), medium: e.m }),
   },
-  [EventType.goToJail]: { minify: baseMinifier, restore: baseRestorer },
+  [EventType.goToJail]: {
+    minify: (event) => ({ ...baseMinifier(event), d: event.tooManyDoublesInARow }),
+    restore: (e) => ({ ...baseRestorer(e), tooManyDoublesInARow: e.d }),
+  },
   [EventType.mortgage]: <Mapper<EventType.mortgage>>propertyMappers,
   [EventType.passGo]: { minify: baseMinifier, restore: baseRestorer },
   [EventType.payRent]: {
@@ -124,6 +121,16 @@ export const eventsMap: {
       l: event.landlordId,
     }),
     restore: (e) => ({ ...baseRestorer(e), amount: e.a, landlordId: e.l }),
+  },
+  [EventType.payTax]: {
+    minify: (event) => ({
+      ...baseMinifier(event),
+      a: event.amount,
+    }),
+    restore: (e) => ({
+      ...baseRestorer(e),
+      amount: e.a,
+    }),
   },
   [EventType.playerExit]: { minify: baseMinifier, restore: baseRestorer },
   [EventType.sellHouse]: <Mapper<EventType.sellHouse>>propertyMappers,

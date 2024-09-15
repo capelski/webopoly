@@ -6,6 +6,7 @@ export enum EventType {
   buyProperty = 'buyProperty',
   card = 'card',
   clearMortgage = 'clearMortgage',
+  extraTurn = 'extraTurn',
   freeParking = 'freeParking',
   getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',

@@ -118,6 +118,7 @@ export const getSquareById = (game: Game, squareId: Square['id']): Square => {
 export const startGame = (playerNames: string[]): Game => {
   const players = playerNames.map<Player>((name, index) => ({
     color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
+    doublesInARow: 0,
     getOutOfJail: 0,
     id: `${index + 1}`,
     isInJail: false,

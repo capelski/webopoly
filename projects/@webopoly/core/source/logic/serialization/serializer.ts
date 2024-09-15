@@ -25,6 +25,7 @@ export const serializeGame = (game: Game): string => {
     nci: game.nextCardIds,
     pl: game.players.map<PlayerMinified>((player) => ({
       c: player.color,
+      d: player.doublesInARow,
       g: player.getOutOfJail,
       i: player.id,
       ij: player.isInJail,

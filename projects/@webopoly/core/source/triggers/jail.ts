@@ -9,7 +9,7 @@ import {
   SquareType,
   TransitionType,
 } from '../enums';
-import { getCurrentPlayer, hasEnoughMoney } from '../logic';
+import { exceedsMaxDoublesInARow, getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   GameLiquidationPhase,
   GamePlayPhase,
@@ -63,6 +63,7 @@ export const triggerGoToJail = (
           {
             playerId: currentPlayer.id,
             type: EventType.goToJail,
+            tooManyDoublesInARow: exceedsMaxDoublesInARow(currentPlayer.doublesInARow),
           },
           ...game.eventHistory,
         ],

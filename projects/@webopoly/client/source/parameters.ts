@@ -1,6 +1,7 @@
 export const buyOfferSymbol = '🛒';
 export const clearMortgageSymbol = '❎';
 export const diceSymbol = '🎲';
+export const extraTurnSymbol = '☘️';
 export const houseSymbol = '🏠';
 export const getOutJailSymbol = '🔑';
 export const goToJailSymbol = '🚔';

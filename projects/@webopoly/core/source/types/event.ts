@@ -35,19 +35,28 @@ export type CardEvent<TCard extends CardType = CardType> = EventBase & {
   type: EventType.card;
 };
 
+export type ExtraTurnEvent = EventBase & {
+  type: EventType.extraTurn;
+  doublesInARow: number;
+};
+
 export type FreeParkingEvent = EventBase & {
   pot: number;
   type: EventType.freeParking;
 };
 
-export type GenericEvent<T extends EventType.goToJail | EventType.passGo | EventType.playerExit> =
-  EventBase & {
-    type: T;
-  };
+export type GenericEvent<T extends EventType.passGo | EventType.playerExit> = EventBase & {
+  type: T;
+};
 
 export type GetOutOfJailEvent = EventBase & {
   medium: JailMedium;
   type: EventType.getOutOfJail;
+};
+
+export type GoToJailEvent = EventBase & {
+  tooManyDoublesInARow?: boolean;
+  type: EventType.goToJail;
 };
 
 export type PayRentEvent = EventBase & {
@@ -85,10 +94,11 @@ export type GEvent =
   | AnswerOfferEvent
   | AnswerTradeEvent
   | BankruptcyEvent
+  | ExtraTurnEvent
   | FreeParkingEvent
-  | GenericEvent<EventType.goToJail>
   | GenericEvent<EventType.passGo>
   | GenericEvent<EventType.playerExit>
   | GetOutOfJailEvent
+  | GoToJailEvent
   | PendingEvent
   | PropertyEvent;

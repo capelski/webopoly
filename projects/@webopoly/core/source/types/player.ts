@@ -4,6 +4,7 @@ import { Square } from './square';
 
 export type Player = {
   color: string;
+  doublesInARow: number;
   getOutOfJail: number;
   id: StringId;
   isInJail: boolean;

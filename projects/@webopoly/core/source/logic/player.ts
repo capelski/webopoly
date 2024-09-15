@@ -1,3 +1,4 @@
+import { maxDoublesInARow } from '../constants';
 import { PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   Game,
@@ -18,6 +19,12 @@ export const doesPayRent = (playerId: Player['id'], square: Square): boolean => 
     square.status !== PropertyStatus.mortgaged
   );
 };
+
+export const exceedsMaxDoublesInARow = (doublesInARow: number) =>
+  doublesInARow === maxDoublesInARow;
+
+export const hasExtraTurn = (player: Player) =>
+  player.doublesInARow > 0 && !exceedsMaxDoublesInARow(player.doublesInARow);
 
 export const hasEnoughMoney = (player: Player, amount: number) => {
   return player.money >= amount;

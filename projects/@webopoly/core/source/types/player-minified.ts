@@ -3,6 +3,8 @@ import { Player } from './player';
 export type PlayerMinified = {
   /** color */
   c: Player['color'];
+  /** doublesInARow */
+  d: Player['doublesInARow'];
   /** getOutOfJail */
   g: Player['getOutOfJail'];
   /** id */

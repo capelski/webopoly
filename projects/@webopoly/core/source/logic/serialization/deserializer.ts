@@ -34,6 +34,7 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
       }),
       players: g.pl.map<Player>((p) => ({
         color: p.c,
+        doublesInARow: p.d,
         getOutOfJail: p.g,
         id: p.i,
         isInJail: p.ij,

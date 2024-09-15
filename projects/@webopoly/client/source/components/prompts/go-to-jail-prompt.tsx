@@ -1,9 +1,14 @@
-import { GameUpdateType, getCurrentPlayer, mustGoToJail, PromptType } from '@webopoly/core';
+import {
+  EventType,
+  exceedsMaxDoublesInARow,
+  GameUpdateType,
+  getCurrentPlayer,
+  mustGoToJail,
+  PromptType,
+} from '@webopoly/core';
 import React from 'react';
-import { goToJailSymbol } from '../../parameters';
 import { Button } from '../common/button';
-import { Paragraph } from '../common/paragraph';
-import { Title } from '../common/title';
+import { EventComponent } from '../common/event';
 import { PromptInterface } from './prompt-interface';
 
 export const GoToJailPrompt: PromptInterface<PromptType.goToJail> = (props) => {
@@ -11,8 +16,14 @@ export const GoToJailPrompt: PromptInterface<PromptType.goToJail> = (props) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <Title>{currentPlayer.name}</Title>
-      <Paragraph>{goToJailSymbol} Go to Jail</Paragraph>
+      <EventComponent
+        game={props.game}
+        event={{
+          type: EventType.goToJail,
+          playerId: currentPlayer.id,
+          tooManyDoublesInARow: exceedsMaxDoublesInARow(currentPlayer.doublesInARow),
+        }}
+      />
 
       <Button
         autoClick={GameUpdateType.goToJail}

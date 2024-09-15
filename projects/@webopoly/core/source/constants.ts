@@ -1,5 +1,6 @@
 export const jailFine = 50;
 export const maxTurnsInJail = 3;
+export const maxDoublesInARow = 3;
 export const passGoMoney = 200;
 export const playerInitialMoney = 1500;
 export const rentPercentage = 0.05;
