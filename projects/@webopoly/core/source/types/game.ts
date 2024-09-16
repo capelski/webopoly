@@ -3,7 +3,7 @@ import { Card } from './card';
 import { DefaultAction } from './default-action';
 import { Dice } from './dice';
 import { GEvent, PendingEvent } from './event';
-import { PhasePayloadBase, PromptPhasePayload, TradePhasePayload } from './game-phase-payload';
+import { PhasePayloadBase, PromptPhasePayload } from './game-phase-payload';
 import { Player } from './player';
 import { BuyPropertyPrompt } from './prompt';
 import { Square } from './square';
@@ -51,7 +51,12 @@ export type GamePromptPhase<TPrompt extends PromptType> = GameBase<PromptPhasePa
 
 export type GameRollDicePhase = GameBase<{ phase: GamePhase.rollDice }>;
 
-export type GameTradePhase = GameBase<TradePhasePayload>;
+export type GameTradePhase = GameBase<{
+  phase: GamePhase.trade;
+  previousPhase: GamePhase.play | GamePhase.rollDice;
+  other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
+  ownSquaresId: Square['id'][];
+}>;
 
 export type GameNonPromptPhase =
   | GameBuyPropertyLiquidationPhase

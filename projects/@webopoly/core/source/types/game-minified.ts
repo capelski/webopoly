@@ -9,8 +9,9 @@ import {
   GamePlayerAnimationPhase,
   GamePlayPhase,
   GameRollDicePhase,
+  GameTradePhase,
 } from './game';
-import { PromptPhasePayload, TradePhasePayload } from './game-phase-payload';
+import { PromptPhasePayload } from './game-phase-payload';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
@@ -65,13 +66,13 @@ export type GamePromptPhaseMinified = GameBaseMinified & {
 
 export type GameTradePhaseMinified = GameBaseMinified & {
   /** other */
-  ot: TradePhasePayload['other'];
+  ot: GameTradePhase['other'];
   /** ownSquaresId */
-  ows: TradePhasePayload['ownSquaresId'];
+  ows: GameTradePhase['ownSquaresId'];
   /** phase */
-  ph: TradePhasePayload['phase'];
+  ph: GameTradePhase['phase'];
   /** previousPhase */
-  pp: TradePhasePayload['previousPhase'];
+  pp: GameTradePhase['previousPhase'];
 };
 
 export type GenericGamePhaseMinified = GameBaseMinified & {

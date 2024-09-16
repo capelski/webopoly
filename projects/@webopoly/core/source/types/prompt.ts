@@ -1,7 +1,7 @@
 import { GamePhase, OfferType, PromptType } from '../enums';
 import { Card } from './card';
 import { PendingEvent } from './event';
-import { TradePhasePayload } from './game-phase-payload';
+import { GameTradePhase } from './game';
 import { Player } from './player';
 import { Square } from './square';
 
@@ -29,7 +29,7 @@ export type AnswerOfferPrompt = {
 export type AnswerTradePrompt = {
   playerId: Player['id'];
   playerPropertiesId: Square['id'][];
-  previous: TradePhasePayload['previousPhase'];
+  previous: GameTradePhase['previousPhase'];
   targetPlayerId: Player['id'];
   targetPropertiesId: Square['id'][];
   type: PromptType.answerTrade;
