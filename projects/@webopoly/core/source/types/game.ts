@@ -7,7 +7,7 @@ import { Player } from './player';
 import { BuyPropertyPrompt, Prompt } from './prompt';
 import { Square } from './square';
 
-export type GameBase<T extends { phase: GamePhase }> = {
+export type GameBase<TPhase extends GamePhase> = {
   centerPot: number;
   currentPlayerId: Player['id'];
   defaultAction: DefaultAction | undefined;
@@ -15,59 +15,55 @@ export type GameBase<T extends { phase: GamePhase }> = {
   eventHistory: GEvent[];
   nextCardIds: Card['id'][];
   notifications: GEvent[];
+  phase: TPhase;
   players: Player[];
   squares: Square[];
-} & T;
+};
 
-export type GameBuyPropertyLiquidationPhase = GameBase<{
-  phase: GamePhase.buyPropertyLiquidation;
+export type GameBuyPropertyLiquidationPhase = GameBase<GamePhase.buyPropertyLiquidation> & {
   pendingPrompt: BuyPropertyPrompt;
-}>;
+};
 
-export type GameDiceAnimationPhase = GameBase<{ phase: GamePhase.diceAnimation }>;
+export type GameDiceAnimationPhase = GameBase<GamePhase.diceAnimation>;
 
-export type GameDiceInJailAnimationPhase = GameBase<{ phase: GamePhase.diceInJailAnimation }>;
+export type GameDiceInJailAnimationPhase = GameBase<GamePhase.diceInJailAnimation>;
 
-export type GameOutOfJailAnimationPhase = GameBase<{ phase: GamePhase.outOfJailAnimation }>;
+export type GameOutOfJailAnimationPhase = GameBase<GamePhase.outOfJailAnimation>;
 
-export type GamePendingPaymentLiquidationPhase = GameBase<{
-  phase: GamePhase.pendingPaymentLiquidation;
+export type GamePendingPaymentLiquidationPhase = GameBase<GamePhase.pendingPaymentLiquidation> & {
   pendingEvent: PendingEvent;
-}>;
+};
 
-export type GamePlayerAnimationPhase = GameBase<{
-  phase: GamePhase.playerAnimation;
+export type GamePlayerAnimationPhase = GameBase<GamePhase.playerAnimation> & {
   animation: {
     currentSquareId: Square['id'];
     pendingMoves: number;
     playerId: Player['id'];
   };
-}>;
+};
 
-export type GamePlayPhase = GameBase<{ phase: GamePhase.play }>;
+export type GamePlayPhase = GameBase<GamePhase.play>;
 
-export type GamePromptPhase<TPrompt extends PromptType> = GameBase<{
-  phase: GamePhase.prompt;
+export type GamePromptPhase<TPrompt extends PromptType> = GameBase<GamePhase.prompt> & {
   prompt: Prompt<TPrompt>;
-}>;
+};
 
-export type GameRollDicePhase = GameBase<{ phase: GamePhase.rollDice }>;
+export type GameRollDicePhase = GameBase<GamePhase.rollDice>;
 
-export type GameTradePhase = GameBase<{
-  phase: GamePhase.trade;
+export type GameTradePhase = GameBase<GamePhase.trade> & {
   previousPhase: GamePhase.play | GamePhase.rollDice;
   other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
   ownSquaresId: Square['id'][];
-}>;
+};
 
-export type GameNonPromptPhase =
+export type Game =
   | GameBuyPropertyLiquidationPhase
   | GameDiceAnimationPhase
   | GameDiceInJailAnimationPhase
   | GameOutOfJailAnimationPhase
+  | GamePromptPhase<PromptType>
   | GamePendingPaymentLiquidationPhase
   | GamePlayerAnimationPhase
   | GamePlayPhase
-  | GameRollDicePhase;
-
-export type Game = GameNonPromptPhase | GamePromptPhase<PromptType> | GameTradePhase;
+  | GameRollDicePhase
+  | GameTradePhase;

@@ -3,7 +3,6 @@ import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType, PromptType
 import { getCurrentPlayer } from '../logic';
 import {
   GameBuyPropertyLiquidationPhase,
-  GameNonPromptPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
@@ -12,13 +11,13 @@ import {
   PropertySquare,
 } from '../types';
 
-const savePhaseData = (
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase,
-) =>
+type SellOfferInputPhases =
+  | GameBuyPropertyLiquidationPhase
+  | GamePendingPaymentLiquidationPhase
+  | GamePlayPhase
+  | GameRollDicePhase;
+
+const savePhaseData = (game: SellOfferInputPhases) =>
   game.phase === GamePhase.buyPropertyLiquidation
     ? { previousPhase: game.phase, pendingPrompt: game.pendingPrompt }
     : game.phase === GamePhase.pendingPaymentLiquidation
@@ -34,7 +33,7 @@ const restorePhaseData = (game: GamePromptPhase<PromptType.answerOffer>) =>
 
 export const triggerAcceptOffer = (
   game: GamePromptPhase<PromptType.answerOffer>,
-): GameNonPromptPhase => {
+): SellOfferInputPhases => {
   const { buyerId, sellerId } =
     game.prompt.offerType === OfferType.sell
       ? { buyerId: game.prompt.targetPlayerId, sellerId: game.prompt.playerId }
@@ -118,7 +117,7 @@ export const triggerBuyingOffer = (
 
 export const triggerDeclineOffer = (
   game: GamePromptPhase<PromptType.answerOffer>,
-): GameNonPromptPhase => {
+): SellOfferInputPhases => {
   return {
     ...game,
     defaultAction: {
@@ -152,11 +151,7 @@ export const triggerDeclineOffer = (
 };
 
 export const triggerSellingOffer = (
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase,
+  game: SellOfferInputPhases,
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],
