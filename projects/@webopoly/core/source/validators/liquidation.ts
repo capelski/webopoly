@@ -1,6 +1,12 @@
-import { GamePhase, LiquidationReason, PromptType, SquareType } from '../enums';
+import { GamePhase, PromptType, SquareType } from '../enums';
 import { castPromptGame, getCurrentPlayer, getSquareById } from '../logic';
-import { Game, GameLiquidationPhase, GamePromptPhase, Player } from '../types';
+import {
+  Game,
+  GameBuyPropertyLiquidationPhase,
+  GamePendingPaymentLiquidationPhase,
+  GamePromptPhase,
+  Player,
+} from '../types';
 
 export const canLiquidateBuyProperty = (
   game: Game,
@@ -48,9 +54,12 @@ export const canResume = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameLiquidationPhase<LiquidationReason>;
+  game: GameBuyPropertyLiquidationPhase | GamePendingPaymentLiquidationPhase;
 } | null => {
-  if (game.phase !== GamePhase.liquidation) {
+  if (
+    game.phase !== GamePhase.buyPropertyLiquidation &&
+    game.phase !== GamePhase.pendingPaymentLiquidation
+  ) {
     return null;
   }
 

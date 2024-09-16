@@ -1,19 +1,16 @@
-import { LiquidationReason } from '../enums';
 import { EventMinified } from './event-minified';
 import {
   Game,
+  GameBuyPropertyLiquidationPhase,
   GameDiceAnimationPhase,
   GameDiceInJailAnimationPhase,
   GameOutOfJailAnimationPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayerAnimationPhase,
   GamePlayPhase,
   GameRollDicePhase,
 } from './game';
-import {
-  LiquidationPhasePayload,
-  PromptPhasePayload,
-  TradePhasePayload,
-} from './game-phase-payload';
+import { PromptPhasePayload, TradePhasePayload } from './game-phase-payload';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
@@ -38,23 +35,19 @@ type GameBaseMinified = {
   sq: SquareMinified[];
 };
 
-export type GameLiquidationPhaseMinified = GameBaseMinified & {
+export type GameBuyPropertyLiquidationPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: LiquidationPhasePayload['phase'];
-} & (
-    | {
-        /** pendingPrompt */
-        pp: LiquidationPhasePayload<LiquidationReason.buyProperty>['pendingPrompt'];
-        /** reason */
-        r: LiquidationPhasePayload<LiquidationReason.buyProperty>['reason'];
-      }
-    | {
-        /** pendingEvent */
-        pe: LiquidationPhasePayload<LiquidationReason.pendingPayment>['pendingEvent'];
-        /** reason */
-        r: LiquidationPhasePayload<LiquidationReason.pendingPayment>['reason'];
-      }
-  );
+  ph: GameBuyPropertyLiquidationPhase['phase'];
+  /** pendingPrompt */
+  pp: GameBuyPropertyLiquidationPhase['pendingPrompt'];
+};
+
+export type GamePendingPaymentLiquidationPhaseMinified = GameBaseMinified & {
+  /** phase */
+  ph: GamePendingPaymentLiquidationPhase['phase'];
+  /** pendingEvent */
+  pe: GamePendingPaymentLiquidationPhase['pendingEvent'];
+};
 
 export type GamePlayerAnimationPhaseMinified = GameBaseMinified & {
   /** phase */
@@ -92,7 +85,8 @@ export type GenericGamePhaseMinified = GameBaseMinified & {
 };
 
 export type GameMinified =
-  | GameLiquidationPhaseMinified
+  | GameBuyPropertyLiquidationPhaseMinified
+  | GamePendingPaymentLiquidationPhaseMinified
   | GamePlayerAnimationPhaseMinified
   | GamePromptPhaseMinified
   | GameTradePhaseMinified

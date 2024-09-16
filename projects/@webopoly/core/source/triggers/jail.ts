@@ -1,18 +1,10 @@
 import { jailFine, maxTurnsInJail, playerTransitionDuration } from '../constants';
-import {
-  EventType,
-  GamePhase,
-  GameUpdateType,
-  JailMedium,
-  LiquidationReason,
-  PromptType,
-  SquareType,
-} from '../enums';
+import { EventType, GamePhase, GameUpdateType, JailMedium, PromptType, SquareType } from '../enums';
 import { exceedsMaxDoublesInARow, getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
   GameDiceInJailAnimationPhase,
-  GameLiquidationPhase,
   GameOutOfJailAnimationPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   GameRollDicePhase,
@@ -24,7 +16,7 @@ import { triggerCannotPayPrompt } from './payments';
 export type PlayerOutOfJailPhases =
   | GamePromptPhase<PromptType.jailOptions>
   | GameDiceInJailAnimationPhase
-  | GameLiquidationPhase<LiquidationReason.pendingPayment>;
+  | GamePendingPaymentLiquidationPhase;
 
 export const triggerGetOutOfJailCard = (
   game: GamePromptPhase<PromptType.applyCard>,
@@ -75,7 +67,7 @@ export const triggerGoToJail = (
 };
 
 export const triggerLastTurnInJail = (
-  game: GameDiceInJailAnimationPhase | GameLiquidationPhase<LiquidationReason.pendingPayment>,
+  game: GameDiceInJailAnimationPhase | GamePendingPaymentLiquidationPhase,
 ): GameOutOfJailAnimationPhase | GamePromptPhase<PromptType.cannotPay> => {
   const currentPlayer = getCurrentPlayer(game);
 

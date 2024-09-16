@@ -1,7 +1,7 @@
-import { OfferType, PromptType } from '../enums';
+import { GamePhase, OfferType, PromptType } from '../enums';
 import { Card } from './card';
 import { PendingEvent } from './event';
-import { NonPromptPhasePayload, TradePhasePayload } from './game-phase-payload';
+import { TradePhasePayload } from './game-phase-payload';
 import { Player } from './player';
 import { Square } from './square';
 
@@ -9,11 +9,22 @@ export type AnswerOfferPrompt = {
   amount: number;
   offerType: OfferType;
   playerId: Player['id'];
-  previous: NonPromptPhasePayload;
   propertyId: Square['id'];
   targetPlayerId: Player['id'];
   type: PromptType.answerOffer;
-};
+} & (
+  | {
+      previousPhase: GamePhase.play | GamePhase.rollDice;
+    }
+  | {
+      previousPhase: GamePhase.buyPropertyLiquidation;
+      pendingPrompt: BuyPropertyPrompt;
+    }
+  | {
+      previousPhase: GamePhase.pendingPaymentLiquidation;
+      pendingEvent: PendingEvent;
+    }
+);
 
 export type AnswerTradePrompt = {
   playerId: Player['id'];

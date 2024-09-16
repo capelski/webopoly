@@ -1,5 +1,5 @@
 import { housesMax } from '../constants';
-import { GamePhase, LiquidationReason, PropertyStatus, PropertyType, SquareType } from '../enums';
+import { GamePhase, PropertyStatus, PropertyType, SquareType } from '../enums';
 import {
   getBuildHouseAmount,
   getCurrentPlayer,
@@ -8,7 +8,8 @@ import {
 } from '../logic';
 import {
   Game,
-  GameLiquidationPhase,
+  GameBuyPropertyLiquidationPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GameRollDicePhase,
   Player,
@@ -63,13 +64,18 @@ export const canSellHouse = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase | GameRollDicePhase | GameLiquidationPhase<LiquidationReason>;
+  game:
+    | GameBuyPropertyLiquidationPhase
+    | GamePendingPaymentLiquidationPhase
+    | GamePlayPhase
+    | GameRollDicePhase;
   street: StreetSquare;
 } | null => {
   if (
+    game.phase !== GamePhase.buyPropertyLiquidation &&
+    game.phase !== GamePhase.pendingPaymentLiquidation &&
     game.phase !== GamePhase.play &&
-    game.phase !== GamePhase.rollDice &&
-    game.phase !== GamePhase.liquidation
+    game.phase !== GamePhase.rollDice
   ) {
     return null;
   }

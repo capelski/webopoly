@@ -1,4 +1,4 @@
-import { GamePhase, LiquidationReason, PropertyType, SquareType } from '../../enums';
+import { GamePhase, PropertyType, SquareType } from '../../enums';
 import { EventMinified, Game, GameMinified, PlayerMinified, SquareMinified } from '../../types';
 import { eventsMap, Minifier } from './events-map';
 
@@ -70,10 +70,10 @@ export const serializeGame = (game: Game): string => {
             t: square.type,
           };
     }),
-    ...(game.phase === GamePhase.liquidation
-      ? game.reason === LiquidationReason.buyProperty
-        ? { ph: game.phase, r: game.reason, pp: game.pendingPrompt }
-        : { ph: game.phase, r: game.reason, pe: game.pendingEvent }
+    ...(game.phase === GamePhase.buyPropertyLiquidation
+      ? { ph: game.phase, pp: game.pendingPrompt }
+      : game.phase === GamePhase.pendingPaymentLiquidation
+      ? { ph: game.phase, pe: game.pendingEvent }
       : game.phase === GamePhase.prompt
       ? { ph: game.phase, pr: game.prompt }
       : game.phase === GamePhase.trade

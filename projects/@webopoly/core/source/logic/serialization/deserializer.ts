@@ -1,4 +1,4 @@
-import { GamePhase, LiquidationReason, PropertyType, SquareType } from '../../enums';
+import { GamePhase, PropertyType, SquareType } from '../../enums';
 import { Game, GameMinified, GEvent, Player, Square } from '../../types';
 import { squaresMap } from '../squares';
 import { eventsMap, Restorer } from './events-map';
@@ -53,10 +53,10 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
 
         return square;
       }),
-      ...(g.ph === GamePhase.liquidation
-        ? g.r === LiquidationReason.buyProperty
-          ? { phase: g.ph, reason: g.r, pendingPrompt: g.pp }
-          : { phase: g.ph, reason: g.r, pendingEvent: g.pe }
+      ...(g.ph === GamePhase.buyPropertyLiquidation
+        ? { phase: g.ph, pendingPrompt: g.pp }
+        : g.ph === GamePhase.pendingPaymentLiquidation
+        ? { phase: g.ph, pendingEvent: g.pe }
         : g.ph === GamePhase.prompt
         ? { phase: g.ph, prompt: g.pr }
         : g.ph === GamePhase.trade

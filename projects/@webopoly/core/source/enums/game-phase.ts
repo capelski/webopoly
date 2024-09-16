@@ -1,8 +1,9 @@
 export enum GamePhase {
+  buyPropertyLiquidation = 'buyPropertyLiquidation',
   diceAnimation = 'diceAnimation',
   diceInJailAnimation = 'diceInJailAnimation',
-  liquidation = 'liquidation',
   outOfJailAnimation = 'outOfJailAnimation',
+  pendingPaymentLiquidation = 'pendingPaymentLiquidation',
   play = 'play',
   playerAnimation = 'playerAnimation',
   prompt = 'prompt',

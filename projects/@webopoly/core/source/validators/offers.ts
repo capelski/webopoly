@@ -1,8 +1,9 @@
-import { GamePhase, LiquidationReason, PromptType, PropertyType, SquareType } from '../enums';
+import { GamePhase, PromptType, PropertyType, SquareType } from '../enums';
 import { castPromptGame, getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
 import {
   Game,
-  GameLiquidationPhase,
+  GameBuyPropertyLiquidationPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   GameRollDicePhase,
@@ -72,11 +73,16 @@ export const canTriggerSellingOffer = (
   targetPlayerId: Player['id'] | undefined,
   windowPlayerId: Player['id'],
 ): {
-  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase;
+  game:
+    | GameBuyPropertyLiquidationPhase
+    | GamePendingPaymentLiquidationPhase
+    | GamePlayPhase
+    | GameRollDicePhase;
   property: PropertySquare;
 } | null => {
   if (
-    game.phase !== GamePhase.liquidation &&
+    game.phase !== GamePhase.buyPropertyLiquidation &&
+    game.phase !== GamePhase.pendingPaymentLiquidation &&
     game.phase !== GamePhase.play &&
     game.phase !== GamePhase.rollDice
   ) {

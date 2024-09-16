@@ -3,7 +3,6 @@ import {
   EventType,
   GamePhase,
   GameUpdateType,
-  LiquidationReason,
   PlayerStatus,
   PromptType,
   PropertyType,
@@ -352,7 +351,7 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.resume) {
     const validation = canResume(nextGame, windowPlayerId);
     if (validation) {
-      if (validation.game.reason === LiquidationReason.buyProperty) {
+      if (validation.game.phase === GamePhase.buyPropertyLiquidation) {
         nextGame = resumeBuyProperty(validation.game);
         updateFunction(nextGame);
       } else {

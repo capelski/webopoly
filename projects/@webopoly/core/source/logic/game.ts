@@ -3,13 +3,19 @@ import {
   EventType,
   GamePhase,
   GameUpdateType,
-  LiquidationReason,
   PlayerStatus,
   PromptType,
   PropertyType,
   SquareType,
 } from '../enums';
-import { Game, GameLiquidationPhase, GamePromptPhase, Player, Prompt, Square } from '../types';
+import {
+  Game,
+  GamePendingPaymentLiquidationPhase,
+  GamePromptPhase,
+  Player,
+  Prompt,
+  Square,
+} from '../types';
 import { getCardAmount } from './cards';
 import { squares } from './squares';
 import { turnConsiderations } from './turn-considerations';
@@ -93,11 +99,9 @@ export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType):
 };
 
 export const getPendingAmount = (
-  game:
-    | GameLiquidationPhase<LiquidationReason.pendingPayment>
-    | GamePromptPhase<PromptType.cannotPay>,
+  game: GamePendingPaymentLiquidationPhase | GamePromptPhase<PromptType.cannotPay>,
 ) => {
-  const { pendingEvent } = game.phase === GamePhase.liquidation ? game : game.prompt;
+  const { pendingEvent } = game.phase === GamePhase.pendingPaymentLiquidation ? game : game.prompt;
   const amount =
     pendingEvent.type === EventType.turnInJail
       ? jailFine

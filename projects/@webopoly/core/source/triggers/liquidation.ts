@@ -1,14 +1,12 @@
 import { longActionInterval } from '../constants';
-import {
-  CardType,
-  EventType,
-  GamePhase,
-  GameUpdateType,
-  LiquidationReason,
-  PromptType,
-} from '../enums';
+import { CardType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
-import { GameLiquidationPhase, GameOutOfJailAnimationPhase, GamePromptPhase } from '../types';
+import {
+  GameBuyPropertyLiquidationPhase,
+  GameOutOfJailAnimationPhase,
+  GamePendingPaymentLiquidationPhase,
+  GamePromptPhase,
+} from '../types';
 import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
 import {
@@ -19,7 +17,7 @@ import {
 } from './payments';
 
 export const resumeBuyProperty = (
-  game: GameLiquidationPhase<LiquidationReason.buyProperty>,
+  game: GameBuyPropertyLiquidationPhase,
 ): GamePromptPhase<PromptType.buyProperty> => {
   return {
     ...game,
@@ -33,7 +31,7 @@ export const resumeBuyProperty = (
 };
 
 export const resumePendingPayment = (
-  game: GameLiquidationPhase<LiquidationReason.pendingPayment>,
+  game: GamePendingPaymentLiquidationPhase,
 ): GamePromptPhase<PromptType.cannotPay> | ExpenseOutputPhases | GameOutOfJailAnimationPhase => {
   const pendingEvent = game.pendingEvent;
   const amount = getPendingAmount(game);
@@ -56,7 +54,7 @@ export const resumePendingPayment = (
 
 export const triggerBuyPropertyLiquidation = (
   game: GamePromptPhase<PromptType.buyProperty>,
-): GameLiquidationPhase<LiquidationReason.buyProperty> => {
+): GameBuyPropertyLiquidationPhase => {
   return {
     ...game,
     defaultAction: {
@@ -65,14 +63,13 @@ export const triggerBuyPropertyLiquidation = (
       update: { type: GameUpdateType.resume },
     },
     pendingPrompt: game.prompt,
-    phase: GamePhase.liquidation,
-    reason: LiquidationReason.buyProperty,
+    phase: GamePhase.buyPropertyLiquidation,
   };
 };
 
 export const triggerPendingPaymentLiquidation = (
   game: GamePromptPhase<PromptType.cannotPay>,
-): GameLiquidationPhase<LiquidationReason.pendingPayment> => {
+): GamePendingPaymentLiquidationPhase => {
   return {
     ...game,
     defaultAction: {
@@ -81,7 +78,6 @@ export const triggerPendingPaymentLiquidation = (
       update: { type: GameUpdateType.resume },
     },
     pendingEvent: game.prompt.pendingEvent,
-    phase: GamePhase.liquidation,
-    reason: LiquidationReason.pendingPayment,
+    phase: GamePhase.pendingPaymentLiquidation,
   };
 };

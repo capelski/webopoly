@@ -1,11 +1,4 @@
-import {
-  CardType,
-  EventType,
-  GamePhase,
-  GameUpdateType,
-  LiquidationReason,
-  PromptType,
-} from '../enums';
+import { CardType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
 import {
   cards,
   cardsMap,
@@ -19,7 +12,7 @@ import {
 import {
   Card,
   CardEvent,
-  GameLiquidationPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   Player,
@@ -29,9 +22,9 @@ import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 import { triggerCannotPayPrompt } from './payments';
 
 type GameInputType<TCard extends CardType> = TCard extends CardType.fee
-  ? GamePromptPhase<PromptType.applyCard> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  ? GamePromptPhase<PromptType.applyCard> | GamePendingPaymentLiquidationPhase
   : TCard extends CardType.streetRepairs
-  ? GamePromptPhase<PromptType.applyCard> | GameLiquidationPhase<LiquidationReason.pendingPayment>
+  ? GamePromptPhase<PromptType.applyCard> | GamePendingPaymentLiquidationPhase
   : GamePromptPhase<PromptType.applyCard>;
 
 type GameOutputType<TCard extends CardType> = TCard extends CardType.fee

@@ -1,34 +1,36 @@
 import { longActionInterval } from '../constants';
-import {
-  AnswerType,
-  EventType,
-  GamePhase,
-  GameUpdateType,
-  LiquidationReason,
-  OfferType,
-  PromptType,
-} from '../enums';
+import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType, PromptType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
-  GameLiquidationPhase,
+  GameBuyPropertyLiquidationPhase,
   GameNonPromptPhase,
+  GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
   GamePromptPhase,
   GameRollDicePhase,
-  NonPromptPhasePayload,
   Player,
   PropertySquare,
 } from '../types';
 
-const getPreviousPayload = (
-  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
-): NonPromptPhasePayload => {
-  return game.phase === GamePhase.liquidation
-    ? game.reason === LiquidationReason.buyProperty
-      ? { phase: game.phase, reason: game.reason, pendingPrompt: game.pendingPrompt }
-      : { phase: game.phase, reason: game.reason, pendingEvent: game.pendingEvent }
-    : { phase: game.phase };
-};
+const savePhaseData = (
+  game:
+    | GameBuyPropertyLiquidationPhase
+    | GamePendingPaymentLiquidationPhase
+    | GamePlayPhase
+    | GameRollDicePhase,
+) =>
+  game.phase === GamePhase.buyPropertyLiquidation
+    ? { previousPhase: game.phase, pendingPrompt: game.pendingPrompt }
+    : game.phase === GamePhase.pendingPaymentLiquidation
+    ? { previousPhase: game.phase, pendingEvent: game.pendingEvent }
+    : { previousPhase: game.phase };
+
+const restorePhaseData = (game: GamePromptPhase<PromptType.answerOffer>) =>
+  game.prompt.previousPhase === GamePhase.buyPropertyLiquidation
+    ? { phase: game.prompt.previousPhase, pendingPrompt: game.prompt.pendingPrompt }
+    : game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
+    ? { phase: game.prompt.previousPhase, pendingEvent: game.prompt.pendingEvent }
+    : { phase: game.prompt.previousPhase };
 
 export const triggerAcceptOffer = (
   game: GamePromptPhase<PromptType.answerOffer>,
@@ -40,17 +42,17 @@ export const triggerAcceptOffer = (
 
   return {
     ...game,
-    ...game.prompt.previous,
     defaultAction: {
       playerId: game.prompt.playerId,
       update:
-        game.prompt.previous.phase === GamePhase.play
+        game.prompt.previousPhase === GamePhase.play
           ? { type: GameUpdateType.endTurn }
-          : game.prompt.previous.phase === GamePhase.rollDice
+          : game.prompt.previousPhase === GamePhase.rollDice
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.prompt.previous.phase === GamePhase.liquidation
+        game.prompt.previousPhase === GamePhase.buyPropertyLiquidation ||
+        game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
@@ -84,6 +86,7 @@ export const triggerAcceptOffer = (
     squares: game.squares.map((s) => {
       return s.id === game.prompt.propertyId ? { ...s, ownerId: buyerId } : s;
     }),
+    ...restorePhaseData(game),
   };
 };
 
@@ -105,10 +108,10 @@ export const triggerBuyingOffer = (
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
-      previous: getPreviousPayload(game),
       propertyId: property.id,
       targetPlayerId: property.ownerId!,
       type: PromptType.answerOffer,
+      ...savePhaseData(game),
     },
   };
 };
@@ -121,13 +124,14 @@ export const triggerDeclineOffer = (
     defaultAction: {
       playerId: game.prompt.playerId,
       update:
-        game.prompt.previous.phase === GamePhase.play
+        game.prompt.previousPhase === GamePhase.play
           ? { type: GameUpdateType.endTurn }
-          : game.prompt.previous.phase === GamePhase.rollDice
+          : game.prompt.previousPhase === GamePhase.rollDice
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.prompt.previous.phase === GamePhase.liquidation
+        game.prompt.previousPhase === GamePhase.buyPropertyLiquidation ||
+        game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
@@ -143,12 +147,16 @@ export const triggerDeclineOffer = (
         type: EventType.answerOffer,
       },
     ],
-    ...game.prompt.previous,
+    ...restorePhaseData(game),
   };
 };
 
 export const triggerSellingOffer = (
-  game: GameLiquidationPhase<LiquidationReason> | GamePlayPhase | GameRollDicePhase,
+  game:
+    | GameBuyPropertyLiquidationPhase
+    | GamePendingPaymentLiquidationPhase
+    | GamePlayPhase
+    | GameRollDicePhase,
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],
@@ -166,10 +174,10 @@ export const triggerSellingOffer = (
       amount,
       offerType: OfferType.sell,
       playerId: currentPlayer.id,
-      previous: getPreviousPayload(game),
       propertyId: property.id,
       targetPlayerId,
       type: PromptType.answerOffer,
+      ...savePhaseData(game),
     },
   };
 };
