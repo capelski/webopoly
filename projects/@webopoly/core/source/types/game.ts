@@ -3,12 +3,11 @@ import { Card } from './card';
 import { DefaultAction } from './default-action';
 import { Dice } from './dice';
 import { GEvent, PendingEvent } from './event';
-import { PhasePayloadBase, PromptPhasePayload } from './game-phase-payload';
 import { Player } from './player';
-import { BuyPropertyPrompt } from './prompt';
+import { BuyPropertyPrompt, Prompt } from './prompt';
 import { Square } from './square';
 
-export type GameBase<T extends PhasePayloadBase<any>> = {
+export type GameBase<T extends { phase: GamePhase }> = {
   centerPot: number;
   currentPlayerId: Player['id'];
   defaultAction: DefaultAction | undefined;
@@ -47,7 +46,10 @@ export type GamePlayerAnimationPhase = GameBase<{
 
 export type GamePlayPhase = GameBase<{ phase: GamePhase.play }>;
 
-export type GamePromptPhase<TPrompt extends PromptType> = GameBase<PromptPhasePayload<TPrompt>>;
+export type GamePromptPhase<TPrompt extends PromptType> = GameBase<{
+  phase: GamePhase.prompt;
+  prompt: Prompt<TPrompt>;
+}>;
 
 export type GameRollDicePhase = GameBase<{ phase: GamePhase.rollDice }>;
 

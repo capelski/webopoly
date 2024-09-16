@@ -1,3 +1,4 @@
+import { PromptType } from '../enums';
 import { EventMinified } from './event-minified';
 import {
   Game,
@@ -8,10 +9,10 @@ import {
   GamePendingPaymentLiquidationPhase,
   GamePlayerAnimationPhase,
   GamePlayPhase,
+  GamePromptPhase,
   GameRollDicePhase,
   GameTradePhase,
 } from './game';
-import { PromptPhasePayload } from './game-phase-payload';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
@@ -59,9 +60,9 @@ export type GamePlayerAnimationPhaseMinified = GameBaseMinified & {
 
 export type GamePromptPhaseMinified = GameBaseMinified & {
   /** phase */
-  ph: PromptPhasePayload['phase'];
+  ph: GamePromptPhase<PromptType>['phase'];
   /** prompt */
-  pr: PromptPhasePayload['prompt'];
+  pr: GamePromptPhase<PromptType>['prompt'];
 };
 
 export type GameTradePhaseMinified = GameBaseMinified & {
