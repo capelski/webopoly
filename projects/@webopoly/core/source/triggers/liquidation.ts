@@ -1,11 +1,12 @@
 import { longActionInterval } from '../constants';
-import { CardType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
+import { CardType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import {
   GameBuyPropertyLiquidationPhase,
+  GameBuyPropertyPhase,
+  GameCannotPayPhase,
   GameOutOfJailAnimationPhase,
   GamePendingPaymentLiquidationPhase,
-  GamePromptPhase,
 } from '../types';
 import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
@@ -16,23 +17,21 @@ import {
   triggerPayTax,
 } from './payments';
 
-export const resumeBuyProperty = (
-  game: GameBuyPropertyLiquidationPhase,
-): GamePromptPhase<PromptType.buyProperty> => {
+export const resumeBuyProperty = (game: GameBuyPropertyLiquidationPhase): GameBuyPropertyPhase => {
   return {
     ...game,
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.buyPropertyReject },
     },
-    phase: GamePhase.prompt,
+    phase: GamePhase.buyProperty,
     prompt: game.pendingPrompt,
   };
 };
 
 export const resumePendingPayment = (
   game: GamePendingPaymentLiquidationPhase,
-): GamePromptPhase<PromptType.cannotPay> | ExpenseOutputPhases | GameOutOfJailAnimationPhase => {
+): GameCannotPayPhase | ExpenseOutputPhases | GameOutOfJailAnimationPhase => {
   const pendingEvent = game.pendingEvent;
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
@@ -53,7 +52,7 @@ export const resumePendingPayment = (
 };
 
 export const triggerBuyPropertyLiquidation = (
-  game: GamePromptPhase<PromptType.buyProperty>,
+  game: GameBuyPropertyPhase,
 ): GameBuyPropertyLiquidationPhase => {
   return {
     ...game,
@@ -68,7 +67,7 @@ export const triggerBuyPropertyLiquidation = (
 };
 
 export const triggerPendingPaymentLiquidation = (
-  game: GamePromptPhase<PromptType.cannotPay>,
+  game: GameCannotPayPhase,
 ): GamePendingPaymentLiquidationPhase => {
   return {
     ...game,

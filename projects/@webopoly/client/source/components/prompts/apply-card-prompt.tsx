@@ -1,9 +1,9 @@
 import {
   canApplyCard,
+  GameApplyCardPhase,
   GameUpdateType,
   getCardAmount,
   getCardText,
-  PromptType,
 } from '@webopoly/core';
 import React from 'react';
 import { surpriseSymbol } from '../../parameters';
@@ -11,7 +11,7 @@ import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
 import { PromptInterface } from './prompt-interface';
 
-export const ApplyCardPrompt: PromptInterface<PromptType.applyCard> = (props) => {
+export const ApplyCardPrompt: PromptInterface<GameApplyCardPhase> = (props) => {
   const amount = getCardAmount(props.game, props.game.prompt.cardId);
   const canApply = canApplyCard(props.game, props.windowPlayerId);
 

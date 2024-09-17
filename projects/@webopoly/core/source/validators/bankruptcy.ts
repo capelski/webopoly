@@ -1,14 +1,14 @@
-import { GamePhase, PromptType } from '../enums';
-import { castPromptGame, getCurrentPlayer } from '../logic';
-import { Game, GamePromptPhase, Player } from '../types';
+import { GamePhase } from '../enums';
+import { getCurrentPlayer } from '../logic';
+import { Game, GameCannotPayPhase, Player } from '../types';
 
 export const canDeclareBankruptcy = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.cannotPay>;
+  game: GameCannotPayPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.cannotPay) {
+  if (game.phase !== GamePhase.cannotPay) {
     return null;
   }
 
@@ -17,5 +17,5 @@ export const canDeclareBankruptcy = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };

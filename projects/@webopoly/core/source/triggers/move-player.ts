@@ -1,26 +1,27 @@
 import { passGoMoney } from '../constants';
-import {
-  EventType,
-  GamePhase,
-  GameUpdateType,
-  PlayerStatus,
-  PromptType,
-  SquareType,
-  TaxType,
-} from '../enums';
+import { EventType, GamePhase, GameUpdateType, PlayerStatus, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
-import { GamePlayPhase, GamePromptPhase, Player, Square } from '../types';
+import {
+  GameApplyCardPhase,
+  GameBuyPropertyPhase,
+  GameCannotPayPhase,
+  GameDrawCardPhase,
+  GameGoToJailPhase,
+  GamePlayPhase,
+  Player,
+  Square,
+} from '../types';
 import { triggerCardPrompt } from './cards';
 import { triggerPayRent, triggerPayTax } from './payments';
 
-export type MovePlayerInputPhases = GamePlayPhase | GamePromptPhase<PromptType.applyCard>;
+export type MovePlayerInputPhases = GamePlayPhase | GameApplyCardPhase;
 
 export type MovePlayerOutputPhases =
   | GamePlayPhase
-  | GamePromptPhase<PromptType.buyProperty>
-  | GamePromptPhase<PromptType.drawCard>
-  | GamePromptPhase<PromptType.goToJail>
-  | GamePromptPhase<PromptType.cannotPay>;
+  | GameBuyPropertyPhase
+  | GameDrawCardPhase
+  | GameGoToJailPhase
+  | GameCannotPayPhase;
 
 const applyFreeParking = (
   game: MovePlayerInputPhases,
@@ -94,16 +95,13 @@ export const triggerMovePlayer = (
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
   if (goesToJail) {
-    const nextGame: GamePromptPhase<PromptType.goToJail> = {
+    const nextGame: GameGoToJailPhase = {
       ...updatedGame,
       defaultAction: {
         playerId: currentPlayerId,
         update: { type: GameUpdateType.goToJail },
       },
-      phase: GamePhase.prompt,
-      prompt: {
-        type: PromptType.goToJail,
-      },
+      phase: GamePhase.goToJail,
     };
     return nextGame;
   }
@@ -149,17 +147,16 @@ export const triggerMovePlayer = (
     const currentBuyerId = potentialBuyersId.shift();
 
     if (currentBuyerId) {
-      const nextGame: GamePromptPhase<PromptType.buyProperty> = {
+      const nextGame: GameBuyPropertyPhase = {
         ...updatedGame,
         defaultAction: {
           playerId: currentBuyerId,
           update: { type: GameUpdateType.buyPropertyReject },
         },
-        phase: GamePhase.prompt,
+        phase: GamePhase.buyProperty,
         prompt: {
           currentBuyerId,
           potentialBuyersId,
-          type: PromptType.buyProperty,
         },
       };
 

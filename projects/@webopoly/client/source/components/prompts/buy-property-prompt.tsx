@@ -2,10 +2,10 @@ import {
   canBuyProperty,
   canLiquidateBuyProperty,
   canRejectProperty,
+  GameBuyPropertyPhase,
   GameUpdateType,
   getCurrentPlayer,
   getSquareById,
-  PromptType,
   SquareType,
 } from '@webopoly/core';
 import React from 'react';
@@ -14,7 +14,7 @@ import { SquareDetails } from '../common/square-details';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const BuyPropertyPrompt: PromptInterface<PromptType.buyProperty> = (props) => {
+export const BuyPropertyPrompt: PromptInterface<GameBuyPropertyPhase> = (props) => {
   const currentBuyer = getCurrentPlayer(props.game);
   const originalBuyer = getCurrentPlayer(props.game, { omitTurnConsiderations: true });
 

@@ -1,10 +1,11 @@
-import { GamePhase, PromptType, SquareType } from '../enums';
-import { castPromptGame, getCurrentPlayer, getSquareById } from '../logic';
+import { GamePhase, SquareType } from '../enums';
+import { getCurrentPlayer, getSquareById } from '../logic';
 import {
   Game,
   GameBuyPropertyLiquidationPhase,
+  GameBuyPropertyPhase,
+  GameCannotPayPhase,
   GamePendingPaymentLiquidationPhase,
-  GamePromptPhase,
   Player,
 } from '../types';
 
@@ -12,9 +13,9 @@ export const canLiquidateBuyProperty = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.buyProperty>;
+  game: GameBuyPropertyPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.buyProperty) {
+  if (game.phase !== GamePhase.buyProperty) {
     return null;
   }
 
@@ -29,16 +30,16 @@ export const canLiquidateBuyProperty = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canLiquidatePendingPayment = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.cannotPay>;
+  game: GameCannotPayPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.cannotPay) {
+  if (game.phase !== GamePhase.cannotPay) {
     return null;
   }
 
@@ -47,7 +48,7 @@ export const canLiquidatePendingPayment = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canResume = (

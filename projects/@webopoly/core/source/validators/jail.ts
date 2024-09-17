@@ -1,13 +1,19 @@
 import { jailFine } from '../constants';
-import { GamePhase, PromptType } from '../enums';
-import { castPromptGame, getCurrentPlayer } from '../logic';
-import { Game, GamePromptPhase, Player } from '../types';
+import { GamePhase } from '../enums';
+import { getCurrentPlayer } from '../logic';
+import {
+  Game,
+  GameApplyCardPhase,
+  GameGoToJailPhase,
+  GameJailOptionsPhase,
+  Player,
+} from '../types';
 
 export const canPayJailFine = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GamePromptPhase<PromptType.jailOptions> } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.jailOptions) {
+): { game: GameJailOptionsPhase } | null => {
+  if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
 
@@ -20,14 +26,14 @@ export const canPayJailFine = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canRollDiceInJail = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GamePromptPhase<PromptType.jailOptions> } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.jailOptions) {
+): { game: GameJailOptionsPhase } | null => {
+  if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
 
@@ -36,14 +42,14 @@ export const canRollDiceInJail = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canUseJailCard = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GamePromptPhase<PromptType.jailOptions> } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.jailOptions) {
+): { game: GameJailOptionsPhase } | null => {
+  if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
 
@@ -56,19 +62,16 @@ export const canUseJailCard = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const mustGoToJail = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.applyCard> | GamePromptPhase<PromptType.goToJail>;
+  game: GameApplyCardPhase | GameGoToJailPhase;
 } | null => {
-  if (
-    game.phase !== GamePhase.prompt ||
-    (game.prompt.type !== PromptType.applyCard && game.prompt.type !== PromptType.goToJail)
-  ) {
+  if (game.phase !== GamePhase.applyCard && game.phase !== GamePhase.goToJail) {
     return null;
   }
 
@@ -77,7 +80,5 @@ export const mustGoToJail = (
     return null;
   }
 
-  return game.prompt.type === PromptType.applyCard
-    ? { game: castPromptGame(game, game.prompt) }
-    : { game: castPromptGame(game, game.prompt) };
+  return { game };
 };

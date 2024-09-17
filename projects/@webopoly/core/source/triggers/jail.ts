@@ -1,12 +1,15 @@
 import { jailFine, maxTurnsInJail, playerTransitionDuration } from '../constants';
-import { EventType, GamePhase, GameUpdateType, JailMedium, PromptType, SquareType } from '../enums';
+import { EventType, GamePhase, GameUpdateType, JailMedium, SquareType } from '../enums';
 import { exceedsMaxDoublesInARow, getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
+  GameApplyCardPhase,
+  GameCannotPayPhase,
   GameDiceInJailAnimationPhase,
+  GameGoToJailPhase,
+  GameJailOptionsPhase,
   GameOutOfJailAnimationPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
-  GamePromptPhase,
   GameRollDicePhase,
   GEvent,
 } from '../types';
@@ -14,13 +17,11 @@ import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 import { triggerCannotPayPrompt } from './payments';
 
 export type PlayerOutOfJailPhases =
-  | GamePromptPhase<PromptType.jailOptions>
+  | GameJailOptionsPhase
   | GameDiceInJailAnimationPhase
   | GamePendingPaymentLiquidationPhase;
 
-export const triggerGetOutOfJailCard = (
-  game: GamePromptPhase<PromptType.applyCard>,
-): GamePlayPhase => {
+export const triggerGetOutOfJailCard = (game: GameApplyCardPhase): GamePlayPhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -37,7 +38,7 @@ export const triggerGetOutOfJailCard = (
 };
 
 export const triggerGoToJail = (
-  game: GamePromptPhase<PromptType.goToJail> | GamePromptPhase<PromptType.applyCard>,
+  game: GameApplyCardPhase | GameGoToJailPhase,
   skipEvent = false,
 ): GamePlayPhase => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
@@ -68,7 +69,7 @@ export const triggerGoToJail = (
 
 export const triggerLastTurnInJail = (
   game: GameDiceInJailAnimationPhase | GamePendingPaymentLiquidationPhase,
-): GameOutOfJailAnimationPhase | GamePromptPhase<PromptType.cannotPay> => {
+): GameOutOfJailAnimationPhase | GameCannotPayPhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   if (!hasEnoughMoney(currentPlayer, jailFine)) {
@@ -92,9 +93,7 @@ export const triggerLastTurnInJail = (
   };
 };
 
-export const triggerPayJailFine = (
-  game: GamePromptPhase<PromptType.jailOptions>,
-): EndTurnOutputPhases => {
+export const triggerPayJailFine = (game: GameJailOptionsPhase): EndTurnOutputPhases => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.fine);
   return triggerEndTurn(nextGame);
 };
@@ -141,9 +140,7 @@ export const triggerRollDoublesInJail = (
   };
 };
 
-export const triggerUseJailCard = (
-  game: GamePromptPhase<PromptType.jailOptions>,
-): GameRollDicePhase => {
+export const triggerUseJailCard = (game: GameJailOptionsPhase): GameRollDicePhase => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.card);
   return {
     ...nextGame,

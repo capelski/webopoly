@@ -4,7 +4,6 @@ import {
   GamePhase,
   GameUpdateType,
   PlayerStatus,
-  PromptType,
   PropertyType,
   SquareType,
 } from '../enums';
@@ -133,11 +132,7 @@ export const triggerRemovePlayer = (
       : nextGame;
 
   /* If the player was on the list of potential buyer ids, remove it */
-  if (
-    game.phase === GamePhase.prompt &&
-    game.prompt.type === PromptType.buyProperty &&
-    game.prompt.potentialBuyersId.includes(playerId)
-  ) {
+  if (game.phase === GamePhase.buyProperty && game.prompt.potentialBuyersId.includes(playerId)) {
     game.prompt.potentialBuyersId = game.prompt.potentialBuyersId.filter((id) => id != playerId);
   }
 
@@ -151,10 +146,9 @@ export const triggerRemovePlayer = (
     nextGame = {
       ...nextGame,
       currentPlayerId: remainingPlayers[0].id,
-      phase: GamePhase.prompt,
+      phase: GamePhase.playerWins,
       prompt: {
         playerId: remainingPlayers[0].id,
-        type: PromptType.playerWins,
       },
     };
   } else if (defaultAction && defaultAction.playerId !== playerId) {
@@ -299,10 +293,7 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
     const validation = mustGoToJail(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerGoToJail(
-        validation.game,
-        validation.game.prompt.type === PromptType.applyCard,
-      );
+      nextGame = triggerGoToJail(validation.game, validation.game.phase === GamePhase.applyCard);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.pendingPaymentLiquidation) {

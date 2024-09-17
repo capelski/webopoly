@@ -8,7 +8,6 @@ export * from './liquidation-reason';
 export * from './neighborhood';
 export * from './offer-type';
 export * from './player-status';
-export * from './prompt-type';
 export * from './property-status';
 export * from './property-type';
 export * from './server-error-codes';

@@ -1,4 +1,4 @@
-import { GamePhase, GameUpdateType, PromptType } from '../enums';
+import { GamePhase, GameUpdateType } from '../enums';
 import {
   getActivePlayers,
   getCurrentPlayer,
@@ -6,18 +6,24 @@ import {
   getPlayerById,
   hasExtraTurn,
 } from '../logic';
-import { GamePlayPhase, GamePromptPhase, GameRollDicePhase } from '../types';
+import {
+  GameCannotPayPhase,
+  GameJailOptionsPhase,
+  GamePlayerWinsPhase,
+  GamePlayPhase,
+  GameRollDicePhase,
+} from '../types';
 import { canUseJailCard } from '../validators';
 
 export type EndTurnInputPhases =
   | GamePlayPhase // A player finishes their turn
-  | GamePromptPhase<PromptType.jailOptions> // A player pays the jail fine to get out
-  | GamePromptPhase<PromptType.cannotPay>; // A player declares bankruptcy
+  | GameJailOptionsPhase // A player pays the jail fine to get out
+  | GameCannotPayPhase; // A player declares bankruptcy
 
 export type EndTurnOutputPhases =
   | GameRollDicePhase // Next player must start their turn and they are NOT in jail
-  | GamePromptPhase<PromptType.jailOptions> // Next player must start their turn and they ARE in jail
-  | GamePromptPhase<PromptType.playerWins>; // Next player must start their turn and they have won
+  | GameJailOptionsPhase // Next player must start their turn and they ARE in jail
+  | GamePlayerWinsPhase; // Next player must start their turn and they have won
 
 export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
@@ -42,22 +48,18 @@ export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases =>
     return {
       ...game,
       currentPlayerId: nextPlayerId,
-      phase: GamePhase.prompt,
+      phase: GamePhase.playerWins,
       prompt: {
         playerId: nextPlayerId,
-        type: PromptType.playerWins,
       },
     };
   }
 
   if (nextPlayer.isInJail) {
-    const nextGame: GamePromptPhase<PromptType.jailOptions> = {
+    const nextGame: GameJailOptionsPhase = {
       ...game,
       currentPlayerId: nextPlayerId,
-      phase: GamePhase.prompt,
-      prompt: {
-        type: PromptType.jailOptions,
-      },
+      phase: GamePhase.jailOptions,
     };
 
     nextGame.defaultAction = {

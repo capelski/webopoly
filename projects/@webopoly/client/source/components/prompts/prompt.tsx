@@ -1,4 +1,4 @@
-import { PromptType } from '@webopoly/core';
+import { GamePhase } from '@webopoly/core';
 import React from 'react';
 import { Modal } from '../common/modal';
 import { AnswerOfferPrompt } from './answer-offer-prompt';
@@ -12,22 +12,35 @@ import { JailOptionsPrompt } from './jail-options-prompt';
 import { PlayerWinsPrompt } from './player-wins-prompt';
 import { PromptInterface } from './prompt-interface';
 
-const promptsMap: {
-  [TKey in PromptType]: { inset?: string; renderer: PromptInterface<TKey> };
-} = {
-  [PromptType.applyCard]: { renderer: ApplyCardPrompt },
-  [PromptType.answerOffer]: { renderer: AnswerOfferPrompt },
-  [PromptType.answerTrade]: { inset: '15% 20px', renderer: AnswerTradePrompt },
-  [PromptType.buyProperty]: { inset: '5% 20px', renderer: BuyPropertyPrompt },
-  [PromptType.cannotPay]: { renderer: CannotPayPrompt },
-  [PromptType.drawCard]: { renderer: DrawCardPrompt },
-  [PromptType.goToJail]: { renderer: GoToJailPrompt },
-  [PromptType.jailOptions]: { renderer: JailOptionsPrompt },
-  [PromptType.playerWins]: { renderer: PlayerWinsPrompt },
-};
+export const PromptComponent: PromptInterface = (props) => {
+  const inset =
+    props.game.phase === GamePhase.answerTrade
+      ? '15% 20px'
+      : props.game.phase === GamePhase.buyProperty
+      ? '5% 20px'
+      : undefined;
 
-export const PromptComponent: PromptInterface<PromptType> = (props) => {
-  const renderer = promptsMap[props.game.prompt.type].renderer as PromptInterface<PromptType>;
-  const { inset } = promptsMap[props.game.prompt.type];
-  return <Modal inset={inset}>{renderer(props)}</Modal>;
+  return (
+    <Modal inset={inset}>
+      {props.game.phase === GamePhase.answerOffer ? (
+        <AnswerOfferPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.answerTrade ? (
+        <AnswerTradePrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.applyCard ? (
+        <ApplyCardPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.buyProperty ? (
+        <BuyPropertyPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.cannotPay ? (
+        <CannotPayPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.drawCard ? (
+        <DrawCardPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.goToJail ? (
+        <GoToJailPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.jailOptions ? (
+        <JailOptionsPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.playerWins ? (
+        <PlayerWinsPrompt {...props} game={props.game} />
+      ) : undefined}
+    </Modal>
+  );
 };

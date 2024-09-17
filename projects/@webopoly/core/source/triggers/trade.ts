@@ -1,16 +1,16 @@
 import { longActionInterval } from '../constants';
-import { AnswerType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
+import { AnswerType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, isSelectedForTrade } from '../logic';
 import {
+  GameAnswerTradePhase,
   GamePlayPhase,
-  GamePromptPhase,
   GameRollDicePhase,
   GameTradePhase,
   PropertySquare,
 } from '../types';
 
 export const triggerAcceptTrade = (
-  game: GamePromptPhase<PromptType.answerTrade>,
+  game: GameAnswerTradePhase,
 ): GamePlayPhase | GameRollDicePhase => {
   return {
     ...game,
@@ -75,7 +75,7 @@ export const triggerCancelTrade = (game: GameTradePhase): GamePlayPhase | GameRo
 };
 
 export const triggerDeclineTrade = (
-  game: GamePromptPhase<PromptType.answerTrade>,
+  game: GameAnswerTradePhase,
 ): GamePlayPhase | GameRollDicePhase => {
   return {
     ...game,
@@ -119,9 +119,7 @@ export const triggerStartTrade = (game: GamePlayPhase | GameRollDicePhase): Game
   };
 };
 
-export const triggerTradeOffer = (
-  game: GameTradePhase,
-): GamePromptPhase<PromptType.answerTrade> | GameTradePhase => {
+export const triggerTradeOffer = (game: GameTradePhase): GameAnswerTradePhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -130,14 +128,13 @@ export const triggerTradeOffer = (
       playerId: game.other.ownerId!,
       update: { type: GameUpdateType.declineTrade },
     },
-    phase: GamePhase.prompt,
+    phase: GamePhase.answerTrade,
     prompt: {
       playerId: currentPlayer.id,
       playerPropertiesId: game.ownSquaresId,
       previous: game.previousPhase,
       targetPlayerId: game.other.ownerId!,
       targetPropertiesId: game.other.squaresId,
-      type: PromptType.answerTrade,
     },
   };
 };

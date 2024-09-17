@@ -3,10 +3,10 @@ import {
   canRollDiceInJail,
   canUseJailCard,
   currencySymbol,
+  GameJailOptionsPhase,
   GameUpdateType,
   getCurrentPlayer,
   jailFine,
-  PromptType,
 } from '@webopoly/core';
 import React from 'react';
 import { jailSymbol } from '../../parameters';
@@ -14,7 +14,7 @@ import { Button } from '../common/button';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const JailOptionsPrompt: PromptInterface<PromptType.jailOptions> = (props) => {
+export const JailOptionsPrompt: PromptInterface<GameJailOptionsPhase> = (props) => {
   const player = getCurrentPlayer(props.game);
 
   return (

@@ -9,7 +9,6 @@ export * from './game-update';
 export * from './id';
 export * from './player';
 export * from './player-minified';
-export * from './prompt';
 export * from './room-state';
 export * from './socket-handlers';
 export * from './square';

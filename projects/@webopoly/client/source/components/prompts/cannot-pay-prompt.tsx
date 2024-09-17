@@ -2,9 +2,9 @@ import {
   canDeclareBankruptcy,
   canLiquidatePendingPayment,
   currencySymbol,
+  GameCannotPayPhase,
   GameUpdateType,
   getPendingAmount,
-  PromptType,
 } from '@webopoly/core';
 import React from 'react';
 import { Button } from '../common/button';
@@ -12,7 +12,7 @@ import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const CannotPayPrompt: PromptInterface<PromptType.cannotPay> = (props) => {
+export const CannotPayPrompt: PromptInterface<GameCannotPayPhase> = (props) => {
   return (
     <div style={{ textAlign: 'center' }}>
       <Title>Not enough money</Title>

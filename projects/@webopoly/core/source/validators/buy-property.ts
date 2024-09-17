@@ -1,15 +1,15 @@
-import { GamePhase, PromptType, SquareType } from '../enums';
-import { castPromptGame, getCurrentPlayer, getSquareById } from '../logic';
-import { Game, GamePromptPhase, Player, PropertySquare } from '../types';
+import { GamePhase, SquareType } from '../enums';
+import { getCurrentPlayer, getSquareById } from '../logic';
+import { Game, GameBuyPropertyPhase, Player, PropertySquare } from '../types';
 
 export const canBuyProperty = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.buyProperty>;
+  game: GameBuyPropertyPhase;
   square: PropertySquare;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.buyProperty) {
+  if (game.phase !== GamePhase.buyProperty) {
     return null;
   }
 
@@ -24,16 +24,16 @@ export const canBuyProperty = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt), square };
+  return { game, square };
 };
 
 export const canRejectProperty = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.buyProperty>;
+  game: GameBuyPropertyPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.buyProperty) {
+  if (game.phase !== GamePhase.buyProperty) {
     return null;
   }
 
@@ -42,5 +42,5 @@ export const canRejectProperty = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };

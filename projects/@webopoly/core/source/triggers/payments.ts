@@ -1,11 +1,12 @@
 import { longActionInterval } from '../constants';
-import { GamePhase, GameUpdateType, PromptType } from '../enums';
+import { GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
+  GameApplyCardPhase,
+  GameCannotPayPhase,
   GameDiceInJailAnimationPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
-  GamePromptPhase,
   PayRentEvent,
   PayTaxEvent,
   PendingEvent,
@@ -14,20 +15,20 @@ import {
 export type CannotPayPromptInputPhases =
   | GamePlayPhase
   | GameDiceInJailAnimationPhase // Is player's last turn in jail and they don't have enough money to pay the fine
-  | GamePromptPhase<PromptType.applyCard>
+  | GameApplyCardPhase
   | GamePendingPaymentLiquidationPhase; // Player resumes a pending payment but they still don't have enough money
 
 export type ExpenseInputPhases =
   | GamePlayPhase
-  | GamePromptPhase<PromptType.applyCard>
+  | GameApplyCardPhase
   | GamePendingPaymentLiquidationPhase; // Player resumes a pending payment and has enough money
 
-export type ExpenseOutputPhases = GamePlayPhase | GamePromptPhase<PromptType.cannotPay>;
+export type ExpenseOutputPhases = GamePlayPhase | GameCannotPayPhase;
 
 export const triggerCannotPayPrompt = (
   game: CannotPayPromptInputPhases,
   event: PendingEvent,
-): GamePromptPhase<PromptType.cannotPay> => {
+): GameCannotPayPhase => {
   return {
     ...game,
     defaultAction: {
@@ -35,10 +36,9 @@ export const triggerCannotPayPrompt = (
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.bankruptcy },
     },
-    phase: GamePhase.prompt,
+    phase: GamePhase.cannotPay,
     prompt: {
       pendingEvent: event,
-      type: PromptType.cannotPay,
     },
   };
 };

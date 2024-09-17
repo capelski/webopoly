@@ -1,22 +1,22 @@
-import { PromptType } from '../enums';
+import { GamePhase } from '../enums';
 import { EventMinified } from './event-minified';
 import {
   Game,
+  GameAnswerOfferPhase,
+  GameAnswerTradePhase,
+  GameApplyCardPhase,
   GameBuyPropertyLiquidationPhase,
-  GameDiceAnimationPhase,
-  GameDiceInJailAnimationPhase,
-  GameOutOfJailAnimationPhase,
+  GameBuyPropertyPhase,
+  GameCannotPayPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayerAnimationPhase,
-  GamePlayPhase,
-  GamePromptPhase,
-  GameRollDicePhase,
+  GamePlayerWinsPhase,
   GameTradePhase,
 } from './game';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
-type GameBaseMinified = {
+type GameBaseMinified<TPhase extends GamePhase> = {
   /** centerPot */
   cp: Game['centerPot'];
   /** currentPlayerId */
@@ -31,65 +31,86 @@ type GameBaseMinified = {
   nci: Game['nextCardIds'];
   /** notifications */
   n: EventMinified[];
+  /** phase */
+  ph: TPhase;
   /** players */
   pl: PlayerMinified[];
   /** squares */
   sq: SquareMinified[];
 };
 
-export type GameBuyPropertyLiquidationPhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph: GameBuyPropertyLiquidationPhase['phase'];
-  /** pendingPrompt */
-  pp: GameBuyPropertyLiquidationPhase['pendingPrompt'];
+export type GameAnswerOfferPhaseMinified = GameBaseMinified<GamePhase.answerOffer> & {
+  /** prompt */
+  pr: GameAnswerOfferPhase['prompt'];
 };
 
-export type GamePendingPaymentLiquidationPhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph: GamePendingPaymentLiquidationPhase['phase'];
-  /** pendingEvent */
-  pe: GamePendingPaymentLiquidationPhase['pendingEvent'];
+export type GameAnswerTradePhaseMinified = GameBaseMinified<GamePhase.answerTrade> & {
+  /** prompt */
+  pr: GameAnswerTradePhase['prompt'];
 };
 
-export type GamePlayerAnimationPhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph: GamePlayerAnimationPhase['phase'];
+export type GameApplyCardPhaseMinified = GameBaseMinified<GamePhase.applyCard> & {
+  /** prompt */
+  pr: GameApplyCardPhase['prompt'];
+};
+
+export type GameBuyPropertyPhaseMinified = GameBaseMinified<GamePhase.buyProperty> & {
+  /** prompt */
+  pr: GameBuyPropertyPhase['prompt'];
+};
+
+export type GameBuyPropertyLiquidationPhaseMinified =
+  GameBaseMinified<GamePhase.buyPropertyLiquidation> & {
+    /** pendingPrompt */
+    pp: GameBuyPropertyLiquidationPhase['pendingPrompt'];
+  };
+
+export type GameCannotPayPhaseMinified = GameBaseMinified<GamePhase.cannotPay> & {
+  /** prompt */
+  pr: GameCannotPayPhase['prompt'];
+};
+
+export type GamePendingPaymentLiquidationPhaseMinified =
+  GameBaseMinified<GamePhase.pendingPaymentLiquidation> & {
+    /** pendingEvent */
+    pe: GamePendingPaymentLiquidationPhase['pendingEvent'];
+  };
+
+export type GamePlayerAnimationPhaseMinified = GameBaseMinified<GamePhase.playerAnimation> & {
   /** Not minifying, as it will not be persisted in the event history */
   a: GamePlayerAnimationPhase['animation'];
 };
 
-export type GamePromptPhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph: GamePromptPhase<PromptType>['phase'];
+export type GamePlayerWinsPhaseMinified = GameBaseMinified<GamePhase.playerWins> & {
   /** prompt */
-  pr: GamePromptPhase<PromptType>['prompt'];
+  pr: GamePlayerWinsPhase['prompt'];
 };
 
-export type GameTradePhaseMinified = GameBaseMinified & {
+export type GameTradePhaseMinified = GameBaseMinified<GamePhase.trade> & {
   /** other */
   ot: GameTradePhase['other'];
   /** ownSquaresId */
   ows: GameTradePhase['ownSquaresId'];
-  /** phase */
-  ph: GameTradePhase['phase'];
   /** previousPhase */
   pp: GameTradePhase['previousPhase'];
 };
 
-export type GenericGamePhaseMinified = GameBaseMinified & {
-  /** phase */
-  ph:
-    | GameDiceAnimationPhase['phase']
-    | GameDiceInJailAnimationPhase['phase']
-    | GameOutOfJailAnimationPhase['phase']
-    | GamePlayPhase['phase']
-    | GameRollDicePhase['phase'];
-};
-
 export type GameMinified =
+  | GameAnswerOfferPhaseMinified
+  | GameAnswerTradePhaseMinified
+  | GameApplyCardPhaseMinified
+  | GameBuyPropertyPhaseMinified
   | GameBuyPropertyLiquidationPhaseMinified
+  | GameCannotPayPhaseMinified
+  | GameBaseMinified<GamePhase.diceAnimation>
+  | GameBaseMinified<GamePhase.diceInJailAnimation>
+  | GameBaseMinified<GamePhase.drawCard>
+  | GameBaseMinified<GamePhase.goToJail>
+  | GameBaseMinified<GamePhase.jailOptions>
+  | GameBaseMinified<GamePhase.outOfJailAnimation>
   | GamePendingPaymentLiquidationPhaseMinified
+  | GameBaseMinified<GamePhase.play>
   | GamePlayerAnimationPhaseMinified
-  | GamePromptPhaseMinified
-  | GameTradePhaseMinified
-  | GenericGamePhaseMinified;
+  | GamePlayerWinsPhaseMinified
+  | GameBaseMinified<GamePhase.rollDice>
+  | GameTradePhaseMinified;

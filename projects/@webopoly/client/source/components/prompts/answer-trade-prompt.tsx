@@ -1,9 +1,9 @@
 import {
   canAnswerTrade,
+  GameAnswerTradePhase,
   GameUpdateType,
   getPlayerById,
   getSquareById,
-  PromptType,
   PropertySquare,
 } from '@webopoly/core';
 import React from 'react';
@@ -13,7 +13,7 @@ import { SquareTitle } from '../common/square-title';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const AnswerTradePrompt: PromptInterface<PromptType.answerTrade> = (props) => {
+export const AnswerTradePrompt: PromptInterface<GameAnswerTradePhase> = (props) => {
   const initiatorPlayer = getPlayerById(props.game, props.game.prompt.playerId);
   const initiatorProperties = props.game.prompt.playerPropertiesId.map((pId) =>
     getSquareById(props.game, pId),

@@ -1,17 +1,17 @@
 import {
   EventType,
   exceedsMaxDoublesInARow,
+  GameGoToJailPhase,
   GameUpdateType,
   getCurrentPlayer,
   mustGoToJail,
-  PromptType,
 } from '@webopoly/core';
 import React from 'react';
 import { Button } from '../common/button';
 import { EventComponent } from '../common/event';
 import { PromptInterface } from './prompt-interface';
 
-export const GoToJailPrompt: PromptInterface<PromptType.goToJail> = (props) => {
+export const GoToJailPrompt: PromptInterface<GameGoToJailPhase> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (

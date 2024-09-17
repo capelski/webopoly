@@ -1,14 +1,14 @@
-import { GamePhase, PromptType } from '../enums';
-import { castPromptGame, getCurrentPlayer } from '../logic';
-import { Game, GamePromptPhase, Player } from '../types';
+import { GamePhase } from '../enums';
+import { getCurrentPlayer } from '../logic';
+import { Game, GameApplyCardPhase, GameDrawCardPhase, Player } from '../types';
 
 export const canApplyCard = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.applyCard>;
+  game: GameApplyCardPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.applyCard) {
+  if (game.phase !== GamePhase.applyCard) {
     return null;
   }
 
@@ -17,16 +17,16 @@ export const canApplyCard = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canDrawCard = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.drawCard>;
+  game: GameDrawCardPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.drawCard) {
+  if (game.phase !== GamePhase.drawCard) {
     return null;
   }
 
@@ -35,5 +35,5 @@ export const canDrawCard = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };

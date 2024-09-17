@@ -1,21 +1,20 @@
-import { GamePhase, PromptType } from '../enums';
+import { GamePhase } from '../enums';
 import { Game } from '../types';
-import { castPromptGame } from './game';
 
 export const turnConsiderations = {
   answeringOffer: (game: Game) => {
-    return game.phase === GamePhase.prompt && game.prompt.type === PromptType.answerOffer
-      ? { currentPlayerId: game.prompt.targetPlayerId, game: castPromptGame(game, game.prompt) }
+    return game.phase === GamePhase.answerOffer
+      ? { currentPlayerId: game.prompt.targetPlayerId, game }
       : undefined;
   },
   answeringTrade: (game: Game) => {
-    return game.phase === GamePhase.prompt && game.prompt.type === PromptType.answerTrade
-      ? { currentPlayerId: game.prompt.targetPlayerId, game: castPromptGame(game, game.prompt) }
+    return game.phase === GamePhase.answerTrade
+      ? { currentPlayerId: game.prompt.targetPlayerId, game }
       : undefined;
   },
   buyingProperty: (game: Game) => {
-    return game.phase === GamePhase.prompt && game.prompt.type === PromptType.buyProperty
-      ? { currentPlayerId: game.prompt.currentBuyerId, game: castPromptGame(game, game.prompt) }
+    return game.phase === GamePhase.buyProperty
+      ? { currentPlayerId: game.prompt.currentBuyerId, game }
       : undefined;
   },
   buyingPropertyLiquidation: (game: Game) => {

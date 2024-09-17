@@ -1,4 +1,4 @@
-import { CardType, EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
+import { CardType, EventType, GamePhase, GameUpdateType } from '../enums';
 import {
   cards,
   cardsMap,
@@ -12,9 +12,11 @@ import {
 import {
   Card,
   CardEvent,
+  GameApplyCardPhase,
+  GameCannotPayPhase,
+  GameDrawCardPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
-  GamePromptPhase,
   Player,
 } from '../types';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
@@ -22,15 +24,15 @@ import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 import { triggerCannotPayPrompt } from './payments';
 
 type GameInputType<TCard extends CardType> = TCard extends CardType.fee
-  ? GamePromptPhase<PromptType.applyCard> | GamePendingPaymentLiquidationPhase
+  ? GameApplyCardPhase | GamePendingPaymentLiquidationPhase
   : TCard extends CardType.streetRepairs
-  ? GamePromptPhase<PromptType.applyCard> | GamePendingPaymentLiquidationPhase
-  : GamePromptPhase<PromptType.applyCard>;
+  ? GameApplyCardPhase | GamePendingPaymentLiquidationPhase
+  : GameApplyCardPhase;
 
 type GameOutputType<TCard extends CardType> = TCard extends CardType.fee
-  ? GamePromptPhase<PromptType.cannotPay> | GamePlayPhase
+  ? GameCannotPayPhase | GamePlayPhase
   : TCard extends CardType.streetRepairs
-  ? GamePromptPhase<PromptType.cannotPay> | GamePlayPhase
+  ? GameCannotPayPhase | GamePlayPhase
   : MovePlayerOutputPhases;
 
 type CardTrigger<TCard extends CardType> = (
@@ -125,7 +127,7 @@ export const triggerApplyCard = <TCard extends CardType = CardType>(
   const currentPlayer = getCurrentPlayer(game);
 
   let nextGame = cardTrigger(game, currentPlayer, card);
-  if (nextGame.phase !== GamePhase.prompt || nextGame.prompt.type !== PromptType.cannotPay) {
+  if (nextGame.phase !== GamePhase.cannotPay) {
     nextGame = {
       ...nextGame,
       eventHistory: [
@@ -143,25 +145,18 @@ export const triggerApplyCard = <TCard extends CardType = CardType>(
   return nextGame;
 };
 
-export const triggerCardPrompt = (
-  game: GamePlayPhase | GamePromptPhase<PromptType.applyCard>,
-): GamePromptPhase<PromptType.drawCard> => {
+export const triggerCardPrompt = (game: GamePlayPhase | GameApplyCardPhase): GameDrawCardPhase => {
   return {
     ...game,
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.drawCard },
     },
-    phase: GamePhase.prompt,
-    prompt: {
-      type: PromptType.drawCard,
-    },
+    phase: GamePhase.drawCard,
   };
 };
 
-export const triggerDrawCard = (
-  game: GamePromptPhase<PromptType.drawCard>,
-): GamePromptPhase<PromptType.applyCard> => {
+export const triggerDrawCard = (game: GameDrawCardPhase): GameApplyCardPhase => {
   let nextCardIds = [...game.nextCardIds];
 
   if (nextCardIds.length === 0) {
@@ -177,10 +172,9 @@ export const triggerDrawCard = (
       update: { type: GameUpdateType.applyCard },
     },
     nextCardIds,
-    phase: GamePhase.prompt,
+    phase: GamePhase.applyCard,
     prompt: {
       cardId,
-      type: PromptType.applyCard,
     },
   };
 };

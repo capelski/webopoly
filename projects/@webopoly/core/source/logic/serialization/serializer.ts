@@ -70,11 +70,21 @@ export const serializeGame = (game: Game): string => {
             t: square.type,
           };
     }),
-    ...(game.phase === GamePhase.buyPropertyLiquidation
+    ...(game.phase === GamePhase.answerOffer
+      ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.answerTrade
+      ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.applyCard
+      ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.buyProperty
+      ? { ph: game.phase, pr: game.prompt }
+      : game.phase === GamePhase.buyPropertyLiquidation
       ? { ph: game.phase, pp: game.pendingPrompt }
+      : game.phase === GamePhase.cannotPay
+      ? { ph: game.phase, pr: game.prompt }
       : game.phase === GamePhase.pendingPaymentLiquidation
       ? { ph: game.phase, pe: game.pendingEvent }
-      : game.phase === GamePhase.prompt
+      : game.phase === GamePhase.playerWins
       ? { ph: game.phase, pr: game.prompt }
       : game.phase === GamePhase.trade
       ? {

@@ -1,9 +1,9 @@
-import { GamePromptPhase, GameUpdate, Player, PromptType } from '@webopoly/core';
+import { Game, GameUpdate, Player } from '@webopoly/core';
 import React from 'react';
 
-export type PromptInterface<TPrompt extends PromptType> = React.FC<{
+export type PromptInterface<TGame = Game> = React.FC<{
   exitGame: () => void;
-  game: GamePromptPhase<TPrompt>;
+  game: TGame;
   triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
 }>;

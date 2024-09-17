@@ -9,20 +9,31 @@ interface PromptContainerProps {
   windowPlayerId: Player['id'];
 }
 
+const isPromptPhase = (game: Game) =>
+  game.phase === GamePhase.answerOffer ||
+  game.phase === GamePhase.answerTrade ||
+  game.phase === GamePhase.applyCard ||
+  game.phase === GamePhase.buyProperty ||
+  game.phase === GamePhase.cannotPay ||
+  game.phase === GamePhase.drawCard ||
+  game.phase === GamePhase.goToJail ||
+  game.phase === GamePhase.jailOptions ||
+  game.phase === GamePhase.playerWins;
+
 export const PromptContainer: React.FC<PromptContainerProps> = (props) => {
   const [displayPrompt, setDisplayPrompt] = useState(false);
 
   useEffect(() => {
-    if (!displayPrompt && props.game.phase === GamePhase.prompt) {
+    if (!displayPrompt && isPromptPhase(props.game)) {
       setTimeout(() => {
         setDisplayPrompt(true);
       }, 800);
-    } else if (displayPrompt && props.game.phase !== GamePhase.prompt) {
+    } else if (displayPrompt && !isPromptPhase(props.game)) {
       setDisplayPrompt(false);
     }
   }, [props.game]);
 
-  return displayPrompt && props.game.phase === GamePhase.prompt ? (
+  return displayPrompt && isPromptPhase(props.game) ? (
     <PromptComponent
       exitGame={props.exitGame}
       game={props.game}

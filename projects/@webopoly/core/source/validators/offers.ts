@@ -1,11 +1,11 @@
-import { GamePhase, PromptType, PropertyType, SquareType } from '../enums';
-import { castPromptGame, getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
+import { GamePhase, PropertyType, SquareType } from '../enums';
+import { getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
 import {
   Game,
+  GameAnswerOfferPhase,
   GameBuyPropertyLiquidationPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
-  GamePromptPhase,
   GameRollDicePhase,
   Player,
   PropertySquare,
@@ -16,9 +16,9 @@ export const canAnswerOffer = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePromptPhase<PromptType.answerOffer>;
+  game: GameAnswerOfferPhase;
 } | null => {
-  if (game.phase !== GamePhase.prompt || game.prompt.type !== PromptType.answerOffer) {
+  if (game.phase !== GamePhase.answerOffer) {
     return null;
   }
 
@@ -27,7 +27,7 @@ export const canAnswerOffer = (
     return null;
   }
 
-  return { game: castPromptGame(game, game.prompt) };
+  return { game };
 };
 
 export const canTriggerBuyingOffer = (

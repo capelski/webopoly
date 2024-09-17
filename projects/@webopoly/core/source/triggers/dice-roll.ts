@@ -1,5 +1,5 @@
 import { diceTransitionDuration } from '../constants';
-import { EventType, GamePhase, GameUpdateType, PromptType } from '../enums';
+import { EventType, GamePhase, GameUpdateType } from '../enums';
 import {
   exceedsMaxDoublesInARow,
   getCurrentPlayer,
@@ -11,8 +11,8 @@ import {
 import {
   GameDiceAnimationPhase,
   GameDiceInJailAnimationPhase,
+  GameJailOptionsPhase,
   GamePlayPhase,
-  GamePromptPhase,
   GameRollDicePhase,
 } from '../types';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
@@ -57,9 +57,7 @@ export const triggerDiceRoll = (game: GameRollDicePhase): GameDiceAnimationPhase
   };
 };
 
-export const triggerDiceRollInJail = (
-  game: GamePromptPhase<PromptType.jailOptions>,
-): GameDiceInJailAnimationPhase => {
+export const triggerDiceRollInJail = (game: GameJailOptionsPhase): GameDiceInJailAnimationPhase => {
   return {
     ...game,
     defaultAction: {

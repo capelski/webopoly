@@ -1,10 +1,10 @@
-import { EventType, PlayerStatus, PromptType, PropertyType, SquareType } from '../enums';
+import { EventType, PlayerStatus, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
-import { GamePromptPhase, GEvent, Player, Square } from '../types';
+import { GameCannotPayPhase, GEvent, Player, Square } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 
 export const triggerBankruptcy = (
-  game: GamePromptPhase<PromptType.cannotPay>,
+  game: GameCannotPayPhase,
   playerId: Player['id'],
 ): EndTurnOutputPhases => {
   const { pendingEvent } = game.prompt;
@@ -33,7 +33,7 @@ export const triggerBankruptcy = (
     );
   }, 0);
 
-  const updatedGame: GamePromptPhase<PromptType.cannotPay> = {
+  const updatedGame: GameCannotPayPhase = {
     ...game,
     players: game.players.map<Player>((p) => {
       return p.id === playerId

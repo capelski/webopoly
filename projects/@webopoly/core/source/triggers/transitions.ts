@@ -1,5 +1,5 @@
 import { playerTransitionDuration } from '../constants';
-import { GamePhase, GameUpdateType, PromptType } from '../enums';
+import { GamePhase, GameUpdateType } from '../enums';
 import {
   exceedsMaxDoublesInARow,
   getCurrentPlayer,
@@ -9,31 +9,28 @@ import {
 } from '../logic';
 import {
   GameDiceAnimationPhase,
+  GameGoToJailPhase,
   GameOutOfJailAnimationPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayerAnimationPhase,
-  GamePromptPhase,
 } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
 
 export const triggerFirstPlayerTransition = (
   game: GameDiceAnimationPhase | GameOutOfJailAnimationPhase | GamePendingPaymentLiquidationPhase,
-): GamePlayerAnimationPhase | GamePromptPhase<PromptType.goToJail> => {
+): GamePlayerAnimationPhase | GameGoToJailPhase => {
   const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
 
   if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
-    return <GamePromptPhase<PromptType.goToJail>>{
+    return <GameGoToJailPhase>{
       ...game,
       defaultAction: {
         playerId: currentPlayer.id,
         update: { type: GameUpdateType.goToJail },
       },
-      phase: GamePhase.prompt,
-      prompt: {
-        type: PromptType.goToJail,
-      },
+      phase: GamePhase.goToJail,
     };
   }
 

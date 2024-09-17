@@ -1,11 +1,11 @@
 import {
   canAnswerOffer,
   currencySymbol,
+  GameAnswerOfferPhase,
   GameUpdateType,
   getPlayerById,
   getSquareById,
   OfferType,
-  PromptType,
 } from '@webopoly/core';
 import React from 'react';
 import { buyOfferSymbol, sellOfferSymbol } from '../../parameters';
@@ -14,7 +14,7 @@ import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const AnswerOfferPrompt: PromptInterface<PromptType.answerOffer> = (props) => {
+export const AnswerOfferPrompt: PromptInterface<GameAnswerOfferPhase> = (props) => {
   const initiatorPlayer = getPlayerById(props.game, props.game.prompt.playerId);
   const square = getSquareById(props.game, props.game.prompt.propertyId);
   const targetPlayer = getPlayerById(props.game, props.game.prompt.targetPlayerId);

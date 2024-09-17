@@ -1,11 +1,11 @@
 import { longActionInterval } from '../constants';
-import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType, PromptType } from '../enums';
+import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
+  GameAnswerOfferPhase,
   GameBuyPropertyLiquidationPhase,
   GamePendingPaymentLiquidationPhase,
   GamePlayPhase,
-  GamePromptPhase,
   GameRollDicePhase,
   Player,
   PropertySquare,
@@ -24,16 +24,14 @@ const savePhaseData = (game: SellOfferInputPhases) =>
     ? { previousPhase: game.phase, pendingEvent: game.pendingEvent }
     : { previousPhase: game.phase };
 
-const restorePhaseData = (game: GamePromptPhase<PromptType.answerOffer>) =>
+const restorePhaseData = (game: GameAnswerOfferPhase) =>
   game.prompt.previousPhase === GamePhase.buyPropertyLiquidation
     ? { phase: game.prompt.previousPhase, pendingPrompt: game.prompt.pendingPrompt }
     : game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
     ? { phase: game.prompt.previousPhase, pendingEvent: game.prompt.pendingEvent }
     : { phase: game.prompt.previousPhase };
 
-export const triggerAcceptOffer = (
-  game: GamePromptPhase<PromptType.answerOffer>,
-): SellOfferInputPhases => {
+export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
   const { buyerId, sellerId } =
     game.prompt.offerType === OfferType.sell
       ? { buyerId: game.prompt.targetPlayerId, sellerId: game.prompt.playerId }
@@ -93,7 +91,7 @@ export const triggerBuyingOffer = (
   game: GamePlayPhase | GameRollDicePhase,
   property: PropertySquare,
   amount: number,
-): GamePromptPhase<PromptType.answerOffer> => {
+): GameAnswerOfferPhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -102,22 +100,19 @@ export const triggerBuyingOffer = (
       playerId: property.ownerId!,
       update: { type: GameUpdateType.declineOffer },
     },
-    phase: GamePhase.prompt,
+    phase: GamePhase.answerOffer,
     prompt: {
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
       propertyId: property.id,
       targetPlayerId: property.ownerId!,
-      type: PromptType.answerOffer,
       ...savePhaseData(game),
     },
   };
 };
 
-export const triggerDeclineOffer = (
-  game: GamePromptPhase<PromptType.answerOffer>,
-): SellOfferInputPhases => {
+export const triggerDeclineOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
   return {
     ...game,
     defaultAction: {
@@ -155,7 +150,7 @@ export const triggerSellingOffer = (
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],
-): GamePromptPhase<PromptType.answerOffer> => {
+): GameAnswerOfferPhase => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -164,14 +159,13 @@ export const triggerSellingOffer = (
       playerId: targetPlayerId,
       update: { type: GameUpdateType.declineOffer },
     },
-    phase: GamePhase.prompt,
+    phase: GamePhase.answerOffer,
     prompt: {
       amount,
       offerType: OfferType.sell,
       playerId: currentPlayer.id,
       propertyId: property.id,
       targetPlayerId,
-      type: PromptType.answerOffer,
       ...savePhaseData(game),
     },
   };
