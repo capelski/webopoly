@@ -14,12 +14,12 @@ import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const AnswerTradePrompt: PromptInterface<GameAnswerTradePhase> = (props) => {
-  const initiatorPlayer = getPlayerById(props.game, props.game.prompt.playerId);
-  const initiatorProperties = props.game.prompt.playerPropertiesId.map((pId) =>
+  const initiatorPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
+  const initiatorProperties = props.game.phaseData.playerPropertiesId.map((pId) =>
     getSquareById(props.game, pId),
   ) as PropertySquare[];
-  const targetPlayer = getPlayerById(props.game, props.game.prompt.targetPlayerId);
-  const targetProperties = props.game.prompt.targetPropertiesId.map((pId) =>
+  const targetPlayer = getPlayerById(props.game, props.game.phaseData.targetPlayerId);
+  const targetProperties = props.game.phaseData.targetPropertiesId.map((pId) =>
     getSquareById(props.game, pId),
   ) as PropertySquare[];
   const canAnswer = canAnswerTrade(props.game, props.windowPlayerId);

@@ -132,8 +132,10 @@ export const triggerRemovePlayer = (
       : nextGame;
 
   /* If the player was on the list of potential buyer ids, remove it */
-  if (game.phase === GamePhase.buyProperty && game.prompt.potentialBuyersId.includes(playerId)) {
-    game.prompt.potentialBuyersId = game.prompt.potentialBuyersId.filter((id) => id != playerId);
+  if (game.phase === GamePhase.buyProperty && game.phaseData.potentialBuyersId.includes(playerId)) {
+    game.phaseData.potentialBuyersId = game.phaseData.potentialBuyersId.filter(
+      (id) => id != playerId,
+    );
   }
 
   /* If it was the player turn, end the turn on their behalf */
@@ -147,7 +149,7 @@ export const triggerRemovePlayer = (
       ...nextGame,
       currentPlayerId: remainingPlayers[0].id,
       phase: GamePhase.playerWins,
-      prompt: {
+      phaseData: {
         playerId: remainingPlayers[0].id,
       },
     };
@@ -203,7 +205,7 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.applyCard) {
     const validation = canApplyCard(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerApplyCard(validation.game, validation.game.prompt.cardId);
+      nextGame = triggerApplyCard(validation.game, validation.game.phaseData.cardId);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.bankruptcy) {

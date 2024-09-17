@@ -49,7 +49,7 @@ export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases =>
       ...game,
       currentPlayerId: nextPlayerId,
       phase: GamePhase.playerWins,
-      prompt: {
+      phaseData: {
         playerId: nextPlayerId,
       },
     };

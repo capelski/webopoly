@@ -90,13 +90,12 @@ export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType):
 };
 
 export const getPendingAmount = (game: GamePendingPaymentLiquidationPhase | GameCannotPayPhase) => {
-  const { pendingEvent } = game.phase === GamePhase.pendingPaymentLiquidation ? game : game.prompt;
   const amount =
-    pendingEvent.type === EventType.turnInJail
+    game.phaseData.type === EventType.turnInJail
       ? jailFine
-      : pendingEvent.type === EventType.card
-      ? getCardAmount(game, pendingEvent.cardId)
-      : pendingEvent.amount;
+      : game.phaseData.type === EventType.card
+      ? getCardAmount(game, game.phaseData.cardId)
+      : game.phaseData.amount;
   return amount;
 };
 

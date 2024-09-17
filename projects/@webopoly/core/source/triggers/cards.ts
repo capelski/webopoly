@@ -21,7 +21,7 @@ import {
 } from '../types';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
-import { triggerCannotPayPrompt } from './payments';
+import { triggerCannotPay } from './payments';
 
 type GameInputType<TCard extends CardType> = TCard extends CardType.fee
   ? GameApplyCardPhase | GamePendingPaymentLiquidationPhase
@@ -57,7 +57,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
         playerId: player.id,
         type: EventType.card,
       };
-      return triggerCannotPayPrompt(game, event);
+      return triggerCannotPay(game, event);
     }
 
     const nextGame: GamePlayPhase = {
@@ -91,7 +91,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
         playerId: player.id,
         type: EventType.card,
       };
-      return triggerCannotPayPrompt(game, event);
+      return triggerCannotPay(game, event);
     }
 
     const nextGame: GamePlayPhase = {
@@ -173,7 +173,7 @@ export const triggerDrawCard = (game: GameDrawCardPhase): GameApplyCardPhase => 
     },
     nextCardIds,
     phase: GamePhase.applyCard,
-    prompt: {
+    phaseData: {
       cardId,
     },
   };

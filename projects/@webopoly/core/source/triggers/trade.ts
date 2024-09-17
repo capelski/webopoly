@@ -15,9 +15,9 @@ export const triggerAcceptTrade = (
   return {
     ...game,
     defaultAction: {
-      playerId: game.prompt.playerId,
+      playerId: game.phaseData.playerId,
       update:
-        game.prompt.previous === GamePhase.play
+        game.phaseData.previous === GamePhase.play
           ? { type: GameUpdateType.endTurn }
           : { type: GameUpdateType.rollDice },
     },
@@ -25,36 +25,36 @@ export const triggerAcceptTrade = (
       ...game.notifications,
       {
         answer: AnswerType.accept,
-        playerId: game.prompt.playerId,
-        playerPropertiesId: game.prompt.playerPropertiesId,
-        targetPlayerId: game.prompt.targetPlayerId,
-        targetPropertiesId: game.prompt.targetPropertiesId,
+        playerId: game.phaseData.playerId,
+        playerPropertiesId: game.phaseData.playerPropertiesId,
+        targetPlayerId: game.phaseData.targetPlayerId,
+        targetPropertiesId: game.phaseData.targetPropertiesId,
         type: EventType.answerTrade,
       },
     ],
-    phase: game.prompt.previous,
+    phase: game.phaseData.previous,
     players: game.players.map((player) => {
-      return player.id === game.prompt.playerId
+      return player.id === game.phaseData.playerId
         ? {
             ...player,
             properties: player.properties
-              .filter((squareId) => !game.prompt.playerPropertiesId.includes(squareId))
-              .concat(game.prompt.targetPropertiesId),
+              .filter((squareId) => !game.phaseData.playerPropertiesId.includes(squareId))
+              .concat(game.phaseData.targetPropertiesId),
           }
-        : player.id === game.prompt.targetPlayerId
+        : player.id === game.phaseData.targetPlayerId
         ? {
             ...player,
             properties: player.properties
-              .filter((squareId) => !game.prompt.targetPropertiesId.includes(squareId))
-              .concat(game.prompt.playerPropertiesId),
+              .filter((squareId) => !game.phaseData.targetPropertiesId.includes(squareId))
+              .concat(game.phaseData.playerPropertiesId),
           }
         : player;
     }),
     squares: game.squares.map((square) => {
-      return game.prompt.playerPropertiesId.includes(square.id)
-        ? { ...square, ownerId: game.prompt.targetPlayerId }
-        : game.prompt.targetPropertiesId.includes(square.id)
-        ? { ...square, ownerId: game.prompt.playerId }
+      return game.phaseData.playerPropertiesId.includes(square.id)
+        ? { ...square, ownerId: game.phaseData.targetPlayerId }
+        : game.phaseData.targetPropertiesId.includes(square.id)
+        ? { ...square, ownerId: game.phaseData.playerId }
         : square;
     }),
   };
@@ -66,11 +66,11 @@ export const triggerCancelTrade = (game: GameTradePhase): GamePlayPhase | GameRo
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
       update:
-        game.previousPhase === GamePhase.play
+        game.phaseData.previousPhase === GamePhase.play
           ? { type: GameUpdateType.endTurn }
           : { type: GameUpdateType.rollDice },
     },
-    phase: game.previousPhase,
+    phase: game.phaseData.previousPhase,
   };
 };
 
@@ -80,9 +80,9 @@ export const triggerDeclineTrade = (
   return {
     ...game,
     defaultAction: {
-      playerId: game.prompt.playerId,
+      playerId: game.phaseData.playerId,
       update:
-        game.prompt.previous === GamePhase.play
+        game.phaseData.previous === GamePhase.play
           ? { type: GameUpdateType.endTurn }
           : { type: GameUpdateType.rollDice },
     },
@@ -90,14 +90,14 @@ export const triggerDeclineTrade = (
       ...game.notifications,
       {
         answer: AnswerType.decline,
-        playerId: game.prompt.playerId,
-        playerPropertiesId: game.prompt.playerPropertiesId,
-        targetPlayerId: game.prompt.targetPlayerId,
-        targetPropertiesId: game.prompt.targetPropertiesId,
+        playerId: game.phaseData.playerId,
+        playerPropertiesId: game.phaseData.playerPropertiesId,
+        targetPlayerId: game.phaseData.targetPlayerId,
+        targetPropertiesId: game.phaseData.targetPropertiesId,
         type: EventType.answerTrade,
       },
     ],
-    phase: game.prompt.previous,
+    phase: game.phaseData.previous,
   };
 };
 
@@ -110,12 +110,14 @@ export const triggerStartTrade = (game: GamePlayPhase | GameRollDicePhase): Game
       interval: longActionInterval * 1000,
     },
     phase: GamePhase.trade,
-    previousPhase: game.phase,
-    other: {
-      ownerId: undefined,
-      squaresId: [],
+    phaseData: {
+      previousPhase: game.phase,
+      other: {
+        ownerId: undefined,
+        squaresId: [],
+      },
+      ownSquaresId: [],
     },
-    ownSquaresId: [],
   };
 };
 
@@ -125,16 +127,16 @@ export const triggerTradeOffer = (game: GameTradePhase): GameAnswerTradePhase =>
   return {
     ...game,
     defaultAction: {
-      playerId: game.other.ownerId!,
+      playerId: game.phaseData.other.ownerId!,
       update: { type: GameUpdateType.declineTrade },
     },
     phase: GamePhase.answerTrade,
-    prompt: {
+    phaseData: {
       playerId: currentPlayer.id,
-      playerPropertiesId: game.ownSquaresId,
-      previous: game.previousPhase,
-      targetPlayerId: game.other.ownerId!,
-      targetPropertiesId: game.other.squaresId,
+      playerPropertiesId: game.phaseData.ownSquaresId,
+      previous: game.phaseData.previousPhase,
+      targetPlayerId: game.phaseData.other.ownerId!,
+      targetPropertiesId: game.phaseData.other.squaresId,
     },
   };
 };
@@ -150,17 +152,17 @@ export const triggerTradeSelectionToggle = (
 
   const nextOwnSquareIds = isOwnSquare
     ? isSelected
-      ? game.ownSquaresId.filter((i) => i !== square.id)
-      : [...game.ownSquaresId, square.id]
-    : game.ownSquaresId;
+      ? game.phaseData.ownSquaresId.filter((i) => i !== square.id)
+      : [...game.phaseData.ownSquaresId, square.id]
+    : game.phaseData.ownSquaresId;
 
   const nextOtherSquareIds = isOwnSquare
-    ? game.other.squaresId
+    ? game.phaseData.other.squaresId
     : isSelected
-    ? game.other.squaresId.filter((i) => i !== square.id)
-    : [...game.other.squaresId, square.id];
+    ? game.phaseData.other.squaresId.filter((i) => i !== square.id)
+    : [...game.phaseData.other.squaresId, square.id];
   const nextOtherOwnerId = isOwnSquare
-    ? game.other.ownerId
+    ? game.phaseData.other.ownerId
     : nextOtherSquareIds.length > 0
     ? square.ownerId
     : undefined;
@@ -172,10 +174,13 @@ export const triggerTradeSelectionToggle = (
       update: { type: GameUpdateType.cancelTrade },
       interval: longActionInterval * 1000,
     },
-    other: {
-      ownerId: nextOtherOwnerId,
-      squaresId: nextOtherSquareIds,
+    phaseData: {
+      ...game.phaseData,
+      other: {
+        ownerId: nextOtherOwnerId,
+        squaresId: nextOtherSquareIds,
+      },
+      ownSquaresId: nextOwnSquareIds,
     },
-    ownSquaresId: nextOwnSquareIds,
   };
 };

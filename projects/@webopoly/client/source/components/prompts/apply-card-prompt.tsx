@@ -12,14 +12,14 @@ import { Paragraph } from '../common/paragraph';
 import { PromptInterface } from './prompt-interface';
 
 export const ApplyCardPrompt: PromptInterface<GameApplyCardPhase> = (props) => {
-  const amount = getCardAmount(props.game, props.game.prompt.cardId);
+  const amount = getCardAmount(props.game, props.game.phaseData.cardId);
   const canApply = canApplyCard(props.game, props.windowPlayerId);
 
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: 40 }}>{surpriseSymbol}</div>
 
-      <Paragraph>{getCardText(props.game.prompt.cardId, amount)}</Paragraph>
+      <Paragraph>{getCardText(props.game.phaseData.cardId, amount)}</Paragraph>
 
       <Button
         autoClick={GameUpdateType.applyCard}

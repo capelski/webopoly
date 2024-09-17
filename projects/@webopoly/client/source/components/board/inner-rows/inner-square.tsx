@@ -15,12 +15,12 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
   const frames = props.innerSquare.outerSquareIds
     .map((outerSquareId) => {
       const players = props.game.players.filter((p) => {
-        const animation = props.game.phase === GamePhase.playerAnimation && props.game.animation;
+        const phaseData = props.game.phase === GamePhase.playerAnimation && props.game.phaseData;
 
-        const isPlayerTransitioning = animation && p.id === animation.playerId;
+        const isPlayerTransitioning = phaseData && p.id === phaseData.playerId;
 
         return isPlayerTransitioning
-          ? animation.currentSquareId === outerSquareId
+          ? phaseData.currentSquareId === outerSquareId
           : p.squareId === outerSquareId && !p.isInJail;
       });
       return { players, rotate: squaresRotation[outerSquareId] };

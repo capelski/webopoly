@@ -10,12 +10,7 @@ import {
 } from '../types';
 import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
-import {
-  ExpenseOutputPhases,
-  triggerCannotPayPrompt,
-  triggerPayRent,
-  triggerPayTax,
-} from './payments';
+import { ExpenseOutputPhases, triggerCannotPay, triggerPayRent, triggerPayTax } from './payments';
 
 export const resumeBuyProperty = (game: GameBuyPropertyLiquidationPhase): GameBuyPropertyPhase => {
   return {
@@ -25,29 +20,27 @@ export const resumeBuyProperty = (game: GameBuyPropertyLiquidationPhase): GameBu
       update: { type: GameUpdateType.buyPropertyReject },
     },
     phase: GamePhase.buyProperty,
-    prompt: game.pendingPrompt,
   };
 };
 
 export const resumePendingPayment = (
   game: GamePendingPaymentLiquidationPhase,
 ): GameCannotPayPhase | ExpenseOutputPhases | GameOutOfJailAnimationPhase => {
-  const pendingEvent = game.pendingEvent;
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
 
   if (hasEnoughMoney(player, amount)) {
-    if (pendingEvent.type === EventType.card) {
-      return triggerApplyCard<CardType.fee | CardType.streetRepairs>(game, pendingEvent.cardId);
-    } else if (pendingEvent.type === EventType.payTax) {
-      return triggerPayTax(game, pendingEvent);
-    } else if (pendingEvent.type === EventType.turnInJail) {
+    if (game.phaseData.type === EventType.card) {
+      return triggerApplyCard<CardType.fee | CardType.streetRepairs>(game, game.phaseData.cardId);
+    } else if (game.phaseData.type === EventType.payTax) {
+      return triggerPayTax(game, game.phaseData);
+    } else if (game.phaseData.type === EventType.turnInJail) {
       return triggerLastTurnInJail(game);
     } else {
-      return triggerPayRent(game, pendingEvent);
+      return triggerPayRent(game, game.phaseData);
     }
   } else {
-    return triggerCannotPayPrompt(game, pendingEvent);
+    return triggerCannotPay(game, game.phaseData);
   }
 };
 
@@ -61,7 +54,6 @@ export const triggerBuyPropertyLiquidation = (
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.resume },
     },
-    pendingPrompt: game.prompt,
     phase: GamePhase.buyPropertyLiquidation,
   };
 };
@@ -76,7 +68,6 @@ export const triggerPendingPaymentLiquidation = (
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.resume },
     },
-    pendingEvent: game.prompt.pendingEvent,
     phase: GamePhase.pendingPaymentLiquidation,
   };
 };

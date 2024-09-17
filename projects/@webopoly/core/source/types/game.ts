@@ -25,55 +25,53 @@ export type GameBase<TPhase extends GamePhase> = {
 };
 
 export type GameAnswerOfferPhase = GameBase<GamePhase.answerOffer> & {
-  prompt: {
+  phaseData: {
     amount: number;
     offerType: OfferType;
     playerId: Player['id'];
+    previous:
+      | {
+          phase: GamePhase.play | GamePhase.rollDice;
+        }
+      | {
+          phase: GamePhase.buyPropertyLiquidation;
+          phaseData: BuyPropertyData;
+        }
+      | {
+          phase: GamePhase.pendingPaymentLiquidation;
+          phaseData: PendingEvent;
+        };
     propertyId: Square['id'];
     targetPlayerId: Player['id'];
-  } & (
-    | {
-        previousPhase: GamePhase.play | GamePhase.rollDice;
-      }
-    | {
-        previousPhase: GamePhase.buyPropertyLiquidation;
-        pendingPrompt: BuyPropertyData;
-      }
-    | {
-        previousPhase: GamePhase.pendingPaymentLiquidation;
-        pendingEvent: PendingEvent;
-      }
-  );
+  };
 };
 
 export type GameAnswerTradePhase = GameBase<GamePhase.answerTrade> & {
-  prompt: {
+  phaseData: {
     playerId: Player['id'];
     playerPropertiesId: Square['id'][];
-    previous: GameTradePhase['previousPhase'];
+    previous: GamePhase.play | GamePhase.rollDice;
     targetPlayerId: Player['id'];
     targetPropertiesId: Square['id'][];
   };
 };
 
 export type GameApplyCardPhase = GameBase<GamePhase.applyCard> & {
-  prompt: {
+  phaseData: {
     cardId: Card['id'];
   };
 };
 
 export type GameBuyPropertyPhase = GameBase<GamePhase.buyProperty> & {
-  prompt: BuyPropertyData;
+  phaseData: BuyPropertyData;
 };
 
 export type GameBuyPropertyLiquidationPhase = GameBase<GamePhase.buyPropertyLiquidation> & {
-  pendingPrompt: BuyPropertyData;
+  phaseData: BuyPropertyData;
 };
 
 export type GameCannotPayPhase = GameBase<GamePhase.cannotPay> & {
-  prompt: {
-    pendingEvent: PendingEvent;
-  };
+  phaseData: PendingEvent;
 };
 
 export type GameDiceAnimationPhase = GameBase<GamePhase.diceAnimation>;
@@ -89,13 +87,13 @@ export type GameJailOptionsPhase = GameBase<GamePhase.jailOptions>;
 export type GameOutOfJailAnimationPhase = GameBase<GamePhase.outOfJailAnimation>;
 
 export type GamePendingPaymentLiquidationPhase = GameBase<GamePhase.pendingPaymentLiquidation> & {
-  pendingEvent: PendingEvent;
+  phaseData: PendingEvent;
 };
 
 export type GamePlayPhase = GameBase<GamePhase.play>;
 
 export type GamePlayerAnimationPhase = GameBase<GamePhase.playerAnimation> & {
-  animation: {
+  phaseData: {
     currentSquareId: Square['id'];
     pendingMoves: number;
     playerId: Player['id'];
@@ -103,7 +101,7 @@ export type GamePlayerAnimationPhase = GameBase<GamePhase.playerAnimation> & {
 };
 
 export type GamePlayerWinsPhase = GameBase<GamePhase.playerWins> & {
-  prompt: {
+  phaseData: {
     playerId: Player['id'];
   };
 };
@@ -111,9 +109,11 @@ export type GamePlayerWinsPhase = GameBase<GamePhase.playerWins> & {
 export type GameRollDicePhase = GameBase<GamePhase.rollDice>;
 
 export type GameTradePhase = GameBase<GamePhase.trade> & {
-  previousPhase: GamePhase.play | GamePhase.rollDice;
-  other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
-  ownSquaresId: Square['id'][];
+  phaseData: {
+    previousPhase: GamePhase.play | GamePhase.rollDice;
+    other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
+    ownSquaresId: Square['id'][];
+  };
 };
 
 export type Game =

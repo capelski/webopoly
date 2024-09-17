@@ -54,28 +54,25 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
         return square;
       }),
       ...(g.ph === GamePhase.answerOffer
-        ? { phase: g.ph, prompt: g.pr }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.answerTrade
-        ? { phase: g.ph, prompt: g.pr }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.applyCard
-        ? { phase: g.ph, prompt: g.pr }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.buyProperty
-        ? { phase: g.ph, prompt: g.pr }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.buyPropertyLiquidation
-        ? { phase: g.ph, pendingPrompt: g.pp }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.cannotPay
-        ? { phase: g.ph, prompt: g.pr }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.pendingPaymentLiquidation
-        ? { phase: g.ph, pendingEvent: g.pe }
-        : g.ph === GamePhase.playerWins
-        ? { phase: g.ph, prompt: g.pr }
-        : g.ph === GamePhase.trade
-        ? { phase: g.ph, previousPhase: g.pp, other: g.ot, ownSquaresId: g.ows }
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.playerAnimation
-        ? {
-            phase: g.ph,
-            animation: g.a,
-          }
+        ? { phase: g.ph, phaseData: g.pd }
+        : g.ph === GamePhase.playerWins
+        ? { phase: g.ph, phaseData: g.pd }
+        : g.ph === GamePhase.trade
+        ? { phase: g.ph, phaseData: g.pd }
         : { phase: g.ph }),
     };
   } catch (error) {

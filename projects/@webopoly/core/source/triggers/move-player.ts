@@ -154,7 +154,7 @@ export const triggerMovePlayer = (
           update: { type: GameUpdateType.buyPropertyReject },
         },
         phase: GamePhase.buyProperty,
-        prompt: {
+        phaseData: {
           currentBuyerId,
           potentialBuyersId,
         },

@@ -17,51 +17,38 @@ type SellOfferInputPhases =
   | GamePlayPhase
   | GameRollDicePhase;
 
-const savePhaseData = (game: SellOfferInputPhases) =>
-  game.phase === GamePhase.buyPropertyLiquidation
-    ? { previousPhase: game.phase, pendingPrompt: game.pendingPrompt }
-    : game.phase === GamePhase.pendingPaymentLiquidation
-    ? { previousPhase: game.phase, pendingEvent: game.pendingEvent }
-    : { previousPhase: game.phase };
-
-const restorePhaseData = (game: GameAnswerOfferPhase) =>
-  game.prompt.previousPhase === GamePhase.buyPropertyLiquidation
-    ? { phase: game.prompt.previousPhase, pendingPrompt: game.prompt.pendingPrompt }
-    : game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
-    ? { phase: game.prompt.previousPhase, pendingEvent: game.prompt.pendingEvent }
-    : { phase: game.prompt.previousPhase };
-
 export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
   const { buyerId, sellerId } =
-    game.prompt.offerType === OfferType.sell
-      ? { buyerId: game.prompt.targetPlayerId, sellerId: game.prompt.playerId }
-      : { buyerId: game.prompt.playerId, sellerId: game.prompt.targetPlayerId };
+    game.phaseData.offerType === OfferType.sell
+      ? { buyerId: game.phaseData.targetPlayerId, sellerId: game.phaseData.playerId }
+      : { buyerId: game.phaseData.playerId, sellerId: game.phaseData.targetPlayerId };
 
   return {
     ...game,
+    ...game.phaseData.previous,
     defaultAction: {
-      playerId: game.prompt.playerId,
+      playerId: game.phaseData.playerId,
       update:
-        game.prompt.previousPhase === GamePhase.play
+        game.phaseData.previous.phase === GamePhase.play
           ? { type: GameUpdateType.endTurn }
-          : game.prompt.previousPhase === GamePhase.rollDice
+          : game.phaseData.previous.phase === GamePhase.rollDice
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.prompt.previousPhase === GamePhase.buyPropertyLiquidation ||
-        game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
+        game.phaseData.previous.phase === GamePhase.buyPropertyLiquidation ||
+        game.phaseData.previous.phase === GamePhase.pendingPaymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
     notifications: [
       ...game.notifications,
       {
-        amount: game.prompt.amount,
+        amount: game.phaseData.amount,
         answer: AnswerType.accept,
-        offerType: game.prompt.offerType,
-        playerId: game.prompt.targetPlayerId,
-        propertyId: game.prompt.propertyId,
-        targetPlayerId: game.prompt.playerId,
+        offerType: game.phaseData.offerType,
+        playerId: game.phaseData.targetPlayerId,
+        propertyId: game.phaseData.propertyId,
+        targetPlayerId: game.phaseData.playerId,
         type: EventType.answerOffer,
       },
     ],
@@ -69,21 +56,20 @@ export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPh
       return p.id === buyerId
         ? {
             ...p,
-            properties: p.properties.concat(game.prompt.propertyId),
-            money: p.money - game.prompt.amount,
+            properties: p.properties.concat(game.phaseData.propertyId),
+            money: p.money - game.phaseData.amount,
           }
         : p.id === sellerId
         ? {
             ...p,
-            properties: p.properties.filter((pId) => pId !== game.prompt.propertyId),
-            money: p.money + game.prompt.amount,
+            properties: p.properties.filter((pId) => pId !== game.phaseData.propertyId),
+            money: p.money + game.phaseData.amount,
           }
         : p;
     }),
     squares: game.squares.map((s) => {
-      return s.id === game.prompt.propertyId ? { ...s, ownerId: buyerId } : s;
+      return s.id === game.phaseData.propertyId ? { ...s, ownerId: buyerId } : s;
     }),
-    ...restorePhaseData(game),
   };
 };
 
@@ -101,13 +87,13 @@ export const triggerBuyingOffer = (
       update: { type: GameUpdateType.declineOffer },
     },
     phase: GamePhase.answerOffer,
-    prompt: {
+    phaseData: {
       amount,
       offerType: OfferType.buy,
       playerId: currentPlayer.id,
+      previous: { phase: game.phase },
       propertyId: property.id,
       targetPlayerId: property.ownerId!,
-      ...savePhaseData(game),
     },
   };
 };
@@ -115,33 +101,33 @@ export const triggerBuyingOffer = (
 export const triggerDeclineOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
   return {
     ...game,
+    ...game.phaseData.previous,
     defaultAction: {
-      playerId: game.prompt.playerId,
+      playerId: game.phaseData.playerId,
       update:
-        game.prompt.previousPhase === GamePhase.play
+        game.phaseData.previous.phase === GamePhase.play
           ? { type: GameUpdateType.endTurn }
-          : game.prompt.previousPhase === GamePhase.rollDice
+          : game.phaseData.previous.phase === GamePhase.rollDice
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.prompt.previousPhase === GamePhase.buyPropertyLiquidation ||
-        game.prompt.previousPhase === GamePhase.pendingPaymentLiquidation
+        game.phaseData.previous.phase === GamePhase.buyPropertyLiquidation ||
+        game.phaseData.previous.phase === GamePhase.pendingPaymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
     notifications: [
       ...game.notifications,
       {
-        amount: game.prompt.amount,
+        amount: game.phaseData.amount,
         answer: AnswerType.decline,
-        offerType: game.prompt.offerType,
-        playerId: game.prompt.targetPlayerId,
-        propertyId: game.prompt.propertyId,
-        targetPlayerId: game.prompt.playerId,
+        offerType: game.phaseData.offerType,
+        playerId: game.phaseData.targetPlayerId,
+        propertyId: game.phaseData.propertyId,
+        targetPlayerId: game.phaseData.playerId,
         type: EventType.answerOffer,
       },
     ],
-    ...restorePhaseData(game),
   };
 };
 
@@ -160,13 +146,18 @@ export const triggerSellingOffer = (
       update: { type: GameUpdateType.declineOffer },
     },
     phase: GamePhase.answerOffer,
-    prompt: {
+    phaseData: {
       amount,
       offerType: OfferType.sell,
       playerId: currentPlayer.id,
+      previous:
+        game.phase === GamePhase.buyPropertyLiquidation
+          ? { phase: game.phase, phaseData: game.phaseData }
+          : game.phase === GamePhase.pendingPaymentLiquidation
+          ? { phase: game.phase, phaseData: game.phaseData }
+          : { phase: game.phase },
       propertyId: property.id,
       targetPlayerId,
-      ...savePhaseData(game),
     },
   };
 };

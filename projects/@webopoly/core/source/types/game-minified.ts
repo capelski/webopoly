@@ -40,59 +40,55 @@ type GameBaseMinified<TPhase extends GamePhase> = {
 };
 
 export type GameAnswerOfferPhaseMinified = GameBaseMinified<GamePhase.answerOffer> & {
-  /** prompt */
-  pr: GameAnswerOfferPhase['prompt'];
+  /** phaseData */
+  pd: GameAnswerOfferPhase['phaseData'];
 };
 
 export type GameAnswerTradePhaseMinified = GameBaseMinified<GamePhase.answerTrade> & {
-  /** prompt */
-  pr: GameAnswerTradePhase['prompt'];
+  /** phaseData */
+  pd: GameAnswerTradePhase['phaseData'];
 };
 
 export type GameApplyCardPhaseMinified = GameBaseMinified<GamePhase.applyCard> & {
-  /** prompt */
-  pr: GameApplyCardPhase['prompt'];
+  /** phaseData */
+  pd: GameApplyCardPhase['phaseData'];
 };
 
 export type GameBuyPropertyPhaseMinified = GameBaseMinified<GamePhase.buyProperty> & {
-  /** prompt */
-  pr: GameBuyPropertyPhase['prompt'];
+  /** phaseData */
+  pd: GameBuyPropertyPhase['phaseData'];
 };
 
 export type GameBuyPropertyLiquidationPhaseMinified =
   GameBaseMinified<GamePhase.buyPropertyLiquidation> & {
-    /** pendingPrompt */
-    pp: GameBuyPropertyLiquidationPhase['pendingPrompt'];
+    /** phaseData */
+    pd: GameBuyPropertyLiquidationPhase['phaseData'];
   };
 
 export type GameCannotPayPhaseMinified = GameBaseMinified<GamePhase.cannotPay> & {
-  /** prompt */
-  pr: GameCannotPayPhase['prompt'];
+  /** phaseData */
+  pd: GameCannotPayPhase['phaseData'];
 };
 
 export type GamePendingPaymentLiquidationPhaseMinified =
   GameBaseMinified<GamePhase.pendingPaymentLiquidation> & {
-    /** pendingEvent */
-    pe: GamePendingPaymentLiquidationPhase['pendingEvent'];
+    /** phaseData */
+    pd: GamePendingPaymentLiquidationPhase['phaseData'];
   };
 
 export type GamePlayerAnimationPhaseMinified = GameBaseMinified<GamePhase.playerAnimation> & {
-  /** Not minifying, as it will not be persisted in the event history */
-  a: GamePlayerAnimationPhase['animation'];
+  /** phaseData */
+  pd: GamePlayerAnimationPhase['phaseData'];
 };
 
 export type GamePlayerWinsPhaseMinified = GameBaseMinified<GamePhase.playerWins> & {
-  /** prompt */
-  pr: GamePlayerWinsPhase['prompt'];
+  /** phaseData */
+  pd: GamePlayerWinsPhase['phaseData'];
 };
 
 export type GameTradePhaseMinified = GameBaseMinified<GamePhase.trade> & {
-  /** other */
-  ot: GameTradePhase['other'];
-  /** ownSquaresId */
-  ows: GameTradePhase['ownSquaresId'];
-  /** previousPhase */
-  pp: GameTradePhase['previousPhase'];
+  /** phaseData */
+  pd: GameTradePhase['phaseData'];
 };
 
 export type GameMinified =

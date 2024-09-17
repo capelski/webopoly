@@ -15,10 +15,10 @@ import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
 export const AnswerOfferPrompt: PromptInterface<GameAnswerOfferPhase> = (props) => {
-  const initiatorPlayer = getPlayerById(props.game, props.game.prompt.playerId);
-  const square = getSquareById(props.game, props.game.prompt.propertyId);
-  const targetPlayer = getPlayerById(props.game, props.game.prompt.targetPlayerId);
-  const isBuyingOffer = props.game.prompt.offerType === OfferType.buy;
+  const initiatorPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
+  const square = getSquareById(props.game, props.game.phaseData.propertyId);
+  const targetPlayer = getPlayerById(props.game, props.game.phaseData.targetPlayerId);
+  const isBuyingOffer = props.game.phaseData.offerType === OfferType.buy;
   const canAnswer = canAnswerOffer(props.game, props.windowPlayerId);
 
   return (
@@ -28,7 +28,7 @@ export const AnswerOfferPrompt: PromptInterface<GameAnswerOfferPhase> = (props) 
         <span>{isBuyingOffer ? buyOfferSymbol : sellOfferSymbol}</span>
         <span style={{ paddingLeft: 8 }}>{`${initiatorPlayer.name} offers ${
           isBuyingOffer ? 'buying' : 'selling'
-        } ${square.name} for ${currencySymbol}${props.game.prompt.amount}`}</span>
+        } ${square.name} for ${currencySymbol}${props.game.phaseData.amount}`}</span>
       </Paragraph>
       <div>
         <Button

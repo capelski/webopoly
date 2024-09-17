@@ -7,9 +7,8 @@ export const triggerBankruptcy = (
   game: GameCannotPayPhase,
   playerId: Player['id'],
 ): EndTurnOutputPhases => {
-  const { pendingEvent } = game.prompt;
   const bankruptcyEvent: GEvent = {
-    creditorId: pendingEvent.type === EventType.payRent ? pendingEvent.landlordId : undefined,
+    creditorId: game.phaseData.type === EventType.payRent ? game.phaseData.landlordId : undefined,
     playerId,
     type: EventType.bankruptcy,
   };
@@ -38,7 +37,7 @@ export const triggerBankruptcy = (
     players: game.players.map<Player>((p) => {
       return p.id === playerId
         ? bankruptPlayer
-        : pendingEvent.type === EventType.payRent && p.id === pendingEvent.landlordId
+        : game.phaseData.type === EventType.payRent && p.id === game.phaseData.landlordId
         ? {
             ...p,
             getOutOfJail: p.getOutOfJail + targetPlayer.getOutOfJail,
@@ -49,8 +48,8 @@ export const triggerBankruptcy = (
     }),
     squares: game.squares.map<Square>((s) => {
       return s.type === SquareType.property && s.ownerId === playerId
-        ? pendingEvent.type === EventType.payRent
-          ? { ...s, houses: 0, ownerId: pendingEvent.landlordId }
+        ? game.phaseData.type === EventType.payRent
+          ? { ...s, houses: 0, ownerId: game.phaseData.landlordId }
           : { ...s, houses: 0, ownerId: undefined, status: undefined }
         : s;
     }),

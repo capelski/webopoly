@@ -71,33 +71,25 @@ export const serializeGame = (game: Game): string => {
           };
     }),
     ...(game.phase === GamePhase.answerOffer
-      ? { ph: game.phase, pr: game.prompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.answerTrade
-      ? { ph: game.phase, pr: game.prompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.applyCard
-      ? { ph: game.phase, pr: game.prompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.buyProperty
-      ? { ph: game.phase, pr: game.prompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.buyPropertyLiquidation
-      ? { ph: game.phase, pp: game.pendingPrompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.cannotPay
-      ? { ph: game.phase, pr: game.prompt }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.pendingPaymentLiquidation
-      ? { ph: game.phase, pe: game.pendingEvent }
-      : game.phase === GamePhase.playerWins
-      ? { ph: game.phase, pr: game.prompt }
-      : game.phase === GamePhase.trade
-      ? {
-          ph: game.phase,
-          pp: game.previousPhase,
-          ot: game.other,
-          ows: game.ownSquaresId,
-        }
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.playerAnimation
-      ? {
-          ph: game.phase,
-          a: game.animation,
-        }
+      ? { ph: game.phase, pd: game.phaseData }
+      : game.phase === GamePhase.playerWins
+      ? { ph: game.phase, pd: game.phaseData }
+      : game.phase === GamePhase.trade
+      ? { ph: game.phase, pd: game.phaseData }
       : { ph: game.phase }),
   };
 

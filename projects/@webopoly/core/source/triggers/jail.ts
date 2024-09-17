@@ -14,7 +14,7 @@ import {
   GEvent,
 } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
-import { triggerCannotPayPrompt } from './payments';
+import { triggerCannotPay } from './payments';
 
 export type PlayerOutOfJailPhases =
   | GameJailOptionsPhase
@@ -73,7 +73,7 @@ export const triggerLastTurnInJail = (
   const currentPlayer = getCurrentPlayer(game);
 
   if (!hasEnoughMoney(currentPlayer, jailFine)) {
-    return triggerCannotPayPrompt(game, {
+    return triggerCannotPay(game, {
       playerId: currentPlayer.id,
       turnsInJail: maxTurnsInJail,
       type: EventType.turnInJail,

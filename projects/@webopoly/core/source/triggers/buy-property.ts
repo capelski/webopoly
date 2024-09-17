@@ -40,7 +40,7 @@ export const triggerBuyProperty = (
 export const triggerRejectProperty = (
   game: GameBuyPropertyPhase,
 ): GameBuyPropertyPhase | GamePlayPhase => {
-  const { potentialBuyersId } = game.prompt;
+  const { potentialBuyersId } = game.phaseData;
 
   if (potentialBuyersId.length === 0) {
     return {
@@ -63,7 +63,7 @@ export const triggerRejectProperty = (
       update: { type: GameUpdateType.buyPropertyReject },
     },
     phase: GamePhase.buyProperty,
-    prompt: {
+    phaseData: {
       currentBuyerId: nextCurrentBuyerId,
       potentialBuyersId: nextPotentialBuyersId,
     },

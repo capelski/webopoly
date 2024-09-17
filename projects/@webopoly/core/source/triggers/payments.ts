@@ -12,7 +12,7 @@ import {
   PendingEvent,
 } from '../types';
 
-export type CannotPayPromptInputPhases =
+export type CannotPayInputPhases =
   | GamePlayPhase
   | GameDiceInJailAnimationPhase // Is player's last turn in jail and they don't have enough money to pay the fine
   | GameApplyCardPhase
@@ -25,8 +25,8 @@ export type ExpenseInputPhases =
 
 export type ExpenseOutputPhases = GamePlayPhase | GameCannotPayPhase;
 
-export const triggerCannotPayPrompt = (
-  game: CannotPayPromptInputPhases,
+export const triggerCannotPay = (
+  game: CannotPayInputPhases,
   event: PendingEvent,
 ): GameCannotPayPhase => {
   return {
@@ -37,9 +37,7 @@ export const triggerCannotPayPrompt = (
       update: { type: GameUpdateType.bankruptcy },
     },
     phase: GamePhase.cannotPay,
-    prompt: {
-      pendingEvent: event,
-    },
+    phaseData: event,
   };
 };
 
@@ -66,7 +64,7 @@ export const triggerPayRent = (
             : p;
         }),
       }
-    : triggerCannotPayPrompt(game, event);
+    : triggerCannotPay(game, event);
 
   return nextGame;
 };
@@ -90,7 +88,7 @@ export const triggerPayTax = (
           return p.id === currentPlayer.id ? { ...p, money: p.money - event.amount } : p;
         }),
       }
-    : triggerCannotPayPrompt(game, event);
+    : triggerCannotPay(game, event);
 
   return nextGame;
 };

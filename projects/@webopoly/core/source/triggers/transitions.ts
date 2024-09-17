@@ -42,7 +42,7 @@ export const triggerFirstPlayerTransition = (
       update: { type: GameUpdateType.playerTransition },
     },
     phase: GamePhase.playerAnimation,
-    animation: {
+    phaseData: {
       currentSquareId: getCurrentSquare(game).id,
       pendingMoves,
       playerId: currentPlayer.id,
@@ -53,7 +53,7 @@ export const triggerFirstPlayerTransition = (
 export const triggerNextPlayerTransition = (
   game: GamePlayerAnimationPhase,
 ): GamePlayerAnimationPhase | MovePlayerOutputPhases => {
-  const { currentSquareId, pendingMoves, playerId } = game.animation;
+  const { currentSquareId, pendingMoves, playerId } = game.phaseData;
   const nextMove = 1;
 
   if (pendingMoves <= nextMove) {
@@ -71,7 +71,7 @@ export const triggerNextPlayerTransition = (
       update: { type: GameUpdateType.playerTransition },
     },
     phase: GamePhase.playerAnimation,
-    animation: {
+    phaseData: {
       currentSquareId: nextSquareId,
       pendingMoves: nextPendingMoves,
       playerId,

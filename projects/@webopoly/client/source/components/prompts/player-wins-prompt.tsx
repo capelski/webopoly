@@ -4,7 +4,7 @@ import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
 export const PlayerWinsPrompt: PromptInterface<GamePlayerWinsPhase> = (props) => {
-  const winningPlayer = getPlayerById(props.game, props.game.prompt.playerId);
+  const winningPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
 
   return (
     <React.Fragment>
