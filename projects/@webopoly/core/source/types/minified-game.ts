@@ -60,7 +60,7 @@ export type MinifiedGameBuyPropertyPhase = MinifiedGameBase<GamePhase.buyPropert
 };
 
 export type MinifiedGameBuyPropertyLiquidationPhase =
-  MinifiedGameBase<GamePhase.buyPropertyLiquidation> & {
+  MinifiedGameBase<GamePhase.buyingLiquidation> & {
     /** phaseData */
     pd: GameBuyPropertyLiquidationPhase['phaseData'];
   };
@@ -71,7 +71,7 @@ export type MinifiedGameCannotPayPhase = MinifiedGameBase<GamePhase.cannotPay> &
 };
 
 export type MinifiedGamePendingPaymentLiquidationPhase =
-  MinifiedGameBase<GamePhase.pendingPaymentLiquidation> & {
+  MinifiedGameBase<GamePhase.paymentLiquidation> & {
     /** phaseData */
     pd: GamePendingPaymentLiquidationPhase['phaseData'];
   };

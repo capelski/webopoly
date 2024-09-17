@@ -60,7 +60,7 @@ export const BuyPropertyPrompt: PromptInterface<GameBuyPropertyPhase> = (props) 
             <Button
               disabled={!canLiquidateBuyProperty(props.game, props.windowPlayerId)}
               onClick={() => {
-                props.triggerUpdate({ type: GameUpdateType.buyPropertyLiquidation });
+                props.triggerUpdate({ type: GameUpdateType.buyingLiquidation });
               }}
               style={{ flexGrow: 1, textAlign: 'center' }}
               type="secondary"

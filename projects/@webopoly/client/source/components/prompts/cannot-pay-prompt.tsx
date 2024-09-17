@@ -25,7 +25,7 @@ export const CannotPayPrompt: PromptInterface<GameCannotPayPhase> = (props) => {
         <Button
           disabled={!canLiquidatePendingPayment(props.game, props.windowPlayerId)}
           onClick={() => {
-            props.triggerUpdate({ type: GameUpdateType.pendingPaymentLiquidation });
+            props.triggerUpdate({ type: GameUpdateType.paymentLiquidation });
           }}
         >
           Liquidate properties

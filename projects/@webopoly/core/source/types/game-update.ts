@@ -10,7 +10,7 @@ export type GameUpdate =
         | GameUpdateType.applyCard
         | GameUpdateType.bankruptcy
         | GameUpdateType.buyProperty
-        | GameUpdateType.buyPropertyLiquidation
+        | GameUpdateType.buyingLiquidation
         | GameUpdateType.buyPropertyReject
         | GameUpdateType.cancelTrade
         | GameUpdateType.declineOffer
@@ -20,7 +20,7 @@ export type GameUpdate =
         | GameUpdateType.getOutOfJail
         | GameUpdateType.goToJail
         | GameUpdateType.payJailFine
-        | GameUpdateType.pendingPaymentLiquidation
+        | GameUpdateType.paymentLiquidation
         | GameUpdateType.playerTransition
         | GameUpdateType.postDice
         | GameUpdateType.postDiceInJail

@@ -27,6 +27,7 @@ export type EndTurnOutputPhases =
 
 export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
+
   if (hasExtraTurn(currentPlayer) && !currentPlayer.isInJail) {
     return {
       ...game,

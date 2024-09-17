@@ -61,11 +61,11 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.buyProperty
         ? { phase: g.ph, phaseData: g.pd }
-        : g.ph === GamePhase.buyPropertyLiquidation
+        : g.ph === GamePhase.buyingLiquidation
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.cannotPay
         ? { phase: g.ph, phaseData: g.pd }
-        : g.ph === GamePhase.pendingPaymentLiquidation
+        : g.ph === GamePhase.paymentLiquidation
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.playerAnimation
         ? { phase: g.ph, phaseData: g.pd }

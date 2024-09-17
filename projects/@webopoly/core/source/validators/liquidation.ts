@@ -57,10 +57,7 @@ export const canResume = (
 ): {
   game: GameBuyPropertyLiquidationPhase | GamePendingPaymentLiquidationPhase;
 } | null => {
-  if (
-    game.phase !== GamePhase.buyPropertyLiquidation &&
-    game.phase !== GamePhase.pendingPaymentLiquidation
-  ) {
+  if (game.phase !== GamePhase.buyingLiquidation && game.phase !== GamePhase.paymentLiquidation) {
     return null;
   }
 

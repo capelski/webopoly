@@ -54,7 +54,7 @@ export const triggerBuyPropertyLiquidation = (
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.resume },
     },
-    phase: GamePhase.buyPropertyLiquidation,
+    phase: GamePhase.buyingLiquidation,
   };
 };
 
@@ -68,6 +68,6 @@ export const triggerPendingPaymentLiquidation = (
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.resume },
     },
-    phase: GamePhase.pendingPaymentLiquidation,
+    phase: GamePhase.paymentLiquidation,
   };
 };

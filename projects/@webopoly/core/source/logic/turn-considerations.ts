@@ -18,7 +18,7 @@ export const turnConsiderations = {
       : undefined;
   },
   buyingPropertyLiquidation: (game: Game) => {
-    return game.phase === GamePhase.buyPropertyLiquidation
+    return game.phase === GamePhase.buyingLiquidation
       ? { currentPlayerId: game.phaseData.currentBuyerId, game }
       : undefined;
   },

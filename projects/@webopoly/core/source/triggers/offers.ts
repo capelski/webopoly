@@ -35,8 +35,8 @@ export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPh
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.phaseData.previous.phase === GamePhase.buyPropertyLiquidation ||
-        game.phaseData.previous.phase === GamePhase.pendingPaymentLiquidation
+        game.phaseData.previous.phase === GamePhase.buyingLiquidation ||
+        game.phaseData.previous.phase === GamePhase.paymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
@@ -111,8 +111,8 @@ export const triggerDeclineOffer = (game: GameAnswerOfferPhase): SellOfferInputP
           ? { type: GameUpdateType.rollDice }
           : { type: GameUpdateType.resume },
       interval:
-        game.phaseData.previous.phase === GamePhase.buyPropertyLiquidation ||
-        game.phaseData.previous.phase === GamePhase.pendingPaymentLiquidation
+        game.phaseData.previous.phase === GamePhase.buyingLiquidation ||
+        game.phaseData.previous.phase === GamePhase.paymentLiquidation
           ? longActionInterval * 1000
           : undefined,
     },
@@ -151,9 +151,9 @@ export const triggerSellingOffer = (
       offerType: OfferType.sell,
       playerId: currentPlayer.id,
       previous:
-        game.phase === GamePhase.buyPropertyLiquidation
+        game.phase === GamePhase.buyingLiquidation
           ? { phase: game.phase, phaseData: game.phaseData }
-          : game.phase === GamePhase.pendingPaymentLiquidation
+          : game.phase === GamePhase.paymentLiquidation
           ? { phase: game.phase, phaseData: game.phaseData }
           : { phase: game.phase },
       propertyId: property.id,

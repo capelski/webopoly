@@ -244,7 +244,7 @@ export const triggerUpdate = (
       nextGame = triggerRejectProperty(validation.game);
       updateFunction(nextGame);
     }
-  } else if (gameUpdate.type === GameUpdateType.buyPropertyLiquidation) {
+  } else if (gameUpdate.type === GameUpdateType.buyingLiquidation) {
     const validation = canLiquidateBuyProperty(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerBuyPropertyLiquidation(validation.game);
@@ -298,7 +298,7 @@ export const triggerUpdate = (
       nextGame = triggerGoToJail(validation.game, validation.game.phase === GamePhase.applyCard);
       updateFunction(nextGame);
     }
-  } else if (gameUpdate.type === GameUpdateType.pendingPaymentLiquidation) {
+  } else if (gameUpdate.type === GameUpdateType.paymentLiquidation) {
     const validation = canLiquidatePendingPayment(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerPendingPaymentLiquidation(validation.game);
@@ -344,7 +344,7 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.resume) {
     const validation = canResume(nextGame, windowPlayerId);
     if (validation) {
-      if (validation.game.phase === GamePhase.buyPropertyLiquidation) {
+      if (validation.game.phase === GamePhase.buyingLiquidation) {
         nextGame = resumeBuyProperty(validation.game);
         updateFunction(nextGame);
       } else {

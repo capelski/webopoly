@@ -39,11 +39,11 @@ export type GameAnswerOfferPhase = GamePhaseData<
           phase: GamePhase.play | GamePhase.rollDice;
         }
       | {
-          phase: GamePhase.buyPropertyLiquidation;
+          phase: GamePhase.buyingLiquidation;
           phaseData: BuyPropertyData;
         }
       | {
-          phase: GamePhase.pendingPaymentLiquidation;
+          phase: GamePhase.paymentLiquidation;
           phaseData: PendingEvent;
         };
     propertyId: Square['id'];
@@ -72,7 +72,7 @@ export type GameApplyCardPhase = GamePhaseData<
 export type GameBuyPropertyPhase = GamePhaseData<GamePhase.buyProperty, BuyPropertyData>;
 
 export type GameBuyPropertyLiquidationPhase = GamePhaseData<
-  GamePhase.buyPropertyLiquidation,
+  GamePhase.buyingLiquidation,
   BuyPropertyData
 >;
 
@@ -91,7 +91,7 @@ export type GameJailOptionsPhase = GameBase<GamePhase.jailOptions>;
 export type GameOutOfJailAnimationPhase = GameBase<GamePhase.outOfJailAnimation>;
 
 export type GamePendingPaymentLiquidationPhase = GamePhaseData<
-  GamePhase.pendingPaymentLiquidation,
+  GamePhase.paymentLiquidation,
   PendingEvent
 >;
 

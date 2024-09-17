@@ -72,8 +72,8 @@ export const canSellHouse = (
   street: StreetSquare;
 } | null => {
   if (
-    game.phase !== GamePhase.buyPropertyLiquidation &&
-    game.phase !== GamePhase.pendingPaymentLiquidation &&
+    game.phase !== GamePhase.buyingLiquidation &&
+    game.phase !== GamePhase.paymentLiquidation &&
     game.phase !== GamePhase.play &&
     game.phase !== GamePhase.rollDice
   ) {
