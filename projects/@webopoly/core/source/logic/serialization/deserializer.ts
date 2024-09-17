@@ -1,5 +1,5 @@
 import { GamePhase, PropertyType, SquareType } from '../../enums';
-import { Game, GameMinified, GEvent, Player, Square } from '../../types';
+import { Game, GEvent, MinifiedGame, Player, Square } from '../../types';
 import { squaresMap } from '../squares';
 import { eventsMap, Restorer } from './events-map';
 
@@ -8,7 +8,7 @@ export const deserializeGame = (serializedGame: string | null): Game | undefined
     return undefined;
   }
 
-  const g = JSON.parse(serializedGame) as GameMinified;
+  const g = JSON.parse(serializedGame) as MinifiedGame;
   let game: Game | undefined = undefined;
 
   try {
