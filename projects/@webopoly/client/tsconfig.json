@@ -1,5 +1,5 @@
 {
-  "extends": "./tsconfig.server.json",
+  "extends": "./tsconfig.client.json",
   "compilerOptions": {
     "paths": {
       "@webopoly/core": ["../core/source"]

@@ -1,5 +1,5 @@
-- Fix VSCode not linking to source code
 - Centralize phase transitions in a single dictionary? (e.g. SellOfferInputPhases, MovePlayerOutputPhases)
+    Revisit phase/GameUpdateType names
 
 - Two dice
 - Remove start game for non-first players in server game
