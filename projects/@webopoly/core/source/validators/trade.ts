@@ -8,10 +8,10 @@ import {
 } from '../logic';
 import {
   Game,
-  GameAnswerTradePhase,
-  GamePlayPhase,
-  GameRollDicePhase,
-  GameTradePhase,
+  Game_AnswerTrade,
+  Game_Play,
+  Game_RollDice,
+  Game_Trade,
   Player,
   PropertySquare,
   Square,
@@ -21,7 +21,7 @@ export const canAnswerTrade = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameAnswerTradePhase;
+  game: Game_AnswerTrade;
 } | null => {
   if (game.phase !== GamePhase.answerTrade) {
     return null;
@@ -39,7 +39,7 @@ export const canCancelTrade = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameTradePhase;
+  game: Game_Trade;
 } | null => {
   if (game.phase !== GamePhase.trade) {
     return null;
@@ -57,7 +57,7 @@ export const canStartTrade = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase | GameRollDicePhase;
+  game: Game_Play | Game_RollDice;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
     return null;
@@ -81,7 +81,7 @@ export const canToggleTradeSelection = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: GameTradePhase;
+  game: Game_Trade;
   property: PropertySquare;
 } | null => {
   if (game.phase !== GamePhase.trade) {
@@ -105,7 +105,7 @@ export const canTriggerTradeOffer = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameTradePhase;
+  game: Game_Trade;
 } | null => {
   if (game.phase !== GamePhase.trade) {
     return null;

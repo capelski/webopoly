@@ -1,17 +1,9 @@
 import { longActionInterval } from '../constants';
 import { AnswerType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, isSelectedForTrade } from '../logic';
-import {
-  GameAnswerTradePhase,
-  GamePlayPhase,
-  GameRollDicePhase,
-  GameTradePhase,
-  PropertySquare,
-} from '../types';
+import { Game_AnswerTrade, Game_Play, Game_RollDice, Game_Trade, PropertySquare } from '../types';
 
-export const triggerAcceptTrade = (
-  game: GameAnswerTradePhase,
-): GamePlayPhase | GameRollDicePhase => {
+export const triggerAcceptTrade = (game: Game_AnswerTrade): Game_Play | Game_RollDice => {
   return {
     ...game,
     defaultAction: {
@@ -60,7 +52,7 @@ export const triggerAcceptTrade = (
   };
 };
 
-export const triggerCancelTrade = (game: GameTradePhase): GamePlayPhase | GameRollDicePhase => {
+export const triggerCancelTrade = (game: Game_Trade): Game_Play | Game_RollDice => {
   return {
     ...game,
     defaultAction: {
@@ -74,9 +66,7 @@ export const triggerCancelTrade = (game: GameTradePhase): GamePlayPhase | GameRo
   };
 };
 
-export const triggerDeclineTrade = (
-  game: GameAnswerTradePhase,
-): GamePlayPhase | GameRollDicePhase => {
+export const triggerDeclineTrade = (game: Game_AnswerTrade): Game_Play | Game_RollDice => {
   return {
     ...game,
     defaultAction: {
@@ -101,7 +91,7 @@ export const triggerDeclineTrade = (
   };
 };
 
-export const triggerStartTrade = (game: GamePlayPhase | GameRollDicePhase): GameTradePhase => {
+export const triggerStartTrade = (game: Game_Play | Game_RollDice): Game_Trade => {
   return {
     ...game,
     defaultAction: {
@@ -121,7 +111,7 @@ export const triggerStartTrade = (game: GamePlayPhase | GameRollDicePhase): Game
   };
 };
 
-export const triggerTradeOffer = (game: GameTradePhase): GameAnswerTradePhase => {
+export const triggerTradeOffer = (game: Game_Trade): Game_AnswerTrade => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -142,9 +132,9 @@ export const triggerTradeOffer = (game: GameTradePhase): GameAnswerTradePhase =>
 };
 
 export const triggerTradeSelectionToggle = (
-  game: GameTradePhase,
+  game: Game_Trade,
   square: PropertySquare,
-): GameTradePhase => {
+): Game_Trade => {
   const currentPlayer = getCurrentPlayer(game);
 
   const isSelected = isSelectedForTrade(game, square);

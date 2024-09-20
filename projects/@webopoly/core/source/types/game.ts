@@ -28,7 +28,7 @@ type GamePhaseData<TPhase extends GamePhase, TPhaseData = any> = GameBase<TPhase
   phaseData: TPhaseData;
 };
 
-export type GameAnswerOfferPhase = GamePhaseData<
+export type Game_AnswerOffer = GamePhaseData<
   GamePhase.answerOffer,
   {
     amount: number;
@@ -51,7 +51,7 @@ export type GameAnswerOfferPhase = GamePhaseData<
   }
 >;
 
-export type GameAnswerTradePhase = GamePhaseData<
+export type Game_AnswerTrade = GamePhaseData<
   GamePhase.answerTrade,
   {
     playerId: Player['id'];
@@ -62,42 +62,36 @@ export type GameAnswerTradePhase = GamePhaseData<
   }
 >;
 
-export type GameApplyCardPhase = GamePhaseData<
+export type Game_ApplyCard = GamePhaseData<
   GamePhase.applyCard,
   {
     cardId: Card['id'];
   }
 >;
 
-export type GameBuyPropertyPhase = GamePhaseData<GamePhase.buyProperty, BuyPropertyData>;
+export type Game_BuyProperty = GamePhaseData<GamePhase.buyProperty, BuyPropertyData>;
 
-export type GameBuyPropertyLiquidationPhase = GamePhaseData<
-  GamePhase.buyingLiquidation,
-  BuyPropertyData
->;
+export type Game_BuyingLiquidation = GamePhaseData<GamePhase.buyingLiquidation, BuyPropertyData>;
 
-export type GameCannotPayPhase = GamePhaseData<GamePhase.cannotPay, PendingEvent>;
+export type Game_CannotPay = GamePhaseData<GamePhase.cannotPay, PendingEvent>;
 
-export type GameDiceAnimationPhase = GameBase<GamePhase.diceAnimation>;
+export type Game_DiceAnimation = GameBase<GamePhase.diceAnimation>;
 
-export type GameDiceInJailAnimationPhase = GameBase<GamePhase.diceInJailAnimation>;
+export type Game_DiceInJailAnimation = GameBase<GamePhase.diceInJailAnimation>;
 
-export type GameDrawCardPhase = GameBase<GamePhase.drawCard>;
+export type Game_DrawCard = GameBase<GamePhase.drawCard>;
 
-export type GameGoToJailPhase = GameBase<GamePhase.goToJail>;
+export type Game_GoToJail = GameBase<GamePhase.goToJail>;
 
-export type GameJailOptionsPhase = GameBase<GamePhase.jailOptions>;
+export type Game_JailOptions = GameBase<GamePhase.jailOptions>;
 
-export type GameOutOfJailAnimationPhase = GameBase<GamePhase.outOfJailAnimation>;
+export type Game_OutOfJailAnimation = GameBase<GamePhase.outOfJailAnimation>;
 
-export type GamePendingPaymentLiquidationPhase = GamePhaseData<
-  GamePhase.paymentLiquidation,
-  PendingEvent
->;
+export type Game_PaymentLiquidation = GamePhaseData<GamePhase.paymentLiquidation, PendingEvent>;
 
-export type GamePlayPhase = GameBase<GamePhase.play>;
+export type Game_Play = GameBase<GamePhase.play>;
 
-export type GamePlayerAnimationPhase = GamePhaseData<
+export type Game_PlayerAnimation = GamePhaseData<
   GamePhase.playerAnimation,
   {
     currentSquareId: Square['id'];
@@ -106,16 +100,16 @@ export type GamePlayerAnimationPhase = GamePhaseData<
   }
 >;
 
-export type GamePlayerWinsPhase = GamePhaseData<
+export type Game_PlayerWins = GamePhaseData<
   GamePhase.playerWins,
   {
     playerId: Player['id'];
   }
 >;
 
-export type GameRollDicePhase = GameBase<GamePhase.rollDice>;
+export type Game_RollDice = GameBase<GamePhase.rollDice>;
 
-export type GameTradePhase = GamePhaseData<
+export type Game_Trade = GamePhaseData<
   GamePhase.trade,
   {
     previousPhase: GamePhase.play | GamePhase.rollDice;
@@ -125,21 +119,21 @@ export type GameTradePhase = GamePhaseData<
 >;
 
 export type Game =
-  | GameAnswerOfferPhase
-  | GameAnswerTradePhase
-  | GameApplyCardPhase
-  | GameBuyPropertyPhase
-  | GameBuyPropertyLiquidationPhase
-  | GameCannotPayPhase
-  | GameDiceAnimationPhase
-  | GameDiceInJailAnimationPhase
-  | GameDrawCardPhase
-  | GameGoToJailPhase
-  | GameJailOptionsPhase
-  | GameOutOfJailAnimationPhase
-  | GamePendingPaymentLiquidationPhase
-  | GamePlayPhase
-  | GamePlayerAnimationPhase
-  | GamePlayerWinsPhase
-  | GameRollDicePhase
-  | GameTradePhase;
+  | Game_AnswerOffer
+  | Game_AnswerTrade
+  | Game_ApplyCard
+  | Game_BuyProperty
+  | Game_BuyingLiquidation
+  | Game_CannotPay
+  | Game_DiceAnimation
+  | Game_DiceInJailAnimation
+  | Game_DrawCard
+  | Game_GoToJail
+  | Game_JailOptions
+  | Game_OutOfJailAnimation
+  | Game_PaymentLiquidation
+  | Game_Play
+  | Game_PlayerAnimation
+  | Game_PlayerWins
+  | Game_RollDice
+  | Game_Trade;

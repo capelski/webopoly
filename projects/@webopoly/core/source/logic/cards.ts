@@ -2,9 +2,9 @@ import { currencySymbol } from '../constants';
 import { CardType, PropertyType, SquareType } from '../enums';
 import {
   Card,
-  GameApplyCardPhase,
-  GameCannotPayPhase,
-  GamePendingPaymentLiquidationPhase,
+  Game_ApplyCard,
+  Game_CannotPay,
+  Game_PaymentLiquidation,
   StreetSquare,
 } from '../types';
 import { getCurrentPlayer } from './game';
@@ -198,7 +198,7 @@ const cardTextMap: { [TCard in CardType]: CardTextGetter<TCard> } = {
 };
 
 export const getCardAmount = (
-  game: GameApplyCardPhase | GameCannotPayPhase | GamePendingPaymentLiquidationPhase,
+  game: Game_ApplyCard | Game_CannotPay | Game_PaymentLiquidation,
   cardId: Card['id'],
 ): number => {
   const card = cardsMap[cardId];

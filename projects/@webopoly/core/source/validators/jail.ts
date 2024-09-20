@@ -1,18 +1,12 @@
 import { jailFine } from '../constants';
 import { GamePhase } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import {
-  Game,
-  GameApplyCardPhase,
-  GameGoToJailPhase,
-  GameJailOptionsPhase,
-  Player,
-} from '../types';
+import { Game, Game_ApplyCard, Game_GoToJail, Game_JailOptions, Player } from '../types';
 
 export const canPayJailFine = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GameJailOptionsPhase } | null => {
+): { game: Game_JailOptions } | null => {
   if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
@@ -32,7 +26,7 @@ export const canPayJailFine = (
 export const canRollDiceInJail = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GameJailOptionsPhase } | null => {
+): { game: Game_JailOptions } | null => {
   if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
@@ -48,7 +42,7 @@ export const canRollDiceInJail = (
 export const canUseJailCard = (
   game: Game,
   windowPlayerId: Player['id'],
-): { game: GameJailOptionsPhase } | null => {
+): { game: Game_JailOptions } | null => {
   if (game.phase !== GamePhase.jailOptions) {
     return null;
   }
@@ -69,7 +63,7 @@ export const mustGoToJail = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameApplyCardPhase | GameGoToJailPhase;
+  game: Game_ApplyCard | Game_GoToJail;
 } | null => {
   if (game.phase !== GamePhase.applyCard && game.phase !== GamePhase.goToJail) {
     return null;

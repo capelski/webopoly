@@ -2,16 +2,16 @@ import { GamePhase } from '../enums';
 import { EventMinified } from './event-minified';
 import {
   Game,
-  GameAnswerOfferPhase,
-  GameAnswerTradePhase,
-  GameApplyCardPhase,
-  GameBuyPropertyLiquidationPhase,
-  GameBuyPropertyPhase,
-  GameCannotPayPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayerAnimationPhase,
-  GamePlayerWinsPhase,
-  GameTradePhase,
+  Game_AnswerOffer,
+  Game_AnswerTrade,
+  Game_ApplyCard,
+  Game_BuyProperty,
+  Game_BuyingLiquidation,
+  Game_CannotPay,
+  Game_PaymentLiquidation,
+  Game_PlayerAnimation,
+  Game_PlayerWins,
+  Game_Trade,
 } from './game';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
@@ -39,74 +39,72 @@ type MinifiedGameBase<TPhase extends GamePhase> = {
   sq: SquareMinified[];
 };
 
-export type MinifiedGameAnswerOfferPhase = MinifiedGameBase<GamePhase.answerOffer> & {
+type MinifiedGame_AnswerOffer = MinifiedGameBase<GamePhase.answerOffer> & {
   /** phaseData */
-  pd: GameAnswerOfferPhase['phaseData'];
+  pd: Game_AnswerOffer['phaseData'];
 };
 
-export type MinifiedGameAnswerTradePhase = MinifiedGameBase<GamePhase.answerTrade> & {
+type MinifiedGame_AnswerTrade = MinifiedGameBase<GamePhase.answerTrade> & {
   /** phaseData */
-  pd: GameAnswerTradePhase['phaseData'];
+  pd: Game_AnswerTrade['phaseData'];
 };
 
-export type MinifiedGameApplyCardPhase = MinifiedGameBase<GamePhase.applyCard> & {
+type MinifiedGame_ApplyCard = MinifiedGameBase<GamePhase.applyCard> & {
   /** phaseData */
-  pd: GameApplyCardPhase['phaseData'];
+  pd: Game_ApplyCard['phaseData'];
 };
 
-export type MinifiedGameBuyPropertyPhase = MinifiedGameBase<GamePhase.buyProperty> & {
+type MinifiedGame_BuyProperty = MinifiedGameBase<GamePhase.buyProperty> & {
   /** phaseData */
-  pd: GameBuyPropertyPhase['phaseData'];
+  pd: Game_BuyProperty['phaseData'];
 };
 
-export type MinifiedGameBuyPropertyLiquidationPhase =
-  MinifiedGameBase<GamePhase.buyingLiquidation> & {
-    /** phaseData */
-    pd: GameBuyPropertyLiquidationPhase['phaseData'];
-  };
-
-export type MinifiedGameCannotPayPhase = MinifiedGameBase<GamePhase.cannotPay> & {
+type MinifiedGame_BuyingLiquidation = MinifiedGameBase<GamePhase.buyingLiquidation> & {
   /** phaseData */
-  pd: GameCannotPayPhase['phaseData'];
+  pd: Game_BuyingLiquidation['phaseData'];
 };
 
-export type MinifiedGamePendingPaymentLiquidationPhase =
-  MinifiedGameBase<GamePhase.paymentLiquidation> & {
-    /** phaseData */
-    pd: GamePendingPaymentLiquidationPhase['phaseData'];
-  };
-
-export type MinifiedGamePlayerAnimationPhase = MinifiedGameBase<GamePhase.playerAnimation> & {
+type MinifiedGame_CannotPay = MinifiedGameBase<GamePhase.cannotPay> & {
   /** phaseData */
-  pd: GamePlayerAnimationPhase['phaseData'];
+  pd: Game_CannotPay['phaseData'];
 };
 
-export type MinifiedGamePlayerWinsPhase = MinifiedGameBase<GamePhase.playerWins> & {
+type MinifiedGame_PaymentLiquidation = MinifiedGameBase<GamePhase.paymentLiquidation> & {
   /** phaseData */
-  pd: GamePlayerWinsPhase['phaseData'];
+  pd: Game_PaymentLiquidation['phaseData'];
 };
 
-export type MinifiedGameTradePhase = MinifiedGameBase<GamePhase.trade> & {
+type MinifiedGame_PlayerAnimation = MinifiedGameBase<GamePhase.playerAnimation> & {
   /** phaseData */
-  pd: GameTradePhase['phaseData'];
+  pd: Game_PlayerAnimation['phaseData'];
+};
+
+type MinifiedGame_PlayerWins = MinifiedGameBase<GamePhase.playerWins> & {
+  /** phaseData */
+  pd: Game_PlayerWins['phaseData'];
+};
+
+type MinifiedGame_Trade = MinifiedGameBase<GamePhase.trade> & {
+  /** phaseData */
+  pd: Game_Trade['phaseData'];
 };
 
 export type MinifiedGame =
-  | MinifiedGameAnswerOfferPhase
-  | MinifiedGameAnswerTradePhase
-  | MinifiedGameApplyCardPhase
-  | MinifiedGameBuyPropertyPhase
-  | MinifiedGameBuyPropertyLiquidationPhase
-  | MinifiedGameCannotPayPhase
+  | MinifiedGame_AnswerOffer
+  | MinifiedGame_AnswerTrade
+  | MinifiedGame_ApplyCard
+  | MinifiedGame_BuyProperty
+  | MinifiedGame_BuyingLiquidation
+  | MinifiedGame_CannotPay
   | MinifiedGameBase<GamePhase.diceAnimation>
   | MinifiedGameBase<GamePhase.diceInJailAnimation>
   | MinifiedGameBase<GamePhase.drawCard>
   | MinifiedGameBase<GamePhase.goToJail>
   | MinifiedGameBase<GamePhase.jailOptions>
   | MinifiedGameBase<GamePhase.outOfJailAnimation>
-  | MinifiedGamePendingPaymentLiquidationPhase
+  | MinifiedGame_PaymentLiquidation
   | MinifiedGameBase<GamePhase.play>
-  | MinifiedGamePlayerAnimationPhase
-  | MinifiedGamePlayerWinsPhase
+  | MinifiedGame_PlayerAnimation
+  | MinifiedGame_PlayerWins
   | MinifiedGameBase<GamePhase.rollDice>
-  | MinifiedGameTradePhase;
+  | MinifiedGame_Trade;

@@ -1,5 +1,5 @@
 import { SquareType } from '../enums';
-import { Game, GameTradePhase, Player, PropertySquare } from '../types';
+import { Game, Game_Trade, Player, PropertySquare } from '../types';
 import { getCurrentPlayer } from './game';
 
 export const getPropertyOwnersId = (game: Game): Player['id'][] => {
@@ -12,7 +12,7 @@ export const getPropertyOwnersId = (game: Game): Player['id'][] => {
   }, []);
 };
 
-export const getTradingPlayersId = (game: GameTradePhase): Player['id'][] => {
+export const getTradingPlayersId = (game: Game_Trade): Player['id'][] => {
   const currentPlayer = getCurrentPlayer(game);
 
   const ownId = game.phaseData.ownSquaresId.length > 0 ? [currentPlayer.id] : [];
@@ -24,14 +24,14 @@ export const getTradingPlayersId = (game: GameTradePhase): Player['id'][] => {
   return [...ownId, ...otherId];
 };
 
-export const isSelectedForTrade = (game: GameTradePhase, square: PropertySquare) => {
+export const isSelectedForTrade = (game: Game_Trade, square: PropertySquare) => {
   return (
     game.phaseData.other.squaresId.includes(square.id) ||
     game.phaseData.ownSquaresId.includes(square.id)
   );
 };
 
-export const isTradableSquare = (game: GameTradePhase, square: PropertySquare) => {
+export const isTradableSquare = (game: Game_Trade, square: PropertySquare) => {
   const currentPlayer = getCurrentPlayer(game);
 
   return (

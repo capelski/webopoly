@@ -1,7 +1,7 @@
 import {
   EventType,
   exceedsMaxDoublesInARow,
-  GameGoToJailPhase,
+  Game_GoToJail,
   GameUpdateType,
   getCurrentPlayer,
   mustGoToJail,
@@ -11,7 +11,7 @@ import { Button } from '../common/button';
 import { EventComponent } from '../common/event';
 import { PromptInterface } from './prompt-interface';
 
-export const GoToJailPrompt: PromptInterface<GameGoToJailPhase> = (props) => {
+export const GoToJailPrompt: PromptInterface<Game_GoToJail> = (props) => {
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (

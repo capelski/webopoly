@@ -9,21 +9,21 @@ import {
   isDoublesRoll,
 } from '../logic';
 import {
-  GameDiceAnimationPhase,
-  GameDiceInJailAnimationPhase,
-  GameJailOptionsPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_DiceAnimation,
+  Game_DiceInJailAnimation,
+  Game_JailOptions,
+  Game_Play,
+  Game_RollDice,
 } from '../types';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 
-export const applyDiceRoll = (game: GamePlayPhase): MovePlayerOutputPhases => {
+export const applyDiceRoll = (game: Game_Play): MovePlayerOutputPhases => {
   const movement = getDiceMovement(game.dice);
   const nextSquareId = getNextSquareId(game, movement);
   return triggerMovePlayer(game, nextSquareId);
 };
 
-export const triggerDiceRoll = (game: GameRollDicePhase): GameDiceAnimationPhase => {
+export const triggerDiceRoll = (game: Game_RollDice): Game_DiceAnimation => {
   const currentPlayer = getCurrentPlayer(game);
   const nextDice = getDiceRoll();
   const isDoubles = isDoublesRoll(nextDice);
@@ -57,7 +57,7 @@ export const triggerDiceRoll = (game: GameRollDicePhase): GameDiceAnimationPhase
   };
 };
 
-export const triggerDiceRollInJail = (game: GameJailOptionsPhase): GameDiceInJailAnimationPhase => {
+export const triggerDiceRollInJail = (game: Game_JailOptions): Game_DiceInJailAnimation => {
   return {
     ...game,
     defaultAction: {

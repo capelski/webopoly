@@ -8,10 +8,10 @@ import {
 } from '../logic';
 import {
   Game,
-  GameBuyPropertyLiquidationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_BuyingLiquidation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   Player,
   Square,
   StreetSquare,
@@ -22,7 +22,7 @@ export const canBuildHouse = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase | GameRollDicePhase;
+  game: Game_Play | Game_RollDice;
   street: StreetSquare;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
@@ -64,11 +64,7 @@ export const canSellHouse = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase;
+  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice;
   street: StreetSquare;
 } | null => {
   if (

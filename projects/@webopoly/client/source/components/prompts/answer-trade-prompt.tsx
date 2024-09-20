@@ -1,6 +1,6 @@
 import {
   canAnswerTrade,
-  GameAnswerTradePhase,
+  Game_AnswerTrade,
   GameUpdateType,
   getPlayerById,
   getSquareById,
@@ -13,7 +13,7 @@ import { SquareTitle } from '../common/square-title';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const AnswerTradePrompt: PromptInterface<GameAnswerTradePhase> = (props) => {
+export const AnswerTradePrompt: PromptInterface<Game_AnswerTrade> = (props) => {
   const initiatorPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
   const initiatorProperties = props.game.phaseData.playerPropertiesId.map((pId) =>
     getSquareById(props.game, pId),

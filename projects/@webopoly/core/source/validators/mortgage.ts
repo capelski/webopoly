@@ -2,10 +2,10 @@ import { GamePhase, PropertyStatus, PropertyType, SquareType } from '../enums';
 import { getClearMortgageAmount, getCurrentPlayer, getSquareById } from '../logic';
 import {
   Game,
-  GameBuyPropertyLiquidationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_BuyingLiquidation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   Player,
   PropertySquare,
   Square,
@@ -16,7 +16,7 @@ export const canClearMortgage = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase | GameRollDicePhase;
+  game: Game_Play | Game_RollDice;
   property: PropertySquare;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
@@ -46,11 +46,7 @@ export const canMortgage = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase;
+  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice;
   property: PropertySquare;
 } | null => {
   if (

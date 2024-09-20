@@ -2,11 +2,11 @@ import { GamePhase, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
 import {
   Game,
-  GameAnswerOfferPhase,
-  GameBuyPropertyLiquidationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_AnswerOffer,
+  Game_BuyingLiquidation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   Player,
   PropertySquare,
   Square,
@@ -16,7 +16,7 @@ export const canAnswerOffer = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameAnswerOfferPhase;
+  game: Game_AnswerOffer;
 } | null => {
   if (game.phase !== GamePhase.answerOffer) {
     return null;
@@ -36,7 +36,7 @@ export const canTriggerBuyingOffer = (
   amount: number,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase | GameRollDicePhase;
+  game: Game_Play | Game_RollDice;
   property: PropertySquare;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
@@ -73,11 +73,7 @@ export const canTriggerSellingOffer = (
   targetPlayerId: Player['id'] | undefined,
   windowPlayerId: Player['id'],
 ): {
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase;
+  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice;
   property: PropertySquare;
 } | null => {
   if (

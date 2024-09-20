@@ -1,11 +1,11 @@
-import { canDrawCard, GameDrawCardPhase, GameUpdateType } from '@webopoly/core';
+import { canDrawCard, Game_DrawCard, GameUpdateType } from '@webopoly/core';
 import React from 'react';
 import { surpriseSymbol } from '../../parameters';
 import { Button } from '../common/button';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const DrawCardPrompt: PromptInterface<GameDrawCardPhase> = (props) => {
+export const DrawCardPrompt: PromptInterface<Game_DrawCard> = (props) => {
   const canDraw = canDrawCard(props.game, props.windowPlayerId);
 
   return (

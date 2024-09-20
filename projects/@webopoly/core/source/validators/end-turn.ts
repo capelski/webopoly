@@ -1,12 +1,12 @@
 import { GamePhase } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { Game, GamePlayPhase, Player } from '../types';
+import { Game, Game_Play, Player } from '../types';
 
 export const canEndTurn = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GamePlayPhase;
+  game: Game_Play;
 } | null => {
   const currentPlayer = getCurrentPlayer(game);
   if (windowPlayerId !== currentPlayer.id) {

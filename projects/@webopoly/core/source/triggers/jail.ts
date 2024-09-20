@@ -2,26 +2,26 @@ import { jailFine, maxTurnsInJail, playerTransitionDuration } from '../constants
 import { EventType, GamePhase, GameUpdateType, JailMedium, SquareType } from '../enums';
 import { exceedsMaxDoublesInARow, getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
-  GameApplyCardPhase,
-  GameCannotPayPhase,
-  GameDiceInJailAnimationPhase,
-  GameGoToJailPhase,
-  GameJailOptionsPhase,
-  GameOutOfJailAnimationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_ApplyCard,
+  Game_CannotPay,
+  Game_DiceInJailAnimation,
+  Game_GoToJail,
+  Game_JailOptions,
+  Game_OutOfJailAnimation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   GEvent,
 } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 import { triggerCannotPay } from './payments';
 
 export type PlayerOutOfJailPhases =
-  | GameJailOptionsPhase
-  | GameDiceInJailAnimationPhase
-  | GamePendingPaymentLiquidationPhase;
+  | Game_JailOptions
+  | Game_DiceInJailAnimation
+  | Game_PaymentLiquidation;
 
-export const triggerGetOutOfJailCard = (game: GameApplyCardPhase): GamePlayPhase => {
+export const triggerGetOutOfJailCard = (game: Game_ApplyCard): Game_Play => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -38,9 +38,9 @@ export const triggerGetOutOfJailCard = (game: GameApplyCardPhase): GamePlayPhase
 };
 
 export const triggerGoToJail = (
-  game: GameApplyCardPhase | GameGoToJailPhase,
+  game: Game_ApplyCard | Game_GoToJail,
   skipEvent = false,
-): GamePlayPhase => {
+): Game_Play => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
   const currentPlayer = getCurrentPlayer(game);
 
@@ -68,8 +68,8 @@ export const triggerGoToJail = (
 };
 
 export const triggerLastTurnInJail = (
-  game: GameDiceInJailAnimationPhase | GamePendingPaymentLiquidationPhase,
-): GameOutOfJailAnimationPhase | GameCannotPayPhase => {
+  game: Game_DiceInJailAnimation | Game_PaymentLiquidation,
+): Game_OutOfJailAnimation | Game_CannotPay => {
   const currentPlayer = getCurrentPlayer(game);
 
   if (!hasEnoughMoney(currentPlayer, jailFine)) {
@@ -93,12 +93,12 @@ export const triggerLastTurnInJail = (
   };
 };
 
-export const triggerPayJailFine = (game: GameJailOptionsPhase): EndTurnOutputPhases => {
+export const triggerPayJailFine = (game: Game_JailOptions): EndTurnOutputPhases => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.fine);
   return triggerEndTurn(nextGame);
 };
 
-export const triggerRemainInJail = (game: GameDiceInJailAnimationPhase): GamePlayPhase => {
+export const triggerRemainInJail = (game: Game_DiceInJailAnimation): Game_Play => {
   const currentPlayer = getCurrentPlayer(game);
   let count = 0;
 
@@ -126,8 +126,8 @@ export const triggerRemainInJail = (game: GameDiceInJailAnimationPhase): GamePla
 };
 
 export const triggerRollDoublesInJail = (
-  game: GameDiceInJailAnimationPhase,
-): GameOutOfJailAnimationPhase => {
+  game: Game_DiceInJailAnimation,
+): Game_OutOfJailAnimation => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.dice);
   return {
     ...nextGame,
@@ -140,7 +140,7 @@ export const triggerRollDoublesInJail = (
   };
 };
 
-export const triggerUseJailCard = (game: GameJailOptionsPhase): GameRollDicePhase => {
+export const triggerUseJailCard = (game: Game_JailOptions): Game_RollDice => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.card);
   return {
     ...nextGame,

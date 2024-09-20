@@ -3,7 +3,7 @@ import {
   canRollDiceInJail,
   canUseJailCard,
   currencySymbol,
-  GameJailOptionsPhase,
+  Game_JailOptions,
   GameUpdateType,
   getCurrentPlayer,
   jailFine,
@@ -14,7 +14,7 @@ import { Button } from '../common/button';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const JailOptionsPrompt: PromptInterface<GameJailOptionsPhase> = (props) => {
+export const JailOptionsPrompt: PromptInterface<Game_JailOptions> = (props) => {
   const player = getCurrentPlayer(props.game);
 
   return (

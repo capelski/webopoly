@@ -1,12 +1,12 @@
 import { EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { GameBuyPropertyPhase, GamePlayPhase, Player, PropertySquare } from '../types';
+import { Game_BuyProperty, Game_Play, Player, PropertySquare } from '../types';
 
 export const triggerBuyProperty = (
-  game: GameBuyPropertyPhase,
+  game: Game_BuyProperty,
   propertySquare: PropertySquare,
   buyerId: Player['id'],
-): GamePlayPhase => {
+): Game_Play => {
   return {
     ...game,
     defaultAction: {
@@ -37,9 +37,7 @@ export const triggerBuyProperty = (
   };
 };
 
-export const triggerRejectProperty = (
-  game: GameBuyPropertyPhase,
-): GameBuyPropertyPhase | GamePlayPhase => {
+export const triggerRejectProperty = (game: Game_BuyProperty): Game_BuyProperty | Game_Play => {
   const { potentialBuyersId } = game.phaseData;
 
   if (potentialBuyersId.length === 0) {

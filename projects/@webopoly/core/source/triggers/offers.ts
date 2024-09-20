@@ -2,22 +2,22 @@ import { longActionInterval } from '../constants';
 import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType } from '../enums';
 import { getCurrentPlayer } from '../logic';
 import {
-  GameAnswerOfferPhase,
-  GameBuyPropertyLiquidationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_AnswerOffer,
+  Game_BuyingLiquidation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   Player,
   PropertySquare,
 } from '../types';
 
 type SellOfferInputPhases =
-  | GameBuyPropertyLiquidationPhase
-  | GamePendingPaymentLiquidationPhase
-  | GamePlayPhase
-  | GameRollDicePhase;
+  | Game_BuyingLiquidation
+  | Game_PaymentLiquidation
+  | Game_Play
+  | Game_RollDice;
 
-export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
+export const triggerAcceptOffer = (game: Game_AnswerOffer): SellOfferInputPhases => {
   const { buyerId, sellerId } =
     game.phaseData.offerType === OfferType.sell
       ? { buyerId: game.phaseData.targetPlayerId, sellerId: game.phaseData.playerId }
@@ -74,10 +74,10 @@ export const triggerAcceptOffer = (game: GameAnswerOfferPhase): SellOfferInputPh
 };
 
 export const triggerBuyingOffer = (
-  game: GamePlayPhase | GameRollDicePhase,
+  game: Game_Play | Game_RollDice,
   property: PropertySquare,
   amount: number,
-): GameAnswerOfferPhase => {
+): Game_AnswerOffer => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -98,7 +98,7 @@ export const triggerBuyingOffer = (
   };
 };
 
-export const triggerDeclineOffer = (game: GameAnswerOfferPhase): SellOfferInputPhases => {
+export const triggerDeclineOffer = (game: Game_AnswerOffer): SellOfferInputPhases => {
   return {
     ...game,
     ...game.phaseData.previous,
@@ -136,7 +136,7 @@ export const triggerSellingOffer = (
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],
-): GameAnswerOfferPhase => {
+): Game_AnswerOffer => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {

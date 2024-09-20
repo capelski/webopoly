@@ -7,13 +7,7 @@ import {
   PropertyType,
   SquareType,
 } from '../enums';
-import {
-  Game,
-  GameCannotPayPhase,
-  GamePendingPaymentLiquidationPhase,
-  Player,
-  Square,
-} from '../types';
+import { Game, Game_CannotPay, Game_PaymentLiquidation, Player, Square } from '../types';
 import { getCardAmount } from './cards';
 import { squares } from './squares';
 import { turnConsiderations } from './turn-considerations';
@@ -89,7 +83,7 @@ export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType):
     .id;
 };
 
-export const getPendingAmount = (game: GamePendingPaymentLiquidationPhase | GameCannotPayPhase) => {
+export const getPendingAmount = (game: Game_PaymentLiquidation | Game_CannotPay) => {
   const amount =
     game.phaseData.type === EventType.turnInJail
       ? jailFine

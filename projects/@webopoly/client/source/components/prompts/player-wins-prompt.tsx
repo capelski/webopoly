@@ -1,9 +1,9 @@
-import { GamePlayerWinsPhase, getPlayerById } from '@webopoly/core';
+import { Game_PlayerWins, getPlayerById } from '@webopoly/core';
 import React from 'react';
 import { Button } from '../common/button';
 import { PromptInterface } from './prompt-interface';
 
-export const PlayerWinsPrompt: PromptInterface<GamePlayerWinsPhase> = (props) => {
+export const PlayerWinsPrompt: PromptInterface<Game_PlayerWins> = (props) => {
   const winningPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
 
   return (

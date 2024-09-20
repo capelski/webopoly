@@ -1,12 +1,12 @@
 import { GamePhase } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { Game, GameApplyCardPhase, GameDrawCardPhase, Player } from '../types';
+import { Game, Game_ApplyCard, Game_DrawCard, Player } from '../types';
 
 export const canApplyCard = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameApplyCardPhase;
+  game: Game_ApplyCard;
 } | null => {
   if (game.phase !== GamePhase.applyCard) {
     return null;
@@ -24,7 +24,7 @@ export const canDrawCard = (
   game: Game,
   windowPlayerId: Player['id'],
 ): {
-  game: GameDrawCardPhase;
+  game: Game_DrawCard;
 } | null => {
   if (game.phase !== GamePhase.drawCard) {
     return null;

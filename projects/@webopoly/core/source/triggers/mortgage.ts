@@ -2,15 +2,15 @@ import { EventType, PropertyStatus } from '../enums';
 import { getClearMortgageAmount, getMortgageAmount } from '../logic';
 import {
   Game,
-  GameBuyPropertyLiquidationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_BuyingLiquidation,
+  Game_PaymentLiquidation,
+  Game_Play,
+  Game_RollDice,
   PropertySquare,
 } from '../types';
 
 export const triggerClearMortgage = (
-  game: GamePlayPhase | GameRollDicePhase,
+  game: Game_Play | Game_RollDice,
   property: PropertySquare,
 ): Game => {
   return {
@@ -43,11 +43,7 @@ export const triggerClearMortgage = (
 };
 
 export const triggerMortgage = (
-  game:
-    | GameBuyPropertyLiquidationPhase
-    | GamePendingPaymentLiquidationPhase
-    | GamePlayPhase
-    | GameRollDicePhase,
+  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice,
   property: PropertySquare,
 ): Game => {
   return {

@@ -2,33 +2,30 @@ import { longActionInterval } from '../constants';
 import { GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import {
-  GameApplyCardPhase,
-  GameCannotPayPhase,
-  GameDiceInJailAnimationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayPhase,
+  Game_ApplyCard,
+  Game_CannotPay,
+  Game_DiceInJailAnimation,
+  Game_PaymentLiquidation,
+  Game_Play,
   PayRentEvent,
   PayTaxEvent,
   PendingEvent,
 } from '../types';
 
 export type CannotPayInputPhases =
-  | GamePlayPhase
-  | GameDiceInJailAnimationPhase // Is player's last turn in jail and they don't have enough money to pay the fine
-  | GameApplyCardPhase
-  | GamePendingPaymentLiquidationPhase; // Player resumes a pending payment but they still don't have enough money
+  | Game_Play
+  | Game_DiceInJailAnimation // Is player's last turn in jail and they don't have enough money to pay the fine
+  | Game_ApplyCard
+  | Game_PaymentLiquidation; // Player resumes a pending payment but they still don't have enough money
 
-export type ExpenseInputPhases =
-  | GamePlayPhase
-  | GameApplyCardPhase
-  | GamePendingPaymentLiquidationPhase; // Player resumes a pending payment and has enough money
+export type ExpenseInputPhases = Game_Play | Game_ApplyCard | Game_PaymentLiquidation; // Player resumes a pending payment and has enough money
 
-export type ExpenseOutputPhases = GamePlayPhase | GameCannotPayPhase;
+export type ExpenseOutputPhases = Game_Play | Game_CannotPay;
 
 export const triggerCannotPay = (
   game: CannotPayInputPhases,
   event: PendingEvent,
-): GameCannotPayPhase => {
+): Game_CannotPay => {
   return {
     ...game,
     defaultAction: {

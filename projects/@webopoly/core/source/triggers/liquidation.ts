@@ -2,17 +2,17 @@ import { longActionInterval } from '../constants';
 import { CardType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import {
-  GameBuyPropertyLiquidationPhase,
-  GameBuyPropertyPhase,
-  GameCannotPayPhase,
-  GameOutOfJailAnimationPhase,
-  GamePendingPaymentLiquidationPhase,
+  Game_BuyProperty,
+  Game_BuyingLiquidation,
+  Game_CannotPay,
+  Game_OutOfJailAnimation,
+  Game_PaymentLiquidation,
 } from '../types';
 import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
 import { ExpenseOutputPhases, triggerCannotPay, triggerPayRent, triggerPayTax } from './payments';
 
-export const resumeBuyProperty = (game: GameBuyPropertyLiquidationPhase): GameBuyPropertyPhase => {
+export const resumeBuyProperty = (game: Game_BuyingLiquidation): Game_BuyProperty => {
   return {
     ...game,
     defaultAction: {
@@ -24,8 +24,8 @@ export const resumeBuyProperty = (game: GameBuyPropertyLiquidationPhase): GameBu
 };
 
 export const resumePendingPayment = (
-  game: GamePendingPaymentLiquidationPhase,
-): GameCannotPayPhase | ExpenseOutputPhases | GameOutOfJailAnimationPhase => {
+  game: Game_PaymentLiquidation,
+): Game_CannotPay | ExpenseOutputPhases | Game_OutOfJailAnimation => {
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
 
@@ -44,9 +44,7 @@ export const resumePendingPayment = (
   }
 };
 
-export const triggerBuyPropertyLiquidation = (
-  game: GameBuyPropertyPhase,
-): GameBuyPropertyLiquidationPhase => {
+export const triggerBuyPropertyLiquidation = (game: Game_BuyProperty): Game_BuyingLiquidation => {
   return {
     ...game,
     defaultAction: {
@@ -58,9 +56,7 @@ export const triggerBuyPropertyLiquidation = (
   };
 };
 
-export const triggerPendingPaymentLiquidation = (
-  game: GameCannotPayPhase,
-): GamePendingPaymentLiquidationPhase => {
+export const triggerPendingPaymentLiquidation = (game: Game_CannotPay): Game_PaymentLiquidation => {
   return {
     ...game,
     defaultAction: {

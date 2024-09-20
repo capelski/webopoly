@@ -7,23 +7,23 @@ import {
   hasExtraTurn,
 } from '../logic';
 import {
-  GameCannotPayPhase,
-  GameJailOptionsPhase,
-  GamePlayerWinsPhase,
-  GamePlayPhase,
-  GameRollDicePhase,
+  Game_CannotPay,
+  Game_JailOptions,
+  Game_Play,
+  Game_PlayerWins,
+  Game_RollDice,
 } from '../types';
 import { canUseJailCard } from '../validators';
 
 export type EndTurnInputPhases =
-  | GamePlayPhase // A player finishes their turn
-  | GameJailOptionsPhase // A player pays the jail fine to get out
-  | GameCannotPayPhase; // A player declares bankruptcy
+  | Game_Play // A player finishes their turn
+  | Game_JailOptions // A player pays the jail fine to get out
+  | Game_CannotPay; // A player declares bankruptcy
 
 export type EndTurnOutputPhases =
-  | GameRollDicePhase // Next player must start their turn and they are NOT in jail
-  | GameJailOptionsPhase // Next player must start their turn and they ARE in jail
-  | GamePlayerWinsPhase; // Next player must start their turn and they have won
+  | Game_RollDice // Next player must start their turn and they are NOT in jail
+  | Game_JailOptions // Next player must start their turn and they ARE in jail
+  | Game_PlayerWins; // Next player must start their turn and they have won
 
 export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases => {
   const currentPlayer = getCurrentPlayer(game);
@@ -57,7 +57,7 @@ export const triggerEndTurn = (game: EndTurnInputPhases): EndTurnOutputPhases =>
   }
 
   if (nextPlayer.isInJail) {
-    const nextGame: GameJailOptionsPhase = {
+    const nextGame: Game_JailOptions = {
       ...game,
       currentPlayerId: nextPlayerId,
       phase: GamePhase.jailOptions,

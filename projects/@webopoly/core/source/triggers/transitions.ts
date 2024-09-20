@@ -8,23 +8,23 @@ import {
   getNextSquareId,
 } from '../logic';
 import {
-  GameDiceAnimationPhase,
-  GameGoToJailPhase,
-  GameOutOfJailAnimationPhase,
-  GamePendingPaymentLiquidationPhase,
-  GamePlayerAnimationPhase,
+  Game_DiceAnimation,
+  Game_GoToJail,
+  Game_OutOfJailAnimation,
+  Game_PaymentLiquidation,
+  Game_PlayerAnimation,
 } from '../types';
 import { applyDiceRoll } from './dice-roll';
 import { MovePlayerOutputPhases } from './move-player';
 
 export const triggerFirstPlayerTransition = (
-  game: GameDiceAnimationPhase | GameOutOfJailAnimationPhase | GamePendingPaymentLiquidationPhase,
-): GamePlayerAnimationPhase | GameGoToJailPhase => {
+  game: Game_DiceAnimation | Game_OutOfJailAnimation | Game_PaymentLiquidation,
+): Game_PlayerAnimation | Game_GoToJail => {
   const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
 
   if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
-    return <GameGoToJailPhase>{
+    return <Game_GoToJail>{
       ...game,
       defaultAction: {
         playerId: currentPlayer.id,
@@ -47,12 +47,12 @@ export const triggerFirstPlayerTransition = (
       pendingMoves,
       playerId: currentPlayer.id,
     },
-  }) as GamePlayerAnimationPhase;
+  }) as Game_PlayerAnimation;
 };
 
 export const triggerNextPlayerTransition = (
-  game: GamePlayerAnimationPhase,
-): GamePlayerAnimationPhase | MovePlayerOutputPhases => {
+  game: Game_PlayerAnimation,
+): Game_PlayerAnimation | MovePlayerOutputPhases => {
   const { currentSquareId, pendingMoves, playerId } = game.phaseData;
   const nextMove = 1;
 
