@@ -2,7 +2,6 @@
     Revisit phase/GameUpdateType names
 
 - Two dice
-- Remove start game for non-first players in server game
 
 ? Buy property in owned neighbourhood on pass go
 ? Jail: allow paying fine. If lost three turns, don't pay

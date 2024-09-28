@@ -93,6 +93,7 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
   }, []);
 
   const windowPlayerId = room?.players.find((p) => p.isOwnPlayer)?.id;
+  const isGameOwner = room?.players.findIndex((p) => p.isOwnPlayer) === 0;
 
   const createRoom = () => {
     socket && socketEmit(socket, WSClientMessageType.createRoom, undefined);
@@ -171,6 +172,7 @@ export const ServerGame: React.FC<ServerGameProps> = (props) => {
       ) : room ? (
         <StartServerGame
           exitRoom={exitRoom}
+          isGameOwner={isGameOwner}
           room={room}
           startGame={startGame}
           updatePlayerName={updatePlayerName}
