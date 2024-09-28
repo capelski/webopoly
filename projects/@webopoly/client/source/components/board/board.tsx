@@ -97,11 +97,6 @@ export const Board: React.FC<BoardProps> = (props) => {
                 props.triggerUpdate({ type: GameUpdateType.rollDice });
               }}
               style={{
-                animation: canRoll
-                  ? 'heart-beat 1.5s infinite'
-                  : animateDice
-                  ? `roll ${diceTransitionDuration}s infinite`
-                  : undefined,
                 borderRadius: 15,
                 fontSize: animateDice ? 48 : 32,
                 marginBottom: 8,
@@ -109,7 +104,30 @@ export const Board: React.FC<BoardProps> = (props) => {
               }}
               type="transparent"
             >
-              {diceSymbol}
+              <span
+                style={{
+                  display: 'inline-block',
+                  animation: canRoll
+                    ? 'heart-beat 1.5s infinite'
+                    : animateDice
+                    ? `roll ${diceTransitionDuration}s infinite`
+                    : undefined,
+                }}
+              >
+                {diceSymbol}
+              </span>
+              <span
+                style={{
+                  display: 'inline-block',
+                  animation: canRoll
+                    ? 'heart-beat 1.5s infinite'
+                    : animateDice
+                    ? `roll ${diceTransitionDuration}s infinite`
+                    : undefined,
+                }}
+              >
+                {diceSymbol}
+              </span>
             </Button>
             {diceToString(props.game.dice)}
           </div>
