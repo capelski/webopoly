@@ -1,8 +1,6 @@
 - Centralize phase transitions in a single dictionary? (e.g. SellOfferInputPhases, MovePlayerOutputPhases)
     Revisit phase/GameUpdateType names
 
-- Two dice
-
 ? Buy property in owned neighbourhood on pass go
 ? Jail: allow paying fine. If lost three turns, don't pay
 ? Remove properties based on players number

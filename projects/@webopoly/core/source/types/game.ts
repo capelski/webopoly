@@ -28,112 +28,94 @@ type GamePhaseData<TPhase extends GamePhase, TPhaseData = any> = GameBase<TPhase
   phaseData: TPhaseData;
 };
 
-export type Game_AnswerOffer = GamePhaseData<
-  GamePhase.answerOffer,
-  {
-    amount: number;
-    offerType: OfferType;
-    playerId: Player['id'];
-    previous:
-      | {
-          phase: GamePhase.play | GamePhase.rollDice;
-        }
-      | {
-          phase: GamePhase.buyingLiquidation;
-          phaseData: BuyPropertyData;
-        }
-      | {
-          phase: GamePhase.paymentLiquidation;
-          phaseData: PendingEvent;
-        };
-    propertyId: Square['id'];
-    targetPlayerId: Player['id'];
-  }
->;
-
-export type Game_AnswerTrade = GamePhaseData<
-  GamePhase.answerTrade,
-  {
-    playerId: Player['id'];
-    playerPropertiesId: Square['id'][];
-    previous: GamePhase.play | GamePhase.rollDice;
-    targetPlayerId: Player['id'];
-    targetPropertiesId: Square['id'][];
-  }
->;
-
-export type Game_ApplyCard = GamePhaseData<
-  GamePhase.applyCard,
-  {
-    cardId: Card['id'];
-  }
->;
-
-export type Game_BuyProperty = GamePhaseData<GamePhase.buyProperty, BuyPropertyData>;
-
-export type Game_BuyingLiquidation = GamePhaseData<GamePhase.buyingLiquidation, BuyPropertyData>;
-
-export type Game_CannotPay = GamePhaseData<GamePhase.cannotPay, PendingEvent>;
-
-export type Game_DiceAnimation = GameBase<GamePhase.diceAnimation>;
-
-export type Game_DiceInJailAnimation = GameBase<GamePhase.diceInJailAnimation>;
-
-export type Game_DrawCard = GameBase<GamePhase.drawCard>;
-
-export type Game_GoToJail = GameBase<GamePhase.goToJail>;
-
-export type Game_JailOptions = GameBase<GamePhase.jailOptions>;
-
-export type Game_OutOfJailAnimation = GameBase<GamePhase.outOfJailAnimation>;
-
-export type Game_PaymentLiquidation = GamePhaseData<GamePhase.paymentLiquidation, PendingEvent>;
-
-export type Game_Play = GameBase<GamePhase.play>;
-
-export type Game_PlayerAnimation = GamePhaseData<
-  GamePhase.playerAnimation,
-  {
-    currentSquareId: Square['id'];
-    pendingMoves: number;
-    playerId: Player['id'];
-  }
->;
-
-export type Game_PlayerWins = GamePhaseData<
-  GamePhase.playerWins,
-  {
-    playerId: Player['id'];
-  }
->;
-
-export type Game_RollDice = GameBase<GamePhase.rollDice>;
-
-export type Game_Trade = GamePhaseData<
-  GamePhase.trade,
-  {
-    previousPhase: GamePhase.play | GamePhase.rollDice;
-    other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
-    ownSquaresId: Square['id'][];
-  }
->;
-
-export type Game =
-  | Game_AnswerOffer
-  | Game_AnswerTrade
-  | Game_ApplyCard
-  | Game_BuyProperty
-  | Game_BuyingLiquidation
-  | Game_CannotPay
-  | Game_DiceAnimation
-  | Game_DiceInJailAnimation
-  | Game_DrawCard
-  | Game_GoToJail
-  | Game_JailOptions
-  | Game_OutOfJailAnimation
-  | Game_PaymentLiquidation
-  | Game_Play
-  | Game_PlayerAnimation
-  | Game_PlayerWins
-  | Game_RollDice
-  | Game_Trade;
+export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffer
+  ? GamePhaseData<
+      GamePhase.answerOffer,
+      {
+        amount: number;
+        offerType: OfferType;
+        playerId: Player['id'];
+        previous:
+          | {
+              phase: GamePhase.play | GamePhase.rollDice;
+            }
+          | {
+              phase: GamePhase.buyingLiquidation;
+              phaseData: BuyPropertyData;
+            }
+          | {
+              phase: GamePhase.paymentLiquidation;
+              phaseData: PendingEvent;
+            };
+        propertyId: Square['id'];
+        targetPlayerId: Player['id'];
+      }
+    >
+  : TPhase extends GamePhase.answerTrade
+  ? GamePhaseData<
+      GamePhase.answerTrade,
+      {
+        playerId: Player['id'];
+        playerPropertiesId: Square['id'][];
+        previous: GamePhase.play | GamePhase.rollDice;
+        targetPlayerId: Player['id'];
+        targetPropertiesId: Square['id'][];
+      }
+    >
+  : TPhase extends GamePhase.applyCard
+  ? GamePhaseData<
+      GamePhase.applyCard,
+      {
+        cardId: Card['id'];
+      }
+    >
+  : TPhase extends GamePhase.buyProperty
+  ? GamePhaseData<GamePhase.buyProperty, BuyPropertyData>
+  : TPhase extends GamePhase.buyingLiquidation
+  ? GamePhaseData<GamePhase.buyingLiquidation, BuyPropertyData>
+  : TPhase extends GamePhase.cannotPay
+  ? GamePhaseData<GamePhase.cannotPay, PendingEvent>
+  : TPhase extends GamePhase.diceAnimation
+  ? GameBase<GamePhase.diceAnimation>
+  : TPhase extends GamePhase.diceInJailAnimation
+  ? GameBase<GamePhase.diceInJailAnimation>
+  : TPhase extends GamePhase.drawCard
+  ? GameBase<GamePhase.drawCard>
+  : TPhase extends GamePhase.goToJail
+  ? GameBase<GamePhase.goToJail>
+  : TPhase extends GamePhase.jailOptions
+  ? GameBase<GamePhase.jailOptions>
+  : TPhase extends GamePhase.outOfJailAnimation
+  ? GameBase<GamePhase.outOfJailAnimation>
+  : TPhase extends GamePhase.paymentLiquidation
+  ? GamePhaseData<GamePhase.paymentLiquidation, PendingEvent>
+  : TPhase extends GamePhase.play
+  ? GameBase<GamePhase.play>
+  : TPhase extends GamePhase.playerAnimation
+  ? GamePhaseData<
+      GamePhase.playerAnimation,
+      {
+        currentSquareId: Square['id'];
+        pendingMoves: number;
+        playerId: Player['id'];
+      }
+    >
+  : TPhase extends GamePhase.playerWins
+  ? GamePhaseData<
+      GamePhase.playerWins,
+      {
+        playerId: Player['id'];
+      }
+    >
+  : TPhase extends GamePhase.rollDice
+  ? GameBase<GamePhase.rollDice>
+  : TPhase extends GamePhase.trade
+  ? GamePhaseData<
+      GamePhase.trade,
+      {
+        previousPhase: GamePhase.play | GamePhase.rollDice;
+        other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
+        ownSquaresId: Square['id'][];
+      }
+    >
+  : never;

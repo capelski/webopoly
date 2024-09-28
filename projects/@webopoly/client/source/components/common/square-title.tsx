@@ -5,7 +5,7 @@ import { streetsColorMap } from '../board/outer-rows/street-colors-map';
 import { Title } from './title';
 
 interface SquareTitleProps {
-  game: Game;
+  game: Game<any>;
   mode?: 'details' | 'trade';
   square: PropertySquare;
 }

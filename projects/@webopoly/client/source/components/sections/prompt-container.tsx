@@ -4,12 +4,12 @@ import { PromptComponent } from '../prompts/prompt';
 
 interface PromptContainerProps {
   exitGame: () => void;
-  game: Game;
+  game: Game<any>;
   triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
 }
 
-const isPromptPhase = (game: Game) =>
+const isPromptPhase = (game: Game<any>) =>
   game.phase === GamePhase.answerOffer ||
   game.phase === GamePhase.answerTrade ||
   game.phase === GamePhase.applyCard ||

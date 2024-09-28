@@ -1,12 +1,12 @@
 import { GamePhase, SquareType } from '../enums';
 import { getCurrentPlayer, getSquareById } from '../logic';
-import { Game, Game_BuyProperty, Player, PropertySquare } from '../types';
+import { Game, Player, PropertySquare } from '../types';
 
 export const canBuyProperty = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyProperty;
+  game: Game<GamePhase.buyProperty>;
   square: PropertySquare;
 } | null => {
   if (game.phase !== GamePhase.buyProperty) {
@@ -28,10 +28,10 @@ export const canBuyProperty = (
 };
 
 export const canRejectProperty = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyProperty;
+  game: Game<GamePhase.buyProperty>;
 } | null => {
   if (game.phase !== GamePhase.buyProperty) {
     return null;

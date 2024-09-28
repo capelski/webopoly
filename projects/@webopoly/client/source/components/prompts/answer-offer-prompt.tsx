@@ -1,7 +1,8 @@
 import {
   canAnswerOffer,
   currencySymbol,
-  Game_AnswerOffer,
+  Game,
+  GamePhase,
   GameUpdateType,
   getPlayerById,
   getSquareById,
@@ -14,7 +15,7 @@ import { Paragraph } from '../common/paragraph';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const AnswerOfferPrompt: PromptInterface<Game_AnswerOffer> = (props) => {
+export const AnswerOfferPrompt: PromptInterface<Game<GamePhase.answerOffer>> = (props) => {
   const initiatorPlayer = getPlayerById(props.game, props.game.phaseData.playerId);
   const square = getSquareById(props.game, props.game.phaseData.propertyId);
   const targetPlayer = getPlayerById(props.game, props.game.phaseData.targetPlayerId);

@@ -25,7 +25,7 @@ export type PendingState = {
 };
 
 export type PlayingState = {
-  game: Game;
+  game: Game<any>;
   messagingGroup: MessagingGroup<WebRTCMessage, PlayerPlaying>;
   self: PlayerPlaying;
 };

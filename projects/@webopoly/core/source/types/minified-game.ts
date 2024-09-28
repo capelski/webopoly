@@ -1,34 +1,22 @@
 import { GamePhase } from '../enums';
 import { EventMinified } from './event-minified';
-import {
-  Game,
-  Game_AnswerOffer,
-  Game_AnswerTrade,
-  Game_ApplyCard,
-  Game_BuyProperty,
-  Game_BuyingLiquidation,
-  Game_CannotPay,
-  Game_PaymentLiquidation,
-  Game_PlayerAnimation,
-  Game_PlayerWins,
-  Game_Trade,
-} from './game';
+import { Game } from './game';
 import { PlayerMinified } from './player-minified';
 import { SquareMinified } from './square-minified';
 
 type MinifiedGameBase<TPhase extends GamePhase> = {
   /** centerPot */
-  cp: Game['centerPot'];
+  cp: Game<any>['centerPot'];
   /** currentPlayerId */
-  ci: Game['currentPlayerId'];
+  ci: Game<any>['currentPlayerId'];
   /** dice */
-  d: Game['dice'];
+  d: Game<any>['dice'];
   /** defaultAction */
-  da: Game['defaultAction'];
+  da: Game<any>['defaultAction'];
   /** eventHistory */
   eh: EventMinified[];
   /** nextCardIds */
-  nci: Game['nextCardIds'];
+  nci: Game<any>['nextCardIds'];
   /** notifications */
   n: EventMinified[];
   /** phase */
@@ -39,72 +27,54 @@ type MinifiedGameBase<TPhase extends GamePhase> = {
   sq: SquareMinified[];
 };
 
-type MinifiedGame_AnswerOffer = MinifiedGameBase<GamePhase.answerOffer> & {
+type MinifiedGamePhaseData<
+  TPhase extends GamePhase,
+  TPhaseData = any,
+> = MinifiedGameBase<TPhase> & {
   /** phaseData */
-  pd: Game_AnswerOffer['phaseData'];
+  pd: TPhaseData;
 };
 
-type MinifiedGame_AnswerTrade = MinifiedGameBase<GamePhase.answerTrade> & {
-  /** phaseData */
-  pd: Game_AnswerTrade['phaseData'];
-};
-
-type MinifiedGame_ApplyCard = MinifiedGameBase<GamePhase.applyCard> & {
-  /** phaseData */
-  pd: Game_ApplyCard['phaseData'];
-};
-
-type MinifiedGame_BuyProperty = MinifiedGameBase<GamePhase.buyProperty> & {
-  /** phaseData */
-  pd: Game_BuyProperty['phaseData'];
-};
-
-type MinifiedGame_BuyingLiquidation = MinifiedGameBase<GamePhase.buyingLiquidation> & {
-  /** phaseData */
-  pd: Game_BuyingLiquidation['phaseData'];
-};
-
-type MinifiedGame_CannotPay = MinifiedGameBase<GamePhase.cannotPay> & {
-  /** phaseData */
-  pd: Game_CannotPay['phaseData'];
-};
-
-type MinifiedGame_PaymentLiquidation = MinifiedGameBase<GamePhase.paymentLiquidation> & {
-  /** phaseData */
-  pd: Game_PaymentLiquidation['phaseData'];
-};
-
-type MinifiedGame_PlayerAnimation = MinifiedGameBase<GamePhase.playerAnimation> & {
-  /** phaseData */
-  pd: Game_PlayerAnimation['phaseData'];
-};
-
-type MinifiedGame_PlayerWins = MinifiedGameBase<GamePhase.playerWins> & {
-  /** phaseData */
-  pd: Game_PlayerWins['phaseData'];
-};
-
-type MinifiedGame_Trade = MinifiedGameBase<GamePhase.trade> & {
-  /** phaseData */
-  pd: Game_Trade['phaseData'];
-};
-
-export type MinifiedGame =
-  | MinifiedGame_AnswerOffer
-  | MinifiedGame_AnswerTrade
-  | MinifiedGame_ApplyCard
-  | MinifiedGame_BuyProperty
-  | MinifiedGame_BuyingLiquidation
-  | MinifiedGame_CannotPay
-  | MinifiedGameBase<GamePhase.diceAnimation>
-  | MinifiedGameBase<GamePhase.diceInJailAnimation>
-  | MinifiedGameBase<GamePhase.drawCard>
-  | MinifiedGameBase<GamePhase.goToJail>
-  | MinifiedGameBase<GamePhase.jailOptions>
-  | MinifiedGameBase<GamePhase.outOfJailAnimation>
-  | MinifiedGame_PaymentLiquidation
-  | MinifiedGameBase<GamePhase.play>
-  | MinifiedGame_PlayerAnimation
-  | MinifiedGame_PlayerWins
-  | MinifiedGameBase<GamePhase.rollDice>
-  | MinifiedGame_Trade;
+export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffer
+  ? MinifiedGamePhaseData<GamePhase.answerOffer, Game<GamePhase.answerOffer>['phaseData']>
+  : TPhase extends GamePhase.answerTrade
+  ? MinifiedGamePhaseData<GamePhase.answerTrade, Game<GamePhase.answerTrade>['phaseData']>
+  : TPhase extends GamePhase.applyCard
+  ? MinifiedGamePhaseData<GamePhase.applyCard, Game<GamePhase.applyCard>['phaseData']>
+  : TPhase extends GamePhase.buyProperty
+  ? MinifiedGamePhaseData<GamePhase.buyProperty, Game<GamePhase.buyProperty>['phaseData']>
+  : TPhase extends GamePhase.buyingLiquidation
+  ? MinifiedGamePhaseData<
+      GamePhase.buyingLiquidation,
+      Game<GamePhase.buyingLiquidation>['phaseData']
+    >
+  : TPhase extends GamePhase.cannotPay
+  ? MinifiedGamePhaseData<GamePhase.cannotPay, Game<GamePhase.cannotPay>['phaseData']>
+  : TPhase extends GamePhase.diceAnimation
+  ? MinifiedGameBase<GamePhase.diceAnimation>
+  : TPhase extends GamePhase.diceInJailAnimation
+  ? MinifiedGameBase<GamePhase.diceInJailAnimation>
+  : TPhase extends GamePhase.drawCard
+  ? MinifiedGameBase<GamePhase.drawCard>
+  : TPhase extends GamePhase.goToJail
+  ? MinifiedGameBase<GamePhase.goToJail>
+  : TPhase extends GamePhase.jailOptions
+  ? MinifiedGameBase<GamePhase.jailOptions>
+  : TPhase extends GamePhase.outOfJailAnimation
+  ? MinifiedGameBase<GamePhase.outOfJailAnimation>
+  : TPhase extends GamePhase.paymentLiquidation
+  ? MinifiedGamePhaseData<
+      GamePhase.paymentLiquidation,
+      Game<GamePhase.paymentLiquidation>['phaseData']
+    >
+  : TPhase extends GamePhase.play
+  ? MinifiedGameBase<GamePhase.play>
+  : TPhase extends GamePhase.playerAnimation
+  ? MinifiedGamePhaseData<GamePhase.playerAnimation, Game<GamePhase.playerAnimation>['phaseData']>
+  : TPhase extends GamePhase.playerWins
+  ? MinifiedGamePhaseData<GamePhase.playerWins, Game<GamePhase.playerWins>['phaseData']>
+  : TPhase extends GamePhase.rollDice
+  ? MinifiedGameBase<GamePhase.rollDice>
+  : TPhase extends GamePhase.trade
+  ? MinifiedGamePhaseData<GamePhase.trade, Game<GamePhase.trade>['phaseData']>
+  : never;

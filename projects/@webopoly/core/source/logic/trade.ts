@@ -1,8 +1,8 @@
-import { SquareType } from '../enums';
-import { Game, Game_Trade, Player, PropertySquare } from '../types';
+import { GamePhase, SquareType } from '../enums';
+import { Game, Player, PropertySquare } from '../types';
 import { getCurrentPlayer } from './game';
 
-export const getPropertyOwnersId = (game: Game): Player['id'][] => {
+export const getPropertyOwnersId = (game: Game<any>): Player['id'][] => {
   return game.squares.reduce<Player['id'][]>((reduced, square) => {
     return square.type === SquareType.property &&
       square.ownerId &&
@@ -12,7 +12,7 @@ export const getPropertyOwnersId = (game: Game): Player['id'][] => {
   }, []);
 };
 
-export const getTradingPlayersId = (game: Game_Trade): Player['id'][] => {
+export const getTradingPlayersId = (game: Game<GamePhase.trade>): Player['id'][] => {
   const currentPlayer = getCurrentPlayer(game);
 
   const ownId = game.phaseData.ownSquaresId.length > 0 ? [currentPlayer.id] : [];
@@ -24,14 +24,14 @@ export const getTradingPlayersId = (game: Game_Trade): Player['id'][] => {
   return [...ownId, ...otherId];
 };
 
-export const isSelectedForTrade = (game: Game_Trade, square: PropertySquare) => {
+export const isSelectedForTrade = (game: Game<GamePhase.trade>, square: PropertySquare) => {
   return (
     game.phaseData.other.squaresId.includes(square.id) ||
     game.phaseData.ownSquaresId.includes(square.id)
   );
 };
 
-export const isTradableSquare = (game: Game_Trade, square: PropertySquare) => {
+export const isTradableSquare = (game: Game<GamePhase.trade>, square: PropertySquare) => {
   const currentPlayer = getCurrentPlayer(game);
 
   return (

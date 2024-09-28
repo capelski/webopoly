@@ -5,7 +5,7 @@ import { squaresRotation } from '../squares-rotation';
 import { InnerSquareData } from './inner-squares-map';
 
 export type InnerSquareProps = {
-  game: Game;
+  game: Game<any>;
   innerSquare: InnerSquareData;
   isLandscape: boolean;
   zoom: number;

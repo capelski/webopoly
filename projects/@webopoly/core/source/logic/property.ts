@@ -25,7 +25,7 @@ export const getMortgageAmount = (property: PropertySquare) => {
   return Math.round(mortgagePercentage * property.price);
 };
 
-export const getRentAmount = (game: Game, property: PropertySquare) => {
+export const getRentAmount = (game: Game<any>, property: PropertySquare) => {
   const landlord = getPlayerById(game, property.ownerId!);
 
   let rent = 0;

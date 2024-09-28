@@ -4,7 +4,7 @@ import { InnerSquare } from './inner-square';
 import { InnerSquareData } from './inner-squares-map';
 
 export type InnerRowProps = {
-  game: Game;
+  game: Game<any>;
   innerSquares: InnerSquareData[];
   isLandscape: boolean;
   style?: CSSProperties;

@@ -2,8 +2,8 @@ import { GamePhase, PropertyType, SquareType } from '../../enums';
 import { EventMinified, Game, MinifiedGame, PlayerMinified, SquareMinified } from '../../types';
 import { eventsMap, Minifier } from './events-map';
 
-export const serializeGame = (game: Game): string => {
-  const minifiedGame: MinifiedGame = {
+export const serializeGame = (game: Game<any>): string => {
+  const minifiedGame: MinifiedGame<any> = {
     ci: game.currentPlayerId,
     cp: game.centerPot,
     d: game.dice,

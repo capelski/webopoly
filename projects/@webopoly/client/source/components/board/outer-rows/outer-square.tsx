@@ -24,7 +24,7 @@ import { SquareOfferModal } from './square-offer-modal';
 import { streetsColorMap } from './street-colors-map';
 
 export type OuterSquareProps = {
-  game: Game;
+  game: Game<any>;
   isLandscape: boolean;
   square: Square;
   style?: CSSProperties;

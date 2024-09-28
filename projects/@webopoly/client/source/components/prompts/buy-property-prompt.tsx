@@ -2,7 +2,8 @@ import {
   canBuyProperty,
   canLiquidateBuyProperty,
   canRejectProperty,
-  Game_BuyProperty,
+  Game,
+  GamePhase,
   GameUpdateType,
   getCurrentPlayer,
   getSquareById,
@@ -14,7 +15,7 @@ import { SquareDetails } from '../common/square-details';
 import { Title } from '../common/title';
 import { PromptInterface } from './prompt-interface';
 
-export const BuyPropertyPrompt: PromptInterface<Game_BuyProperty> = (props) => {
+export const BuyPropertyPrompt: PromptInterface<Game<GamePhase.buyProperty>> = (props) => {
   const currentBuyer = getCurrentPlayer(props.game);
   const originalBuyer = getCurrentPlayer(props.game, { omitTurnConsiderations: true });
 

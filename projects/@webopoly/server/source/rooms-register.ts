@@ -2,7 +2,7 @@ import { Game, Player, StringId } from '@webopoly/core';
 import { ServerSocket } from './server-socket';
 
 export type Room = {
-  game: Game | undefined;
+  game: Game<any> | undefined;
   id: StringId;
   players: {
     id: Player['id'] | undefined;

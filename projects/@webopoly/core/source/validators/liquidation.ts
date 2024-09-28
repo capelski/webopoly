@@ -1,19 +1,12 @@
 import { GamePhase, SquareType } from '../enums';
 import { getCurrentPlayer, getSquareById } from '../logic';
-import {
-  Game,
-  Game_BuyProperty,
-  Game_BuyingLiquidation,
-  Game_CannotPay,
-  Game_PaymentLiquidation,
-  Player,
-} from '../types';
+import { Game, Player } from '../types';
 
 export const canLiquidateBuyProperty = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyProperty;
+  game: Game<GamePhase.buyProperty>;
 } | null => {
   if (game.phase !== GamePhase.buyProperty) {
     return null;
@@ -34,10 +27,10 @@ export const canLiquidateBuyProperty = (
 };
 
 export const canLiquidatePendingPayment = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_CannotPay;
+  game: Game<GamePhase.cannotPay>;
 } | null => {
   if (game.phase !== GamePhase.cannotPay) {
     return null;
@@ -52,10 +45,10 @@ export const canLiquidatePendingPayment = (
 };
 
 export const canResume = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyingLiquidation | Game_PaymentLiquidation;
+  game: Game<GamePhase.buyingLiquidation> | Game<GamePhase.paymentLiquidation>;
 } | null => {
   if (game.phase !== GamePhase.buyingLiquidation && game.phase !== GamePhase.paymentLiquidation) {
     return null;

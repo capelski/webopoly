@@ -23,7 +23,7 @@ import { Room, roomsRegister } from './rooms-register';
 import { broadcastRoomUpdate, messageReceived, replyMessage, ServerSocket } from './server-socket';
 import { roomToRoomState } from './transformers';
 
-const updateGame = (room: Room) => (updatedGame: Game) => {
+const updateGame = (room: Room) => (updatedGame: Game<any>) => {
   room.game = updatedGame;
   broadcastRoomUpdate(room);
 

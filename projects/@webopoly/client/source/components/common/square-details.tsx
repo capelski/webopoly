@@ -31,7 +31,7 @@ import { PlayerAvatar } from './player-avatar';
 import { SquareTitle } from './square-title';
 
 interface SquareDetailsProps {
-  game: Game;
+  game: Game<any>;
   square: PropertySquare;
 }
 

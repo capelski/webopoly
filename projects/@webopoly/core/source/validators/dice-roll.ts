@@ -1,11 +1,11 @@
 import { GamePhase } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { Game, Game_RollDice, Player } from '../types';
+import { Game, Player } from '../types';
 
 export const canRollDice = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
-): { game: Game_RollDice } | null => {
+): { game: Game<GamePhase.rollDice> } | null => {
   if (game.phase !== GamePhase.rollDice) {
     return null;
   }

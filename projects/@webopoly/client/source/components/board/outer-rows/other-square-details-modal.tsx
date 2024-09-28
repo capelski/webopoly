@@ -14,7 +14,7 @@ import { Title } from '../../common/title';
 import { SquareIcon } from './square-icon';
 
 interface OtherSquareDetailsModalProps {
-  game: Game;
+  game: Game<any>;
   setSquareModalType: (squareModalType: SquareModalType | undefined) => void;
   square: Square;
 }

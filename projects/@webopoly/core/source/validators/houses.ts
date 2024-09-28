@@ -6,23 +6,14 @@ import {
   getNeighborhoodStreets,
   getSquareById,
 } from '../logic';
-import {
-  Game,
-  Game_BuyingLiquidation,
-  Game_PaymentLiquidation,
-  Game_Play,
-  Game_RollDice,
-  Player,
-  Square,
-  StreetSquare,
-} from '../types';
+import { Game, Player, Square, StreetSquare } from '../types';
 
 export const canBuildHouse = (
-  game: Game,
+  game: Game<any>,
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: Game_Play | Game_RollDice;
+  game: Game<GamePhase.play> | Game<GamePhase.rollDice>;
   street: StreetSquare;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
@@ -60,11 +51,15 @@ export const canBuildHouse = (
 };
 
 export const canSellHouse = (
-  game: Game,
+  game: Game<any>,
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice;
+  game:
+    | Game<GamePhase.buyingLiquidation>
+    | Game<GamePhase.paymentLiquidation>
+    | Game<GamePhase.play>
+    | Game<GamePhase.rollDice>;
   street: StreetSquare;
 } | null => {
   if (

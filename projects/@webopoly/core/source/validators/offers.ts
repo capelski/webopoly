@@ -1,22 +1,12 @@
 import { GamePhase, PropertyType, SquareType } from '../enums';
 import { getCurrentPlayer, getPlayerById, getSquareById } from '../logic';
-import {
-  Game,
-  Game_AnswerOffer,
-  Game_BuyingLiquidation,
-  Game_PaymentLiquidation,
-  Game_Play,
-  Game_RollDice,
-  Player,
-  PropertySquare,
-  Square,
-} from '../types';
+import { Game, Player, PropertySquare, Square } from '../types';
 
 export const canAnswerOffer = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_AnswerOffer;
+  game: Game<GamePhase.answerOffer>;
 } | null => {
   if (game.phase !== GamePhase.answerOffer) {
     return null;
@@ -31,12 +21,12 @@ export const canAnswerOffer = (
 };
 
 export const canTriggerBuyingOffer = (
-  game: Game,
+  game: Game<any>,
   squareId: Square['id'],
   amount: number,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_Play | Game_RollDice;
+  game: Game<GamePhase.play> | Game<GamePhase.rollDice>;
   property: PropertySquare;
 } | null => {
   if (game.phase !== GamePhase.play && game.phase !== GamePhase.rollDice) {
@@ -67,13 +57,17 @@ export const canTriggerBuyingOffer = (
 };
 
 export const canTriggerSellingOffer = (
-  game: Game,
+  game: Game<any>,
   squareId: Square['id'],
   amount: number,
   targetPlayerId: Player['id'] | undefined,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice;
+  game:
+    | Game<GamePhase.buyingLiquidation>
+    | Game<GamePhase.paymentLiquidation>
+    | Game<GamePhase.play>
+    | Game<GamePhase.rollDice>;
   property: PropertySquare;
 } | null => {
   if (

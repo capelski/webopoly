@@ -22,7 +22,7 @@ import { OuterRightRow } from './outer-rows/outer-right-row';
 import { OuterTopRow } from './outer-rows/outer-top-row';
 
 interface BoardProps {
-  game: Game;
+  game: Game<any>;
   isLandscape: boolean;
   triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];

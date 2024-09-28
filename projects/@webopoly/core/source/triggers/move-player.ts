@@ -1,32 +1,23 @@
 import { passGoMoney } from '../constants';
 import { EventType, GamePhase, GameUpdateType, PlayerStatus, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
-import {
-  Game_ApplyCard,
-  Game_BuyProperty,
-  Game_CannotPay,
-  Game_DrawCard,
-  Game_GoToJail,
-  Game_Play,
-  Player,
-  Square,
-} from '../types';
+import { Game, Player, Square } from '../types';
 import { triggerCardPrompt } from './cards';
 import { triggerPayRent, triggerPayTax } from './payments';
 
-export type MovePlayerInputPhases = Game_Play | Game_ApplyCard;
+export type MovePlayerInputPhases = Game<GamePhase.play> | Game<GamePhase.applyCard>;
 
 export type MovePlayerOutputPhases =
-  | Game_Play
-  | Game_BuyProperty
-  | Game_DrawCard
-  | Game_GoToJail
-  | Game_CannotPay;
+  | Game<GamePhase.play>
+  | Game<GamePhase.buyProperty>
+  | Game<GamePhase.drawCard>
+  | Game<GamePhase.goToJail>
+  | Game<GamePhase.cannotPay>;
 
 const applyFreeParking = (
   game: MovePlayerInputPhases,
   currentPlayerId: Player['id'],
-): Game_Play => {
+): Game<GamePhase.play> => {
   return {
     ...game,
     centerPot: 0,
@@ -95,7 +86,7 @@ export const triggerMovePlayer = (
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
   if (goesToJail) {
-    const nextGame: Game_GoToJail = {
+    const nextGame: Game<GamePhase.goToJail> = {
       ...updatedGame,
       defaultAction: {
         playerId: currentPlayerId,
@@ -147,7 +138,7 @@ export const triggerMovePlayer = (
     const currentBuyerId = potentialBuyersId.shift();
 
     if (currentBuyerId) {
-      const nextGame: Game_BuyProperty = {
+      const nextGame: Game<GamePhase.buyProperty> = {
         ...updatedGame,
         defaultAction: {
           playerId: currentBuyerId,
@@ -164,7 +155,7 @@ export const triggerMovePlayer = (
     }
   }
 
-  const nextGame: Game_Play = {
+  const nextGame: Game<GamePhase.play> = {
     ...updatedGame,
     defaultAction: { playerId: currentPlayerId, update: { type: GameUpdateType.endTurn } },
     phase: GamePhase.play,

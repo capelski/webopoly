@@ -19,7 +19,7 @@ import { Modal } from '../../common/modal';
 import { Paragraph } from '../../common/paragraph';
 
 interface SquareOfferModalProps {
-  game: Game;
+  game: Game<any>;
   setSquareModalType: (squareModalType: undefined) => void;
   square: PropertySquare;
   squareModalType: SquareModalType.buyOffer | SquareModalType.sellOffer;

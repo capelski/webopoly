@@ -17,7 +17,7 @@ export type WebRTCRoomPending = {
 };
 
 export type WebRTCRoomPlaying = {
-  game: Game;
+  game: Game<any>;
   players: RoomPlayerPlaying[];
 };
 

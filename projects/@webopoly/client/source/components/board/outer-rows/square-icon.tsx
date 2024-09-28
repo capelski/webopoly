@@ -13,7 +13,7 @@ import {
 import { squaresRotation } from '../squares-rotation';
 
 interface SquareIconProps {
-  game?: Game;
+  game?: Game<any>;
   rotate?: boolean;
   square: Square;
 }

@@ -20,7 +20,7 @@ export type LocalGameProps = {
 };
 
 export class LocalGame extends React.Component<LocalGameProps> {
-  state: { game: Game | undefined } = { game: undefined };
+  state: { game: Game<any> | undefined } = { game: undefined };
 
   static getDerivedStateFromError() {
     return { game: undefined };
@@ -47,7 +47,7 @@ export class LocalGame extends React.Component<LocalGameProps> {
     }
   }
 
-  updateGame(game: Game) {
+  updateGame(game: Game<any>) {
     this.setState({ game });
     localStorage.setItem(LOCAL_GAME_STORAGE_KEY, serializeGame(game));
 

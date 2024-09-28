@@ -1,18 +1,14 @@
 import { longActionInterval } from '../constants';
 import { CardType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
-import {
-  Game_BuyProperty,
-  Game_BuyingLiquidation,
-  Game_CannotPay,
-  Game_OutOfJailAnimation,
-  Game_PaymentLiquidation,
-} from '../types';
+import { Game } from '../types';
 import { triggerApplyCard } from './cards';
 import { triggerLastTurnInJail } from './jail';
 import { ExpenseOutputPhases, triggerCannotPay, triggerPayRent, triggerPayTax } from './payments';
 
-export const resumeBuyProperty = (game: Game_BuyingLiquidation): Game_BuyProperty => {
+export const resumeBuyProperty = (
+  game: Game<GamePhase.buyingLiquidation>,
+): Game<GamePhase.buyProperty> => {
   return {
     ...game,
     defaultAction: {
@@ -24,8 +20,8 @@ export const resumeBuyProperty = (game: Game_BuyingLiquidation): Game_BuyPropert
 };
 
 export const resumePendingPayment = (
-  game: Game_PaymentLiquidation,
-): Game_CannotPay | ExpenseOutputPhases | Game_OutOfJailAnimation => {
+  game: Game<GamePhase.paymentLiquidation>,
+): Game<GamePhase.cannotPay> | ExpenseOutputPhases | Game<GamePhase.outOfJailAnimation> => {
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
 
@@ -44,7 +40,9 @@ export const resumePendingPayment = (
   }
 };
 
-export const triggerBuyPropertyLiquidation = (game: Game_BuyProperty): Game_BuyingLiquidation => {
+export const triggerBuyPropertyLiquidation = (
+  game: Game<GamePhase.buyProperty>,
+): Game<GamePhase.buyingLiquidation> => {
   return {
     ...game,
     defaultAction: {
@@ -56,7 +54,9 @@ export const triggerBuyPropertyLiquidation = (game: Game_BuyProperty): Game_Buyi
   };
 };
 
-export const triggerPendingPaymentLiquidation = (game: Game_CannotPay): Game_PaymentLiquidation => {
+export const triggerPendingPaymentLiquidation = (
+  game: Game<GamePhase.cannotPay>,
+): Game<GamePhase.paymentLiquidation> => {
   return {
     ...game,
     defaultAction: {

@@ -1,12 +1,12 @@
 import { GamePhase } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import { Game, Game_CannotPay, Player } from '../types';
+import { Game, Player } from '../types';
 
 export const canDeclareBankruptcy = (
-  game: Game,
+  game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game_CannotPay;
+  game: Game<GamePhase.cannotPay>;
 } | null => {
   if (game.phase !== GamePhase.cannotPay) {
     return null;

@@ -11,7 +11,7 @@ import { PromptContainer } from '../sections/prompt-container';
 interface GameComponentProps {
   clearNotifications: () => void;
   exitGame: () => void;
-  game: Game;
+  game: Game<any>;
   triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];
 }

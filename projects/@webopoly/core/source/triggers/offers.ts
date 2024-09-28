@@ -1,23 +1,15 @@
 import { longActionInterval } from '../constants';
 import { AnswerType, EventType, GamePhase, GameUpdateType, OfferType } from '../enums';
 import { getCurrentPlayer } from '../logic';
-import {
-  Game_AnswerOffer,
-  Game_BuyingLiquidation,
-  Game_PaymentLiquidation,
-  Game_Play,
-  Game_RollDice,
-  Player,
-  PropertySquare,
-} from '../types';
+import { Game, Player, PropertySquare } from '../types';
 
 type SellOfferInputPhases =
-  | Game_BuyingLiquidation
-  | Game_PaymentLiquidation
-  | Game_Play
-  | Game_RollDice;
+  | Game<GamePhase.buyingLiquidation>
+  | Game<GamePhase.paymentLiquidation>
+  | Game<GamePhase.play>
+  | Game<GamePhase.rollDice>;
 
-export const triggerAcceptOffer = (game: Game_AnswerOffer): SellOfferInputPhases => {
+export const triggerAcceptOffer = (game: Game<GamePhase.answerOffer>): SellOfferInputPhases => {
   const { buyerId, sellerId } =
     game.phaseData.offerType === OfferType.sell
       ? { buyerId: game.phaseData.targetPlayerId, sellerId: game.phaseData.playerId }
@@ -74,10 +66,10 @@ export const triggerAcceptOffer = (game: Game_AnswerOffer): SellOfferInputPhases
 };
 
 export const triggerBuyingOffer = (
-  game: Game_Play | Game_RollDice,
+  game: Game<GamePhase.play> | Game<GamePhase.rollDice>,
   property: PropertySquare,
   amount: number,
-): Game_AnswerOffer => {
+): Game<GamePhase.answerOffer> => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -98,7 +90,7 @@ export const triggerBuyingOffer = (
   };
 };
 
-export const triggerDeclineOffer = (game: Game_AnswerOffer): SellOfferInputPhases => {
+export const triggerDeclineOffer = (game: Game<GamePhase.answerOffer>): SellOfferInputPhases => {
   return {
     ...game,
     ...game.phaseData.previous,
@@ -136,7 +128,7 @@ export const triggerSellingOffer = (
   property: PropertySquare,
   amount: number,
   targetPlayerId: Player['id'],
-): Game_AnswerOffer => {
+): Game<GamePhase.answerOffer> => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {

@@ -1,6 +1,7 @@
 import {
   canApplyCard,
-  Game_ApplyCard,
+  Game,
+  GamePhase,
   GameUpdateType,
   getCardAmount,
   getCardText,
@@ -11,7 +12,7 @@ import { Button } from '../common/button';
 import { Paragraph } from '../common/paragraph';
 import { PromptInterface } from './prompt-interface';
 
-export const ApplyCardPrompt: PromptInterface<Game_ApplyCard> = (props) => {
+export const ApplyCardPrompt: PromptInterface<Game<GamePhase.applyCard>> = (props) => {
   const amount = getCardAmount(props.game, props.game.phaseData.cardId);
   const canApply = canApplyCard(props.game, props.windowPlayerId);
 

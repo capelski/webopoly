@@ -5,7 +5,7 @@ import { Input } from '../../common/input';
 
 interface StartLocalGameProps {
   cancel: () => void;
-  setGame: (game: Game) => void;
+  setGame: (game: Game<any>) => void;
 }
 
 const topSpacing = 200;

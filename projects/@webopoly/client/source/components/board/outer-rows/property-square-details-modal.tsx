@@ -28,7 +28,7 @@ import { Modal } from '../../common/modal';
 import { SquareDetails } from '../../common/square-details';
 
 interface PropertySquareDetailsModalProps {
-  game: Game;
+  game: Game<any>;
   setSquareModalType: (squareModalType: SquareModalType | undefined) => void;
   square: PropertySquare;
   triggerUpdate: (gameUpdate: GameUpdate) => void;

@@ -5,7 +5,7 @@ import { EventComponent } from '../common/event';
 
 interface NotificationsProps {
   clearNotifications: () => void;
-  game: Game;
+  game: Game<any>;
 }
 
 export const Notifications: React.FC<NotificationsProps> = (props) => {

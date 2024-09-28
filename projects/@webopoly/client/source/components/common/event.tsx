@@ -35,7 +35,7 @@ import { Paragraph } from './paragraph';
 type Renderer<T = EventType> = (
   player: Player,
   event: GEvent & { type: T },
-  game: Game,
+  game: Game<any>,
 ) => {
   description: string;
   icon: string;
@@ -179,7 +179,7 @@ const renderersMap: {
 
 interface EventComponentProps {
   event: GEvent;
-  game: Game;
+  game: Game<any>;
 }
 
 export const EventComponent: React.FC<EventComponentProps> = (props) => {

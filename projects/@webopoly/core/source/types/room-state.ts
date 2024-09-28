@@ -3,7 +3,7 @@ import { StringId } from './id';
 import { Player } from './player';
 
 export type RoomState = {
-  game: Game | undefined; // TODO Minify the game
+  game: Game<any> | undefined; // TODO Minify the game
   id: StringId;
   players: {
     id: Player['id'] | undefined;

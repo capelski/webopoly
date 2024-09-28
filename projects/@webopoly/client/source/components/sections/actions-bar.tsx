@@ -17,7 +17,7 @@ import { Paragraph } from '../common/paragraph';
 
 interface ActionsBarProps {
   exitGame: () => void;
-  game: Game;
+  game: Game<any>;
   setZoom: (zoom: number) => void;
   triggerUpdate: (gameUpdate: GameUpdate) => void;
   windowPlayerId: Player['id'];

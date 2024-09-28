@@ -3,7 +3,7 @@ import React from 'react';
 import { EventComponent } from '../common/event';
 
 interface EventHistoryProps {
-  game: Game;
+  game: Game<any>;
 }
 
 export const EventHistory: React.FC<EventHistoryProps> = (props) => {

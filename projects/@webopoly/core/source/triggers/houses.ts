@@ -1,17 +1,11 @@
-import { EventType } from '../enums';
+import { EventType, GamePhase } from '../enums';
 import { getBuildHouseAmount, getCurrentPlayer, getSellHouseAmount } from '../logic';
-import {
-  Game_BuyingLiquidation,
-  Game_PaymentLiquidation,
-  Game_Play,
-  Game_RollDice,
-  StreetSquare,
-} from '../types';
+import { Game, StreetSquare } from '../types';
 
 export const triggerBuildHouse = (
-  game: Game_Play | Game_RollDice,
+  game: Game<GamePhase.play> | Game<GamePhase.rollDice>,
   street: StreetSquare,
-): Game_Play | Game_RollDice => {
+): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -39,9 +33,17 @@ export const triggerBuildHouse = (
 };
 
 export const triggerSellHouse = (
-  game: Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice,
+  game:
+    | Game<GamePhase.buyingLiquidation>
+    | Game<GamePhase.paymentLiquidation>
+    | Game<GamePhase.play>
+    | Game<GamePhase.rollDice>,
   street: StreetSquare,
-): Game_BuyingLiquidation | Game_PaymentLiquidation | Game_Play | Game_RollDice => {
+):
+  | Game<GamePhase.buyingLiquidation>
+  | Game<GamePhase.paymentLiquidation>
+  | Game<GamePhase.play>
+  | Game<GamePhase.rollDice> => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {

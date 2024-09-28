@@ -1,10 +1,10 @@
-import { EventType, PlayerStatus, PropertyType, SquareType } from '../enums';
+import { EventType, GamePhase, PlayerStatus, PropertyType, SquareType } from '../enums';
 import { getPlayerById, getSellHouseAmount } from '../logic';
-import { Game_CannotPay, GEvent, Player, Square } from '../types';
+import { Game, GEvent, Player, Square } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 
 export const triggerBankruptcy = (
-  game: Game_CannotPay,
+  game: Game<GamePhase.cannotPay>,
   playerId: Player['id'],
 ): EndTurnOutputPhases => {
   const bankruptcyEvent: GEvent = {
@@ -32,7 +32,7 @@ export const triggerBankruptcy = (
     );
   }, 0);
 
-  const updatedGame: Game_CannotPay = {
+  const updatedGame: Game<GamePhase.cannotPay> = {
     ...game,
     players: game.players.map<Player>((p) => {
       return p.id === playerId

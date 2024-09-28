@@ -44,7 +44,6 @@ export const StarterPeer: React.FC<StarterPeerProps> = (props) => {
     });
   };
 
-  // TODO Prevent name conflicts
   const updatePlayerName = (playerName: Player['name'], player: PlayerPending) => {
     const nextPeerState = { ...peerState };
 

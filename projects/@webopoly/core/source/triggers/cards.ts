@@ -9,30 +9,21 @@ import {
   hasEnoughMoney,
   shuffleArray,
 } from '../logic';
-import {
-  Card,
-  CardEvent,
-  Game_ApplyCard,
-  Game_CannotPay,
-  Game_DrawCard,
-  Game_PaymentLiquidation,
-  Game_Play,
-  Player,
-} from '../types';
+import { Card, CardEvent, Game, Player } from '../types';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 import { triggerCannotPay } from './payments';
 
 type GameInputType<TCard extends CardType> = TCard extends CardType.fee
-  ? Game_ApplyCard | Game_PaymentLiquidation
+  ? Game<GamePhase.applyCard> | Game<GamePhase.paymentLiquidation>
   : TCard extends CardType.streetRepairs
-  ? Game_ApplyCard | Game_PaymentLiquidation
-  : Game_ApplyCard;
+  ? Game<GamePhase.applyCard> | Game<GamePhase.paymentLiquidation>
+  : Game<GamePhase.applyCard>;
 
 type GameOutputType<TCard extends CardType> = TCard extends CardType.fee
-  ? Game_CannotPay | Game_Play
+  ? Game<GamePhase.cannotPay> | Game<GamePhase.play>
   : TCard extends CardType.streetRepairs
-  ? Game_CannotPay | Game_Play
+  ? Game<GamePhase.cannotPay> | Game<GamePhase.play>
   : MovePlayerOutputPhases;
 
 type CardTrigger<TCard extends CardType> = (
@@ -60,7 +51,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
       return triggerCannotPay(game, event);
     }
 
-    const nextGame: Game_Play = {
+    const nextGame: Game<GamePhase.play> = {
       ...game,
       defaultAction: { playerId: player.id, update: { type: GameUpdateType.endTurn } },
       centerPot: game.centerPot + card.amount,
@@ -94,7 +85,7 @@ const cardTriggersMap: { [TCard in CardType]: CardTrigger<TCard> } = {
       return triggerCannotPay(game, event);
     }
 
-    const nextGame: Game_Play = {
+    const nextGame: Game<GamePhase.play> = {
       ...game,
       defaultAction: { playerId: player.id, update: { type: GameUpdateType.endTurn } },
       centerPot: game.centerPot + amount,
@@ -145,7 +136,9 @@ export const triggerApplyCard = <TCard extends CardType = CardType>(
   return nextGame;
 };
 
-export const triggerCardPrompt = (game: Game_Play | Game_ApplyCard): Game_DrawCard => {
+export const triggerCardPrompt = (
+  game: Game<GamePhase.play> | Game<GamePhase.applyCard>,
+): Game<GamePhase.drawCard> => {
   return {
     ...game,
     defaultAction: {
@@ -156,7 +149,7 @@ export const triggerCardPrompt = (game: Game_Play | Game_ApplyCard): Game_DrawCa
   };
 };
 
-export const triggerDrawCard = (game: Game_DrawCard): Game_ApplyCard => {
+export const triggerDrawCard = (game: Game<GamePhase.drawCard>): Game<GamePhase.applyCard> => {
   let nextCardIds = [...game.nextCardIds];
 
   if (nextCardIds.length === 0) {

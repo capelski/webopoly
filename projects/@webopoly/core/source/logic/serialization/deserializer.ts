@@ -3,13 +3,13 @@ import { Game, GEvent, MinifiedGame, Player, Square } from '../../types';
 import { squaresMap } from '../squares';
 import { eventsMap, Restorer } from './events-map';
 
-export const deserializeGame = (serializedGame: string | null): Game | undefined => {
+export const deserializeGame = (serializedGame: string | null): Game<any> | undefined => {
   if (!serializedGame) {
     return undefined;
   }
 
-  const g = JSON.parse(serializedGame) as MinifiedGame;
-  let game: Game | undefined = undefined;
+  const g = JSON.parse(serializedGame) as MinifiedGame<any>;
+  let game: Game<any> | undefined = undefined;
 
   try {
     game = {

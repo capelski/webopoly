@@ -7,12 +7,12 @@ import {
   PropertyType,
   SquareType,
 } from '../enums';
-import { Game, Game_CannotPay, Game_PaymentLiquidation, Player, Square } from '../types';
+import { Game, Player, Square } from '../types';
 import { getCardAmount } from './cards';
 import { squares } from './squares';
 import { turnConsiderations } from './turn-considerations';
 
-export const clearNotifications = (game: Game): Game => {
+export const clearNotifications = (game: Game<any>): Game<any> => {
   return {
     ...game,
     notifications: [],
@@ -20,12 +20,12 @@ export const clearNotifications = (game: Game): Game => {
   };
 };
 
-export const getActivePlayers = (game: Game): Player[] => {
+export const getActivePlayers = (game: Game<any>): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing);
 };
 
 export const getCurrentPlayer = (
-  game: Game,
+  game: Game<any>,
   { omitTurnConsiderations }: { omitTurnConsiderations?: boolean } = {},
 ): Player => {
   const playerId =
@@ -41,16 +41,16 @@ export const getCurrentPlayer = (
   })!;
 };
 
-export const getCurrentSquare = (game: Game): Square => {
+export const getCurrentSquare = (game: Game<any>): Square => {
   const currentPlayer = getCurrentPlayer(game);
   return game.squares.find((s) => s.id === currentPlayer.squareId)!;
 };
 
-export const getOtherPlayers = (game: Game, playerId: Player['id']): Player[] => {
+export const getOtherPlayers = (game: Game<any>, playerId: Player['id']): Player[] => {
   return game.players.filter((p) => p.status === PlayerStatus.playing && p.id !== playerId);
 };
 
-export const getNextPlayerId = (game: Game): Player['id'] => {
+export const getNextPlayerId = (game: Game<any>): Player['id'] => {
   const currentPlayerIndex = game.players.findIndex((p) => p.id === game.currentPlayerId);
   const nextPlayerIndex = (currentPlayerIndex + 1) % game.players.length;
   const playersPool = game.players
@@ -61,7 +61,7 @@ export const getNextPlayerId = (game: Game): Player['id'] => {
 };
 
 export const getNextSquareId = (
-  game: Game,
+  game: Game<any>,
   movement: number,
   startingSquareId?: Square['id'],
 ): Square['id'] => {
@@ -72,7 +72,10 @@ export const getNextSquareId = (
   return game.squares[nextSquareIndex].id;
 };
 
-export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType): Square['id'] => {
+export const getNextPropertyOfTypeId = (
+  game: Game<any>,
+  propertyType: PropertyType,
+): Square['id'] => {
   const currentSquare = getCurrentSquare(game);
   const currentSquareIndex = game.squares.findIndex((s) => s.id === currentSquare.id);
   const nextSquareIndex = (currentSquareIndex + 1) % game.squares.length;
@@ -83,7 +86,9 @@ export const getNextPropertyOfTypeId = (game: Game, propertyType: PropertyType):
     .id;
 };
 
-export const getPendingAmount = (game: Game_PaymentLiquidation | Game_CannotPay) => {
+export const getPendingAmount = (
+  game: Game<GamePhase.paymentLiquidation> | Game<GamePhase.cannotPay>,
+) => {
   const amount =
     game.phaseData.type === EventType.turnInJail
       ? jailFine
@@ -93,15 +98,15 @@ export const getPendingAmount = (game: Game_PaymentLiquidation | Game_CannotPay)
   return amount;
 };
 
-export const getPlayerById = (game: Game, playerId: Player['id']): Player => {
+export const getPlayerById = (game: Game<any>, playerId: Player['id']): Player => {
   return game.players.find((p) => p.id === playerId)!;
 };
 
-export const getSquareById = (game: Game, squareId: Square['id']): Square => {
+export const getSquareById = (game: Game<any>, squareId: Square['id']): Square => {
   return game.squares.find((s) => s.id === squareId)!;
 };
 
-export const startGame = (playerNames: string[]): Game => {
+export const startGame = (playerNames: string[]): Game<any> => {
   const players = playerNames.map<Player>((name, index) => ({
     color: 'hsl(' + ((index * (360 / playerNames.length)) % 360) + ', 100%, 50%)',
     doublesInARow: 0,

@@ -29,5 +29,4 @@ export const playerTransitionDuration = 0.25; // In seconds
 export const defaultActionInterval = 10; // In seconds
 export const longActionInterval = 20; // In seconds
 
-// TODO Server should not know about currency symbol
 export const currencySymbol = '￡';

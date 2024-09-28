@@ -81,9 +81,9 @@ import {
 import { triggerFirstPlayerTransition, triggerNextPlayerTransition } from './transitions';
 
 export const triggerRemovePlayer = (
-  game: Game,
+  game: Game<any>,
   playerId: Player['id'],
-  updateFunction: (game: Game) => void,
+  updateFunction: (game: Game<any>) => void,
 ) => {
   let defaultAction: DefaultAction | undefined;
 
@@ -93,7 +93,7 @@ export const triggerRemovePlayer = (
     game.defaultAction = undefined;
   }
 
-  let nextGame: Game = {
+  let nextGame: Game<any> = {
     ...game,
     notifications: [
       ...game.notifications,
@@ -161,7 +161,7 @@ export const triggerRemovePlayer = (
   setDefaultTrigger(nextGame, updateFunction);
 };
 
-export const setDefaultTrigger = (game: Game, updateFunction: (game: Game) => void) => {
+export const setDefaultTrigger = (game: Game<any>, updateFunction: (game: Game<any>) => void) => {
   if (game.defaultAction) {
     game.defaultAction.timer = setTimeout(() => {
       triggerUpdate(
@@ -175,10 +175,10 @@ export const setDefaultTrigger = (game: Game, updateFunction: (game: Game) => vo
 };
 
 export const triggerUpdate = (
-  game: Game,
+  game: Game<any>,
   gameUpdate: GameUpdate,
   windowPlayerId: Player['id'],
-  updateFunction: (game: Game) => void,
+  updateFunction: (game: Game<any>) => void,
 ) => {
   let defaultAction: DefaultAction | undefined;
 

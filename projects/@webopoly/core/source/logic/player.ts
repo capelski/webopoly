@@ -39,7 +39,7 @@ export const getNeighborhoodStreets = (squares: Square[], street: StreetSquare):
   ) as StreetSquare[];
 };
 
-const getPlayerActiveProperties = (game: Game, playerId: Player['id']) => {
+const getPlayerActiveProperties = (game: Game<any>, playerId: Player['id']) => {
   const landlord = getPlayerById(game, playerId);
   const properties = (
     landlord.properties.map(
@@ -50,7 +50,7 @@ const getPlayerActiveProperties = (game: Game, playerId: Player['id']) => {
   return properties;
 };
 
-export const getPlayerActiveStations = (game: Game, playerId: Player['id']) => {
+export const getPlayerActiveStations = (game: Game<any>, playerId: Player['id']) => {
   const properties = getPlayerActiveProperties(game, playerId);
   const stations = properties.filter(
     (p) => p.type === SquareType.property && p.propertyType === PropertyType.station,
@@ -59,7 +59,7 @@ export const getPlayerActiveStations = (game: Game, playerId: Player['id']) => {
   return stations;
 };
 
-export const getPlayerActiveUtilities = (game: Game, playerId: Player['id']) => {
+export const getPlayerActiveUtilities = (game: Game<any>, playerId: Player['id']) => {
   const properties = getPlayerActiveProperties(game, playerId);
   const utilities = properties.filter(
     (p) => p.type === SquareType.property && p.propertyType === PropertyType.utility,
@@ -68,7 +68,7 @@ export const getPlayerActiveUtilities = (game: Game, playerId: Player['id']) => 
   return utilities;
 };
 
-export const ownsNeighborhood = (game: Game, street: StreetSquare) => {
+export const ownsNeighborhood = (game: Game<any>, street: StreetSquare) => {
   const neighborhoodStreets = getNeighborhoodStreets(game.squares, street);
   const ownedStreets = neighborhoodStreets.filter(
     (p) => p.ownerId === street.ownerId && p.status !== PropertyStatus.mortgaged,
@@ -76,7 +76,11 @@ export const ownsNeighborhood = (game: Game, street: StreetSquare) => {
   return ownedStreets.length === neighborhoodStreets.length;
 };
 
-export const passesGo = (game: Game, currentSquareId: number, nextSquareId: number): boolean => {
+export const passesGo = (
+  game: Game<any>,
+  currentSquareId: number,
+  nextSquareId: number,
+): boolean => {
   const currentIndex = game.squares.findIndex((s) => s.id === currentSquareId);
   const nextIndex = game.squares.findIndex((s) => s.id === nextSquareId);
   return currentIndex > nextIndex;
