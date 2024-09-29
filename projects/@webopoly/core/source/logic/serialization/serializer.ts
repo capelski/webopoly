@@ -76,6 +76,8 @@ export const serializeGame = (game: Game<any>): string => {
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.applyCard
       ? { ph: game.phase, pd: game.phaseData }
+      : game.phase === GamePhase.avatarAnimation
+      ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.buyProperty
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.buyingLiquidation
@@ -83,8 +85,6 @@ export const serializeGame = (game: Game<any>): string => {
       : game.phase === GamePhase.cannotPay
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.paymentLiquidation
-      ? { ph: game.phase, pd: game.phaseData }
-      : game.phase === GamePhase.playerAnimation
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.playerWins
       ? { ph: game.phase, pd: game.phaseData }

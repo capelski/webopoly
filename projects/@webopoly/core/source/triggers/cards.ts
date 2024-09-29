@@ -136,8 +136,10 @@ export const triggerApplyCard = <TCard extends CardType = CardType>(
   return nextGame;
 };
 
+// Game<GamePhase.applyCard> => Go back three spaces + fall into draw card
+// Game<GamePhase.avatarAnimation> Right after rolling dice
 export const triggerCardPrompt = (
-  game: Game<GamePhase.applyCard> | Game<GamePhase.playerAnimation>,
+  game: Game<GamePhase.applyCard> | Game<GamePhase.avatarAnimation>,
 ): Game<GamePhase.drawCard> => {
   return {
     ...game,

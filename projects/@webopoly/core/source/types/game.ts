@@ -69,6 +69,14 @@ export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffe
         cardId: Card['id'];
       }
     >
+  : TPhase extends GamePhase.avatarAnimation
+  ? GamePhaseData<
+      GamePhase.avatarAnimation,
+      {
+        currentSquareId: Square['id'];
+        pendingMoves: number;
+      }
+    >
   : TPhase extends GamePhase.buyProperty
   ? GamePhaseData<GamePhase.buyProperty, BuyPropertyData>
   : TPhase extends GamePhase.buyingLiquidation
@@ -91,15 +99,6 @@ export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffe
   ? GamePhaseData<GamePhase.paymentLiquidation, PendingEvent>
   : TPhase extends GamePhase.play
   ? GameBase<GamePhase.play>
-  : TPhase extends GamePhase.playerAnimation
-  ? GamePhaseData<
-      GamePhase.playerAnimation,
-      {
-        currentSquareId: Square['id'];
-        pendingMoves: number;
-        playerId: Player['id'];
-      }
-    >
   : TPhase extends GamePhase.playerWins
   ? GamePhaseData<
       GamePhase.playerWins,

@@ -59,6 +59,8 @@ export const deserializeGame = (serializedGame: string | null): Game<any> | unde
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.applyCard
         ? { phase: g.ph, phaseData: g.pd }
+        : g.ph === GamePhase.avatarAnimation
+        ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.buyProperty
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.buyingLiquidation
@@ -66,8 +68,6 @@ export const deserializeGame = (serializedGame: string | null): Game<any> | unde
         : g.ph === GamePhase.cannotPay
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.paymentLiquidation
-        ? { phase: g.ph, phaseData: g.pd }
-        : g.ph === GamePhase.playerAnimation
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.playerWins
         ? { phase: g.ph, phaseData: g.pd }

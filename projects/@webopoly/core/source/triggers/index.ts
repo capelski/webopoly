@@ -44,6 +44,7 @@ import {
   canUseJailCard,
   mustGoToJail,
 } from '../validators';
+import { triggerAvatarAnimation } from './avatar-animation';
 import { triggerBankruptcy } from './bankruptcy';
 import { triggerBuyPropertyAccept, triggerBuyPropertyDecline } from './buy-property';
 import { triggerApplyCard, triggerDrawCard } from './cards';
@@ -80,7 +81,6 @@ import {
   triggerTradeOffer,
   triggerTradeSelectionToggle,
 } from './trade';
-import { triggerPlayerAnimation } from './transitions';
 
 export const triggerRemovePlayer = (
   game: Game<any>,
@@ -210,6 +210,11 @@ export const triggerUpdate = (
       nextGame = triggerApplyCard(validation.game, validation.game.phaseData.cardId);
       updateFunction(nextGame);
     }
+  } else if (gameUpdate.type === GameUpdateType.applyDiceRoll) {
+    if (nextGame.phase === GamePhase.avatarAnimation) {
+      nextGame = triggerApplyDiceRoll(nextGame);
+      updateFunction(nextGame);
+    }
   } else if (gameUpdate.type === GameUpdateType.bankruptcy) {
     const validation = canDeclareBankruptcy(nextGame, windowPlayerId);
     if (validation) {
@@ -291,7 +296,7 @@ export const triggerUpdate = (
     }
   } else if (gameUpdate.type === GameUpdateType.getOutOfJail) {
     if (nextGame.phase === GamePhase.outOfJailAnimation) {
-      nextGame = triggerPlayerAnimation(nextGame);
+      nextGame = triggerAvatarAnimation(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
@@ -319,15 +324,6 @@ export const triggerUpdate = (
       nextGame = triggerPayJailFine(validation.game);
       updateFunction(nextGame);
     }
-  } else if (gameUpdate.type === GameUpdateType.playerTransition) {
-    if (nextGame.phase === GamePhase.playerAnimation) {
-      if (nextGame.phaseData.pendingMoves <= 1) {
-        nextGame = triggerApplyDiceRoll(nextGame);
-      } else {
-        nextGame = triggerPlayerAnimation(nextGame);
-      }
-      updateFunction(nextGame);
-    }
   } else if (gameUpdate.type === GameUpdateType.postDice) {
     if (nextGame.phase === GamePhase.diceAnimation) {
       const currentPlayer = getCurrentPlayer(game);
@@ -335,7 +331,7 @@ export const triggerUpdate = (
       if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
         nextGame = triggerNotifyJail(nextGame);
       } else {
-        nextGame = triggerPlayerAnimation(nextGame);
+        nextGame = triggerAvatarAnimation(nextGame);
       }
 
       updateFunction(nextGame);

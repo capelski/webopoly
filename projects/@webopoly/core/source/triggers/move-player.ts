@@ -6,7 +6,7 @@ import { triggerCardPrompt } from './cards';
 import { triggerNotifyJail } from './jail';
 import { triggerPayRent, triggerPayTax } from './payments';
 
-export type MovePlayerInputPhases = Game<GamePhase.playerAnimation> | Game<GamePhase.applyCard>;
+export type MovePlayerInputPhases = Game<GamePhase.applyCard> | Game<GamePhase.avatarAnimation>;
 
 export type MovePlayerOutputPhases =
   | Game<GamePhase.play>

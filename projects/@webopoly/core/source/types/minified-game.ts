@@ -41,6 +41,8 @@ export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.an
   ? MinifiedGamePhaseData<GamePhase.answerTrade, Game<GamePhase.answerTrade>['phaseData']>
   : TPhase extends GamePhase.applyCard
   ? MinifiedGamePhaseData<GamePhase.applyCard, Game<GamePhase.applyCard>['phaseData']>
+  : TPhase extends GamePhase.avatarAnimation
+  ? MinifiedGamePhaseData<GamePhase.avatarAnimation, Game<GamePhase.avatarAnimation>['phaseData']>
   : TPhase extends GamePhase.buyProperty
   ? MinifiedGamePhaseData<GamePhase.buyProperty, Game<GamePhase.buyProperty>['phaseData']>
   : TPhase extends GamePhase.buyingLiquidation
@@ -69,8 +71,6 @@ export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.an
     >
   : TPhase extends GamePhase.play
   ? MinifiedGameBase<GamePhase.play>
-  : TPhase extends GamePhase.playerAnimation
-  ? MinifiedGamePhaseData<GamePhase.playerAnimation, Game<GamePhase.playerAnimation>['phaseData']>
   : TPhase extends GamePhase.playerWins
   ? MinifiedGamePhaseData<GamePhase.playerWins, Game<GamePhase.playerWins>['phaseData']>
   : TPhase extends GamePhase.rollDice

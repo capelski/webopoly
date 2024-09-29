@@ -4,13 +4,13 @@ import { getCurrentPlayer, hasEnoughMoney } from '../logic';
 import { Game, PayRentEvent, PayTaxEvent, PendingEvent } from '../types';
 
 export type CannotPayInputPhases =
-  | Game<GamePhase.playerAnimation>
+  | Game<GamePhase.avatarAnimation>
   | Game<GamePhase.diceInJailAnimation> // Is player's last turn in jail and they don't have enough money to pay the fine
   | Game<GamePhase.applyCard>
   | Game<GamePhase.paymentLiquidation>; // Player resumes a pending payment but they still don't have enough money
 
 export type ExpenseInputPhases =
-  | Game<GamePhase.playerAnimation>
+  | Game<GamePhase.avatarAnimation>
   | Game<GamePhase.applyCard>
   | Game<GamePhase.paymentLiquidation>; // Player resumes a pending payment and has enough money
 

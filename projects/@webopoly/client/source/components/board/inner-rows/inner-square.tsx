@@ -12,12 +12,14 @@ export type InnerSquareProps = {
 };
 
 export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
+  const currentPlayer = getCurrentPlayer(props.game);
+
   const frames = props.innerSquare.outerSquareIds
     .map((outerSquareId) => {
       const players = props.game.players.filter((p) => {
-        const phaseData = props.game.phase === GamePhase.playerAnimation && props.game.phaseData;
+        const phaseData = props.game.phase === GamePhase.avatarAnimation && props.game.phaseData;
 
-        const isPlayerTransitioning = phaseData && p.id === phaseData.playerId;
+        const isPlayerTransitioning = phaseData && p.id === currentPlayer.id;
 
         return isPlayerTransitioning
           ? phaseData.currentSquareId === outerSquareId
@@ -26,7 +28,6 @@ export const InnerSquare: React.FC<InnerSquareProps> = (props) => {
       return { players, rotate: squaresRotation[outerSquareId] };
     })
     .filter((frame) => frame.players.length > 0);
-  const currentPlayer = getCurrentPlayer(props.game);
 
   return (
     <div

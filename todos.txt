@@ -9,7 +9,6 @@
 - Allow skipping the player transitions
 - Allow disabling defaultActions. Note player transitions must still be triggered
 - Transform triggerRemovePlayer into a GameUpdateType
-- For better UX animation, do not listen to player movement events and compute in this peer
 - Docker build => Trigger builds of both client/server sides
 - Make parameters.ts modifiable on createGame
 - Display error toast on disabled buttons?
