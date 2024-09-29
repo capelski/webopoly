@@ -13,7 +13,7 @@ export const resumeBuyProperty = (
     ...game,
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
-      update: { type: GameUpdateType.buyPropertyReject },
+      update: { type: GameUpdateType.buyPropertyDecline },
     },
     phase: GamePhase.buyProperty,
   };

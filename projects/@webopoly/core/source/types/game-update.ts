@@ -9,9 +9,9 @@ export type GameUpdate =
         | GameUpdateType.acceptTrade
         | GameUpdateType.applyCard
         | GameUpdateType.bankruptcy
-        | GameUpdateType.buyProperty
+        | GameUpdateType.buyPropertyAccept
+        | GameUpdateType.buyPropertyDecline
         | GameUpdateType.buyingLiquidation
-        | GameUpdateType.buyPropertyReject
         | GameUpdateType.cancelTrade
         | GameUpdateType.declineOffer
         | GameUpdateType.declineTrade

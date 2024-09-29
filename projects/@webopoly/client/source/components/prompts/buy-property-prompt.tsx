@@ -36,7 +36,7 @@ export const BuyPropertyPrompt: PromptInterface<Game<GamePhase.buyProperty>> = (
             <Button
               disabled={!canBuyProperty(props.game, props.windowPlayerId)}
               onClick={() => {
-                props.triggerUpdate({ type: GameUpdateType.buyProperty });
+                props.triggerUpdate({ type: GameUpdateType.buyPropertyAccept });
               }}
               style={{ flexBasis: 1, flexGrow: 1, textAlign: 'center' }}
             >
@@ -44,11 +44,11 @@ export const BuyPropertyPrompt: PromptInterface<Game<GamePhase.buyProperty>> = (
             </Button>
 
             <Button
-              autoClick={GameUpdateType.buyPropertyReject}
+              autoClick={GameUpdateType.buyPropertyDecline}
               defaultAction={props.game.defaultAction}
               disabled={!canRejectProperty(props.game, props.windowPlayerId)}
               onClick={() => {
-                props.triggerUpdate({ type: GameUpdateType.buyPropertyReject });
+                props.triggerUpdate({ type: GameUpdateType.buyPropertyDecline });
               }}
               style={{ flexBasis: 1, flexGrow: 1, textAlign: 'center' }}
               type="delete"

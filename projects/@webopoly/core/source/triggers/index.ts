@@ -44,7 +44,7 @@ import {
   mustGoToJail,
 } from '../validators';
 import { triggerBankruptcy } from './bankruptcy';
-import { triggerBuyProperty, triggerRejectProperty } from './buy-property';
+import { triggerBuyPropertyAccept, triggerBuyPropertyDecline } from './buy-property';
 import { triggerApplyCard, triggerDrawCard } from './cards';
 import { triggerDiceRoll, triggerDiceRollInJail } from './dice-roll';
 import { triggerEndTurn } from './end-turn';
@@ -126,9 +126,9 @@ export const triggerRemovePlayer = (
       : answeringTrade && answeringTrade.currentPlayerId === playerId
       ? triggerDeclineTrade(answeringTrade.game)
       : buyingProperty && buyingProperty.currentPlayerId === playerId
-      ? triggerRejectProperty(buyingProperty.game)
+      ? triggerBuyPropertyDecline(buyingProperty.game)
       : buyingPropertyLiquidation && buyingPropertyLiquidation.currentPlayerId === playerId
-      ? triggerRejectProperty(resumeBuyProperty(buyingPropertyLiquidation.game))
+      ? triggerBuyPropertyDecline(resumeBuyProperty(buyingPropertyLiquidation.game))
       : nextGame;
 
   /* If the player was on the list of potential buyer ids, remove it */
@@ -232,16 +232,16 @@ export const triggerUpdate = (
       nextGame = triggerBuyingOffer(validation.game, validation.property, gameUpdate.amount);
       updateFunction(nextGame);
     }
-  } else if (gameUpdate.type === GameUpdateType.buyProperty) {
+  } else if (gameUpdate.type === GameUpdateType.buyPropertyAccept) {
     const validation = canBuyProperty(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerBuyProperty(validation.game, validation.square, windowPlayerId);
+      nextGame = triggerBuyPropertyAccept(validation.game, validation.square, windowPlayerId);
       updateFunction(nextGame);
     }
-  } else if (gameUpdate.type === GameUpdateType.buyPropertyReject) {
+  } else if (gameUpdate.type === GameUpdateType.buyPropertyDecline) {
     const validation = canRejectProperty(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerRejectProperty(validation.game);
+      nextGame = triggerBuyPropertyDecline(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.buyingLiquidation) {

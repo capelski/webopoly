@@ -142,7 +142,7 @@ export const triggerMovePlayer = (
         ...updatedGame,
         defaultAction: {
           playerId: currentBuyerId,
-          update: { type: GameUpdateType.buyPropertyReject },
+          update: { type: GameUpdateType.buyPropertyDecline },
         },
         phase: GamePhase.buyProperty,
         phaseData: {
