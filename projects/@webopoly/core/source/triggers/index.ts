@@ -47,7 +47,7 @@ import {
 import { triggerBankruptcy } from './bankruptcy';
 import { triggerBuyPropertyAccept, triggerBuyPropertyDecline } from './buy-property';
 import { triggerApplyCard, triggerDrawCard } from './cards';
-import { triggerDiceRoll, triggerDiceRollInJail } from './dice-roll';
+import { triggerApplyDiceRoll, triggerDiceRoll, triggerDiceRollInJail } from './dice-roll';
 import { triggerEndTurn } from './end-turn';
 import { triggerBuildHouse, triggerSellHouse } from './houses';
 import {
@@ -80,7 +80,7 @@ import {
   triggerTradeOffer,
   triggerTradeSelectionToggle,
 } from './trade';
-import { triggerFirstPlayerTransition, triggerNextPlayerTransition } from './transitions';
+import { triggerPlayerAnimation } from './transitions';
 
 export const triggerRemovePlayer = (
   game: Game<any>,
@@ -291,7 +291,7 @@ export const triggerUpdate = (
     }
   } else if (gameUpdate.type === GameUpdateType.getOutOfJail) {
     if (nextGame.phase === GamePhase.outOfJailAnimation) {
-      nextGame = triggerFirstPlayerTransition(nextGame);
+      nextGame = triggerPlayerAnimation(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
@@ -321,7 +321,11 @@ export const triggerUpdate = (
     }
   } else if (gameUpdate.type === GameUpdateType.playerTransition) {
     if (nextGame.phase === GamePhase.playerAnimation) {
-      nextGame = triggerNextPlayerTransition(nextGame);
+      if (nextGame.phaseData.pendingMoves <= 1) {
+        nextGame = triggerApplyDiceRoll(nextGame);
+      } else {
+        nextGame = triggerPlayerAnimation(nextGame);
+      }
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.postDice) {
@@ -331,7 +335,7 @@ export const triggerUpdate = (
       if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
         nextGame = triggerNotifyJail(nextGame);
       } else {
-        nextGame = triggerFirstPlayerTransition(nextGame);
+        nextGame = triggerPlayerAnimation(nextGame);
       }
 
       updateFunction(nextGame);

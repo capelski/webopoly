@@ -2,59 +2,38 @@ import { playerTransitionDuration } from '../constants';
 import { GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, getCurrentSquare, getDiceMovement, getNextSquareId } from '../logic';
 import { Game } from '../types';
-import { applyDiceRoll } from './dice-roll';
-import { MovePlayerOutputPhases } from './move-player';
 
-export const triggerFirstPlayerTransition = (
+export const triggerPlayerAnimation = (
   game:
-    | Game<GamePhase.diceAnimation>
-    | Game<GamePhase.outOfJailAnimation>
-    | Game<GamePhase.paymentLiquidation>,
+    | Game<GamePhase.diceAnimation> // Right after dice roll
+    | Game<GamePhase.outOfJailAnimation> // Player gets out of jail
+    | Game<GamePhase.playerAnimation>, // Following a previous player animation
 ): Game<GamePhase.playerAnimation> => {
-  const pendingMoves = getDiceMovement(game.dice);
   const currentPlayer = getCurrentPlayer(game);
 
-  return triggerNextPlayerTransition({
-    ...game,
-    defaultAction: {
-      interval: playerTransitionDuration * 1000,
-      playerId: currentPlayer.id,
-      update: { type: GameUpdateType.playerTransition },
-    },
-    phase: GamePhase.playerAnimation,
-    phaseData: {
-      currentSquareId: getCurrentSquare(game).id,
-      pendingMoves,
-      playerId: currentPlayer.id,
-    },
-  }) as Game<GamePhase.playerAnimation>;
-};
-
-export const triggerNextPlayerTransition = (
-  game: Game<GamePhase.playerAnimation>,
-): Game<GamePhase.playerAnimation> | MovePlayerOutputPhases => {
-  const { currentSquareId, pendingMoves, playerId } = game.phaseData;
-  const nextMove = 1;
-
-  if (pendingMoves <= nextMove) {
-    return applyDiceRoll({ ...game, phase: GamePhase.play });
-  }
-
-  const nextSquareId = getNextSquareId(game, nextMove, currentSquareId);
-  const nextPendingMoves = pendingMoves - nextMove;
+  const { pendingMoves, currentSquareId } =
+    game.phase === GamePhase.playerAnimation
+      ? {
+          currentSquareId: getNextSquareId(game, 1, game.phaseData.currentSquareId),
+          pendingMoves: game.phaseData.pendingMoves - 1,
+        }
+      : {
+          currentSquareId: getCurrentSquare(game).id,
+          pendingMoves: getDiceMovement(game.dice),
+        };
 
   return {
     ...game,
     defaultAction: {
       interval: playerTransitionDuration * 1000,
-      playerId,
+      playerId: currentPlayer.id,
       update: { type: GameUpdateType.playerTransition },
     },
     phase: GamePhase.playerAnimation,
     phaseData: {
-      currentSquareId: nextSquareId,
-      pendingMoves: nextPendingMoves,
-      playerId,
+      currentSquareId,
+      pendingMoves,
+      playerId: currentPlayer.id,
     },
   };
 };

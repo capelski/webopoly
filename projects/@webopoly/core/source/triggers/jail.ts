@@ -84,9 +84,9 @@ export const triggerLastTurnInJail = (
 
 // Game<GamePhase.applyCard> => Go back three spaces + fall in go to jail square
 // Game<GamePhase.diceAnimation> => Too many doubles in a row
-// Game<GamePhase.play> => Fall in go to jail square
+// Game<GamePhase.playerAnimation> => Fall in go to jail square
 export const triggerNotifyJail = (
-  game: Game<GamePhase.applyCard> | Game<GamePhase.diceAnimation> | Game<GamePhase.play>,
+  game: Game<GamePhase.applyCard> | Game<GamePhase.diceAnimation> | Game<GamePhase.playerAnimation>,
 ): Game<GamePhase.jailNotification> => {
   const currentPlayer = getCurrentPlayer(game);
 

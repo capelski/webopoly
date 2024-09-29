@@ -137,7 +137,7 @@ export const triggerApplyCard = <TCard extends CardType = CardType>(
 };
 
 export const triggerCardPrompt = (
-  game: Game<GamePhase.play> | Game<GamePhase.applyCard>,
+  game: Game<GamePhase.applyCard> | Game<GamePhase.playerAnimation>,
 ): Game<GamePhase.drawCard> => {
   return {
     ...game,

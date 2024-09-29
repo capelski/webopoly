@@ -11,7 +11,9 @@ import {
 import { Game } from '../types';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 
-export const applyDiceRoll = (game: Game<GamePhase.play>): MovePlayerOutputPhases => {
+export const triggerApplyDiceRoll = (
+  game: Game<GamePhase.playerAnimation>,
+): MovePlayerOutputPhases => {
   const movement = getDiceMovement(game.dice);
   const nextSquareId = getNextSquareId(game, movement);
   return triggerMovePlayer(game, nextSquareId);
