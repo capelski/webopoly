@@ -9,6 +9,7 @@ import {
 } from '../enums';
 import {
   clearNotifications,
+  exceedsMaxDoublesInARow,
   getActivePlayers,
   getCurrentPlayer,
   isDoublesRoll,
@@ -52,6 +53,7 @@ import { triggerBuildHouse, triggerSellHouse } from './houses';
 import {
   triggerGoToJail,
   triggerLastTurnInJail,
+  triggerNotifyJail,
   triggerPayJailFine,
   triggerRemainInJail,
   triggerRollDoublesInJail,
@@ -324,7 +326,14 @@ export const triggerUpdate = (
     }
   } else if (gameUpdate.type === GameUpdateType.postDice) {
     if (nextGame.phase === GamePhase.diceAnimation) {
-      nextGame = triggerFirstPlayerTransition(nextGame);
+      const currentPlayer = getCurrentPlayer(game);
+
+      if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
+        nextGame = triggerNotifyJail(nextGame);
+      } else {
+        nextGame = triggerFirstPlayerTransition(nextGame);
+      }
+
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.postDiceInJail) {

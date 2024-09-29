@@ -63,9 +63,9 @@ export const mustGoToJail = (
   game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game<GamePhase.applyCard> | Game<GamePhase.goToJail>;
+  game: Game<GamePhase.applyCard> | Game<GamePhase.jailNotification>;
 } | null => {
-  if (game.phase !== GamePhase.applyCard && game.phase !== GamePhase.goToJail) {
+  if (game.phase !== GamePhase.applyCard && game.phase !== GamePhase.jailNotification) {
     return null;
   }
 

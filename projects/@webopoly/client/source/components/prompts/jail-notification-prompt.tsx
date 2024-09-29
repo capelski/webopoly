@@ -12,7 +12,9 @@ import { Button } from '../common/button';
 import { EventComponent } from '../common/event';
 import { PromptInterface } from './prompt-interface';
 
-export const GoToJailPrompt: PromptInterface<Game<GamePhase.goToJail>> = (props) => {
+export const JailNotificationPrompt: PromptInterface<Game<GamePhase.jailNotification>> = (
+  props,
+) => {
   const currentPlayer = getCurrentPlayer(props.game);
 
   return (

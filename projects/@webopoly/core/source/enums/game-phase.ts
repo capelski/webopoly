@@ -8,7 +8,7 @@ export enum GamePhase {
   diceAnimation = 'diceAnimation',
   diceInJailAnimation = 'diceInJailAnimation',
   drawCard = 'drawCard',
-  goToJail = 'goToJail',
+  jailNotification = 'jailNotification',
   jailOptions = 'jailOptions',
   outOfJailAnimation = 'outOfJailAnimation',
   paymentLiquidation = 'paymentLiquidation',

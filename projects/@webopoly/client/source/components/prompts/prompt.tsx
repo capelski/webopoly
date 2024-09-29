@@ -7,7 +7,7 @@ import { ApplyCardPrompt } from './apply-card-prompt';
 import { BuyPropertyPrompt } from './buy-property-prompt';
 import { CannotPayPrompt } from './cannot-pay-prompt';
 import { DrawCardPrompt } from './draw-card-prompt';
-import { GoToJailPrompt } from './go-to-jail-prompt';
+import { JailNotificationPrompt } from './jail-notification-prompt';
 import { JailOptionsPrompt } from './jail-options-prompt';
 import { PlayerWinsPrompt } from './player-wins-prompt';
 import { PromptInterface } from './prompt-interface';
@@ -34,8 +34,8 @@ export const PromptComponent: PromptInterface = (props) => {
         <CannotPayPrompt {...props} game={props.game} />
       ) : props.game.phase === GamePhase.drawCard ? (
         <DrawCardPrompt {...props} game={props.game} />
-      ) : props.game.phase === GamePhase.goToJail ? (
-        <GoToJailPrompt {...props} game={props.game} />
+      ) : props.game.phase === GamePhase.jailNotification ? (
+        <JailNotificationPrompt {...props} game={props.game} />
       ) : props.game.phase === GamePhase.jailOptions ? (
         <JailOptionsPrompt {...props} game={props.game} />
       ) : props.game.phase === GamePhase.playerWins ? (

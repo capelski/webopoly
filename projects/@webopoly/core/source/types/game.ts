@@ -81,8 +81,8 @@ export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffe
   ? GameBase<GamePhase.diceInJailAnimation>
   : TPhase extends GamePhase.drawCard
   ? GameBase<GamePhase.drawCard>
-  : TPhase extends GamePhase.goToJail
-  ? GameBase<GamePhase.goToJail>
+  : TPhase extends GamePhase.jailNotification
+  ? GameBase<GamePhase.jailNotification>
   : TPhase extends GamePhase.jailOptions
   ? GameBase<GamePhase.jailOptions>
   : TPhase extends GamePhase.outOfJailAnimation

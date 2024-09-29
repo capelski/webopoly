@@ -27,7 +27,7 @@ export const triggerGetOutOfJailCard = (game: Game<GamePhase.applyCard>): Game<G
 };
 
 export const triggerGoToJail = (
-  game: Game<GamePhase.applyCard> | Game<GamePhase.goToJail>,
+  game: Game<GamePhase.applyCard> | Game<GamePhase.jailNotification>,
   skipEvent = false,
 ): Game<GamePhase.play> => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
@@ -79,6 +79,24 @@ export const triggerLastTurnInJail = (
       update: { type: GameUpdateType.getOutOfJail },
     },
     phase: GamePhase.outOfJailAnimation,
+  };
+};
+
+// Game<GamePhase.applyCard> => Go back three spaces + fall in go to jail square
+// Game<GamePhase.diceAnimation> => Too many doubles in a row
+// Game<GamePhase.play> => Fall in go to jail square
+export const triggerNotifyJail = (
+  game: Game<GamePhase.applyCard> | Game<GamePhase.diceAnimation> | Game<GamePhase.play>,
+): Game<GamePhase.jailNotification> => {
+  const currentPlayer = getCurrentPlayer(game);
+
+  return {
+    ...game,
+    defaultAction: {
+      playerId: currentPlayer.id,
+      update: { type: GameUpdateType.goToJail },
+    },
+    phase: GamePhase.jailNotification,
   };
 };
 

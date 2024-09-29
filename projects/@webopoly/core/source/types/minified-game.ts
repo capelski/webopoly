@@ -56,8 +56,8 @@ export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.an
   ? MinifiedGameBase<GamePhase.diceInJailAnimation>
   : TPhase extends GamePhase.drawCard
   ? MinifiedGameBase<GamePhase.drawCard>
-  : TPhase extends GamePhase.goToJail
-  ? MinifiedGameBase<GamePhase.goToJail>
+  : TPhase extends GamePhase.jailNotification
+  ? MinifiedGameBase<GamePhase.jailNotification>
   : TPhase extends GamePhase.jailOptions
   ? MinifiedGameBase<GamePhase.jailOptions>
   : TPhase extends GamePhase.outOfJailAnimation

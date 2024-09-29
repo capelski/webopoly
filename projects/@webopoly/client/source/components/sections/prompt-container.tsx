@@ -16,7 +16,7 @@ const isPromptPhase = (game: Game<any>) =>
   game.phase === GamePhase.buyProperty ||
   game.phase === GamePhase.cannotPay ||
   game.phase === GamePhase.drawCard ||
-  game.phase === GamePhase.goToJail ||
+  game.phase === GamePhase.jailNotification ||
   game.phase === GamePhase.jailOptions ||
   game.phase === GamePhase.playerWins;
 

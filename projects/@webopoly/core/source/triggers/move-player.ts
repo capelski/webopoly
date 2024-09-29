@@ -3,6 +3,7 @@ import { EventType, GamePhase, GameUpdateType, PlayerStatus, SquareType, TaxType
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { Game, Player, Square } from '../types';
 import { triggerCardPrompt } from './cards';
+import { triggerNotifyJail } from './jail';
 import { triggerPayRent, triggerPayTax } from './payments';
 
 export type MovePlayerInputPhases = Game<GamePhase.play> | Game<GamePhase.applyCard>;
@@ -11,7 +12,7 @@ export type MovePlayerOutputPhases =
   | Game<GamePhase.play>
   | Game<GamePhase.buyProperty>
   | Game<GamePhase.drawCard>
-  | Game<GamePhase.goToJail>
+  | Game<GamePhase.jailNotification>
   | Game<GamePhase.cannotPay>;
 
 const applyFreeParking = (
@@ -86,15 +87,7 @@ export const triggerMovePlayer = (
 
   const goesToJail = nextSquare.type === SquareType.goToJail;
   if (goesToJail) {
-    const nextGame: Game<GamePhase.goToJail> = {
-      ...updatedGame,
-      defaultAction: {
-        playerId: currentPlayerId,
-        update: { type: GameUpdateType.goToJail },
-      },
-      phase: GamePhase.goToJail,
-    };
-    return nextGame;
+    return triggerNotifyJail(updatedGame);
   }
 
   const paysRent = doesPayRent(currentPlayerId, nextSquare);
