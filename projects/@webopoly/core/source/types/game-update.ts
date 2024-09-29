@@ -19,11 +19,11 @@ export type GameUpdate =
         | GameUpdateType.declineTrade
         | GameUpdateType.drawCard
         | GameUpdateType.endTurn
+        | GameUpdateType.evaluateDiceRoll
+        | GameUpdateType.evaluateDiceRollInJail
         | GameUpdateType.goToJail
         | GameUpdateType.payJailFine
         | GameUpdateType.paymentLiquidation
-        | GameUpdateType.postDice
-        | GameUpdateType.postDiceInJail
         | GameUpdateType.resume
         | GameUpdateType.rollDice
         | GameUpdateType.rollDiceInJail

@@ -299,6 +299,32 @@ export const triggerUpdate = (
       nextGame = triggerEndTurn(validation.game);
       updateFunction(nextGame);
     }
+  } else if (gameUpdate.type === GameUpdateType.evaluateDiceRoll) {
+    if (nextGame.phase === GamePhase.diceAnimation) {
+      const currentPlayer = getCurrentPlayer(game);
+
+      if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
+        nextGame = triggerNotifyJail(nextGame);
+      } else {
+        nextGame = triggerAvatarAnimation(nextGame);
+      }
+
+      updateFunction(nextGame);
+    }
+  } else if (gameUpdate.type === GameUpdateType.evaluateDiceRollInJail) {
+    if (nextGame.phase === GamePhase.diceInJailAnimation) {
+      const currentPlayer = getCurrentPlayer(nextGame);
+      const isDoubles = isDoublesRoll(nextGame.dice);
+      const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail - 1;
+
+      nextGame = isDoubles
+        ? triggerRollDoublesInJail(nextGame)
+        : isLastTurnInJail
+        ? triggerLastTurnInJail(nextGame)
+        : triggerRemainInJail(nextGame);
+
+      updateFunction(nextGame);
+    }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {
     const validation = mustGoToJail(nextGame, windowPlayerId);
     if (validation) {
@@ -322,32 +348,6 @@ export const triggerUpdate = (
     const validation = canPayJailFine(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerPayJailFine(validation.game);
-      updateFunction(nextGame);
-    }
-  } else if (gameUpdate.type === GameUpdateType.postDice) {
-    if (nextGame.phase === GamePhase.diceAnimation) {
-      const currentPlayer = getCurrentPlayer(game);
-
-      if (exceedsMaxDoublesInARow(currentPlayer.doublesInARow)) {
-        nextGame = triggerNotifyJail(nextGame);
-      } else {
-        nextGame = triggerAvatarAnimation(nextGame);
-      }
-
-      updateFunction(nextGame);
-    }
-  } else if (gameUpdate.type === GameUpdateType.postDiceInJail) {
-    if (nextGame.phase === GamePhase.diceInJailAnimation) {
-      const currentPlayer = getCurrentPlayer(nextGame);
-      const isDoubles = isDoublesRoll(nextGame.dice);
-      const isLastTurnInJail = currentPlayer.turnsInJail === maxTurnsInJail - 1;
-
-      nextGame = isDoubles
-        ? triggerRollDoublesInJail(nextGame)
-        : isLastTurnInJail
-        ? triggerLastTurnInJail(nextGame)
-        : triggerRemainInJail(nextGame);
-
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.resume) {

@@ -46,7 +46,7 @@ export const triggerDiceRoll = (game: Game<GamePhase.rollDice>): Game<GamePhase.
     defaultAction: {
       interval: diceTransitionDuration * 2 * 1000,
       playerId: currentPlayer.id,
-      update: { type: GameUpdateType.postDice },
+      update: { type: GameUpdateType.evaluateDiceRoll },
     },
     dice: nextDice,
     phase: GamePhase.diceAnimation,
@@ -61,7 +61,7 @@ export const triggerDiceRollInJail = (
     defaultAction: {
       interval: diceTransitionDuration * 2 * 1000,
       playerId: getCurrentPlayer(game).id,
-      update: { type: GameUpdateType.postDiceInJail },
+      update: { type: GameUpdateType.evaluateDiceRollInJail },
     },
     dice: getDiceRoll(),
     phase: GamePhase.diceInJailAnimation,
