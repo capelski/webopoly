@@ -76,7 +76,7 @@ export const triggerLastTurnInJail = (
     defaultAction: {
       interval: playerTransitionDuration * 1000,
       playerId: getCurrentPlayer(game).id,
-      update: { type: GameUpdateType.getOutOfJail },
+      update: { type: GameUpdateType.animateAvatarOutOfJail },
     },
     phase: GamePhase.outOfJailAnimation,
   };
@@ -143,7 +143,7 @@ export const triggerRollDoublesInJail = (
     defaultAction: {
       interval: playerTransitionDuration * 1000,
       playerId: getCurrentPlayer(game).id,
-      update: { type: GameUpdateType.getOutOfJail },
+      update: { type: GameUpdateType.animateAvatarOutOfJail },
     },
     phase: GamePhase.outOfJailAnimation,
   };

@@ -204,6 +204,11 @@ export const triggerUpdate = (
       nextGame = triggerAcceptTrade(validation.game);
       updateFunction(nextGame);
     }
+  } else if (gameUpdate.type === GameUpdateType.animateAvatarOutOfJail) {
+    if (nextGame.phase === GamePhase.outOfJailAnimation) {
+      nextGame = triggerAvatarAnimation(nextGame);
+      updateFunction(nextGame);
+    }
   } else if (gameUpdate.type === GameUpdateType.applyCard) {
     const validation = canApplyCard(nextGame, windowPlayerId);
     if (validation) {
@@ -292,11 +297,6 @@ export const triggerUpdate = (
     const validation = canEndTurn(nextGame, windowPlayerId);
     if (validation) {
       nextGame = triggerEndTurn(validation.game);
-      updateFunction(nextGame);
-    }
-  } else if (gameUpdate.type === GameUpdateType.getOutOfJail) {
-    if (nextGame.phase === GamePhase.outOfJailAnimation) {
-      nextGame = triggerAvatarAnimation(nextGame);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.goToJail) {

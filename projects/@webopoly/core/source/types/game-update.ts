@@ -7,6 +7,7 @@ export type GameUpdate =
       type:
         | GameUpdateType.acceptOffer
         | GameUpdateType.acceptTrade
+        | GameUpdateType.animateAvatarOutOfJail
         | GameUpdateType.applyCard
         | GameUpdateType.applyDiceRoll
         | GameUpdateType.bankruptcy
@@ -18,7 +19,6 @@ export type GameUpdate =
         | GameUpdateType.declineTrade
         | GameUpdateType.drawCard
         | GameUpdateType.endTurn
-        | GameUpdateType.getOutOfJail
         | GameUpdateType.goToJail
         | GameUpdateType.payJailFine
         | GameUpdateType.paymentLiquidation

@@ -1,6 +1,7 @@
 export enum GameUpdateType {
   acceptOffer = 'acceptOffer',
   acceptTrade = 'acceptTrade',
+  animateAvatarOutOfJail = 'animateAvatarOutOfJail',
   applyCard = 'applyCard',
   applyDiceRoll = 'applyDiceRoll',
   bankruptcy = 'bankruptcy',
@@ -15,7 +16,6 @@ export enum GameUpdateType {
   declineTrade = 'declineTrade',
   drawCard = 'drawCard',
   endTurn = 'endTurn',
-  getOutOfJail = 'getOutOfJail',
   goToJail = 'goToJail',
   mortgage = 'mortgage',
   payJailFine = 'payJailFine',
