@@ -23,16 +23,12 @@ export const triggerGetOutOfJailCard = (game: Game<GamePhase.applyCard>): Game<G
 export const triggerGoToJail = (
   game: Game<GamePhase.applyCard> | Game<GamePhase.jailNotification>,
   skipEvent = false,
-): Game<GamePhase.play> => {
+): EndTurnOutputPhases => {
   const jailSquare = game.squares.find((s) => s.type === SquareType.jail)!;
   const currentPlayer = getCurrentPlayer(game);
 
-  return {
+  return triggerEndTurn({
     ...game,
-    defaultAction: {
-      playerId: currentPlayer.id,
-      update: { type: GameUpdateType.endTurn },
-    },
     eventHistory: skipEvent
       ? game.eventHistory
       : [
@@ -43,11 +39,10 @@ export const triggerGoToJail = (
           },
           ...game.eventHistory,
         ],
-    phase: GamePhase.play,
     players: game.players.map((p) => {
       return p.id === currentPlayer.id ? { ...p, squareId: jailSquare.id, isInJail: true } : p;
     }),
-  };
+  });
 };
 
 export const triggerLastTurnInJail = (

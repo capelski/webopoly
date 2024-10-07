@@ -10,7 +10,9 @@ import { Game } from '../types';
 import { canUseJailCard } from '../validators';
 
 export type EndTurnInputPhases =
+  | Game<GamePhase.applyCard> // A player draws the "Go To Jail" card
   | Game<GamePhase.play> // A player finishes their turn
+  | Game<GamePhase.jailNotification> // A player falls in the go to jail square
   | Game<GamePhase.jailOptions> // A player pays the jail fine to get out
   | Game<GamePhase.diceInJailAnimation> // A player rolls dice in jail and doesn't get doubles
   | Game<GamePhase.outOfJailAnimation> // A player finishes their last turn in jail or rolls doubles

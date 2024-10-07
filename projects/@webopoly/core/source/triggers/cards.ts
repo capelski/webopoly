@@ -10,6 +10,7 @@ import {
   shuffleArray,
 } from '../logic';
 import { Card, CardEvent, Game, Player } from '../types';
+import { EndTurnOutputPhases } from './end-turn';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
 import { triggerCannotPay } from './payments';
@@ -24,7 +25,7 @@ type GameOutputType<TCard extends CardType> = TCard extends CardType.fee
   ? Game<GamePhase.cannotPay> | Game<GamePhase.play>
   : TCard extends CardType.streetRepairs
   ? Game<GamePhase.cannotPay> | Game<GamePhase.play>
-  : MovePlayerOutputPhases;
+  : MovePlayerOutputPhases | EndTurnOutputPhases;
 
 type CardTrigger<TCard extends CardType> = (
   game: GameInputType<TCard>,
