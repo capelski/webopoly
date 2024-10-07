@@ -10,7 +10,6 @@ import {
   GEvent,
   jailFine,
   JailMedium,
-  maxTurnsInJail,
   OfferType,
   passGoMoney,
   Player,
@@ -169,10 +168,8 @@ const renderersMap: {
   },
   [EventType.turnInJail]: (player, event) => ({
     description: `${player.name} doesn't roll doubles; ${
-      event.turnsInJail < maxTurnsInJail
-        ? `${event.turnsInJail} turn(s) in jail`
-        : `pays ${currencySymbol}${jailFine} fine and gets out`
-    }`,
+      [, '1st', '2nd', '3rd'][event.turnsInJail]
+    } turn in jail`,
     icon: jailSymbol,
   }),
 };

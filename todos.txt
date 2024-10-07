@@ -2,7 +2,6 @@
     Revisit phase/GameUpdateType names
 
 ? Buy property in owned neighbourhood on pass go
-? Jail: allow paying fine. If lost three turns, don't pay
 ? Remove properties based on players number
 
 - Allow "pausing" the game

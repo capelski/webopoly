@@ -1,4 +1,4 @@
-import { jailFine, playerInitialMoney } from '../constants';
+import { playerInitialMoney } from '../constants';
 import {
   EventType,
   GamePhase,
@@ -90,9 +90,7 @@ export const getPendingAmount = (
   game: Game<GamePhase.paymentLiquidation> | Game<GamePhase.cannotPay>,
 ) => {
   const amount =
-    game.phaseData.type === EventType.turnInJail
-      ? jailFine
-      : game.phaseData.type === EventType.card
+    game.phaseData.type === EventType.card
       ? getCardAmount(game, game.phaseData.cardId)
       : game.phaseData.amount;
   return amount;

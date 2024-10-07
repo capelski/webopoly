@@ -16,7 +16,7 @@ export const canPayJailFine = (
     return null;
   }
 
-  if (currentPlayer.money < jailFine || currentPlayer.turnsInJail === 2) {
+  if (currentPlayer.money < jailFine) {
     return null;
   }
 

@@ -3,7 +3,6 @@ import { CardType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, getPendingAmount, hasEnoughMoney } from '../logic';
 import { Game } from '../types';
 import { triggerApplyCard } from './cards';
-import { triggerLastTurnInJail } from './jail';
 import { ExpenseOutputPhases, triggerCannotPay, triggerPayRent, triggerPayTax } from './payments';
 
 export const resumeBuyProperty = (
@@ -21,7 +20,7 @@ export const resumeBuyProperty = (
 
 export const resumePendingPayment = (
   game: Game<GamePhase.paymentLiquidation>,
-): Game<GamePhase.cannotPay> | ExpenseOutputPhases | Game<GamePhase.outOfJailAnimation> => {
+): Game<GamePhase.cannotPay> | ExpenseOutputPhases => {
   const amount = getPendingAmount(game);
   const player = getCurrentPlayer(game);
 
@@ -30,8 +29,6 @@ export const resumePendingPayment = (
       return triggerApplyCard<CardType.fee | CardType.streetRepairs>(game, game.phaseData.cardId);
     } else if (game.phaseData.type === EventType.payTax) {
       return triggerPayTax(game, game.phaseData);
-    } else if (game.phaseData.type === EventType.turnInJail) {
-      return triggerLastTurnInJail(game);
     } else {
       return triggerPayRent(game, game.phaseData);
     }
