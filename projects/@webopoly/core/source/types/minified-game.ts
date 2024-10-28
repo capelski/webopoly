@@ -37,8 +37,13 @@ type MinifiedGamePhaseData<
 
 export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffer
   ? MinifiedGamePhaseData<GamePhase.answerOffer, Game<GamePhase.answerOffer>['phaseData']>
-  : TPhase extends GamePhase.answerTrade
-  ? MinifiedGamePhaseData<GamePhase.answerTrade, Game<GamePhase.answerTrade>['phaseData']>
+  : TPhase extends GamePhase.answerTrade_play
+  ? MinifiedGamePhaseData<GamePhase.answerTrade_play, Game<GamePhase.answerTrade_play>['phaseData']>
+  : TPhase extends GamePhase.answerTrade_rollDice
+  ? MinifiedGamePhaseData<
+      GamePhase.answerTrade_rollDice,
+      Game<GamePhase.answerTrade_rollDice>['phaseData']
+    >
   : TPhase extends GamePhase.applyCard
   ? MinifiedGamePhaseData<GamePhase.applyCard, Game<GamePhase.applyCard>['phaseData']>
   : TPhase extends GamePhase.avatarAnimation
@@ -75,6 +80,8 @@ export type MinifiedGame<TPhase extends GamePhase> = TPhase extends GamePhase.an
   ? MinifiedGamePhaseData<GamePhase.playerWins, Game<GamePhase.playerWins>['phaseData']>
   : TPhase extends GamePhase.rollDice
   ? MinifiedGameBase<GamePhase.rollDice>
-  : TPhase extends GamePhase.trade
-  ? MinifiedGamePhaseData<GamePhase.trade, Game<GamePhase.trade>['phaseData']>
+  : TPhase extends GamePhase.trade_play
+  ? MinifiedGamePhaseData<GamePhase.trade_play, Game<GamePhase.trade_play>['phaseData']>
+  : TPhase extends GamePhase.trade_rollDice
+  ? MinifiedGamePhaseData<GamePhase.trade_rollDice, Game<GamePhase.trade_rollDice>['phaseData']>
   : never;

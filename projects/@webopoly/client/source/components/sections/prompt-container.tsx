@@ -11,7 +11,8 @@ interface PromptContainerProps {
 
 const isPromptPhase = (game: Game<any>) =>
   game.phase === GamePhase.answerOffer ||
-  game.phase === GamePhase.answerTrade ||
+  game.phase === GamePhase.answerTrade_play ||
+  game.phase === GamePhase.answerTrade_rollDice ||
   game.phase === GamePhase.applyCard ||
   game.phase === GamePhase.buyProperty ||
   game.phase === GamePhase.cannotPay ||

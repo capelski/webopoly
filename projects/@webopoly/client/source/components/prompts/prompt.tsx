@@ -14,7 +14,8 @@ import { PromptInterface } from './prompt-interface';
 
 export const PromptComponent: PromptInterface = (props) => {
   const inset =
-    props.game.phase === GamePhase.answerTrade
+    props.game.phase === GamePhase.answerTrade_play ||
+    props.game.phase === GamePhase.answerTrade_rollDice
       ? '15% 20px'
       : props.game.phase === GamePhase.buyProperty
       ? '5% 20px'
@@ -24,7 +25,8 @@ export const PromptComponent: PromptInterface = (props) => {
     <Modal inset={inset}>
       {props.game.phase === GamePhase.answerOffer ? (
         <AnswerOfferPrompt {...props} game={props.game} />
-      ) : props.game.phase === GamePhase.answerTrade ? (
+      ) : props.game.phase === GamePhase.answerTrade_play ||
+        props.game.phase === GamePhase.answerTrade_rollDice ? (
         <AnswerTradePrompt {...props} game={props.game} />
       ) : props.game.phase === GamePhase.applyCard ? (
         <ApplyCardPrompt {...props} game={props.game} />

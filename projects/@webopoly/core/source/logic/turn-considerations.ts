@@ -8,7 +8,8 @@ export const turnConsiderations = {
       : undefined;
   },
   answeringTrade: (game: Game<any>) => {
-    return game.phase === GamePhase.answerTrade
+    return game.phase === GamePhase.answerTrade_play ||
+      game.phase === GamePhase.answerTrade_rollDice
       ? { currentPlayerId: game.phaseData.targetPlayerId, game }
       : undefined;
   },

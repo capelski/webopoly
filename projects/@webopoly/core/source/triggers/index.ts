@@ -74,12 +74,18 @@ import {
   triggerSellingOffer,
 } from './offers';
 import {
-  triggerAcceptTrade,
-  triggerCancelTrade,
-  triggerDeclineTrade,
-  triggerStartTrade,
-  triggerTradeOffer,
-  triggerTradeSelectionToggle,
+  triggerAcceptTrade_play,
+  triggerAcceptTrade_rollDice,
+  triggerCancelTrade_play,
+  triggerCancelTrade_rollDice,
+  triggerDeclineTrade_play,
+  triggerDeclineTrade_rollDice,
+  triggerStartTrade_play,
+  triggerStartTrade_rollDice,
+  triggerTradeOffer_play,
+  triggerTradeOffer_rollRice,
+  triggerTradeSelectionToggle_play,
+  triggerTradeSelectionToggle_rollDice,
 } from './trade';
 
 export const triggerRemovePlayer = (
@@ -126,7 +132,9 @@ export const triggerRemovePlayer = (
     answeringOffer && answeringOffer.currentPlayerId === playerId
       ? triggerDeclineOffer(answeringOffer.game)
       : answeringTrade && answeringTrade.currentPlayerId === playerId
-      ? triggerDeclineTrade(answeringTrade.game)
+      ? answeringTrade.game.phase === GamePhase.answerTrade_play
+        ? triggerDeclineTrade_play(answeringTrade.game)
+        : triggerDeclineTrade_rollDice(answeringTrade.game)
       : buyingProperty && buyingProperty.currentPlayerId === playerId
       ? triggerBuyPropertyDecline(buyingProperty.game)
       : buyingPropertyLiquidation && buyingPropertyLiquidation.currentPlayerId === playerId
@@ -201,7 +209,10 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.acceptTrade) {
     const validation = canAnswerTrade(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerAcceptTrade(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.answerTrade_play
+          ? triggerAcceptTrade_play(validation.game)
+          : triggerAcceptTrade_rollDice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.animateAvatarOutOfJail) {
@@ -265,7 +276,10 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.cancelTrade) {
     const validation = canCancelTrade(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerCancelTrade(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.trade_play
+          ? triggerCancelTrade_play(validation.game)
+          : triggerCancelTrade_rollDice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.clearMortgage) {
@@ -284,7 +298,10 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.declineTrade) {
     const validation = canAnswerTrade(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerDeclineTrade(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.answerTrade_play
+          ? triggerDeclineTrade_play(validation.game)
+          : triggerAcceptTrade_rollDice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.drawCard) {
@@ -400,19 +417,28 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.startTrade) {
     const validation = canStartTrade(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerStartTrade(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.play
+          ? triggerStartTrade_play(validation.game)
+          : triggerStartTrade_rollDice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.tradeOffer) {
     const validation = canTriggerTradeOffer(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerTradeOffer(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.trade_play
+          ? triggerTradeOffer_play(validation.game)
+          : triggerTradeOffer_rollRice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.toggleTradeSelection) {
     const validation = canToggleTradeSelection(nextGame, gameUpdate.squareId, windowPlayerId);
     if (validation) {
-      nextGame = triggerTradeSelectionToggle(validation.game, validation.property);
+      nextGame =
+        validation.game.phase === GamePhase.trade_play
+          ? triggerTradeSelectionToggle_play(validation.game, validation.property)
+          : triggerTradeSelectionToggle_rollDice(validation.game, validation.property);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.useJailCard) {

@@ -1,6 +1,7 @@
 export enum GamePhase {
   answerOffer = 'answerOffer',
-  answerTrade = 'answerTrade',
+  answerTrade_play = 'answerTrade_play',
+  answerTrade_rollDice = 'answerTrade_rollDice',
   applyCard = 'applyCard',
   avatarAnimation = 'avatarAnimation',
   buyProperty = 'buyProperty',
@@ -16,5 +17,6 @@ export enum GamePhase {
   play = 'play',
   playerWins = 'playerWins',
   rollDice = 'rollDice',
-  trade = 'trade',
+  trade_play = 'trade_play',
+  trade_rollDice = 'trade_rollDice',
 }

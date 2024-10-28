@@ -1,20 +1,13 @@
 import { longActionInterval } from '../constants';
 import { AnswerType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, isSelectedForTrade } from '../logic';
-import { Game, PropertySquare } from '../types';
+import { DefaultAction, Game, PropertySquare, Transition } from '../types';
 
-export const triggerAcceptTrade = (
-  game: Game<GamePhase.answerTrade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+const triggerAcceptTrade = (
+  game: Game<GamePhase.answerTrade_play> | Game<GamePhase.answerTrade_rollDice>,
+): Game<any> => {
   return {
     ...game,
-    defaultAction: {
-      playerId: game.phaseData.playerId,
-      update:
-        game.phaseData.previous === GamePhase.play
-          ? { type: GameUpdateType.endTurn }
-          : { type: GameUpdateType.rollDice },
-    },
     notifications: [
       ...game.notifications,
       {
@@ -26,7 +19,6 @@ export const triggerAcceptTrade = (
         type: EventType.answerTrade,
       },
     ],
-    phase: game.phaseData.previous,
     players: game.players.map((player) => {
       return player.id === game.phaseData.playerId
         ? {
@@ -54,31 +46,67 @@ export const triggerAcceptTrade = (
   };
 };
 
-export const triggerCancelTrade = (
-  game: Game<GamePhase.trade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+export const triggerAcceptTrade_play: Transition<GamePhase.answerTrade_play, GamePhase.play> = (
+  game,
+) => {
+  return {
+    ...triggerAcceptTrade(game),
+    defaultAction: {
+      playerId: game.phaseData.playerId,
+      update: { type: GameUpdateType.endTurn },
+    },
+    phase: GamePhase.play,
+  };
+};
+
+export const triggerAcceptTrade_rollDice: Transition<
+  GamePhase.answerTrade_rollDice,
+  GamePhase.rollDice
+> = (game) => {
+  return {
+    ...triggerAcceptTrade(game),
+    defaultAction: {
+      playerId: game.phaseData.playerId,
+      update: { type: GameUpdateType.rollDice },
+    },
+    phase: GamePhase.rollDice,
+  };
+};
+
+export const triggerCancelTrade_play: Transition<GamePhase.trade_play, GamePhase.play> = (game) => {
   return {
     ...game,
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
-      update:
-        game.phaseData.previousPhase === GamePhase.play
-          ? { type: GameUpdateType.endTurn }
-          : { type: GameUpdateType.rollDice },
+      update: { type: GameUpdateType.endTurn },
     },
-    phase: game.phaseData.previousPhase,
+    phase: GamePhase.play,
   };
 };
 
-export const triggerDeclineTrade = (
-  game: Game<GamePhase.answerTrade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+export const triggerCancelTrade_rollDice: Transition<
+  GamePhase.trade_rollDice,
+  GamePhase.rollDice
+> = (game) => {
+  return {
+    ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.rollDice },
+    },
+    phase: GamePhase.rollDice,
+  };
+};
+
+const triggerDeclineTrade = (
+  game: Game<GamePhase.answerTrade_play> | Game<GamePhase.answerTrade_rollDice>,
+): Game<any> => {
   return {
     ...game,
     defaultAction: {
       playerId: game.phaseData.playerId,
       update:
-        game.phaseData.previous === GamePhase.play
+        game.phase === GamePhase.answerTrade_play
           ? { type: GameUpdateType.endTurn }
           : { type: GameUpdateType.rollDice },
     },
@@ -93,23 +121,37 @@ export const triggerDeclineTrade = (
         type: EventType.answerTrade,
       },
     ],
-    phase: game.phaseData.previous,
   };
 };
 
-export const triggerStartTrade = (
-  game: Game<GamePhase.play> | Game<GamePhase.rollDice>,
-): Game<GamePhase.trade> => {
+export const triggerDeclineTrade_play: Transition<GamePhase.answerTrade_play, GamePhase.play> = (
+  game,
+) => {
+  return {
+    ...triggerDeclineTrade(game),
+    phase: GamePhase.play,
+  };
+};
+
+export const triggerDeclineTrade_rollDice: Transition<
+  GamePhase.answerTrade_rollDice,
+  GamePhase.rollDice
+> = (game) => {
+  return {
+    ...triggerDeclineTrade(game),
+    phase: GamePhase.rollDice,
+  };
+};
+
+const triggerStartTrade = (game: Game<GamePhase.play> | Game<GamePhase.rollDice>) => {
   return {
     ...game,
     defaultAction: {
       playerId: getCurrentPlayer(game).id,
       update: { type: GameUpdateType.cancelTrade },
       interval: longActionInterval * 1000,
-    },
-    phase: GamePhase.trade,
+    } as DefaultAction,
     phaseData: {
-      previousPhase: game.phase,
       other: {
         ownerId: undefined,
         squaresId: [],
@@ -119,30 +161,69 @@ export const triggerStartTrade = (
   };
 };
 
-export const triggerTradeOffer = (game: Game<GamePhase.trade>): Game<GamePhase.answerTrade> => {
+export const triggerStartTrade_play: Transition<GamePhase.play, GamePhase.trade_play> = (game) => {
+  return {
+    ...triggerStartTrade(game),
+    phase: GamePhase.trade_play,
+  };
+};
+
+export const triggerStartTrade_rollDice: Transition<
+  GamePhase.rollDice,
+  GamePhase.trade_rollDice
+> = (game) => {
+  return {
+    ...triggerStartTrade(game),
+    phase: GamePhase.trade_rollDice,
+  };
+};
+
+const triggerTradeOffer = (game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>) => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
     ...game,
-    defaultAction: {
-      playerId: game.phaseData.other.ownerId!,
-      update: { type: GameUpdateType.declineTrade },
-    },
-    phase: GamePhase.answerTrade,
     phaseData: {
       playerId: currentPlayer.id,
       playerPropertiesId: game.phaseData.ownSquaresId,
-      previous: game.phaseData.previousPhase,
       targetPlayerId: game.phaseData.other.ownerId!,
       targetPropertiesId: game.phaseData.other.squaresId,
     },
   };
 };
 
-export const triggerTradeSelectionToggle = (
-  game: Game<GamePhase.trade>,
+export const triggerTradeOffer_play: Transition<
+  GamePhase.trade_play,
+  GamePhase.answerTrade_play
+> = (game) => {
+  return {
+    ...triggerTradeOffer(game),
+    defaultAction: {
+      playerId: game.phaseData.other.ownerId!,
+      update: { type: GameUpdateType.declineTrade },
+    },
+    phase: GamePhase.answerTrade_play,
+  };
+};
+
+export const triggerTradeOffer_rollRice: Transition<
+  GamePhase.trade_rollDice,
+  GamePhase.answerTrade_rollDice
+> = (game) => {
+  return {
+    ...triggerTradeOffer(game),
+    defaultAction: {
+      playerId: game.phaseData.other.ownerId!,
+      update: { type: GameUpdateType.declineTrade },
+    },
+    phase: GamePhase.answerTrade_rollDice,
+  };
+};
+
+const triggerTradeSelectionToggle = (
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>,
   square: PropertySquare,
-): Game<GamePhase.trade> => {
+) => {
   const currentPlayer = getCurrentPlayer(game);
 
   const isSelected = isSelectedForTrade(game, square);
@@ -166,19 +247,37 @@ export const triggerTradeSelectionToggle = (
     : undefined;
 
   return {
-    ...game,
     defaultAction: {
       playerId: currentPlayer.id,
       update: { type: GameUpdateType.cancelTrade },
       interval: longActionInterval * 1000,
-    },
+    } as DefaultAction,
     phaseData: {
-      ...game.phaseData,
       other: {
         ownerId: nextOtherOwnerId,
         squaresId: nextOtherSquareIds,
       },
       ownSquaresId: nextOwnSquareIds,
     },
+  };
+};
+
+export const triggerTradeSelectionToggle_play: Transition<
+  GamePhase.trade_play,
+  GamePhase.trade_play
+> = (game, square) => {
+  return {
+    ...game,
+    ...triggerTradeSelectionToggle(game, square),
+  };
+};
+
+export const triggerTradeSelectionToggle_rollDice: Transition<
+  GamePhase.trade_rollDice,
+  GamePhase.trade_rollDice
+> = (game, square) => {
+  return {
+    ...game,
+    ...triggerTradeSelectionToggle(game, square),
   };
 };

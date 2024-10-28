@@ -72,7 +72,7 @@ export const serializeGame = (game: Game<any>): string => {
     }),
     ...(game.phase === GamePhase.answerOffer
       ? { ph: game.phase, pd: game.phaseData }
-      : game.phase === GamePhase.answerTrade
+      : game.phase === GamePhase.answerTrade_play || game.phase === GamePhase.answerTrade_rollDice
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.applyCard
       ? { ph: game.phase, pd: game.phaseData }
@@ -88,7 +88,7 @@ export const serializeGame = (game: Game<any>): string => {
       ? { ph: game.phase, pd: game.phaseData }
       : game.phase === GamePhase.playerWins
       ? { ph: game.phase, pd: game.phaseData }
-      : game.phase === GamePhase.trade
+      : game.phase === GamePhase.trade_play || game.phase === GamePhase.trade_rollDice
       ? { ph: game.phase, pd: game.phaseData }
       : { ph: game.phase }),
   };

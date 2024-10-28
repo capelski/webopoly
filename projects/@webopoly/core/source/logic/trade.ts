@@ -12,7 +12,9 @@ export const getPropertyOwnersId = (game: Game<any>): Player['id'][] => {
   }, []);
 };
 
-export const getTradingPlayersId = (game: Game<GamePhase.trade>): Player['id'][] => {
+export const getTradingPlayersId = (
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>,
+): Player['id'][] => {
   const currentPlayer = getCurrentPlayer(game);
 
   const ownId = game.phaseData.ownSquaresId.length > 0 ? [currentPlayer.id] : [];
@@ -24,14 +26,20 @@ export const getTradingPlayersId = (game: Game<GamePhase.trade>): Player['id'][]
   return [...ownId, ...otherId];
 };
 
-export const isSelectedForTrade = (game: Game<GamePhase.trade>, square: PropertySquare) => {
+export const isSelectedForTrade = (
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>,
+  square: PropertySquare,
+) => {
   return (
     game.phaseData.other.squaresId.includes(square.id) ||
     game.phaseData.ownSquaresId.includes(square.id)
   );
 };
 
-export const isTradableSquare = (game: Game<GamePhase.trade>, square: PropertySquare) => {
+export const isTradableSquare = (
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>,
+  square: PropertySquare,
+) => {
   const currentPlayer = getCurrentPlayer(game);
 
   return (

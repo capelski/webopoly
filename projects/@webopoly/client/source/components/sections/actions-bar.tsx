@@ -93,7 +93,8 @@ export const ActionsBar: React.FC<ActionsBarProps> = (props) => {
             End turn
           </Button>
 
-          {props.game.phase === GamePhase.trade ? (
+          {props.game.phase === GamePhase.trade_play ||
+          props.game.phase === GamePhase.trade_rollDice ? (
             <React.Fragment>
               <Button
                 disabled={!canTriggerTradeOffer(props.game, props.windowPlayerId)}

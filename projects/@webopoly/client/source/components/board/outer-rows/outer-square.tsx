@@ -52,7 +52,7 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
 
   const isTradeable = canToggleTradeSelection(props.game, props.square.id, props.windowPlayerId);
   const isSelected =
-    props.game.phase === GamePhase.trade &&
+    (props.game.phase === GamePhase.trade_play || props.game.phase === GamePhase.trade_rollDice) &&
     props.square.type === SquareType.property &&
     isSelectedForTrade(props.game, props.square);
 
@@ -68,7 +68,10 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
   return (
     <div
       onClick={() => {
-        if (props.game.phase === GamePhase.trade) {
+        if (
+          props.game.phase === GamePhase.trade_play ||
+          props.game.phase === GamePhase.trade_rollDice
+        ) {
           if (isTradeable) {
             props.triggerUpdate({
               type: GameUpdateType.toggleTradeSelection,
@@ -93,11 +96,21 @@ export const OuterSquare: React.FC<OuterSquareProps> = (props) => {
         borderBottom: '1px solid #aaa',
         borderRight: '1px solid #aaa',
         boxSizing: 'border-box',
-        cursor: props.game.phase !== GamePhase.trade || isTradeable ? 'pointer' : undefined,
+        cursor:
+          (props.game.phase !== GamePhase.trade_play &&
+            props.game.phase !== GamePhase.trade_rollDice) ||
+          isTradeable
+            ? 'pointer'
+            : undefined,
         display: 'flex',
         fontSize: props.isLandscape ? `${props.zoom * 4}dvh` : `${props.zoom * 4}dvw`,
         justifyContent: 'center',
-        opacity: props.game.phase !== GamePhase.trade || isTradeable ? undefined : 0.5,
+        opacity:
+          (props.game.phase !== GamePhase.trade_play &&
+            props.game.phase !== GamePhase.trade_rollDice) ||
+          isTradeable
+            ? undefined
+            : 0.5,
         position: 'relative',
         ...props.style,
       }}

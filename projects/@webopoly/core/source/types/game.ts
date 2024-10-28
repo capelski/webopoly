@@ -11,6 +11,18 @@ type BuyPropertyData = {
   potentialBuyersId: Player['id'][];
 };
 
+type AnswerTradeData = {
+  playerId: Player['id'];
+  playerPropertiesId: Square['id'][];
+  targetPlayerId: Player['id'];
+  targetPropertiesId: Square['id'][];
+};
+
+type TradeData = {
+  other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
+  ownSquaresId: Square['id'][];
+};
+
 type GameBase<TPhase extends GamePhase> = {
   centerPot: number;
   currentPlayerId: Player['id'];
@@ -51,17 +63,10 @@ export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffe
         targetPlayerId: Player['id'];
       }
     >
-  : TPhase extends GamePhase.answerTrade
-  ? GamePhaseData<
-      GamePhase.answerTrade,
-      {
-        playerId: Player['id'];
-        playerPropertiesId: Square['id'][];
-        previous: GamePhase.play | GamePhase.rollDice;
-        targetPlayerId: Player['id'];
-        targetPropertiesId: Square['id'][];
-      }
-    >
+  : TPhase extends GamePhase.answerTrade_play
+  ? GamePhaseData<GamePhase.answerTrade_play, AnswerTradeData>
+  : TPhase extends GamePhase.answerTrade_rollDice
+  ? GamePhaseData<GamePhase.answerTrade_rollDice, AnswerTradeData>
   : TPhase extends GamePhase.applyCard
   ? GamePhaseData<
       GamePhase.applyCard,
@@ -108,13 +113,8 @@ export type Game<TPhase extends GamePhase> = TPhase extends GamePhase.answerOffe
     >
   : TPhase extends GamePhase.rollDice
   ? GameBase<GamePhase.rollDice>
-  : TPhase extends GamePhase.trade
-  ? GamePhaseData<
-      GamePhase.trade,
-      {
-        previousPhase: GamePhase.play | GamePhase.rollDice;
-        other: { ownerId: Player['id'] | undefined; squaresId: Square['id'][] };
-        ownSquaresId: Square['id'][];
-      }
-    >
+  : TPhase extends GamePhase.trade_play
+  ? GamePhaseData<GamePhase.trade_play, TradeData>
+  : TPhase extends GamePhase.trade_rollDice
+  ? GamePhaseData<GamePhase.trade_rollDice, TradeData>
   : never;

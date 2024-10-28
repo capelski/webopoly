@@ -12,9 +12,9 @@ export const canAnswerTrade = (
   game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game<GamePhase.answerTrade>;
+  game: Game<GamePhase.answerTrade_play> | Game<GamePhase.answerTrade_rollDice>;
 } | null => {
-  if (game.phase !== GamePhase.answerTrade) {
+  if (game.phase !== GamePhase.answerTrade_play && game.phase !== GamePhase.answerTrade_rollDice) {
     return null;
   }
 
@@ -30,9 +30,9 @@ export const canCancelTrade = (
   game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game<GamePhase.trade>;
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>;
 } | null => {
-  if (game.phase !== GamePhase.trade) {
+  if (game.phase !== GamePhase.trade_play && game.phase !== GamePhase.trade_rollDice) {
     return null;
   }
 
@@ -72,10 +72,10 @@ export const canToggleTradeSelection = (
   squareId: Square['id'],
   windowPlayerId: Player['id'],
 ): {
-  game: Game<GamePhase.trade>;
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>;
   property: PropertySquare;
 } | null => {
-  if (game.phase !== GamePhase.trade) {
+  if (game.phase !== GamePhase.trade_play && game.phase !== GamePhase.trade_rollDice) {
     return null;
   }
 
@@ -96,9 +96,9 @@ export const canTriggerTradeOffer = (
   game: Game<any>,
   windowPlayerId: Player['id'],
 ): {
-  game: Game<GamePhase.trade>;
+  game: Game<GamePhase.trade_play> | Game<GamePhase.trade_rollDice>;
 } | null => {
-  if (game.phase !== GamePhase.trade) {
+  if (game.phase !== GamePhase.trade_play && game.phase !== GamePhase.trade_rollDice) {
     return null;
   }
 

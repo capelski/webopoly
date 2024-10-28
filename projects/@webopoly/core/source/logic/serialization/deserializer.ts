@@ -55,7 +55,7 @@ export const deserializeGame = (serializedGame: string | null): Game<any> | unde
       }),
       ...(g.ph === GamePhase.answerOffer
         ? { phase: g.ph, phaseData: g.pd }
-        : g.ph === GamePhase.answerTrade
+        : g.ph === GamePhase.answerTrade_play || g.ph === GamePhase.answerTrade_rollDice
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.applyCard
         ? { phase: g.ph, phaseData: g.pd }
@@ -71,7 +71,7 @@ export const deserializeGame = (serializedGame: string | null): Game<any> | unde
         ? { phase: g.ph, phaseData: g.pd }
         : g.ph === GamePhase.playerWins
         ? { phase: g.ph, phaseData: g.pd }
-        : g.ph === GamePhase.trade
+        : g.ph === GamePhase.trade_play || g.ph === GamePhase.trade_rollDice
         ? { phase: g.ph, phaseData: g.pd }
         : { phase: g.ph }),
     };
