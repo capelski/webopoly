@@ -9,7 +9,7 @@ import {
   hasEnoughMoney,
   shuffleArray,
 } from '../logic';
-import { Card, CardEvent, Game, Player } from '../types';
+import { Card, CardEvent, Game, Player, Transition } from '../types';
 import { EndTurnOutputPhases } from './end-turn';
 import { triggerGetOutOfJailCard, triggerGoToJail } from './jail';
 import { MovePlayerOutputPhases, triggerMovePlayer } from './move-player';
@@ -152,7 +152,7 @@ export const triggerCardPrompt = (
   };
 };
 
-export const triggerDrawCard = (game: Game<GamePhase.drawCard>): Game<GamePhase.applyCard> => {
+export const triggerDrawCard: Transition<GamePhase.drawCard, GamePhase.applyCard> = (game) => {
   let nextCardIds = [...game.nextCardIds];
 
   if (nextCardIds.length === 0) {

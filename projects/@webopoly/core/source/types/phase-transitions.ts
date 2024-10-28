@@ -27,9 +27,13 @@ export type TransitionsMap = Enforcer<{
   [GamePhase.cannotPay]: {};
   [GamePhase.diceAnimation]: {};
   [GamePhase.diceInJailAnimation]: {};
-  [GamePhase.drawCard]: {};
+  [GamePhase.drawCard]: {
+    [GamePhase.applyCard]: undefined; // Player draws a card
+  };
   [GamePhase.jailNotification]: {};
-  [GamePhase.jailOptions]: {};
+  [GamePhase.jailOptions]: {
+    [GamePhase.rollDice]: undefined; // Player uses a get out of jail card
+  };
   [GamePhase.outOfJailAnimation]: {};
   [GamePhase.paymentLiquidation]: {};
   [GamePhase.play]: {
