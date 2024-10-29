@@ -152,7 +152,7 @@ export const triggerCardPrompt = (
   };
 };
 
-export const triggerDrawCard: Transition<GamePhase.drawCard, GamePhase.applyCard> = (game) => {
+export const triggerDrawCard: Transition<GamePhase.drawCard, 'drawCard'> = (game) => {
   let nextCardIds = [...game.nextCardIds];
 
   if (nextCardIds.length === 0) {

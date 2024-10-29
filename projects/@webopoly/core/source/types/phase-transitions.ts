@@ -1,12 +1,13 @@
 import { GamePhase } from '../enums';
 import { Game } from './game';
+import { Player } from './player';
 import { PropertySquare } from './square';
 
-export type GameInPhase<TPhase extends GamePhase> = Game<any> & { phase: TPhase };
+type TransitionData = (...parameters: Array<any>) => GamePhase;
 
 export type BaseTransitionsMap = {
-  [TIn in GamePhase]: {
-    [TOut in GamePhase]?: Array<any>;
+  [TIn in GamePhase]?: {
+    [key: string]: TransitionData;
   };
 };
 
@@ -15,49 +16,57 @@ export type Enforcer<T extends BaseTransitionsMap> = T;
 export type TransitionsMap = Enforcer<{
   [GamePhase.answerOffer]: {};
   [GamePhase.answerTrade_play]: {
-    [GamePhase.play]: undefined; // Target player accepts or declines trade
+    answerTrade: () => GamePhase.play;
   };
   [GamePhase.answerTrade_rollDice]: {
-    [GamePhase.rollDice]: undefined; // Target player accepts or declines trade
+    answerTrade: () => GamePhase.rollDice;
   };
   [GamePhase.applyCard]: {};
   [GamePhase.avatarAnimation]: {};
-  [GamePhase.buyProperty]: {};
+  [GamePhase.buyProperty]: {
+    playerBuys: (propertySquare: PropertySquare, buyerId: Player['id']) => GamePhase.play;
+    playerDeclines: () => GamePhase.play | GamePhase.buyProperty;
+  };
   [GamePhase.buyingLiquidation]: {};
   [GamePhase.cannotPay]: {};
   [GamePhase.diceAnimation]: {};
   [GamePhase.diceInJailAnimation]: {};
   [GamePhase.drawCard]: {
-    [GamePhase.applyCard]: undefined; // Player draws a card
+    drawCard: () => GamePhase.applyCard;
   };
   [GamePhase.jailNotification]: {};
   [GamePhase.jailOptions]: {
-    [GamePhase.rollDice]: undefined; // Player uses a get out of jail card
+    useJailCard: () => GamePhase.rollDice;
   };
   [GamePhase.outOfJailAnimation]: {};
   [GamePhase.paymentLiquidation]: {};
   [GamePhase.play]: {
-    [GamePhase.trade_play]: undefined; // Player enters trading selection mode
+    enterTrading: () => GamePhase.trade_play;
   };
   [GamePhase.playerWins]: {};
   [GamePhase.rollDice]: {
-    [GamePhase.trade_rollDice]: undefined; // Player enters trading selection mode
+    enterTrading: () => GamePhase.trade_rollDice;
   };
   [GamePhase.trade_play]: {
-    [GamePhase.answerTrade_play]: undefined; // Player sends a trading offer
-    [GamePhase.play]: undefined; // Player exits trading selection mode
-    [GamePhase.trade_play]: [square: PropertySquare]; // Player changes the current trade selection
+    exitTrading: () => GamePhase.play;
+    sendTradingOffer: () => GamePhase.answerTrade_play;
+    toggleTradingSelection: (square: PropertySquare) => GamePhase.trade_play;
   };
   [GamePhase.trade_rollDice]: {
-    [GamePhase.answerTrade_rollDice]: undefined; // Player sends a trading offer
-    [GamePhase.rollDice]: undefined; // Player exits trading selection mode
-    [GamePhase.trade_rollDice]: [square: PropertySquare]; // Player changes the current trade selection
+    exitTrading: () => GamePhase.rollDice;
+    sendTradingOffer: () => GamePhase.answerTrade_rollDice;
+    toggleTradingSelection: (square: PropertySquare) => GamePhase.trade_rollDice;
   };
 }>;
 
+export type GameInPhase<TPhase extends GamePhase> = Game<any> & { phase: TPhase };
+
 export type Transition<
   TIn extends keyof TransitionsMap & GamePhase,
-  TOut extends keyof TransitionsMap[TIn] & GamePhase,
-> = TransitionsMap[TIn][TOut] extends Array<any>
-  ? (game: GameInPhase<TIn>, ...args: TransitionsMap[TIn][TOut]) => GameInPhase<TOut>
-  : (game: GameInPhase<TIn>) => GameInPhase<TOut>;
+  TName extends keyof TransitionsMap[TIn] & string,
+> = TransitionsMap[TIn][TName] extends TransitionData
+  ? (
+      game: GameInPhase<TIn>,
+      ...args: Parameters<TransitionsMap[TIn][TName]>
+    ) => GameInPhase<ReturnType<TransitionsMap[TIn][TName]>>
+  : never;

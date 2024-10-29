@@ -123,7 +123,7 @@ export const triggerRollDoublesInJail = (
   };
 };
 
-export const triggerUseJailCard: Transition<GamePhase.jailOptions, GamePhase.rollDice> = (game) => {
+export const triggerUseJailCard: Transition<GamePhase.jailOptions, 'useJailCard'> = (game) => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.card);
   return {
     ...nextGame,

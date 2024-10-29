@@ -46,7 +46,7 @@ const triggerAcceptTrade = (
   };
 };
 
-export const triggerAcceptTrade_play: Transition<GamePhase.answerTrade_play, GamePhase.play> = (
+export const triggerAcceptTrade_play: Transition<GamePhase.answerTrade_play, 'answerTrade'> = (
   game,
 ) => {
   return {
@@ -61,7 +61,7 @@ export const triggerAcceptTrade_play: Transition<GamePhase.answerTrade_play, Gam
 
 export const triggerAcceptTrade_rollDice: Transition<
   GamePhase.answerTrade_rollDice,
-  GamePhase.rollDice
+  'answerTrade'
 > = (game) => {
   return {
     ...triggerAcceptTrade(game),
@@ -73,7 +73,7 @@ export const triggerAcceptTrade_rollDice: Transition<
   };
 };
 
-export const triggerCancelTrade_play: Transition<GamePhase.trade_play, GamePhase.play> = (game) => {
+export const triggerCancelTrade_play: Transition<GamePhase.trade_play, 'exitTrading'> = (game) => {
   return {
     ...game,
     defaultAction: {
@@ -84,10 +84,9 @@ export const triggerCancelTrade_play: Transition<GamePhase.trade_play, GamePhase
   };
 };
 
-export const triggerCancelTrade_rollDice: Transition<
-  GamePhase.trade_rollDice,
-  GamePhase.rollDice
-> = (game) => {
+export const triggerCancelTrade_rollDice: Transition<GamePhase.trade_rollDice, 'exitTrading'> = (
+  game,
+) => {
   return {
     ...game,
     defaultAction: {
@@ -124,7 +123,7 @@ const triggerDeclineTrade = (
   };
 };
 
-export const triggerDeclineTrade_play: Transition<GamePhase.answerTrade_play, GamePhase.play> = (
+export const triggerDeclineTrade_play: Transition<GamePhase.answerTrade_play, 'answerTrade'> = (
   game,
 ) => {
   return {
@@ -135,7 +134,7 @@ export const triggerDeclineTrade_play: Transition<GamePhase.answerTrade_play, Ga
 
 export const triggerDeclineTrade_rollDice: Transition<
   GamePhase.answerTrade_rollDice,
-  GamePhase.rollDice
+  'answerTrade'
 > = (game) => {
   return {
     ...triggerDeclineTrade(game),
@@ -161,17 +160,16 @@ const triggerStartTrade = (game: Game<GamePhase.play> | Game<GamePhase.rollDice>
   };
 };
 
-export const triggerStartTrade_play: Transition<GamePhase.play, GamePhase.trade_play> = (game) => {
+export const triggerStartTrade_play: Transition<GamePhase.play, 'enterTrading'> = (game) => {
   return {
     ...triggerStartTrade(game),
     phase: GamePhase.trade_play,
   };
 };
 
-export const triggerStartTrade_rollDice: Transition<
-  GamePhase.rollDice,
-  GamePhase.trade_rollDice
-> = (game) => {
+export const triggerStartTrade_rollDice: Transition<GamePhase.rollDice, 'enterTrading'> = (
+  game,
+) => {
   return {
     ...triggerStartTrade(game),
     phase: GamePhase.trade_rollDice,
@@ -192,10 +190,9 @@ const triggerTradeOffer = (game: Game<GamePhase.trade_play> | Game<GamePhase.tra
   };
 };
 
-export const triggerTradeOffer_play: Transition<
-  GamePhase.trade_play,
-  GamePhase.answerTrade_play
-> = (game) => {
+export const triggerTradeOffer_play: Transition<GamePhase.trade_play, 'sendTradingOffer'> = (
+  game,
+) => {
   return {
     ...triggerTradeOffer(game),
     defaultAction: {
@@ -208,7 +205,7 @@ export const triggerTradeOffer_play: Transition<
 
 export const triggerTradeOffer_rollRice: Transition<
   GamePhase.trade_rollDice,
-  GamePhase.answerTrade_rollDice
+  'sendTradingOffer'
 > = (game) => {
   return {
     ...triggerTradeOffer(game),
@@ -264,7 +261,7 @@ const triggerTradeSelectionToggle = (
 
 export const triggerTradeSelectionToggle_play: Transition<
   GamePhase.trade_play,
-  GamePhase.trade_play
+  'toggleTradingSelection'
 > = (game, square) => {
   return {
     ...game,
@@ -274,7 +271,7 @@ export const triggerTradeSelectionToggle_play: Transition<
 
 export const triggerTradeSelectionToggle_rollDice: Transition<
   GamePhase.trade_rollDice,
-  GamePhase.trade_rollDice
+  'toggleTradingSelection'
 > = (game, square) => {
   return {
     ...game,
