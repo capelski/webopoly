@@ -1,6 +1,3 @@
-- Centralize phase transitions in a single dictionary? (e.g. SellOfferInputPhases, MovePlayerOutputPhases)
-    Revisit phase/GameUpdateType names
-
 ? Buy property in owned neighbourhood on pass go
 ? Remove properties based on players number
 

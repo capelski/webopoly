@@ -77,7 +77,8 @@ import {
   triggerAcceptTrade,
   triggerCancelTrade,
   triggerDeclineTrade,
-  triggerStartTrade,
+  triggerStartTrade_play,
+  triggerStartTrade_rollDice,
   triggerTradeOffer,
   triggerTradeSelectionToggle,
 } from './trade';
@@ -400,7 +401,10 @@ export const triggerUpdate = (
   } else if (gameUpdate.type === GameUpdateType.startTrade) {
     const validation = canStartTrade(nextGame, windowPlayerId);
     if (validation) {
-      nextGame = triggerStartTrade(validation.game);
+      nextGame =
+        validation.game.phase === GamePhase.play
+          ? triggerStartTrade_play(validation.game)
+          : triggerStartTrade_rollDice(validation.game);
       updateFunction(nextGame);
     }
   } else if (gameUpdate.type === GameUpdateType.tradeOffer) {

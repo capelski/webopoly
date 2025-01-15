@@ -1,10 +1,10 @@
 import { jailFine, maxTurnsInJail, playerTransitionDuration } from '../constants';
 import { EventType, GamePhase, GameUpdateType, JailMedium, SquareType } from '../enums';
 import { exceedsMaxDoublesInARow, getCurrentPlayer } from '../logic';
-import { Game, GEvent } from '../types';
+import { Game, GEvent, Transition } from '../types';
 import { EndTurnOutputPhases, triggerEndTurn } from './end-turn';
 
-export const triggerGetOutOfJailCard = (game: Game<GamePhase.applyCard>): Game<GamePhase.play> => {
+export const triggerGetOutOfJailCard: Transition<GamePhase.applyCard, 'applyCard'> = (game) => {
   const currentPlayer = getCurrentPlayer(game);
 
   return {
@@ -123,7 +123,7 @@ export const triggerRollDoublesInJail = (
   };
 };
 
-export const triggerUseJailCard = (game: Game<GamePhase.jailOptions>): Game<GamePhase.rollDice> => {
+export const triggerUseJailCard: Transition<GamePhase.jailOptions, 'useJailCard'> = (game) => {
   const nextGame = updatePlayerOutOfJail(game, JailMedium.card);
   return {
     ...nextGame,

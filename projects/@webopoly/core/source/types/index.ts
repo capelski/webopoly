@@ -7,6 +7,7 @@ export * from './game';
 export * from './game-update';
 export * from './id';
 export * from './minified-game';
+export * from './phase-transitions';
 export * from './player';
 export * from './player-minified';
 export * from './room-state';

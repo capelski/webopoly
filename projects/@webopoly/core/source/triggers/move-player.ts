@@ -2,7 +2,7 @@ import { passGoMoney } from '../constants';
 import { EventType, GamePhase, GameUpdateType, PlayerStatus, SquareType, TaxType } from '../enums';
 import { doesPayRent, getCurrentPlayer, getRentAmount, passesGo } from '../logic';
 import { Game, Player, Square } from '../types';
-import { triggerCardPrompt } from './cards';
+import { triggerCardPrompt_card, triggerCardPrompt_move } from './cards';
 import { triggerNotifyJail } from './jail';
 import { triggerPayRent, triggerPayTax } from './payments';
 
@@ -117,7 +117,9 @@ export const triggerMovePlayer = (
 
   const landsInSurprise = nextSquare.type === SquareType.surprise;
   if (landsInSurprise) {
-    return triggerCardPrompt(updatedGame);
+    return updatedGame.phase === GamePhase.applyCard
+      ? triggerCardPrompt_card(updatedGame)
+      : triggerCardPrompt_move(updatedGame);
   }
 
   if (nextSquare.type === SquareType.property && !nextSquare.ownerId) {

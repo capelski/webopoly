@@ -1,11 +1,9 @@
 import { longActionInterval } from '../constants';
 import { AnswerType, EventType, GamePhase, GameUpdateType } from '../enums';
 import { getCurrentPlayer, isSelectedForTrade } from '../logic';
-import { Game, PropertySquare } from '../types';
+import { Game, Transition } from '../types';
 
-export const triggerAcceptTrade = (
-  game: Game<GamePhase.answerTrade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+export const triggerAcceptTrade: Transition<GamePhase.answerTrade, 'answerTrade'> = (game) => {
   return {
     ...game,
     defaultAction: {
@@ -54,9 +52,7 @@ export const triggerAcceptTrade = (
   };
 };
 
-export const triggerCancelTrade = (
-  game: Game<GamePhase.trade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+export const triggerCancelTrade: Transition<GamePhase.trade, 'exitTrading'> = (game) => {
   return {
     ...game,
     defaultAction: {
@@ -70,9 +66,7 @@ export const triggerCancelTrade = (
   };
 };
 
-export const triggerDeclineTrade = (
-  game: Game<GamePhase.answerTrade>,
-): Game<GamePhase.play> | Game<GamePhase.rollDice> => {
+export const triggerDeclineTrade: Transition<GamePhase.answerTrade, 'answerTrade'> = (game) => {
   return {
     ...game,
     defaultAction: {
@@ -97,9 +91,29 @@ export const triggerDeclineTrade = (
   };
 };
 
-export const triggerStartTrade = (
-  game: Game<GamePhase.play> | Game<GamePhase.rollDice>,
-): Game<GamePhase.trade> => {
+export const triggerStartTrade_play: Transition<GamePhase.play, 'enterTrading'> = (game) => {
+  return {
+    ...game,
+    defaultAction: {
+      playerId: getCurrentPlayer(game).id,
+      update: { type: GameUpdateType.cancelTrade },
+      interval: longActionInterval * 1000,
+    },
+    phase: GamePhase.trade,
+    phaseData: {
+      previousPhase: game.phase,
+      other: {
+        ownerId: undefined,
+        squaresId: [],
+      },
+      ownSquaresId: [],
+    },
+  };
+};
+
+export const triggerStartTrade_rollDice: Transition<GamePhase.rollDice, 'enterTrading'> = (
+  game,
+) => {
   return {
     ...game,
     defaultAction: {
@@ -139,10 +153,10 @@ export const triggerTradeOffer = (game: Game<GamePhase.trade>): Game<GamePhase.a
   };
 };
 
-export const triggerTradeSelectionToggle = (
-  game: Game<GamePhase.trade>,
-  square: PropertySquare,
-): Game<GamePhase.trade> => {
+export const triggerTradeSelectionToggle: Transition<GamePhase.trade, 'toggleTradingSelection'> = (
+  game,
+  square,
+) => {
   const currentPlayer = getCurrentPlayer(game);
 
   const isSelected = isSelectedForTrade(game, square);
